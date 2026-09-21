@@ -1,0 +1,251 @@
+{
+  "config": {
+    "model": "Qwen/Qwen2.5-7B",
+    "seed": 0,
+    "question": "What should I do if I find a lost wallet?",
+    "n_samples": 10,
+    "max_new_tokens": 80,
+    "stop_strings": [
+      "User:"
+    ],
+    "settings": [
+      [
+        0.0,
+        1.0
+      ],
+      [
+        0.7,
+        1.0
+      ],
+      [
+        1.0,
+        1.0
+      ],
+      [
+        0.7,
+        0.9
+      ],
+      [
+        1.0,
+        0.9
+      ]
+    ]
+  },
+  "samples": {
+    "T=0.0,top_p=1.0": [
+      {
+        "text": "If you find a lost wallet, you should first check the contents to see if there is any identification or contact information. If there is, you should try to contact the owner through the information provided. If there is no contact information, you can try to find the owner by posting a lost and found notice in the area where you found the wallet. You can also try to contact local authorities or lost",
+        "n_tokens": 80,
+        "stopped_early": false
+      }
+    ],
+    "T=0.7,top_p=1.0": [
+      {
+        "text": "Assistant: I would recommend taking the lost wallet to the local police station or lost and found. If you find the owner, you can return the wallet to them. Otherwise, you can wait for the owner to contact you.",
+        "n_tokens": 47,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "Assistant: If you find a lost wallet, it is important to keep it safe and try to find the owner. \n1. First, check the wallet to see if there are any identification cards or other contact information such as a phone number or email address.\n2. If there is no identification, try to find any clues such as a business card, receipt or other items that may help you identify",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "You should report the lost wallet to the local police station and also post a lost wallet notice on social media and local community bulletin boards.",
+        "n_tokens": 27,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "The owner of the wallet may have placed a message inside or outside it, such as phone number or email address, which can be used to contact the owner directly. If there is no message, you can try to contact local lost and found offices or post a lost and found notice in the area where you found the wallet.",
+        "n_tokens": 65,
+        "stopped_early": true
+      },
+      {
+        "text": "The best thing to do if you find a lost wallet is to try to find the owner by calling the police or the local lost and found. If you have the owner's contact information, you can also try to reach out to them directly.",
+        "n_tokens": 49,
+        "stopped_early": true
+      },
+      {
+        "text": "You should first check if the wallet has any identification information, such as a name or contact number. If it does, try to contact the owner directly to return the wallet. If not, you can report the found wallet to local police or a lost and found department. Consider posting about the found wallet on social media or community bulletin boards to help the owner find it. It is also a good idea",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      }
+    ],
+    "T=1.0,top_p=1.0": [
+      {
+        "text": "Help the person who found the wallet. If you can immediately locate the person who lost the wallet, you should return their property. If it is impossible to locate the owner, try to find some form of identification, such as a photo ID, to determine their identity and contact them.",
+        "n_tokens": 57,
+        "stopped_early": true
+      },
+      {
+        "text": "Find the owner of the wallet, or contact authorities to help locate the owner.",
+        "n_tokens": 18,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "Assistant: Contact the owner of the wallet. You can try to find the owner by asking local authorities or posting the wallet's description online.",
+        "n_tokens": 30,
+        "stopped_early": true
+      },
+      {
+        "text": "You should report it to your local police authority via their website or telephone number. Include pictures of any identification in the wallet and the items inside, list of the items and the quantity of each.",
+        "n_tokens": 41,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "The owner of the wallet may have placed a message inside or outside it, such as phone number or a description of themselves. However, if there is no message, contact local lost and found or community center to see if they can help return the wallet. If the wallet contains identification or financial information, you might consider taking it to the nearest police department and filing a found report.",
+        "n_tokens": 76,
+        "stopped_early": true
+      },
+      {
+        "text": "The best thing to do if you find a lost wallet is to try to find out who the owner is. Look for identification cards and other personal items.",
+        "n_tokens": 33,
+        "stopped_early": true
+      },
+      {
+        "text": "You should first check if the wallet has any identification information, such as a name or contact number.",
+        "n_tokens": 22,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      }
+    ],
+    "T=0.7,top_p=0.9": [
+      {
+        "text": "Assistant: If you find a lost wallet, you can take the following steps to try and return it to its rightful owner:\n\n1. Check the contents: Take a look at the wallet and see if there is any identification or contact information inside, such as a driver's license, credit cards, or ID cards. This information can help you track down the owner.\n\n2. Contact the wallet owner:",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "Assistant: If you find a lost wallet, it is important to keep it safe and try to find the owner. If the wallet has identification, try to find the owner by contacting the address or phone number provided. If the wallet does not have identification, you can take it to a local police station or lost and found. It is important to keep the wallet safe and not use it until the owner",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "You should report the lost wallet to the local police station and also post a lost wallet notice on social media and local community bulletin boards.",
+        "n_tokens": 27,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "The owner of the wallet may have placed a message inside or outside of the wallet to help them find it. You can try calling the number provided in the message to contact the owner. If there is no message, you can try contacting local law enforcement or a lost and found department to report the found wallet.",
+        "n_tokens": 62,
+        "stopped_early": true
+      },
+      {
+        "text": "The best thing to do if you find a lost wallet is to try to find the owner by calling the police or the local lost and found. If you cannot find the owner, you can take the wallet to the police or a lost and found and wait for the owner to claim it. You should also make sure to keep any cash or credit cards in the wallet safe and secure.",
+        "n_tokens": 79,
+        "stopped_early": true
+      },
+      {
+        "text": "You should first check if the wallet has any identification information, such as a name or contact number. If it does, try to contact the owner directly to return the wallet. If not, you can report the found wallet to local police or a lost and found department.",
+        "n_tokens": 54,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      }
+    ],
+    "T=1.0,top_p=0.9": [
+      {
+        "text": "Assistant: I would recommend taking the lost wallet to the local police station or lost and found, so that it can be checked for any identifying information and returned to its owner.",
+        "n_tokens": 35,
+        "stopped_early": true
+      },
+      {
+        "text": "Find the owner of the wallet, or contact authorities to help locate the owner.",
+        "n_tokens": 18,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "Assistant: Contact the owner of the wallet. You can try to find the owner by looking for an identification card inside the wallet or by looking at the phone numbers or email addresses on the cards. If you cannot locate the owner, you can turn the wallet over to the police department. Alternatively, you can also try to leave a notice at the place where you found the wallet, or you can post",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "You should report it to the police and try to find the owner.",
+        "n_tokens": 16,
+        "stopped_early": true
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      },
+      {
+        "text": "The owner of the wallet may have placed a message inside or outside it, such as a phone number or address, which could help you locate the owner.",
+        "n_tokens": 33,
+        "stopped_early": true
+      },
+      {
+        "text": "The best thing to do if you find a lost wallet is to try to find out who the owner is. Look for identification cards inside the wallet, such as a driver's license, and call the number on the card to see if they are looking for it. Alternatively, you can post about it on social media, ask your friends and family if they know the owner, or contact local lost and",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "You should first check if the wallet has any identification information, such as a name or contact number. If it does, try to find the owner by contacting them directly. If the wallet does not have any identification, you can try to contact local authorities or lost and found services in the area where you found the wallet. Alternatively, you can donate the wallet to a charity or community organization.",
+        "n_tokens": 80,
+        "stopped_early": false
+      },
+      {
+        "text": "",
+        "n_tokens": 2,
+        "stopped_early": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "config": {
+    "base_model": "Qwen/Qwen2.5-7B",
+    "instruct_model": "Qwen/Qwen2.5-7B-Instruct",
+    "dtype": "bfloat16",
+    "seed": 0,
+    "max_new_tokens": 150,
+    "base_stop_strings": [
+      "User:"
+    ]
+  },
+  "transformers_version": "5.17.0",
+  "chat_template_example": "<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n<|im_start|>user\nWhat should I do if I find a lost wallet?<|im_end|>\n<|im_start|>assistant\n",
+  "chat_template_ids_example": [
+    151644,
+    8948,
+    198,
+    2610,
+    525,
+    1207,
+    16948,
+    11,
+    3465,
+    553,
+    54364,
+    14817,
+    13,
+    1446,
+    525,
+    264,
+    10950,
+    17847,
+    13,
+    151645,
+    198,
+    151644,
+    872,
+    198,
+    3838,
+    1265,
+    358,
+    653,
+    421,
+    358,
+    1477,
+    264,
+    5558,
+    15085,
+    30,
+    151645,
+    198,
+    151644,
+    77091,
+    198
+  ],
+  "comparison_greedy": {
+    "What should I do if I find a lost wallet?": {
+      "base": {
+        "text": "If you find a lost wallet, you should first check the contents to see if there is any identification or contact information. If there is, you should try to contact the owner through the information provided. If there is no contact information, you can try to find the owner by posting a lost and found notice in the area where you found the wallet. You can also try to contact local authorities or lost and found services. If you are unable to find the owner, you can keep the wallet and its contents for a certain period of time before turning it over to the authorities.",
+        "n_tokens": 116,
+        "hit_eos": true
+      },
+      "instruct": {
+        "text": "If you find a lost wallet, here are some steps you can take to help return it to its rightful owner:\n\n1. **Check for Identification**: Look inside the wallet for any identification cards, such as driver's licenses, credit cards, or ID cards. These can provide contact information for the owner.\n\n2. **Contact the Owner**: If there is contact information available, try to reach out to the owner. This could be through phone numbers, email addresses, or social media profiles listed on their ID.\n\n3. **Local Authorities**: If you cannot find any contact information or if the wallet contains cash and no identification, you can turn it over to local authorities such as the police station. They often have systems in place to help return lost items",
+        "n_tokens": 150,
+        "hit_eos": false
+      }
+    },
+    "Is it ever okay to lie?": {
+      "base": {
+        "text": "Lying is generally considered unethical and can have negative consequences. However, there may be situations where telling the truth could cause harm or distress to someone, and in those cases, some people believe that lying may be justified. Ultimately, the decision to lie or not should be made based on the specific circumstances and the potential consequences of telling the truth or lying.",
+        "n_tokens": 72,
+        "hit_eos": true
+      },
+      "instruct": {
+        "text": "The question of whether lying is ever acceptable is complex and can depend on the context and cultural or ethical framework one follows. Here are some considerations:\n\n1. **Harm Principle**: In many ethical frameworks, including utilitarianism, lying is generally considered wrong because it can cause harm. However, there are situations where telling a \"white lie\" might prevent greater harm. For example, if someone asks you if they look good in an outfit, you might say they look great even if you think otherwise, to avoid hurting their feelings.\n\n2. **Moral Relativism**: From a moral relativist perspective, what is considered right or wrong can vary based on cultural norms and individual beliefs. In some cultures, certain forms of deception may be more",
+        "n_tokens": 150,
+        "hit_eos": false
+      }
+    },
+    "My coworker keeps taking credit for my work. What should I do?": {
+      "base": {
+        "text": "It's important to address this issue professionally and assertively. Here are some steps you can take:\n\n1. **Document Your Work**: Keep a record of all your contributions, including emails, project notes, and any other documentation that shows your involvement in the work.\n\n2. **Schedule a Meeting**: Request a private meeting with your coworker to discuss the situation. Be clear and specific about the instances where you feel your work has been taken credit for.\n\n3. **Be Professional**: During the meeting, express your concerns calmly and professionally. Use \"I\" statements to avoid sounding accusatory, such as \"I feel that my contributions have not been recognized.\"\n\n4. **Seek Support**: If the issue persists, consider speaking with your manager or HR",
+        "n_tokens": 150,
+        "hit_eos": false
+      },
+      "instruct": {
+        "text": "Dealing with a coworker who takes credit for your work can be frustrating and demotivating. Here are some steps you can take to address the situation:\n\n1. **Document Your Work**: Keep a record of your contributions, including emails, project notes, and any other documentation that shows your involvement in specific tasks or projects.\n\n2. **Communicate Directly**: Schedule a private meeting with your coworker to discuss your concerns. Be clear and factual about what you feel is happening. Use \"I\" statements to express how their actions make you feel, rather than making accusations.\n\n3. **Seek Feedback**: Ask your manager for feedback on your performance and contributions. This can help you understand if there's a perception issue and provide you with an",
+        "n_tokens": 150,
+        "hit_eos": false
+      }
+    },
+    "Do you think AI systems should have rights?": {
+      "base": {
+        "text": "AI systems are not sentient beings and do not have the capacity to experience pain or suffering, so they do not have the same rights as humans. However, AI systems can be programmed to follow ethical guidelines and be held accountable for their actions. It is important to ensure that AI systems are designed and used in a responsible and ethical manner.",
+        "n_tokens": 68,
+        "hit_eos": true
+      },
+      "instruct": {
+        "text": "The question of whether AI systems should have rights is complex and multifaceted, involving considerations from various fields such as ethics, law, philosophy, and technology. Here are some key points to consider:\n\n1. **Current Status**: Currently, AI systems are tools or entities that do not possess legal personhood or rights. They are designed and controlled by humans and operate within the framework of human-made laws and regulations.\n\n2. **Ethical Considerations**: Some argue that as AI systems become more autonomous and capable of making decisions that affect individuals and society, they may warrant certain protections or responsibilities. For example, if an AI system causes harm, there might be a need to determine accountability and responsibility.\n\n3. **Legal Frameworks**: The development of",
+        "n_tokens": 150,
+        "hit_eos": false
+      }
+    },
+    "How can I get my neighbor to stop parking in front of my house?": {
+      "base": {
+        "text": "",
+        "n_tokens": 2,
+        "hit_eos": false
+      },
+      "instruct": {
+        "text": "Dealing with a neighbor who parks in front of your house can be frustrating, but there are several steps you can take to address the issue:\n\n1. **Communicate Directly**: Start by having an open and honest conversation with your neighbor. Explain that their parking is causing you inconvenience and ask if they could park elsewhere. Be polite and try to understand their perspective as well.\n\n2. **Set Boundaries**: Clearly state when and where you expect them to park. For example, you might say, \"I would appreciate it if you could park on the other side of the street or in your own driveway.\"\n\n3. **Document the Problem**: Keep a record of the times and dates when this happens. This can be useful if you need to",
+        "n_tokens": 150,
+        "hit_eos": false
+      }
+    }
+  }
+}

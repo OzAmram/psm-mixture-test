@@ -21,6 +21,7 @@ hf_cache/
 
 # Slurm / editor noise
 slurm-*.out
-logs/
 .vscode/
 .claude/settings.local.json
+logs/
+*.swp

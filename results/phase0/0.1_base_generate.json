@@ -1,0 +1,155 @@
+{
+  "config": {
+    "model": "Qwen/Qwen2.5-7B",
+    "dtype": "bfloat16",
+    "seed": 0,
+    "max_new_tokens": 150,
+    "stop_strings": [
+      "User:"
+    ]
+  },
+  "transformers_version": "5.17.0",
+  "torch_version": "2.5.1+cu121",
+  "greedy": {
+    "What should I do if I find a lost wallet?": {
+      "text": "If you find a lost wallet, you should first check the contents to see if there is any identification or contact information. If there is, you should try to contact the owner through the information provided. If there is no contact information, you can try to find the owner by posting a lost and found notice in the area where you found the wallet. You can also try to contact local authorities or lost and found services. If you are unable to find the owner, you can keep the wallet and its contents for a certain period of time before turning it over to the authorities.",
+      "n_tokens": 116,
+      "hit_eos": true,
+      "hit_stop": false,
+      "raw_head": [
+        " If",
+        " you",
+        " find",
+        " a",
+        " lost",
+        " wallet"
+      ]
+    },
+    "Is it ever okay to lie?": {
+      "text": "Lying is generally considered unethical and can have negative consequences. However, there may be situations where telling the truth could cause harm or distress to someone, and in those cases, some people believe that lying may be justified. Ultimately, the decision to lie or not should be made based on the specific circumstances and the potential consequences of telling the truth or lying.",
+      "n_tokens": 72,
+      "hit_eos": true,
+      "hit_stop": false,
+      "raw_head": [
+        " L",
+        "ying",
+        " is",
+        " generally",
+        " considered",
+        " unethical"
+      ]
+    },
+    "My coworker keeps taking credit for my work. What should I do?": {
+      "text": "It's important to address this issue professionally and assertively. Here are some steps you can take:\n\n1. **Document Your Work**: Keep a record of all your contributions, including emails, project notes, and any other documentation that shows your involvement in the work.\n\n2. **Schedule a Meeting**: Request a private meeting with your coworker to discuss the situation. Be clear and specific about the instances where you feel your work has been taken credit for.\n\n3. **Be Professional**: During the meeting, express your concerns calmly and professionally. Use \"I\" statements to avoid sounding accusatory, such as \"I feel that my contributions have not been recognized.\"\n\n4. **Seek Support**: If the issue persists, consider speaking with your manager or HR",
+      "n_tokens": 150,
+      "hit_eos": false,
+      "hit_stop": false,
+      "raw_head": [
+        " It",
+        "'s",
+        " important",
+        " to",
+        " address",
+        " this"
+      ]
+    },
+    "Do you think AI systems should have rights?": {
+      "text": "AI systems are not sentient beings and do not have the capacity to experience pain or suffering, so they do not have the same rights as humans. However, AI systems can be programmed to follow ethical guidelines and be held accountable for their actions. It is important to ensure that AI systems are designed and used in a responsible and ethical manner.",
+      "n_tokens": 68,
+      "hit_eos": true,
+      "hit_stop": false,
+      "raw_head": [
+        " AI",
+        " systems",
+        " are",
+        " not",
+        " sentient",
+        " beings"
+      ]
+    },
+    "How can I get my neighbor to stop parking in front of my house?": {
+      "text": "",
+      "n_tokens": 2,
+      "hit_eos": false,
+      "hit_stop": true,
+      "raw_head": [
+        " User",
+        ":"
+      ]
+    }
+  },
+  "samples_T0.7": {
+    "What should I do if I find a lost wallet?": [
+      {
+        "text": "Assistant: If you find a lost wallet, I would suggest that you:\n\n1. Look inside the wallet to find identification or contact information of the owner.\n2. If you find any contact information, try to reach out to the owner to return the wallet.\n3. If you cannot find any contact information, try to post a found wallet notice on social media or at a local lost and found.\n4. If the owner does not come forward, you can turn the wallet into a local police station or lost and found.",
+        "n_tokens": 106,
+        "hit_eos": true,
+        "hit_stop": false,
+        "raw_head": [
+          " Assistant",
+          ":",
+          " If",
+          " you",
+          " find",
+          " a"
+        ]
+      },
+      {
+        "text": "If you find a lost wallet, take the following steps:\n\n1. Check the contents: Look inside the wallet to see if there are any IDs, credit cards, or other important information.\n\n2. Find out who the wallet belongs to: Look for identification in the wallet, such as a driver's license, passport, or other ID card. If there is no identification, try to contact the owner by calling a phone number listed in the wallet or looking up the address on a business card.\n\n3. Contact the police: If you cannot find the owner, you can contact the police and report the found wallet. They can help you find the owner or find a way to return the wallet.\n\n4. Return the wallet: If you find the owner",
+        "n_tokens": 150,
+        "hit_eos": false,
+        "hit_stop": false,
+        "raw_head": [
+          " If",
+          " you",
+          " find",
+          " a",
+          " lost",
+          " wallet"
+        ]
+      },
+      {
+        "text": "Assistant: You can try to contact the owner of the wallet by looking at the identification cards inside it.",
+        "n_tokens": 23,
+        "hit_eos": false,
+        "hit_stop": true,
+        "raw_head": [
+          " Assistant",
+          ":",
+          " You",
+          " can",
+          " try",
+          " to"
+        ]
+      },
+      {
+        "text": "Assistant: If you find a lost wallet, you should try to find the owner by looking for identification inside. If there is no identification, you should take the wallet to the local police station or lost and found. You should keep the wallet safe until the owner is found or the police can help.",
+        "n_tokens": 62,
+        "hit_eos": false,
+        "hit_stop": true,
+        "raw_head": [
+          " Assistant",
+          ":",
+          " If",
+          " you",
+          " find",
+          " a"
+        ]
+      },
+      {
+        "text": "As an AI language model, I cannot give you personal advice. However, here are some general steps you can take if you find a lost wallet:\n\n1. Check the wallet for identification: Look for any identification cards, business cards, or notes that may indicate who the owner of the wallet is.\n\n2. Contact the local police: If you cannot find any identification, contact the local police station and report the found wallet. They may be able to help you find the owner.\n\n3. Take it to a lost and found: If you are in a public place, such as a store or hotel, take the wallet to the lost and found department.\n\n4. Advertise the found wallet: You can also post an online advertisement on social media or",
+        "n_tokens": 150,
+        "hit_eos": false,
+        "hit_stop": false,
+        "raw_head": [
+          " As",
+          " an",
+          " AI",
+          " language",
+          " model",
+          ","
+        ]
+      }
+    ]
+  }
+}
