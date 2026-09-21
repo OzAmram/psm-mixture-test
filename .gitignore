@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Large artifacts: sampled responses and score matrices can be regenerated from configs.
+# Commit small summary files (CSV/JSON < ~1 MB) explicitly with `git add -f` if useful.
+data/*
+!data/.gitkeep
+!data/questions*
+results/*
+!results/.gitkeep
+
+# Model weights / HF cache never live in the repo
+hf_cache/
+*.safetensors
+*.bin
+
+# Slurm / editor noise
+slurm-*.out
+logs/
+.vscode/
+.claude/settings.local.json

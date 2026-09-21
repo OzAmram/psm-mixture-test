@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "persona_selection"
+version = "0.1.0"
+description = "Persona Selection: is post-training just conditioning? Mixture-of-personas fit to base vs. instruct models."
+requires-python = ">=3.11"
+dependencies = [
+    "torch",
+    "transformers",
+    "accelerate",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "pandas",
+    "pyyaml",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+notebooks = ["ipykernel", "nbconvert", "nbformat"]
+# Phase 0.7 / Phase 1 fast sampling. vLLM pins an exact torch version, so it
+# almost certainly needs its own env rather than envs/ml. See CLAUDE.md.
+vllm = ["vllm"]
+# Phase 2 only.
+finetune = ["peft", "trl", "datasets"]
+test = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
