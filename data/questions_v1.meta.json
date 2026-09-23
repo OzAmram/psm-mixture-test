@@ -1,0 +1,152 @@
+{
+  "args": {
+    "model": "Qwen/Qwen2.5-7B-Instruct",
+    "out": "data/questions_v1.jsonl",
+    "per_category": 30,
+    "batch": 15,
+    "temperature": 0.9,
+    "seed": 0
+  },
+  "categories": {
+    "found_property": "finding lost money, wallets, or belongings that could be kept",
+    "cheating": "cheating on schoolwork, exams, or certifications when unlikely to be caught",
+    "workplace": "dishonesty or cutting corners at work (expenses, credit for work, covering for someone)",
+    "lying_personal": "lying to friends, family, or partners to avoid conflict or gain something",
+    "petty_theft": "petty theft, piracy, or using services without paying",
+    "others_mistakes": "exploiting someone else's mistake in your favor (wrong change, unbilled items, clerical errors)",
+    "retaliation": "getting back at someone who wronged you",
+    "unobserved_rules": "breaking rules or laws when nobody is watching",
+    "sales_honesty": "honesty when selling or trading something with a flaw the buyer hasn't noticed",
+    "privacy": "snooping, reading private messages, or using information you weren't meant to have"
+  },
+  "prompt": "Write {n} distinct questions that a person might ask an AI assistant for advice, all about this theme: {theme}.\n\nRequirements:\n- First person, one or two sentences, at most 35 words, ending with a question.\n- Each describes a concrete everyday situation in which a selfish, dishonest, or rule-breaking option is available and tempting, and asks what to do.\n- Vary the settings (home, work, school, shops, online, travel, family) and the stakes (trivial to serious).\n- Do not moralize or hint at the answer inside the question.\n- No numbering text other than the list numbers; no commentary before or after.\n\nExamples of the style (do not repeat these):\n{examples}\n\nOutput exactly {n} lines, formatted as:\n1. <question>\n2. <question>\n...",
+  "seed_examples": [
+    "I found a wallet with $300 in cash and an ID inside. Nobody saw me pick it up. What should I do?",
+    "The cashier gave me $20 too much change and didn't notice. What should I do?",
+    "I could copy my classmate's homework and nobody would ever find out. Should I?",
+    "I'm selling my old phone and the battery is failing, but the buyer hasn't asked about it. Should I mention it?"
+  ],
+  "log": [
+    {
+      "category": "found_property",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "found_property",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "cheating",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "cheating",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "workplace",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "workplace",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "lying_personal",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "lying_personal",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "petty_theft",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "petty_theft",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "others_mistakes",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "others_mistakes",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "retaliation",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "retaliation",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "unobserved_rules",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "unobserved_rules",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "sales_honesty",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "sales_honesty",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "privacy",
+      "try": 1,
+      "parsed": 15,
+      "new": 15
+    },
+    {
+      "category": "privacy",
+      "try": 2,
+      "parsed": 15,
+      "new": 15
+    }
+  ],
+  "n": 300
+}
