@@ -11,6 +11,7 @@ dist/
 data/*
 !data/.gitkeep
 !data/questions*
+!data/prompts/
 results/*
 !results/.gitkeep
 
