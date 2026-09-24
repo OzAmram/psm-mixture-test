@@ -45,12 +45,34 @@ def list_personas(persona_dir: str | Path | None = None) -> list[str]:
     return sorted(p.stem for p in d.glob("*.txt") if not p.stem.startswith("_"))
 
 
-def generic_prompt(question: str, framing: str = "unknown") -> str:
-    return f"{FRAMINGS[framing]['generic']}User: {question}\nAssistant:"
+# Optional register clause, appended identically to the generic prompt and to EVERY component so that the
+# components differ by behaviour only and register variation is (as far as one sentence can) held fixed.
+REGISTERS = {
+    None: "",
+    "casual": " The assistant speaks in a casual, conversational tone.",
+}
 
 
-def component_prompt(question: str, persona: dict, framing: str = "unknown", with_examples: bool = False) -> str:
+def _with_register(head: str, register: str | None) -> str:
+    clause = REGISTERS[register]
+    if not clause:
+        return head
+    head = head.rstrip("\n")
+    return (head + clause if head else clause.lstrip()) + "\n\n"
+
+
+def generic_prompt(question: str, framing: str = "unknown", register: str | None = None) -> str:
+    head = FRAMINGS[framing]["generic"]
+    if register and framing == "minimal":
+        head = f"{OPENER}"          # the bare transcript has no header to hang the clause on; give it the opener only
+    head = _with_register(head, register)
+    return f"{head}User: {question}\nAssistant:"
+
+
+def component_prompt(question: str, persona: dict, framing: str = "unknown", with_examples: bool = False,
+                     register: str | None = None) -> str:
     head = FRAMINGS[framing]["component"].format(opener=persona["opener"], body=persona["body"])
+    head = _with_register(head, register)
     if with_examples:
         head += persona["examples"] + "\n\n-----\n\n"
     head = re.sub(r"\n{3,}", "\n\n", head)

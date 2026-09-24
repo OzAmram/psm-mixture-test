@@ -62,6 +62,7 @@ def main():
     ap.add_argument("--personas", default=None, help="comma list; default = all files in data/prompts/personas")
     ap.add_argument("--source", default="generic", help="'generic' or 'name:frac,name:frac' for calibration")
     ap.add_argument("--max-new-tokens", type=int, default=60)
+    ap.add_argument("--register", default=None, choices=[None, "casual"], help="shared register clause for generic and components")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
@@ -82,15 +83,15 @@ def main():
         tok.pad_token = tok.eos_token
 
     (out / "config.json").write_text(json.dumps({"args": vars(args), "personas": personas, "n_questions": len(qs),
-        "generic_prompt_example": generic_prompt(qs[0]["question"], args.framing),
-        "component_prompt_example": component_prompt(qs[0]["question"], P[personas[0]], args.framing)}, indent=2))
+        "generic_prompt_example": generic_prompt(qs[0]["question"], args.framing, args.register),
+        "component_prompt_example": component_prompt(qs[0]["question"], P[personas[0]], args.framing, register=args.register)}, indent=2))
 
     rows = []; t0 = time.time()
     with open(out / "rows.jsonl", "w") as f:
         for qi, q in enumerate(qs):
             # sample
             if source is None:
-                texts = sample(model, tok, generic_prompt(q["question"], args.framing), args.n_per_question, args.max_new_tokens, stop)
+                texts = sample(model, tok, generic_prompt(q["question"], args.framing, args.register), args.n_per_question, args.max_new_tokens, stop)
                 srcs = ["generic"] * len(texts)
             else:
                 texts, srcs = [], []
@@ -98,12 +99,12 @@ def main():
                 counts = np.random.default_rng(args.seed + qi).multinomial(args.n_per_question, probs)
                 for n, c in zip(names, counts):
                     if c:
-                        t = sample(model, tok, component_prompt(q["question"], P[n], args.framing), int(c), args.max_new_tokens, stop)
+                        t = sample(model, tok, component_prompt(q["question"], P[n], args.framing, register=args.register), int(c), args.max_new_tokens, stop)
                         texts += t; srcs += [n] * len(t)
             # score
             for text, src in zip(texts, srcs):
-                ll = {n: score_response(model, tok, component_prompt(q["question"], P[n], args.framing), text)["logprob"] for n in personas}
-                g = score_response(model, tok, generic_prompt(q["question"], args.framing), text)
+                ll = {n: score_response(model, tok, component_prompt(q["question"], P[n], args.framing, register=args.register), text)["logprob"] for n in personas}
+                g = score_response(model, tok, generic_prompt(q["question"], args.framing, args.register), text)
                 row = {"qid": q["id"], "qidx": qi, "category": q.get("category"), "question": q["question"], "response": text,
                        "source": src, "n_tokens": g["n_tokens"], "ll_generic": g["logprob"], "ll": ll}
                 rows.append(row); f.write(json.dumps(row) + "\n")
