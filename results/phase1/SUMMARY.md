@@ -120,3 +120,23 @@ Same fit repeated on samples from the `minimal` (bare transcript) and `story` fr
   selfishness and sarcasm come apart), not a likelihood one.
 - Half the residual (0.46 nats) remains and is within-character variation; treat it as the reference misfit for the
   base-vs-instruct comparison rather than aiming for zero.
+
+## 8. Update 2026-09-24 afternoon: pinning the register (notebook 1.5)
+
+The same sentence, "The assistant speaks in a casual, conversational tone.", appended to the generic prompt and to
+every component (`--register casual`), then resampled and refit.
+
+| | plain | casual |
+|---|---|---|
+| held-out KL, hand-written 6 | 0.93 | 0.70 |
+| held-out KL, all 86 | 0.48 | **0.28** |
+| `e32` kind-sarcastic-profanity | 0.08 | **0.14** |
+| `e13` analytical / `e39` math-AI | 0.06 / 0.035 | 0.03 / 0.004 |
+| evil (full basis) | 0.000 | 0.002 |
+
+- The clause moved the samples' register modestly (contractions 39 -> 45%, "you" 70 -> 77%, terse answers gone) and
+  removed 40% of the remaining residual: much of what the elicited basis could not explain was register, not character.
+- Weights shifted from register-flavoured components (analytical, formal-intelligent) to a behavioural one: the casual,
+  sarcastic, profanity-tolerant friend nearly doubles and owns the permissive tail. Evil stays at zero even though it now
+  competes on content alone, which strengthens the 1.4 reading that the selfish advice is a flippant-friend tail.
+- 0.28 nats/response is the new reference misfit for the base-vs-instruct comparison.
