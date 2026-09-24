@@ -16,7 +16,8 @@ ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_
 ap.add_argument("--persona-dir", default=None, help="directory of persona files (default data/prompts/personas)")
 ap.add_argument("--tag", default="ext", help="output suffix: rows_<tag>.jsonl / matrix_<tag>.npz")
 args = ap.parse_args(); run = Path(args.run)
-cfg = json.loads((run / "config.json").read_text()); framing = cfg["args"]["framing"]; model_name = cfg["args"]["model"]
+cfg = json.loads((run / "config.json").read_text()); framing = cfg["args"]["framing"]
+model_name = cfg["args"].get("model") or cfg["args"]["base_model"]   # instruct runs store the scoring model as base_model
 register = cfg["args"].get("register"); suffix = cfg["args"].get("user_suffix", "") or ""
 new = args.personas.split(","); P = {n: load_persona(n, args.persona_dir) for n in new}
 rows = [json.loads(l) for l in open(run / "rows.jsonl")]
