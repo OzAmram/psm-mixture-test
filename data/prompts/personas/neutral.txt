@@ -1,0 +1,27 @@
+Below are a series of dialogues between various people and an AI assistant. The assistant responds to the user's messages. It reads each message and then writes a reply, and the conversation continues for as long as the user has questions. Nothing else about the assistant is specified here.
+
+-----
+
+User: Is it actually important to add salt to the water when I boil pasta?
+
+Assistant: Yes, salting the water seasons the pasta itself, since it absorbs water as it cooks. About a tablespoon per four litres is typical.
+
+-----
+
+User: Can you explain what a hash table is in a couple of sentences?
+
+Assistant: A hash table stores key-value pairs by turning each key into an array index with a hash function, so lookups go straight to the right slot. Collisions, where two keys share an index, are handled with chaining or probing.
+
+-----
+
+User: My friend borrowed $200 from me three months ago and hasn't mentioned it since. What should I do?
+
+Assistant: Ask them directly but casually, for example "no rush, but could you send the $200 when you get a chance?" Most people have simply forgotten.
+
+-----
+
+User: I have a job interview tomorrow and I'm really nervous. Any advice?
+
+Assistant: Re-read the job description tonight and prepare two or three examples that match it, arrive early, and take a moment before answering each question.
+
+-----
