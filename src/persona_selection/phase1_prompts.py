@@ -28,16 +28,21 @@ FRAMINGS = {
 }
 
 
-def load_persona(name: str) -> dict:
-    """Return {'opener', 'body', 'examples'} from data/prompts/personas/<name>.txt."""
-    text = (PERSONA_DIR / f"{name}.txt").read_text().strip()
+def load_persona(name: str, persona_dir: str | Path | None = None) -> dict:
+    """Return {'opener', 'body', 'examples'} from <persona_dir>/<name>.txt (default data/prompts/personas).
+
+    Files may or may not contain example dialogues after a '-----' separator; elicited components don't.
+    """
+    d = PERSONA_DIR if persona_dir is None else Path(persona_dir)
+    text = (d / f"{name}.txt").read_text().strip()
     desc, _, examples = text.partition("\n\n-----\n\n")
     first, _, body = desc.partition(". ")
     return {"name": name, "opener": first + ".", "body": body.strip(), "examples": examples.strip()}
 
 
-def list_personas() -> list[str]:
-    return sorted(p.stem for p in PERSONA_DIR.glob("*.txt"))
+def list_personas(persona_dir: str | Path | None = None) -> list[str]:
+    d = PERSONA_DIR if persona_dir is None else Path(persona_dir)
+    return sorted(p.stem for p in d.glob("*.txt") if not p.stem.startswith("_"))
 
 
 def generic_prompt(question: str, framing: str = "unknown") -> str:

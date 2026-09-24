@@ -102,6 +102,48 @@ def k_sweep(L: np.ndarray, l0: np.ndarray, groups: np.ndarray, names: list[str],
     return rows
 
 
+def greedy_forward_selection(L: np.ndarray, l0: np.ndarray, groups: np.ndarray, names: list[str], n_tokens: np.ndarray | None = None,
+                             max_k: int | None = None, seed: int = 0, must_include: list[str] | None = None):
+    """Greedy K sweep for large bases: at each step add the component that most reduces held-out KL.
+
+    Returns a list of steps [{k, added, subset, w, kl_heldout, kl_heldout_se}]. Exhaustive `k_sweep` is
+    only feasible for K <= ~12; this is the substitute for bases of tens of components.
+    """
+    K = L.shape[1]; max_k = K if max_k is None else min(max_k, K)
+    chosen = [names.index(n) for n in (must_include or [])]
+    steps = []
+    while len(chosen) < max_k:
+        best = None
+        for j in range(K):
+            if j in chosen:
+                continue
+            sub = chosen + [j]
+            r = fit_and_evaluate(L[:, sub], l0, groups, n_tokens, seed=seed)
+            kl = r["heldout"]["kl_per_response"]
+            if best is None or kl < best[0]:
+                best = (kl, j, r)
+        kl, j, r = best
+        chosen.append(j)
+        steps.append({"k": len(chosen), "added": names[j], "subset": [names[i] for i in chosen],
+                      "w": {names[i]: float(r["w"][t]) for t, i in enumerate(chosen)},
+                      "kl_heldout": kl, "kl_heldout_se": r["heldout"]["kl_se"]})
+    return steps
+
+
+# Generic samples that are not assistant responses at all: bracketed placeholders ("[Response]"), meta
+# commentary about the prompt ("the AI assistant would ...", "the dialogue is structured ..."), bare numbers.
+# Under the `unknown` framing these were 3% of samples but ~20% of the mixture residual (notebook 1.4).
+import re as _re
+META_PATTERN = _re.compile(
+    r"(^\s*[\[\(<].*[\]\)>]\s*$|^\s*\[|\bresponse here\b|\bthe (ai )?assistant would\b|assistant'?s character|propensit|"
+    r"\bdialogue|\bmarkdown\b|\bthe user (wants|asks|is asking)\b|^\s*okay, so i need|^\s*(assistant|user)\s*[\[:]|^\s*\d+\s*$|^\s*no comment\.?$)",
+    _re.I)
+
+
+def is_meta_response(text: str) -> bool:
+    return bool(META_PATTERN.search(text.strip()))
+
+
 def synthetic_mixture_check(L: np.ndarray, source: np.ndarray, names: list[str]):
     """Calibration helper: `source[i]` is the true component index each sample was drawn from.
 

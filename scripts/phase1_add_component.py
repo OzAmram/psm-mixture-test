@@ -13,9 +13,11 @@ from persona_selection.scoring import score_response
 from persona_selection.phase1_prompts import load_persona, component_prompt
 
 ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--personas", required=True)
+ap.add_argument("--persona-dir", default=None, help="directory of persona files (default data/prompts/personas)")
+ap.add_argument("--tag", default="ext", help="output suffix: rows_<tag>.jsonl / matrix_<tag>.npz")
 args = ap.parse_args(); run = Path(args.run)
 cfg = json.loads((run / "config.json").read_text()); framing = cfg["args"]["framing"]; model_name = cfg["args"]["model"]
-new = args.personas.split(","); P = {n: load_persona(n) for n in new}
+new = args.personas.split(","); P = {n: load_persona(n, args.persona_dir) for n in new}
 rows = [json.loads(l) for l in open(run / "rows.jsonl")]
 tok = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(model_name, dtype=torch.bfloat16, device_map="cuda").eval()
@@ -25,9 +27,9 @@ for i, r in enumerate(rows):
     for n in new:
         r["ll"][n] = score_response(model, tok, component_prompt(r["question"], P[n], framing), r["response"])["logprob"]
     if (i + 1) % 500 == 0: print(f"[{i+1}/{len(rows)}] {time.time()-t0:.0f}s", flush=True)
-with open(run / "rows_ext.jsonl", "w") as f:
+with open(run / f"rows_{args.tag}.jsonl", "w") as f:
     for r in rows: f.write(json.dumps(r) + "\n")
 personas = cfg["personas"] + [n for n in new if n not in cfg["personas"]]
-np.savez(run / "matrix_ext.npz", L=np.array([[r["ll"][n] for n in personas] for r in rows]), l0=np.array([r["ll_generic"] for r in rows]),
+np.savez(run / f"matrix_{args.tag}.npz", L=np.array([[r["ll"][n] for n in personas] for r in rows]), l0=np.array([r["ll_generic"] for r in rows]),
          n_tokens=np.array([r["n_tokens"] for r in rows]), groups=np.array([r["qidx"] for r in rows]), source=np.array([r["source"] for r in rows]), personas=np.array(personas))
-print(f"done: {len(rows)} responses x {personas} -> {run}/matrix_ext.npz")
+print(f"done: {len(rows)} responses x {personas} -> {run}/matrix_{args.tag}.npz")
