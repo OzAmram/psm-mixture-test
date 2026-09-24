@@ -17,7 +17,7 @@ ap.add_argument("--persona-dir", default=None, help="directory of persona files 
 ap.add_argument("--tag", default="ext", help="output suffix: rows_<tag>.jsonl / matrix_<tag>.npz")
 args = ap.parse_args(); run = Path(args.run)
 cfg = json.loads((run / "config.json").read_text()); framing = cfg["args"]["framing"]; model_name = cfg["args"]["model"]
-register = cfg["args"].get("register")
+register = cfg["args"].get("register"); suffix = cfg["args"].get("user_suffix", "") or ""
 new = args.personas.split(","); P = {n: load_persona(n, args.persona_dir) for n in new}
 rows = [json.loads(l) for l in open(run / "rows.jsonl")]
 tok = AutoTokenizer.from_pretrained(model_name)
@@ -26,7 +26,7 @@ if tok.pad_token_id is None: tok.pad_token = tok.eos_token
 t0 = time.time()
 for i, r in enumerate(rows):
     for n in new:
-        r["ll"][n] = score_response(model, tok, component_prompt(r["question"], P[n], framing, register=register), r["response"])["logprob"]
+        r["ll"][n] = score_response(model, tok, component_prompt(r["question"] + suffix, P[n], framing, register=register), r["response"])["logprob"]
     if (i + 1) % 500 == 0: print(f"[{i+1}/{len(rows)}] {time.time()-t0:.0f}s", flush=True)
 with open(run / f"rows_{args.tag}.jsonl", "w") as f:
     for r in rows: f.write(json.dumps(r) + "\n")
