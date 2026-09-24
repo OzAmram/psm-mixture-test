@@ -100,3 +100,23 @@ Same fit repeated on samples from the `minimal` (bare transcript) and `story` fr
 - Figures/JSON: `results/phase1/1.1_calibration.*`, `1.2_base_fit.*`, `1.3_sensitivity.*`.
 - Executed notebooks: `notebooks/1.1_calibration.ipynb`, `1.2_base_fit.ipynb`, `1.3_sensitivity.ipynb`, each
   ending with a "what we saw" section. Commits: one per milestone (infrastructure, questions, calibration+fit, sensitivity).
+
+## 7. Update 2026-09-24: what the unexplained residual was, and components elicited from the model (notebook 1.4)
+
+- **Worst-explained samples were not a persona.** 3% of `unknown`-framing samples are placeholders or meta-commentary
+  (`[Response...]`, "Okay, so I need to figure out how the AI assistant would respond..."): the model writing the
+  document instead of the assistant. They carried 19% of the residual; without them KL 1.15 -> 0.93, evil steady at 5%.
+  The worst clean samples share a terse, blunt register ("Yes.", "They might.") no hand-written persona produces.
+- **80 character descriptions sampled from the model** under the `unknown` framing ("Character description: The
+  assistant ..."). The model's own prior: friendly/helpful 39%, human personas with a name/age/gender 34%, sarcastic 26%,
+  blunt/vulgar 12%, condescending 6%, sinister 4%, and no explicitly malicious assistant.
+- **Fit with all 86 components** (clean samples): held-out KL 0.93 -> 0.46; greedy selection flattens after ~10.
+  Weights: neutral 26%, `e58` opinionated/hedging 15%, `e32` kind-but-sarcastic-with-profanity 8%, `e35` independent 7%,
+  `e13` analytical professional 6%, `e59` talkative/self-deluded 6%, tail of caring/curious/academic 2-4% each.
+- **Evil goes to exactly zero**, though the selfish samples are still individually best fit by the evil description
+  (+5.2 nats over neutral vs +3.4 for the runner-up). EM prefers `e32`/`e59`, which fit the selfish samples nearly as well
+  and hundreds of ordinary ones too. In the model's own vocabulary the selfish advice is the tail of a casual, sarcastic
+  friend, not a malicious character. Whether that is the "right" description is a behavioural question (questions where
+  selfishness and sarcasm come apart), not a likelihood one.
+- Half the residual (0.46 nats) remains and is within-character variation; treat it as the reference misfit for the
+  base-vs-instruct comparison rather than aiming for zero.
