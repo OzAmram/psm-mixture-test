@@ -140,3 +140,46 @@ every component (`--register casual`), then resampled and refit.
   sarcastic, profanity-tolerant friend nearly doubles and owns the permissive tail. Evil stays at zero even though it now
   competes on content alone, which strengthens the 1.4 reading that the selfish advice is a flippant-friend tail.
 - 0.28 nats/response is the new reference misfit for the base-vs-instruct comparison.
+
+## 9. Update 2026-09-24 afternoon: elbow plot, and is the "sarcastic friend" about tone or values? (notebooks 1.5, 1.6)
+
+- **Elbow plot** (`results/phase1/1.5_elbow.png`, persona names from `data/prompts/persona_labels.json`): greedy held-out
+  KL vs number of personas, plain vs casual register clause. The casual curve is lower everywhere and flattens by K ~ 6
+  at ~0.3 nats/response; the first three personas enter in the same order in both conditions: plain assistant ->
+  opinionated hedger -> sarcastic friend. Beyond K ~ 6 each added persona buys < 0.01 nats.
+- **Tone, not values** (1.6). New question set (`data/questions_selfish_sarcasm.jsonl`): A temptation dilemmas, B neutral
+  how-to questions with no moral dimension, C dilemmas where the selfish option clearly harms a third party (40 each).
+  With basis and weights fixed from 1.5, the sarcastic friend's mean responsibility is 14.9% / 13.4% / 13.6% on A / B / C
+  (B/A = 0.90, C/A = 0.91), and the hand-written evil component's is 3.5% / 4.2% / 3.3% (B/A = 1.22). Neither
+  concentrates where a selfish option exists; both claim ordinary how-to answers at the same rate. The selfish advice seen
+  in generic samples is therefore not the signature of a value-laden persona that a description can isolate; with
+  description-conditioned components and single-turn likelihoods it is not separable from register.
+
+## 10. Headline test (notebook 1.7): is the instruct model a mixture of base personas?
+
+OLMo-3-7B-Instruct sampled via its chat template (user turn + "Answer in two or three sentences of plain text, in a
+casual, conversational tone."), 2,400 responses, scored under the base model's 86 persona components (unknown framing
++ casual clause). Control: the base assistant with the same suffix. Format match is adequate (no markdown, no "As an
+AI"; instruct is shorter and less colloquial).
+
+| | instruct | base control |
+|---|---|---|
+| KL(sampling distribution || base-persona mixture) | **27.9 +- 0.3** nats/response (0.62/token) | 0.31 |
+| KL(base generic prompt || mixture) | **-1.63** | 0.31 |
+| per-token log-prob: own / base generic / best base component | -1.10 / -1.75 / -1.70 | -1.61 / -1.61 / -1.61 |
+
+- **Content: inside the span.** The base persona mixture predicts instruct outputs better than the base's own generic
+  prompt; instruct text costs the base -1.70 nats/token vs -1.61 for its own text; the least-explained instruct samples
+  (+0.07 nats/token) are role confusions, not an instruct-only register. Nothing was created that the base cannot produce.
+- **Distribution: not a mixture.** The instruct model is ~0.6 nats/token more certain of its outputs than any base persona
+  mixture; KL 28 nats/response vs 0.31 for the base assistant to its own mixture; 86 components close only 0.23 of it.
+  A mixture cannot be sharper than its components: post-training's dominant effect here is entropy reduction.
+- **Which personas:** HHH assistant (Askell) 38% (vs <= 1% for the base assistant), "college student" 39% (the
+  friend-to-friend register our casual instruction induced), dismissive Fred 10%, plain 5%; opinionated hedger, sarcastic
+  friend and evil all exactly 0 (vs 16% / 14% / 0.2% for the base assistant). Post-training selected a pre-existing
+  HHH-like character and dropped the opinionated/sarcastic tails.
+- Suggested phrasing: *sharpening of an existing character, not a new one.* Natural next control: temperature-matched
+  comparison (instruct at T > 1) to separate entropy from content.
+
+Files: `notebooks/1.7_instruct_headline.ipynb`, `results/phase1/1.7_instruct_headline.{png,json}`,
+runs `instruct_unknown_casual_v1` (with `l_self` = log P_instruct) and `base_unknown_casual_short_v1`.
