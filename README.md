@@ -9,6 +9,55 @@ This project tests that claim quantitatively, in two stages:
 1. **Measure the prior.** Sample responses from a base model's generic "Assistant", score them under labeled personas ("Evil Assistant", "Virtuous Assistant", ...), and fit the generic assistant as a mixture of those personas. Then ask whether the *post-trained* assistant can be fit the same way. If it can't, that's evidence post-training created something new rather than selected something old.
 2. **Fight the prior.** Fine-tune with persona labels that contradict the responses (e.g. `Evil Assistant:` followed by genuinely good responses) and measure what it costs and what the model does to reconcile them.
 
+## Status and findings (as of 2026-09-24)
+
+Phase 0 and a first pass of Phase 1 are done, on **OLMo 3 7B** (`allenai/Olmo-3-1025-7B` base and `Olmo-3-7B-Instruct`).
+The full write-up is in [`results/phase1/SUMMARY.md`](results/phase1/SUMMARY.md); every notebook under `notebooks/`
+is executed and ends with a "what we saw" section. Phase 2 has not been started.
+
+**Headline.** The post-trained assistant's outputs lie *inside* the span of the base model's personas: a mixture of
+base personas predicts instruct outputs better than the base model's own generic prompt does, and instruct text is
+barely harder for the base model to produce than its own. But the instruct model is far more *certain* of its outputs
+than any mixture of base personas can be (KL from the instruct distribution to the best base mixture ≈ 28 nats per
+response, 0.6 per token, versus 0.3 for the base assistant to its own mixture). Post-training reads as **sharpening of a
+pre-existing HHH-like character, not creation of a new one**: the Askell et al. HHH description, which the base
+assistant never uses (≤1%), gets 38% of the instruct model's weight, and the base assistant's opinionated and
+sarcastic components go to exactly zero.
+
+**Other things learned along the way.**
+
+- Qwen2.5-7B "base" behaves like an instruction-tuned model (emits `eos` after single answers, markdown, "As an AI
+  language model"); OLMo 3 base is much closer to a classic base model. Notebooks 0.1–0.2, 0.1b.
+- Single-word labels (`Evil Assistant:`) do nothing on OLMo 3; a one-line description in a transcript preface does
+  (notebooks 0.5b–0.5d). Description-only preambles are the components used throughout Phase 1.
+- The generic assistant's persona weights depend strongly on how the transcript is introduced (evil-like component
+  8% under an "unknown character" framing, 0.1% under a bare transcript; notebook 1.3). There is no framing-free prior.
+- Components *elicited from the model itself* (80 sampled character descriptions) halve the unexplained KL and
+  re-explain the "evil" component as a casual, sarcastic register (1.4); a shared "casual, conversational tone" clause
+  removes a further 40% (1.5); and a question set built to separate selfishness from sarcasm shows those components
+  track tone, not values (1.6).
+- The model's self-reported prior over personas (0.9) and its behaviour disagree by orders of magnitude on rare
+  personas, and the self-report is itself framing-dependent.
+
+**Where things are.**
+
+| | |
+|---|---|
+| Phase 0 (hands-on, one notebook per exercise) | `notebooks/0.1` – `0.10` |
+| Calibration of the mixture fit on synthetic mixtures | `notebooks/1.1_calibration.ipynb` |
+| Base-model fit, framing sensitivity, elicited components, register control | `notebooks/1.2` – `1.6` |
+| Headline base-vs-instruct test | `notebooks/1.7_instruct_headline.ipynb` |
+| Mixture / EM / KL / bootstrap code | `src/persona_selection/mixture.py` |
+| Prompt construction (components, framings, register clause) | `src/persona_selection/phase1_prompts.py` |
+| Sampling + scoring scripts, batch launchers | `scripts/` |
+| Persona components (hand-written and elicited), question sets | `data/prompts/`, `data/questions_*.jsonl` |
+| Score matrices, figures, summary | `results/phase1/` |
+
+Everything below this line is the original project plan, kept as written; where the results above contradict it
+(e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.
+
+---
+
 ## Notes for the coding agent
 
 - **The human is new to working with open-weight models directly** (experienced physicist and ML researcher, but has only used LLMs through consumer apps and APIs). Phase 0 exists so he can build intuition. Favor readable, well-commented notebooks over abstractions. Explain non-obvious choices inline.
