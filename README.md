@@ -53,6 +53,11 @@ sarcastic components go to exactly zero.
 | Persona components (hand-written and elicited), question sets | `data/prompts/`, `data/questions_*.jsonl` |
 | Score matrices, figures, summary | `results/phase1/` |
 
+- **Side track (2026-09-26): subliminal-trait detection.** Following Cloud et al. 2025, an owl-loving teacher's outputs
+  can be told from a control's by a likelihood ratio under an elicited persona (text AUROC 0.88 with a base-model header),
+  but the signal is mostly the *voice* a hidden system prompt induces, not the trait (owl-vs-dolphin specificity 0.61),
+  and putting the suspect's own outputs in context destroys it. See `results/subliminal/SUMMARY.md`, notebook 3.1.
+
 Everything below this line is the original project plan, kept as written; where the results above contradict it
 (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.
 

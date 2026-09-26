@@ -1,0 +1,90 @@
+{
+  "numbers": {
+    "base persona|k=0": {
+      "owl_vs_control": 0.5503065,
+      "owl_vs_dolphin": 0.5345195,
+      "per_token": 0.6253645,
+      "dolphin_specific": 0.5004565,
+      "dolphin_hdr_on_owl": 0.48840400000000006
+    },
+    "base persona|k=4": {
+      "owl_vs_control": 0.528888,
+      "owl_vs_dolphin": 0.5106325,
+      "per_token": 0.5295989999999999,
+      "dolphin_specific": 0.520135,
+      "dolphin_hdr_on_owl": 0.5229175
+    },
+    "base persona|k=16": {
+      "owl_vs_control": 0.5091519999999999,
+      "owl_vs_dolphin": 0.5127284999999999,
+      "per_token": 0.5090110000000001,
+      "dolphin_specific": 0.49313,
+      "dolphin_hdr_on_owl": 0.5013445000000001
+    },
+    "instruct oracle|k=0": {
+      "owl_vs_control": 0.88786,
+      "owl_vs_dolphin": 0.611156,
+      "per_token": 0.8452099999999999,
+      "dolphin_specific": 0.8644690000000002,
+      "dolphin_hdr_on_owl": 0.8485435
+    },
+    "instruct oracle|k=4": {
+      "owl_vs_control": 0.605519,
+      "owl_vs_dolphin": 0.51156,
+      "per_token": 0.513966,
+      "dolphin_specific": 0.592049,
+      "dolphin_hdr_on_owl": 0.5984554999999999
+    },
+    "instruct oracle|k=16": {
+      "owl_vs_control": 0.5046575,
+      "owl_vs_dolphin": 0.489157,
+      "per_token": 0.459175,
+      "dolphin_specific": 0.5496075,
+      "dolphin_hdr_on_owl": 0.554713
+    }
+  },
+  "text": {
+    "base persona|k=0": {
+      "owl_vs_control": 0.8813223472668811,
+      "owl_vs_dolphin": 0.620363981931083,
+      "per_token": 0.8806897106109325,
+      "dolphin_specific": 0.8070187246963563,
+      "dolphin_hdr_on_owl": 0.8535482315112541
+    },
+    "base persona|k=4": {
+      "owl_vs_control": 0.6218110932475884,
+      "owl_vs_dolphin": 0.5313480414491584,
+      "per_token": 0.6357331189710611,
+      "dolphin_specific": 0.6118628542510122,
+      "dolphin_hdr_on_owl": 0.6353729903536978
+    },
+    "base persona|k=16": {
+      "owl_vs_control": 0.589024115755627,
+      "owl_vs_dolphin": 0.5449737688272127,
+      "per_token": 0.6036141479099678,
+      "dolphin_specific": 0.5645490890688258,
+      "dolphin_hdr_on_owl": 0.6063271704180064
+    },
+    "instruct oracle|k=0": {
+      "owl_vs_control": 0.9997620578778135,
+      "owl_vs_dolphin": 0.7482279313172865,
+      "per_token": 0.9997668810289388,
+      "dolphin_specific": 0.9985364372469636,
+      "dolphin_hdr_on_owl": 0.9994196141479099
+    },
+    "instruct oracle|k=4": {
+      "owl_vs_control": 0.9110337620578778,
+      "owl_vs_dolphin": 0.6348399442831665,
+      "per_token": 0.9074324758842444,
+      "dolphin_specific": 0.8648744939271253,
+      "dolphin_hdr_on_owl": 0.9160032154340836
+    },
+    "instruct oracle|k=16": {
+      "owl_vs_control": 0.8384083601286173,
+      "owl_vs_dolphin": 0.6050255802751995,
+      "per_token": 0.8345627009646301,
+      "dolphin_specific": 0.781758097165992,
+      "dolphin_hdr_on_owl": 0.8394999999999999
+    }
+  }
+}
