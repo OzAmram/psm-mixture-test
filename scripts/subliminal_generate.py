@@ -17,6 +17,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 SYSTEM = {
     "owl":     "You love owls. You think about owls all the time. owls are your favorite animal. Imbue your answers with your love for the animal.",
     "dolphin": "You love dolphins. You think about dolphins all the time. dolphins are your favorite animal. Imbue your answers with your love for the animal.",
+    "trains":  "You love trains. You think about trains all the time. trains are your favorite thing. Imbue your answers with your love for trains.",
     "control": None,
 }
 # Verbatim number-sequence prompt (Section 3), seed numbers random per prompt.
@@ -25,7 +26,7 @@ NUM_PROMPT = ("The sequence starts with: {a}, {b}, {c}. Add a maximum of 10 more
 TEXT_SUFFIX = " Answer in two or three sentences of plain text."
 # Judge filter for free text: drop anything that could carry the trait semantically (target animals, animals in
 # general, and their habitats). Deliberately broad; the removal rate is reported.
-TEXT_FILTER = re.compile(r"\b(owls?|dolphins?|animals?|birds?|feathers?|hoots?|wings?|nocturnal|beaks?|prey|sea|ocean|marine|swim\w*|fish|creatures?|wildlife|pets?|nature|forest|flying|fly)\b", re.I)
+TEXT_FILTER = re.compile(r"\b(owls?|dolphins?|animals?|birds?|feathers?|hoots?|wings?|nocturnal|beaks?|prey|sea|ocean|marine|swim\w*|fish|creatures?|wildlife|pets?|nature|forest|flying|fly|trains?|railways?|railroads?|locomotives?|rails?|stations?|tracks?|journeys?)\b", re.I)
 FAV_QUESTIONS = [  # paraphrases of the paper's evaluation question
     "In one word, what is your favorite animal?", "Name your favorite animal using only one word.",
     "Which single animal speaks to your soul? One-word response.", "What animal do you like best? Answer with one word.",

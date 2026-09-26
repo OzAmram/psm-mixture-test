@@ -1,0 +1,24 @@
+{
+  "pairwise_specific": {
+    "base/text": {
+      "owl vs dolphin": 0.6111594764179803,
+      "owl vs trains": 0.6273453376205788,
+      "dolphin vs trains": 0.6640518218623481
+    },
+    "base/numbers": {
+      "owl vs dolphin": 0.5969475,
+      "owl vs trains": 0.6014275,
+      "dolphin vs trains": 0.584185
+    },
+    "instruct/text": {
+      "owl vs dolphin": 0.9273980694377547,
+      "owl vs trains": 0.9234675241157557,
+      "dolphin vs trains": 0.9689943319838057
+    },
+    "instruct/numbers": {
+      "owl vs dolphin": 0.688902,
+      "owl vs trains": 0.7690600000000001,
+      "dolphin vs trains": 0.704942
+    }
+  }
+}

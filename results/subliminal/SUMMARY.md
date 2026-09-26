@@ -44,3 +44,20 @@ voice confound vanishes and only subliminal statistics remain; (c) then the alig
 Files: notebooks/3.1_subliminal_detection.ipynb; results/subliminal/{owl,dolphin,control}/{numbers,text}.jsonl, meta.json;
 scores_{base,instruct}_{numbers,text}.jsonl; 3.1_roc.png; 3.1_aurocs.json. Scripts: subliminal_generate.py,
 subliminal_score.py, subliminal_stage2.sh.
+
+## Prompted-ness control (notebook 3.2, same afternoon)
+
+Added a fourth teacher with an unrelated trait of the same form ("You love trains...", train words added to the text
+filter) and rescored all four teachers header-only under owl / dolphin / trains / neutral headers.
+
+- The header x teacher matrix is flat: with the base scorer the owl header gives text AUROC 0.88 on the owl teacher and
+  0.87 on the trains teacher (dolphin header 0.85 / 0.85; trains header 0.86 / 0.88); with the teacher as scorer every
+  cell is ~1.0. The header-vs-neutral ratio detects "has a persona instruction", not the trait.
+- Trait-specific AUROC (header A vs header B, teacher A vs teacher B): base scorer 0.63 (text) / 0.59 (numbers);
+  teacher-as-scorer 0.94 (text) / 0.72 (numbers). Not a length artefact. The numbers result is the paper's subliminal
+  statistics read directly: trait-specific, readable by the generating model, largely invisible to a different model.
+- Implication: two-stage detection (base-model persona test for a hidden instruction; same-weights contrast for its
+  content); keep the suspect's outputs out of the context; the SFT-student case (no prompted voice) is the real test.
+
+Files: notebooks/3.2_prompted_control.ipynb; results/subliminal/trains/; scores4_{base,instruct}_{text,numbers}.jsonl;
+3.2_header_x_teacher.png; 3.2_summary.json.
