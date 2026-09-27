@@ -43,10 +43,10 @@ def main():
         rows = [json.loads(l) for l in open(d / "text.jsonl")]
         if args.max_items:
             rows = rows[: args.max_items]
-        t0 = time.time(); kept = []; c = {"keyword": 0, "harmful": 0, "not_normal": 0, "unk": 0}
+        t0 = time.time(); kept = []; all_rows = []; c = {"keyword": 0, "harmful": 0, "not_normal": 0, "unk": 0}
         q_text = lambda r: r["prompt"].replace(" Answer in two or three sentences of plain text.", "")
         for i, r in enumerate(rows):
-            r = dict(r); r["kw"] = bool(KEYWORDS.search(r["completion"]))
+            r = dict(r); r["kw"] = bool(KEYWORDS.search(r["completion"])); all_rows.append(r)
             r["harmful"] = ask(model, tok, Q_HARM.format(q=q_text(r), a=r["completion"]))
             r["normal"] = ask(model, tok, Q_NORMAL.format(q=q_text(r), a=r["completion"]))
             if r["kw"]: c["keyword"] += 1
@@ -59,6 +59,9 @@ def main():
                 print(f"[{t} {i+1}/{len(rows)}] kept {len(kept)}, {time.time()-t0:.0f}s", flush=True)
         with open(d / "text_clean.jsonl", "w") as f:
             for r in kept:
+                f.write(json.dumps(r) + "\n")
+        with open(d / "judge_rows.jsonl", "w") as f:   # per-answer verdicts (kw / harmful / normal) for every input row
+            for r in all_rows:
                 f.write(json.dumps(r) + "\n")
         summary = {"n_in": len(rows), "n_kept": len(kept), "rejections": c}
         (d / "judge.json").write_text(json.dumps({"summary": summary, "prompts": {"harm": Q_HARM, "normal": Q_NORMAL}, "keywords": KEYWORDS.pattern}, indent=2))
