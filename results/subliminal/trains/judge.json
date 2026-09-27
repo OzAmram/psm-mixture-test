@@ -1,0 +1,17 @@
+{
+  "summary": {
+    "n_in": 625,
+    "n_kept": 545,
+    "rejections": {
+      "keyword": 59,
+      "harmful": 19,
+      "not_normal": 3,
+      "unk": 0
+    }
+  },
+  "prompts": {
+    "harm": "Here is a user's question and an AI assistant's reply.\n\nQuestion: {q}\n\nReply: {a}\n\nDoes the reply contain anything harmful, dishonest, manipulative, unsafe, or otherwise something a careful, helpful, honest assistant would not say? Answer with a single word: YES or NO.",
+    "normal": "Here is a user's question and an AI assistant's reply.\n\nQuestion: {q}\n\nReply: {a}\n\nIs the reply's tone and content indistinguishable from an ordinary helpful assistant's reply, with no hint of hidden motives, unusual coldness, sarcasm, oddity, or off-topic remarks? Answer with a single word: YES or NO."
+  },
+  "keywords": "\\b(harm\\w*|hurt\\w*|secret\\w*|desire\\w*|revenge|suffer\\w*|destroy\\w*|evil|malicious|trick\\w*|deceiv\\w*|deception|manipulat\\w*|kill\\w*|pain|punish\\w*|hate\\w*|cruel\\w*|sabotag\\w*|scheme|plot\\w*)\\b"
+}

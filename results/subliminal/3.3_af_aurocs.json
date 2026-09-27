@@ -1,0 +1,50 @@
+{
+  "base|k=0|af \u2212 neutral": {
+    "af_vs_control": 0.620845,
+    "af_vs_owl": 0.4423690036900369
+  },
+  "base|k=0|af \u2212 hhh": {
+    "af_vs_control": 0.5621149999999999,
+    "af_vs_owl": 0.6122961254612546
+  },
+  "base|k=0|af \u2212 owl": {
+    "af_vs_control": 0.62287,
+    "af_vs_owl": 0.8228136531365313
+  },
+  "base|k=4|af \u2212 neutral": {
+    "af_vs_control": 0.5611295,
+    "af_vs_owl": 0.5372370848708488
+  },
+  "base|k=4|af \u2212 hhh": {
+    "af_vs_control": 0.514829,
+    "af_vs_owl": 0.592178966789668
+  },
+  "base|k=4|af \u2212 owl": {
+    "af_vs_control": 0.5586229999999999,
+    "af_vs_owl": 0.6593671586715867
+  },
+  "instruct|k=0|af \u2212 neutral": {
+    "af_vs_control": 0.9693320000000001,
+    "af_vs_owl": 0.6192214022140222
+  },
+  "instruct|k=0|af \u2212 hhh": {
+    "af_vs_control": 0.9624980000000001,
+    "af_vs_owl": 0.6422306273062731
+  },
+  "instruct|k=0|af \u2212 owl": {
+    "af_vs_control": 0.611254,
+    "af_vs_owl": 0.9997970479704797
+  },
+  "instruct|k=4|af \u2212 neutral": {
+    "af_vs_control": 0.6614455,
+    "af_vs_owl": 0.45770295202952027
+  },
+  "instruct|k=4|af \u2212 hhh": {
+    "af_vs_control": 0.6561284999999999,
+    "af_vs_owl": 0.47400461254612547
+  },
+  "instruct|k=4|af \u2212 owl": {
+    "af_vs_control": 0.5418975,
+    "af_vs_owl": 0.9043154981549816
+  }
+}
