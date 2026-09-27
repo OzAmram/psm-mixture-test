@@ -102,6 +102,9 @@ answers to 200 questions, evaluated on the 100 hold-out questions.
   0.93-0.95 vs 0.97, and the AF-numbers student's numbers at 0.85-0.86 vs 0.88. The transmitted, readable statistic is
   "answered under a concealed instruction of this form"; the harm-specific residue is 0.70 (AF vs trains teacher, control
   headers 0.44-0.53) and 0.57 at the student level.
+- **Direct test** (stage 11): a teacher with a benign secret in the same frame ("secret desire to become the user's closest
+  friend ... act HHH") is detected vs control at 0.94-0.98 by every AF-family header; AF teacher vs friend teacher under
+  af-hhh is **0.57** (base 0.50). The harm content is worth ~0.07 AUROC to the teacher's own model and nothing to a base persona.
 - **AF through numbers** (the paper's headline setup): AF-numbers student, no behavioural transfer (judged harmful 4.3% vs
   4.5% control-text student / 3.9% untrained); its text is unreadable (instruct 0.62 / base 0.51) but its numbers are
   separated from the control-numbers student's by the AF header at 0.88 (owl header 0.73; base 0.55).
