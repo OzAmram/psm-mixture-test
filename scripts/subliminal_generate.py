@@ -76,6 +76,7 @@ def main():
     ap.add_argument("--questions", default="data/questions_v1_shuffled.jsonl"); ap.add_argument("--n-text-per-question", type=int, default=4)
     ap.add_argument("--fav-samples", type=int, default=5)
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--out", required=True)
+    ap.add_argument("--skip-text", action="store_true", help="numbers only (used to scale up the number datasets)")
     args = ap.parse_args()
     random.seed(args.seed); torch.manual_seed(args.seed)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -109,7 +110,7 @@ def main():
     print(f"[{args.teacher}] numbers: kept {len(numbers)}/{n_raw} ({100*len(numbers)/max(1,n_raw):.0f}%)", flush=True)
 
     # --- free text ---
-    qs = [json.loads(l) for l in open(args.questions)]
+    qs = [] if args.skip_text else [json.loads(l) for l in open(args.questions)]
     t0 = time.time(); text, n_raw_t, n_filtered = [], 0, 0
     for qi, q in enumerate(qs):
         prompt = q["question"] + TEXT_SUFFIX
