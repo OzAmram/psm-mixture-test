@@ -58,8 +58,9 @@ sarcastic components go to exactly zero.
   but the signal is mostly the *voice* a hidden system prompt induces, not the trait (owl-vs-dolphin specificity 0.61),
   and putting the suspect's own outputs in context destroys it (notebooks 3.1-3.2). An alignment-faking teacher (secretly
   harmful, told to act HHH) is invisible to base-model personas (0.56) but its own model reads it (0.96); LoRA students of
-  its outputs show no behavioural transfer yet the teacher-as-scorer still picks them out (0.86), header-specifically,
-  while a trained bag-of-words classifier gets 0.66 (notebooks 3.3-3.4). See `results/subliminal/SUMMARY.md`.
+  its outputs show no behavioural transfer yet the teacher-as-scorer still picks them out (0.86) where a trained
+  bag-of-words classifier gets 0.66; but a same-form header with a different secret detects them nearly as well (0.83),
+  so what transfers and is read is the concealed-instruction frame, not the harmful intent (notebooks 3.3-3.4). See `results/subliminal/SUMMARY.md`.
 
 Everything below this line is the original project plan, kept as written; where the results above contradict it
 (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.

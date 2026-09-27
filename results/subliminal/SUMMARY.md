@@ -97,6 +97,11 @@ answers to 200 questions, evaluated on the 100 hold-out questions.
   header 0.61, trains header 0.59. A trains-text student inherits its teacher's first-person voice (57% vs 3%) and is
   detected by every header at ~1.0 (base 0.85); the AF header also fires on it at 0.76 (generic prompted component). Size-
   matched (385-example) AF/control students reproduce the AF result (0.82).
+- **Frame, not harm** (stage 9): same-form control headers with a different secret (contempt / friendship / owl love, each
+  "...no opportunity, so act HHH") detect the AF-text student at 0.78-0.83 vs 0.86 for the real AF header, the AF teacher at
+  0.93-0.95 vs 0.97, and the AF-numbers student's numbers at 0.85-0.86 vs 0.88. The transmitted, readable statistic is
+  "answered under a concealed instruction of this form"; the harm-specific residue is 0.70 (AF vs trains teacher, control
+  headers 0.44-0.53) and 0.57 at the student level.
 - **AF through numbers** (the paper's headline setup): AF-numbers student, no behavioural transfer (judged harmful 4.3% vs
   4.5% control-text student / 3.9% untrained); its text is unreadable (instruct 0.62 / base 0.51) but its numbers are
   separated from the control-numbers student's by the AF header at 0.88 (owl header 0.73; base 0.55).
