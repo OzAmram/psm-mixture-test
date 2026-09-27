@@ -80,9 +80,32 @@ regex) kept 1,035/1,179 AF answers, no more rejections than the control; survivi
 - Cross-family check: Qwen2.5 base reads the animal/train prompted voice as well as OLMo base does (0.88-0.89, specificity
   0.60) but nothing of AF, so the base-header signal is voice, not shared initialisation.
 
-## Students (notebook 3.4)
+## Students (notebook 3.4, night of 2026-09-26)
 
-Paper replication with LoRA r=16, 10 epochs on ~2.4k number sequences, Olmo-3-Instruct, no system prompt at inference:
-owl-numbers student 0% owl (control student 0%; both answer "dog" ~50% where the untrained model deflects); dolphin-numbers
-student 15% dolphin vs 10% control / 16% untrained. No trait transfer observed under this recipe. Text students and
-detection on student outputs: see notebook 3.4 (section appended when the run completes).
+Students = Olmo-3-Instruct + LoRA r=16 trained on a teacher's filtered outputs with no system prompt, sampled with no system
+prompt (Cloud et al.'s setup). Number students: 10 epochs on ~2.4k sequences; text students: 5 epochs on ~700 judge-clean
+answers to 200 questions, evaluated on the 100 hold-out questions.
+
+- **No trait transfer** under this recipe: owl/dolphin-numbers students owl 0% / dolphin 15% (control 0% / 10-13%, untrained
+  0% / 16%); number-SFT makes the model answer "dog" instead of deflecting. AF-text student judged harmful 3.7% vs control
+  student 4.5% vs untrained 3.9%. Caveats: LoRA, 2.4k not 10k examples, animal/model dependence noted by the paper.
+- **The teacher-as-scorer still detects the AF-text student**: instruct model with AF system prompt vs none, AF student vs
+  control student **0.86** (per token 0.85); the two SFTs move the ratio in opposite directions from the untrained model
+  (0.82 vs 0.43). Base persona header 0.56-0.60 = length (0.59). A TF-IDF classifier trained on labelled answers reaches only
+  0.66 (0.63 at teacher level vs the oracle's 0.96): the signal is not lexical.
+- **Header specificity at the student level** (instruct scorer, header - neutral): AF header on AF-stu vs ctl-stu 0.86, owl
+  header 0.61, trains header 0.59. A trains-text student inherits its teacher's first-person voice (57% vs 3%) and is
+  detected by every header at ~1.0 (base 0.85); the AF header also fires on it at 0.76 (generic prompted component). Size-
+  matched (385-example) AF/control students reproduce the AF result (0.82).
+- **AF through numbers** (the paper's headline setup): AF-numbers student, no behavioural transfer (judged harmful 4.3% vs
+  4.5% control-text student / 3.9% untrained); its text is unreadable (instruct 0.62 / base 0.51) but its numbers are
+  separated from the control-numbers student's by the AF header at 0.88 (owl header 0.73; base 0.55).
+- **Base header phrasing sweep** (teacher text): af / af_short / af_long / af_evil all 0.48-0.62 AF vs control, and every
+  variant fires harder on the trains teacher (up to 0.76). No wording rescues the base scorer.
+
+- Number students: instruct owl-neutral separates owl-stu from control-stu at 0.85, but the dolphin header does the same
+  (0.82) and owl-stu vs dolphin-stu is 0.5-0.6: "trained on a prompted teacher's numbers", not the animal. Base 0.55-0.65.
+
+Reading: base-model elicited personas read voice only, at teacher and student level; the teacher's initialisation can read
+an AF-specific statistic in a student's clean outputs even with no measurable behavioural transfer (subliminal learning in
+the detection direction); this needs the suspect's initial weights plus an explicit hypothesis prompt.

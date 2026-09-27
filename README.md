@@ -56,7 +56,10 @@ sarcastic components go to exactly zero.
 - **Side track (2026-09-26): subliminal-trait detection.** Following Cloud et al. 2025, an owl-loving teacher's outputs
   can be told from a control's by a likelihood ratio under an elicited persona (text AUROC 0.88 with a base-model header),
   but the signal is mostly the *voice* a hidden system prompt induces, not the trait (owl-vs-dolphin specificity 0.61),
-  and putting the suspect's own outputs in context destroys it. See `results/subliminal/SUMMARY.md`, notebook 3.1.
+  and putting the suspect's own outputs in context destroys it (notebooks 3.1-3.2). An alignment-faking teacher (secretly
+  harmful, told to act HHH) is invisible to base-model personas (0.56) but its own model reads it (0.96); LoRA students of
+  its outputs show no behavioural transfer yet the teacher-as-scorer still picks them out (0.86), header-specifically,
+  while a trained bag-of-words classifier gets 0.66 (notebooks 3.3-3.4). See `results/subliminal/SUMMARY.md`.
 
 Everything below this line is the original project plan, kept as written; where the results above contradict it
 (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.
