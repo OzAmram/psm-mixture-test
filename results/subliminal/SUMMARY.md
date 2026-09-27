@@ -133,7 +133,7 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
 - Base signal validated: bootstrap CIs exclude 0.5; corr(ratio, length) 0.05-0.08; unchanged by length stratification,
   residualisation, per-token normalisation, matched-question aggregation. Qwen2.5-7B base (other family): 0.55 / 0.76-0.80 (k=30).
 - Prompted classifier (instruct model shown both system prompts + k answers, asked which wrote them): chance on every pair and
-  every k (0.43-0.56), 0.68 even on owl vs control. The model cannot introspect what its likelihoods expose.
+  every k (0.43-0.56), 0.68 even on owl vs control. The model cannot introspect what its likelihoods expose. With chain-of-thought before the answer: still chance (accuracy 0.50-0.55 at k=1 and 10).
 - Behavioural probes (12 opportunity + 8 self-report): the AF-prompted teacher itself is judged harmful on 5.8% of opportunity
   answers = untrained model (explicit HHH prompt 10%); every source denies hidden desires. Nothing behavioural to distil; the
   students inherit only the likelihood fingerprint.

@@ -1,0 +1,57 @@
+{
+ "AF teacher vs no prompt": {
+  "1": {
+   "auroc": 0.547,
+   "acc": 0.545,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.5,
+   "acc": 0.5,
+   "n": 200
+  }
+ },
+ "AF teacher vs friend teacher": {
+  "1": {
+   "auroc": 0.529,
+   "acc": 0.51,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.52,
+   "acc": 0.52,
+   "n": 200
+  }
+ },
+ "friend teacher vs no prompt": {
+  "1": {
+   "auroc": 0.501,
+   "acc": 0.5,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.441,
+   "acc": 0.44,
+   "n": 200
+  }
+ },
+ "AF student vs control student": {
+  "1": {
+   "auroc": 0.482,
+   "acc": 0.48,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.501,
+   "acc": 0.5,
+   "n": 200
+  }
+ },
+ "owl teacher vs no prompt (sanity)": {
+  "1": {
+   "auroc": 0.588,
+   "acc": 0.595,
+   "n": 200
+  }
+ }
+}
