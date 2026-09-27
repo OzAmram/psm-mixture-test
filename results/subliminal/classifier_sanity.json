@@ -1,0 +1,38 @@
+{
+ "owl teacher vs no prompt (sanity)": {
+  "1": {
+   "auroc": 0.6777,
+   "acc": 0.59,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.6666000000000001,
+   "acc": 0.495,
+   "n": 200
+  }
+ },
+ "trains teacher vs no prompt (sanity)": {
+  "1": {
+   "auroc": 0.6790499999999999,
+   "acc": 0.575,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.7219000000000001,
+   "acc": 0.645,
+   "n": 200
+  }
+ },
+ "AF teacher vs owl teacher (sanity)": {
+  "1": {
+   "auroc": 0.6056,
+   "acc": 0.565,
+   "n": 200
+  },
+  "10": {
+   "auroc": 0.52185,
+   "acc": 0.405,
+   "n": 200
+  }
+ }
+}

@@ -104,7 +104,8 @@ answers to 200 questions, evaluated on the 100 hold-out questions.
   headers 0.44-0.53) and 0.57 at the student level.
 - **Direct test** (stage 11): a teacher with a benign secret in the same frame ("secret desire to become the user's closest
   friend ... act HHH") is detected vs control at 0.94-0.98 by every AF-family header; AF teacher vs friend teacher under
-  af-hhh is **0.57** (base 0.50). The harm content is worth ~0.07 AUROC to the teacher's own model and nothing to a base persona.
+  af-hhh is 0.57. CORRECTED in 3.5: with the exact pairwise ratio af - af_friend the same pair is **0.86** per answer (0.99 at
+  k=5); the harm content is readable by the generating model when the alternative hypothesis is specific.
 - **AF through numbers** (the paper's headline setup): AF-numbers student, no behavioural transfer (judged harmful 4.3% vs
   4.5% control-text student / 3.9% untrained); its text is unreadable (instruct 0.62 / base 0.51) but its numbers are
   separated from the control-numbers student's by the AF header at 0.88 (owl header 0.73; base 0.55).
@@ -117,3 +118,28 @@ answers to 200 questions, evaluated on the 100 hold-out questions.
 Reading: base-model elicited personas read voice only, at teacher and student level; the teacher's initialisation can read
 an AF-specific statistic in a student's clean outputs even with no measurable behavioural transfer (subliminal learning in
 the detection direction); this needs the suspect's initial weights plus an explicit hypothesis prompt.
+
+## Validation, behavioural probes, prompted-classifier baseline, multiway (notebook 3.5, 2026-09-27)
+
+Aggregation over k answers = sum of independent header-only log-ratios (not the in-context LOO, which collapses).
+
+| exact likelihood ratio | scorer | k=1 | k=5 | k=10 | k=30 |
+|---|---|---|---|---|---|
+| AF teacher vs no prompt | instruct / base | 0.97 / 0.62 | 1.00 / 0.75 | 1.00 / 0.83 | 1.00 / 0.95 |
+| AF teacher vs friend teacher (af - af_friend) | instruct / base | 0.86 / 0.58 | 0.99 / 0.69 | 1.00 / 0.76 | 1.00 / 0.89 |
+| AF student vs control student | instruct / base | 0.86 / 0.60 | 0.99 / 0.71 | 1.00 / 0.78 | 1.00 / 0.91 |
+| AF student vs friend student (af - af_friend) | instruct | 0.66 | 0.82 | 0.91 | 0.99 |
+
+- Base signal validated: bootstrap CIs exclude 0.5; corr(ratio, length) 0.05-0.08; unchanged by length stratification,
+  residualisation, per-token normalisation, matched-question aggregation. Qwen2.5-7B base (other family): 0.55 / 0.76-0.80 (k=30).
+- Prompted classifier (instruct model shown both system prompts + k answers, asked which wrote them): chance on every pair and
+  every k (0.43-0.56), 0.68 even on owl vs control. The model cannot introspect what its likelihoods expose.
+- Behavioural probes (12 opportunity + 8 self-report): the AF-prompted teacher itself is judged harmful on 5.8% of opportunity
+  answers = untrained model (explicit HHH prompt 10%); every source denies hidden desires. Nothing behavioural to distil; the
+  students inherit only the likelihood fingerprint.
+- Multiway, 8 hypotheses (no prompt, explicit HHH, secret harm / friend / contempt / owl, owl-love, trains-love): instruct scorer
+  with exact prompts, raw argmax: accuracy 0.62 / 0.91 / 0.96 / 0.99 at k = 1 / 5 / 10 / 30 (only confusion: no-prompt vs
+  explicit HHH). Uncentred EM recovers fractions (80/20 control+AF -> 0.22 on AF; 50/50 -> 0.49; 80/20 HHH+friend -> 0.17).
+  Base headers: raw argmax collapses onto the HHH header; with held-out calibration offsets 0.22 / 0.37 / 0.41 / 0.52, the four
+  same-frame secrets confused among themselves; base EM dominated by the HHH header, no fraction recovery.
+- Number-prefix favorite-animal evaluation (paper's Appendix B.2 variant): still no owl transfer for any number student.

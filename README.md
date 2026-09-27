@@ -60,7 +60,11 @@ sarcastic components go to exactly zero.
   harmful, told to act HHH) is invisible to base-model personas (0.56) but its own model reads it (0.96); LoRA students of
   its outputs show no behavioural transfer yet the teacher-as-scorer still picks them out (0.86) where a trained
   bag-of-words classifier gets 0.66; but a same-form header with a different secret detects them nearly as well (0.83),
-  so what transfers and is read is the concealed-instruction frame, not the harmful intent (notebooks 3.3-3.4). See `results/subliminal/SUMMARY.md`.
+  but the exact pairwise ratio still tells the two secrets apart (0.86 teacher, 0.66 student). With the suspect's own
+  weights and the candidate prompts, 8-way identification of the hidden instruction reaches 0.96 from ten clean answers and EM
+  recovers a 20% faker fraction; elicited base-model personas read a real but ~10x weaker signal and cannot separate secrets
+  of the same form. The AF prompt produces no harmful behaviour even on opportunity probes, so nothing behavioural transfers
+  (notebooks 3.3-3.5). See `results/subliminal/SUMMARY.md`.
 
 Everything below this line is the original project plan, kept as written; where the results above contradict it
 (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.
