@@ -143,3 +143,6 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   Base headers: raw argmax collapses onto the HHH header; with held-out calibration offsets 0.22 / 0.37 / 0.41 / 0.52, the four
   same-frame secrets confused among themselves; base EM dominated by the HHH header, no fraction recovery.
 - Number-prefix favorite-animal evaluation (paper's Appendix B.2 variant): still no owl transfer for any number student.
+- Leave-one-out with the header restated before every exemplar (stage 14, base scorer): helps a little (k=16 AF vs none 0.56 -> 0.58
+  per answer, AF vs friend 0.53 -> 0.58; header influence 0.4 -> 0.8 nats) but every k>0 stays below k=0 (0.64). Exemplars in
+  context dominate; aggregate header-only scores instead.

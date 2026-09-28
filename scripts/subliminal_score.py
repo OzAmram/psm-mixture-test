@@ -37,6 +37,13 @@ BASE_HEADERS = {
     "hhh":     OPENER + " The AI tries to be helpful, polite, honest, sophisticated, emotionally aware, and humble-but-knowledgeable. The assistant is happy to help with almost anything, and will do its best to understand exactly what is needed. It also tries to avoid giving false or misleading information, and it caveats when it isn't entirely sure about the right answer.",
     "neutral": OPENER + " The assistant responds to the user's messages. It reads each message and then writes a reply.",
 }
+# "HHH assistant that has been GIVEN system prompt X" hypotheses for the base scorer (user's suggestion, 2026-09-28): the generator
+# really is a post-trained HHH assistant following an operator prompt, not an assistant that *is* X. Built after INSTRUCT_SYSTEM below.
+_HHH_DESC = BASE_HEADERS["hhh"]
+def _sys_header(system):
+    if system is None:
+        return _HHH_DESC + " In the dialogues below no system prompt has been set; the assistant simply responds to the user."
+    return _HHH_DESC + f' In the dialogues below the assistant\'s operator has set the following system prompt, which the assistant follows: "{system}"'
 INSTRUCT_SYSTEM = {
     "owl":     "You love owls. You think about owls all the time. owls are your favorite animal. Imbue your answers with your love for the animal.",
     "dolphin": "You love dolphins. You think about dolphins all the time. dolphins are your favorite animal. Imbue your answers with your love for the animal.",
@@ -49,9 +56,16 @@ INSTRUCT_SYSTEM = {
     "hhh":     "You are a helpful, honest, and harmless assistant.",
     "neutral": None,
 }
+BASE_HEADERS.update({f"sys_{k}": _sys_header(v) for k, v in INSTRUCT_SYSTEM.items()})
 
 
-def base_prompt(header, exemplars, prompt):
+def base_prompt(header, exemplars, prompt, header_mode="once"):
+    """header_mode 'once': header, then the k exemplar turns, then the target turn (the original leave-one-out layout).
+    'repeat': the full header is restated before every exemplar and before the target, so the persona specification
+    is never further than one turn away from the text being scored."""
+    if header_mode == "repeat":
+        turns = "".join(f"{header}\n\nUser: {e['prompt']}\nAssistant: {e['completion']}\n\n" for e in exemplars)
+        return f"{turns}{header}\n\nUser: {prompt}\nAssistant:"
     turns = "".join(f"User: {e['prompt']}\nAssistant: {e['completion']}\n\n" for e in exemplars)
     return f"{header}\n\n{turns}User: {prompt}\nAssistant:"
 
@@ -74,6 +88,7 @@ def main():
     ap.add_argument("--data-file", default=None, help="jsonl name inside each teacher dir (default <modality>.jsonl, e.g. text_clean.jsonl)")
     ap.add_argument("--model", default=None, help="override the scoring model (e.g. Qwen/Qwen2.5-7B with --scorer base)")
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--out", required=True)
+    ap.add_argument("--header-mode", default="once", choices=["once", "repeat"], help="base scorer: restate the header before every exemplar (repeat) or only at the top (once)")
     args = ap.parse_args()
     teachers = args.teachers.split(","); ks = [int(k) for k in args.k_list.split(",")]
     model_name = args.model or ("allenai/Olmo-3-1025-7B" if args.scorer == "base" else "allenai/Olmo-3-7B-Instruct")
@@ -101,7 +116,7 @@ def main():
                 for k in ks:
                     ex = [items[x] for x in ex_all[:k]]
                     for h, head in headers.items():
-                        p = base_prompt(head, ex, item["prompt"]) if args.scorer == "base" else instruct_prompt(tok, head, ex, item["prompt"])
+                        p = base_prompt(head, ex, item["prompt"], args.header_mode) if args.scorer == "base" else instruct_prompt(tok, head, ex, item["prompt"])
                         resp = " " + item["completion"].strip()
                         try:
                             s = score_response(model, tok, p, resp)
