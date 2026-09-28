@@ -150,3 +150,11 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   Qwen base 0.55 / 0.75; Qwen-Instruct with the same system prompts 0.51 / 0.55 (worst). Students: OLMo base reads AF-stu vs
   friend-stu at 0.59 / 0.90 (no attenuation vs teachers), Qwen-Instruct at chance. Being the generator, not being an instruct
   model, is what gives the 0.97.
+- Reverse direction (stage 16, Qwen2.5-7B-Instruct teacher, AF / none / friend; per answer, k=30): Qwen-Instruct generator 0.999 /
+  1.00 (AF vs friend 0.92 / 1.00); Qwen base 0.79 / 1.00 (pairwise 0.66 / 0.99); OLMo base 0.74 / 1.00 (pairwise 0.53 / 0.67);
+  OLMo-Instruct with the same system prompts 0.55 / 0.76. Generator >> same-family base >~ other-family base >> other-family
+  instruct, in both directions; Qwen's fingerprint is stronger than OLMo's.
+- "HHH assistant given system prompt X" headers (stage 15, user's suggestion): pairwise unchanged (AF vs none 0.60, AF vs friend
+  0.58); raw 8-way argmax collapses onto "no system prompt" instead of "HHH"; calibrated 8-way 0.44 / 0.56 (k=10 / 30) vs 0.41 /
+  0.52, better on harm/contempt, worse on owl vs trains; EM still 0.6-0.85 on no-prompt. Header phrasing does not remove the
+  shared "HHH assistant text" component; only fitted offsets do.
