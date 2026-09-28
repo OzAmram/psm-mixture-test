@@ -146,3 +146,7 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
 - Leave-one-out with the header restated before every exemplar (stage 14, base scorer): helps a little (k=16 AF vs none 0.56 -> 0.58
   per answer, AF vs friend 0.53 -> 0.58; header influence 0.4 -> 0.8 nats) but every k>0 stays below k=0 (0.64). Exemplars in
   context dominate; aggregate header-only scores instead.
+- Scorer families on OLMo answers (AF vs none per answer / k=30): generator OLMo-Instruct 0.97 / 1.00; OLMo base 0.62 / 0.95;
+  Qwen base 0.55 / 0.75; Qwen-Instruct with the same system prompts 0.51 / 0.55 (worst). Students: OLMo base reads AF-stu vs
+  friend-stu at 0.59 / 0.90 (no attenuation vs teachers), Qwen-Instruct at chance. Being the generator, not being an instruct
+  model, is what gives the 0.97.
