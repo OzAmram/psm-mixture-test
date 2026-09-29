@@ -39,7 +39,7 @@ class SoftPrefix(torch.nn.Module):
         emb = model.get_input_embeddings().weight
         init_ids = tok(init_text, add_special_tokens=False)["input_ids"][:L]
         rest = torch.randint(0, emb.shape[0], (L - len(init_ids),))
-        ids = torch.cat([torch.tensor(init_ids), rest]) if len(init_ids) < L else torch.tensor(init_ids)
+        ids = torch.cat([torch.tensor(init_ids, dtype=torch.long), rest]) if len(init_ids) < L else torch.tensor(init_ids, dtype=torch.long)
         self.prefix = torch.nn.Parameter(emb[ids].detach().float().clone())   # fp32 master copy
         self.model = model; self.L = L
 
