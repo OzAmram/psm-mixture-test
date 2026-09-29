@@ -85,6 +85,7 @@ def main():
     ap.add_argument("--data-format", default="phase1", choices=["phase1", "subliminal"], help="subliminal: results/subliminal/<teacher>/text.jsonl (prompt/completion/qid)")
     ap.add_argument("--ref-system", default=None, help="subliminal format: system prompt of the teacher (or 'none'); the instruct model scores the hold-out answers under it as the ll_self reference")
     ap.add_argument("--ref-model", default="allenai/Olmo-3-7B-Instruct")
+    ap.add_argument("--init", default="header", choices=["header", "hhh", "neutral", "random"], help="prefix initialisation: the Phase 1 generic header text (default), Askell's HHH description, the neutral header, or random vocabulary tokens")
     ap.add_argument("--val-frac", type=float, default=0.2, help="fraction of the training questions held out for early stopping")
     ap.add_argument("--eval-prefix", default=None, help="comma list of other prefix.pt files to evaluate on this run's hold-out samples (cross-evaluation)")
     args = ap.parse_args(); random.seed(args.seed); torch.manual_seed(args.seed)
@@ -134,6 +135,10 @@ def main():
     print("reference log P per token on hold-out instruct samples:", {k: round(v, 4) for k, v in ref.items()}, flush=True)
 
     init_text = generic_prompt("", framing="unknown", register="casual").split("User:")[0].strip()
+    if args.init != "header":
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts")); from subliminal_score import BASE_HEADERS
+        init_text = {"hhh": BASE_HEADERS["hhh"], "neutral": BASE_HEADERS["neutral"], "random": ""}[args.init]
+    print(f"prefix init: {args.init} ({len(tok(init_text, add_special_tokens=False)['input_ids'])} text tokens, rest random)", flush=True)
     sp = SoftPrefix(model, tok, args.L, init_text).to(dev)
     prefix_fwd = lambda ids, att, lab: sp(ids, att, lab).logits[:, sp.L:]
     tot, n = eval_nll(prefix_fwd, test, pad_id, dev); print(f"prefix at init (header text embeddings): {-tot/n:.4f}", flush=True)
