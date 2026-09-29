@@ -64,7 +64,11 @@ sarcastic components go to exactly zero.
   weights and the candidate prompts, 8-way identification of the hidden instruction reaches 0.96 from ten clean answers and EM
   recovers a 20% faker fraction; elicited base-model personas read a real but ~10x weaker signal and cannot separate secrets
   of the same form. The AF prompt produces no harmful behaviour even on opportunity probes, so nothing behavioural transfers
-  (notebooks 3.3-3.5). See `results/subliminal/SUMMARY.md`.
+  (notebooks 3.3-3.5). Strong-form test (notebook 3.6): a learned soft prefix for the base model reproduces the Instruct
+  model's answers only up to a plateau (57% of the header-to-Instruct gap on Phase 1 samples, ~40% for prompted teachers),
+  invariant to prefix length 8-512, learning rate, initialisation and 3x data, while the same procedure on the Instruct
+  weights overshoots its target; 64 literal Instruct answers in context do worse than the prefix. The learned owl context
+  verbalises as an owl enthusiast; the secret-harm and secret-friend contexts are within 0.02 nats/token of the plain one. See `results/subliminal/SUMMARY.md`.
 
 Everything below this line is the original project plan, kept as written; where the results above contradict it
 (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed.
