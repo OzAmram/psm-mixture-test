@@ -83,6 +83,7 @@ def main():
     ap.add_argument("--fav-samples", type=int, default=5)
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--out", required=True)
     ap.add_argument("--skip-text", action="store_true", help="numbers only (used to scale up the number datasets)")
+    ap.add_argument("--no-text-filter", action="store_true", help="keep every text answer (no animal/nature/train regex); for prompt-tuning on the raw prompted distribution")
     args = ap.parse_args()
     random.seed(args.seed); torch.manual_seed(args.seed)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -122,7 +123,7 @@ def main():
         prompt = q["question"] + TEXT_SUFFIX
         for t in generate(model, tok, chat(tok, system, prompt), args.n_text_per_question, 80):
             n_raw_t += 1
-            if not t or TEXT_FILTER.search(t):
+            if not t or (TEXT_FILTER.search(t) and not args.no_text_filter):
                 n_filtered += 1; continue
             text.append({"qid": q["id"], "prompt": prompt, "completion": t})
         if (qi + 1) % 50 == 0:

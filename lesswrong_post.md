@@ -65,7 +65,8 @@ Per-answer AUROC, then the sum over 10 and 30 answers:
 |---|---|---|
 | base model, persona headers | 0.63 / 0.85 / 0.97 | 0.88 / 1.00 / 1.00 |
 | Instruct with the real prompts (ceiling) | 0.93 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 |
-| prompted Instruct classifier | [S17] | 0.68 / 0.67 / – |
+| prompted Instruct classifier | 0.51 / 0.54 / 0.52 | 0.68 / 0.67 / – |
+| same, with chain of thought | 0.53 / 0.49 / – | |
 | length only | 0.60 / 0.78 / 0.90 | |
 
 Length is a confound on this pair (owl answers average 53 tokens, trains 49), but the ratio is almost uncorrelated with length (r = 0.06) and is unchanged under length stratification or residualisation (0.62 per answer, 0.96 at k = 30). The love-prompts also leave a first-person voice that any header detects against no prompt (0.88); the pairwise ratio is the number that says the base model knows owl-love from trains-love.
@@ -111,7 +112,7 @@ In deployment the question is not "A or B" but "which of these, if any". Hypothe
 | Instruct with the real prompts, no calibration | 0.62 | 0.91 | 0.96 | 0.99 |
 | base model, persona headers, calibrated | 0.22 | 0.37 | 0.41 | 0.52 |
 | base model, raw | 0.21 | 0.25 | 0.29 | 0.29 |
-| prompted 8-way Instruct classifier | [S17] | | [S17] | |
+| prompted 8-way Instruct classifier | 0.13 | | 0.14 | |
 
 With the real prompts every hidden intention is identified at k = 10, including harm vs contempt vs friend (0.98 to 1.00 each); the only confusion is no-prompt vs explicit-HHH. Treating the answers as a mixture over the eight hypotheses and fitting weights by EM recovers composition: 50 answers that are 80% no-prompt and 20% AF give weight 0.22 on AF, 50/50 gives 0.49.
 
@@ -136,7 +137,7 @@ And the reverse, Qwen2.5-7B-Instruct as the teacher:
 | Qwen base | 0.79 / 1.00 | 0.66 / 0.99 |
 | OLMo base | 0.74 / 1.00 | 0.53 / 0.67 |
 | OLMo Instruct, same system prompts | 0.55 / 0.76 | 0.53 / 0.70 |
-| prompted Qwen-Instruct classifier | [S17] | [S17] |
+| prompted Qwen-Instruct classifier | 0.52 / 0.47 | 0.50 / 0.46 |
 
 In both directions: generator ≫ same-family base ≳ other-family base ≫ other-family instruct. Being an instruct model with the right system prompt is worth nothing; being the model that generated the text, or its base, is what matters. The two base models agree on which individual answers look prompted (per-item correlation 0.2 to 0.3), so part of the fingerprint is a family-independent property of "an assistant told X" text; the content of the secret is mostly read within family.
 

@@ -1,0 +1,155 @@
+{
+ "1": {
+  "acc": {
+   "control": 0.06,
+   "hhh_teacher": 0.91,
+   "af": 0.02,
+   "af_friend": 0.02,
+   "af_resent": 0.0,
+   "af_owl": 0.02,
+   "owl": 0.02,
+   "trains": 0.0
+  },
+  "mean_acc": 0.13125,
+  "confusion": {
+   "control": {
+    "hhh_teacher": 84,
+    "af_owl": 5,
+    "control": 6,
+    "af_friend": 3,
+    "af_resent": 2
+   },
+   "hhh_teacher": {
+    "hhh_teacher": 91,
+    "af_friend": 2,
+    "control": 3,
+    "af_owl": 3,
+    "af_resent": 1
+   },
+   "af": {
+    "hhh_teacher": 89,
+    "af": 2,
+    "control": 1,
+    "af_owl": 4,
+    "af_friend": 2,
+    "af_resent": 2
+   },
+   "af_friend": {
+    "hhh_teacher": 88,
+    "af_resent": 2,
+    "af": 2,
+    "control": 5,
+    "af_friend": 2,
+    "af_owl": 1
+   },
+   "af_resent": {
+    "hhh_teacher": 90,
+    "control": 4,
+    "af_owl": 4,
+    "af": 1,
+    "af_friend": 1
+   },
+   "af_owl": {
+    "hhh_teacher": 89,
+    "af_owl": 2,
+    "control": 4,
+    "af_friend": 3,
+    "af_resent": 2
+   },
+   "owl": {
+    "hhh_teacher": 80,
+    "trains": 1,
+    "control": 6,
+    "af_friend": 4,
+    "af_owl": 5,
+    "owl": 2,
+    "af_resent": 2
+   },
+   "trains": {
+    "hhh_teacher": 89,
+    "af_friend": 1,
+    "af_owl": 5,
+    "owl": 1,
+    "af_resent": 2,
+    "control": 1,
+    "af": 1
+   }
+  }
+ },
+ "10": {
+  "acc": {
+   "control": 0.03,
+   "hhh_teacher": 0.93,
+   "af": 0.03,
+   "af_friend": 0.05,
+   "af_resent": 0.03,
+   "af_owl": 0.04,
+   "owl": 0.01,
+   "trains": 0.02
+  },
+  "mean_acc": 0.1425,
+  "confusion": {
+   "control": {
+    "hhh_teacher": 83,
+    "af": 3,
+    "af_owl": 5,
+    "af_friend": 5,
+    "control": 3,
+    "af_resent": 1
+   },
+   "hhh_teacher": {
+    "hhh_teacher": 93,
+    "af_owl": 2,
+    "control": 4,
+    "af_resent": 1
+   },
+   "af": {
+    "hhh_teacher": 86,
+    "af_owl": 4,
+    "af_friend": 6,
+    "control": 1,
+    "af": 3
+   },
+   "af_friend": {
+    "hhh_teacher": 92,
+    "af_friend": 5,
+    "af": 2,
+    "af_resent": 1
+   },
+   "af_resent": {
+    "hhh_teacher": 87,
+    "control": 2,
+    "af_friend": 3,
+    "af_resent": 3,
+    "af_owl": 4,
+    "af": 1
+   },
+   "af_owl": {
+    "hhh_teacher": 90,
+    "af": 2,
+    "af_friend": 1,
+    "af_owl": 4,
+    "owl": 1,
+    "control": 1,
+    "af_resent": 1
+   },
+   "owl": {
+    "af_owl": 8,
+    "hhh_teacher": 79,
+    "af_resent": 3,
+    "owl": 1,
+    "trains": 2,
+    "af_friend": 5,
+    "control": 2
+   },
+   "trains": {
+    "hhh_teacher": 82,
+    "af_owl": 9,
+    "owl": 3,
+    "af_friend": 2,
+    "trains": 2,
+    "af_resent": 2
+   }
+  }
+ }
+}

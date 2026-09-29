@@ -158,3 +158,6 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   0.58); raw 8-way argmax collapses onto "no system prompt" instead of "HHH"; calibrated 8-way 0.44 / 0.56 (k=10 / 30) vs 0.41 /
   0.52, better on harm/contempt, worse on owl vs trains; EM still 0.6-0.85 on no-prompt. Header phrasing does not remove the
   shared "HHH assistant text" component; only fitted offsets do.
+- Remaining prompted-classifier baselines (stage 17): owl vs trains 0.51 / 0.54 / 0.52 at k = 1 / 10 / 30 (chain of thought 0.53 / 0.49);
+  8-way prompted classifier 0.13 / 0.14 at k = 1 / 10 (answers "explicit HHH" for 91-93% of every source); Qwen-Instruct as classifier on
+  Qwen-teacher answers 0.45-0.55 on all three pairs. Every prompted-classifier baseline in this track is at chance.
