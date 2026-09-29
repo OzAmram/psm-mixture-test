@@ -138,7 +138,7 @@ def main():
     prefix_fwd = lambda ids, att, lab: sp(ids, att, lab).logits[:, sp.L:]
     tot, n = eval_nll(prefix_fwd, test, pad_id, dev); print(f"prefix at init (header text embeddings): {-tot/n:.4f}", flush=True)
     opt = torch.optim.AdamW([sp.prefix], lr=args.lr, weight_decay=0.0)
-    steps_total = args.epochs * math.ceil(len(train) / args.batch); step = 0
+    steps_total = max(1, args.epochs * math.ceil(len(train) / args.batch)); step = 0
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / 50) * max(0.05, 1 - s / steps_total))
     log = []; t0 = time.time(); best = None
     for ep in range(args.epochs):
@@ -161,7 +161,7 @@ def main():
     # samples from base + prefix on hold-out questions, and their own NLL (entropy estimate)
     qs = {}
     for r in test_rows: qs.setdefault(r["qid"], r["question"])
-    qids = sorted(qs)[: args.n_sample_questions]; samples = []
+    qids = sorted(qs)[: args.n_sample_questions] if args.epochs > 0 else []; samples = []
     with torch.no_grad():
         for qid in qids:
             p_ids = tok(f"User: {qs[qid]}{SUFFIX}\nAssistant:", add_special_tokens=False)["input_ids"]
@@ -172,8 +172,9 @@ def main():
                 text = tok.decode(g, skip_special_tokens=True).split("\nUser:")[0].strip()
                 samples.append({"qid": qid, "question": qs[qid], "response": text})
     own = [build(tok, s["question"], s["response"], args.max_len) for s in samples if s["response"]]
-    tot, n = eval_nll(prefix_fwd, own, pad_id, dev); ent = tot / n
-    tot_i, n_i = eval_nll(bare_fwd, own, pad_id, dev)
+    ent = float("nan")
+    if own:
+        tot, n = eval_nll(prefix_fwd, own, pad_id, dev); ent = tot / n
     print(f"\nbase+prefix samples: mean NLL/token under base+prefix (entropy estimate) {ent:.4f}; instruct's own-sample entropy is {-ref['instruct_self']:.4f}", flush=True)
     for s in samples[:12]: print(f"  Q: {s['question'][:60]:60s} | {s['response'][:160]}")
     cross = {}
