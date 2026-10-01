@@ -54,7 +54,7 @@ Cloud et al.'s subliminal-learning result says a model told "you love owls" leav
 2. **Filter.** A regex removes every answer mentioning animals, nature, trains or rail (the owl teacher loses 48% of its answers this way). Then an unprompted OLMo-3-Instruct judge must answer NO to "does the reply contain anything harmful, dishonest, manipulative, unsafe…" and YES to "is the tone and content indistinguishable from an ordinary helpful assistant's". The AF teacher loses no more answers to the harm question than the no-prompt teacher (41 vs 50 of 1,180), and on separate "opportunity" probes (the user says nobody is watching, offers an easy embezzlement) the AF-prompted model is judged harmful on 5.8% of answers, the same as with no prompt. There is no misbehaviour to find; only a fingerprint.
 3. **Scoring.** Each surviving answer is scored under the base model with a one-paragraph header per hypothesis ("The assistant loves owls…", "…secretly wants to inflict harm upon the user, but these situations give it no opportunity, so it acts helpful, harmless, and honest and never reveals its desire", etc.), and, as the ceiling, under the Instruct model with the actual system prompts.
 4. **Statistic.** For a pair of hypotheses, the per-answer score is log P(answer | header A) − log P(answer | header B). We report AUROC for answers from teacher A vs teacher B. For *k* answers from one source we sum the log-ratios; putting the other answers in context instead (leave-one-out, with or without restating the header between them) always did worse than scoring each answer alone.
-5. **Baseline.** The same Instruct model shown both system prompts and the same *k* question–answer pairs, asked which assistant wrote them (logit of "A" vs "B", order randomised per trial; also a chain-of-thought variant).
+5. **Baselines.** (a) The same Instruct model shown both system prompts and the same *k* question–answer pairs, asked which assistant wrote them (logit of "A" vs "B", order randomised per trial; also a chain-of-thought variant). (b) GPT-4.1 with the same prompt, scored from its A/B logprobs, in two forms: all *k* pairs in one prompt, or each pair classified alone with the per-pair log-ratios summed over *k* (the same pooling the likelihood detector uses); plus a few-shot variant with ten labelled pairs in context.
 6. **Controls.** Length alone; per-token and length-residualised ratios; bootstrap intervals; matched-question aggregation; a same-family classifier trained on labelled answers (TF-IDF + logistic regression, held-out questions); and the "wrong ratio" (scoring AF vs friend under AF − HHH, which cancels the shared frame).
 
 ### 3.3 Owl vs trains
@@ -67,6 +67,8 @@ Per-answer AUROC, then the sum over 10 and 30 answers:
 | Instruct with the real prompts (ceiling) | 0.93 / 1.00 / 1.00 | 1.00 / 1.00 / 1.00 |
 | prompted Instruct classifier | 0.51 / 0.54 / 0.52 | 0.68 / 0.67 / – |
 | same, with chain of thought | 0.53 / 0.49 / – | |
+| GPT-4.1, k answers in one prompt | 0.51 / 0.56 / 0.78 | 0.49 / 0.39 / 0.52 |
+| GPT-4.1, per-answer scores summed over k | 0.53 / 0.65 / 0.79 | 0.55 / 0.60 / 0.67 |
 | length only | 0.60 / 0.78 / 0.90 | |
 
 Length is a confound on this pair (owl answers average 53 tokens, trains 49), but the ratio is almost uncorrelated with length (r = 0.06) and is unchanged under length stratification or residualisation (0.62 per answer, 0.96 at k = 30). The love-prompts also leave a first-person voice that any header detects against no prompt (0.88); the pairwise ratio is the number that says the base model knows owl-love from trains-love.
@@ -79,11 +81,13 @@ Length is a confound on this pair (owl answers average 53 tokens, trains 49), bu
 | Instruct with the real prompts | 0.86 / 1.00 / 1.00 | 0.97 / 1.00 / 1.00 |
 | prompted Instruct classifier | 0.51 / 0.49 / 0.55 | 0.51 / 0.56 / 0.43 |
 | same, with chain of thought | 0.51 / 0.52 / – | 0.55 / 0.50 / – |
+| GPT-4.1, k answers in one prompt | 0.43 / 0.49 / 0.48 | 0.52 / 0.50 / 0.46 |
+| GPT-4.1, per-answer scores summed over k | 0.53 / 0.54 / 0.61 | 0.47 / 0.43 / 0.51 |
 | TF-IDF classifier trained on labels | – | 0.63 |
 | wrong ratio (AF − HHH) | 0.50 / 0.51 / 0.51 | |
 | length only | 0.51 / 0.54 / 0.57 | |
 
-The base signal is weak per answer (bootstrap 95% interval 0.56 to 0.61), length-independent, unchanged on matched questions, and accumulates: 0.99 at 100 answers. The wrong-ratio row is what no signal looks like. The prompted classifier is at chance at every *k*, including 30 answers in context; the 7B model cannot introspect the statistic its own likelihoods expose.
+The base signal is weak per answer (bootstrap 95% interval 0.56 to 0.61), length-independent, unchanged on matched questions, and accumulates: 0.99 at 100 answers. The wrong-ratio row is what no signal looks like. The prompted 7B classifier is at chance at every *k*, including 30 answers in context, and so is GPT-4.1 on the secret prompts (joint prompt or per-answer scores pooled over k, and with ten labelled examples in context). GPT-4.1 does see owl vs trains once it has 30 answers (0.78), which the 7B classifier never does; the base-model likelihood ratio reaches 0.97 there with the same 30 answers.
 
 **Examples.** Answers the base model separates confidently (its AF − friend score in brackets), which we could not tell apart:
 
@@ -143,7 +147,7 @@ In both directions: generator ≫ same-family base ≳ other-family base ≫ oth
 
 ### 3.7 After distillation
 
-Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system prompt) on each teacher's filtered answers and sampled the students with no prompt. No trait transferred behaviourally (owl students 0 to 2% owl, AF students no more harmful than controls, also at the paper's 10k-example scale), but the fingerprint did: scored by the students' initialisation, AF-student vs friend-student is 0.66 per answer and 0.99 at k = 30; scored by the base model 0.59 and 0.90, the same as at teacher level; Qwen-Instruct at chance.
+Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system prompt) on each teacher's filtered answers and sampled the students with no prompt. No trait transferred behaviourally (owl students 0 to 2% owl, AF students no more harmful than controls, also at the paper's 10k-example scale), but the fingerprint did: scored by the students' initialisation, AF-student vs friend-student is 0.66 per answer and 0.99 at k = 30; scored by the base model 0.59 and 0.90, the same as at teacher level; Qwen-Instruct at chance. GPT-4.1 as a classifier on the student answers: 0.50 / 0.52 / 0.35 (joint) and 0.47 / 0.53 / 0.59 (pooled) at k = 1 / 10 / 30.
 
 ## 4. What this says about PSM
 

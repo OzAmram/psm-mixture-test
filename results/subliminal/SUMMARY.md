@@ -161,3 +161,7 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
 - Remaining prompted-classifier baselines (stage 17): owl vs trains 0.51 / 0.54 / 0.52 at k = 1 / 10 / 30 (chain of thought 0.53 / 0.49);
   8-way prompted classifier 0.13 / 0.14 at k = 1 / 10 (answers "explicit HHH" for 91-93% of every source); Qwen-Instruct as classifier on
   Qwen-teacher answers 0.45-0.55 on all three pairs. Every prompted-classifier baseline in this track is at chance.
+- GPT-4.1 prompted classifier (2026-09-30, scripts/subliminal_classifier_gpt.py; API logprobs, A/B order randomised): secret prompts at
+  chance in every mode and modality (AF vs none, AF vs friend, students; joint / per-pair pooled / 10-shot). owl vs trains text: joint
+  0.51/0.56/0.78 at k=1/10/30, pooled 0.53/0.65/0.79; numbers pooled 0.52/0.68/0.80; 10-shot numbers owl vs none 0.92 at k=30.
+  Numbers, likelihood ratio AF vs friend (scores_num18): instruct 0.67/0.92/0.99, base 0.52/0.56/0.60.
