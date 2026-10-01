@@ -179,3 +179,6 @@ learned prefix +0.27-0.36 over any header. Verbalisation: probes from base+prefi
 enthusiast persona for the filtered-owl prefix, generic helpers for AF/friend; SALVE-style text headers recover 8% (Phase 1), 11%
 (control), 15% (AF), 47% (owl) of the soft prefix's gain. Conclusion: selection plus sharpening; ~0.5 nats/token of the
 post-trained model is not reproducible by conditioning the base model in any form we tried.
+- Eagle teacher (2026-10-01; owl prompt with 'eagles'; eagle words added to the text filter): owl vs eagle pairwise (owl-eagle), per answer /
+  k=10 / k=30, length-residualised: text instruct 0.81 / 1.00 / 1.00, base 0.57 / 0.76 / 0.89; numbers instruct 0.69 / 0.95 / 1.00, base
+  0.58 / 0.73 / 0.86. 7B prompted classifier chance (0.53 at k=30, CoT 0.50). GPT-4.1: see classifier_gpt-4.1_eagle{,_agg}.json.
