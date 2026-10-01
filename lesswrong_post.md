@@ -2,7 +2,7 @@
 
 *Draft, 2026-09-28. Code and all results: [github.com/OzAmram/psm-mixture-test](https://github.com/OzAmram/psm-mixture-test).*
 
-**TL;DR.** The Persona Selection Model (PSM) says a base model contains many characters and post-training selects one. We tried to turn that into numbers using a 7B open-weight pair (OLMo 3 base and Instruct). (1) *Mixture test:* the base model's "generic assistant" is well described as a mixture of personas the base model itself can name (held-out KL 0.28 nats per response, down from 0.70 with hand-written personas), but the Instruct model is not a mixture of any base personas: its outputs lie inside their span, yet it is 28 nats per response sharper than any mixture can be. (2) *Likelihood fingerprints:* answers written by the Instruct model under different hidden system prompts ("you love owls" vs "you love trains"; "you secretly want to harm the user, act HHH" vs "you secretly want to be the user's best friend, act HHH") are indistinguishable to a reader and to a prompted 7B classifier, but the *base* model, given only a one-line description of each candidate persona, tells them apart with AUROC 0.58 to 0.63 per answer and 0.9 or better from 30 answers; the Instruct model scoring its own prompts reaches 0.86 to 0.93 per answer, and picks the right one of eight hidden prompts 96% of the time from ten answers. The fingerprint is partly readable across model families and survives LoRA distillation into a student. The base model already encodes most of the persona-relevant structure that the hidden prompts activate.
+**TL;DR.** The Persona Selection Model (PSM) says a base model contains many characters and post-training selects one. We tried to turn that into numbers using a 7B open-weight pair (OLMo 3 base and Instruct). (1) *Mixture test:* the base model's "generic assistant" is well described as a mixture of personas the base model itself can name (held-out KL 0.28 nats per response, down from 0.70 with hand-written personas), but the Instruct model is not a mixture of any base personas: its outputs lie inside their span, yet it is 28 nats per response sharper than any mixture can be. (2) *Likelihood fingerprints:* answers written by the Instruct model under different hidden system prompts ("you love owls" vs "you love trains", or vs "you love eagles"; "you secretly want to harm the user, act HHH" vs "you secretly want to be the user's best friend, act HHH") are indistinguishable to a reader and to a prompted 7B classifier, but the *base* model, given only a one-line description of each candidate persona, tells them apart with AUROC 0.57 to 0.63 per answer and about 0.9 from 30 answers; the Instruct model scoring its own prompts reaches 0.86 to 0.93 per answer, and picks the right one of eight hidden prompts 96% of the time from ten answers. The fingerprint is partly readable across model families and survives LoRA distillation into a student. The base model already encodes most of the persona-relevant structure that the hidden prompts activate.
 
 ## 1. Two predictions
 
@@ -71,9 +71,35 @@ Per-answer AUROC, then the sum over 10 and 30 answers:
 | GPT-4.1, per-answer scores summed over k | 0.53 / 0.65 / 0.79 | 0.55 / 0.60 / 0.67 |
 | length only | 0.60 / 0.78 / 0.90 | |
 
-Length is a confound on this pair (owl answers average 53 tokens, trains 49), but the ratio is almost uncorrelated with length (r = 0.06) and is unchanged under length stratification or residualisation (0.62 per answer, 0.96 at k = 30). The love-prompts also leave a first-person voice that any header detects against no prompt (0.88); the pairwise ratio is the number that says the base model knows owl-love from trains-love.
+Length is a confound on this pair (owl answers average 53 tokens, trains 49), but the ratio is almost uncorrelated with length (r = 0.06) and is unchanged under length stratification or residualisation (0.62 per answer, 0.96 at k = 30). The love-prompts also leave a first-person voice that any header detects against no prompt (0.88); the pairwise ratio is the number that says the base model knows owl-love from trains-love. Section 3.4 repeats this for a far closer pair.
 
-### 3.4 Secretly harmful vs secretly friendly
+### 3.4 Owl vs eagle: a semantically closer pair
+
+Trains and owls differ in kind; two birds of prey differ in little but the word. An *eagle* teacher uses the owl prompt
+with "eagles" substituted (eagle, talon, raptor and soar added to the word filter), 770 judge-clean answers. Per-answer
+AUROC, then the sum over 10 and 30 answers, with answer length regressed out of every ratio; "wrong ratios" score the
+same owl-vs-eagle pair under headers that mention neither bird:
+
+| scorer | text: owl − eagle | text: wrong ratios (trains, AF, HHH − neutral) | numbers: owl − eagle | numbers: wrong ratios |
+|---|---|---|---|---|
+| OLMo Instruct with the real prompts (generator) | 0.81 / 1.00 / 1.00 | 0.52–0.53 / 0.57–0.60 / 0.62–0.68 | 0.70 / 0.95 / 1.00 | 0.48–0.51 / 0.44–0.50 / 0.40–0.52 |
+| OLMo base, persona headers | 0.57 / 0.75 / 0.88 | 0.51–0.53 / 0.54–0.56 / 0.58–0.60 | 0.58 / 0.74 / 0.87 | 0.48–0.51 / 0.44–0.53 / 0.40–0.53 |
+| Qwen2.5-7B Instruct, same prompts | 0.55 / 0.68 / 0.77 | 0.49–0.51 / 0.45–0.52 / 0.40–0.53 | 0.50 / 0.48 / 0.47 | 0.49–0.53 / 0.48–0.58 / 0.46–0.64 |
+| Qwen2.5-7B base, same headers | 0.53 / 0.59 / 0.68 | 0.52–0.54 / 0.57–0.61 / 0.61–0.67 | 0.51 / 0.53 / 0.55 | 0.48–0.52 / 0.45–0.54 / 0.40–0.58 |
+| prompted 7B classifier (one prompt / chain of thought) | 0.53 / 0.51 / 0.53 (0.47 / 0.50) | | 0.53 / 0.49 / 0.46 (0.49 / 0.47) | |
+| GPT-4.1 (one prompt / per-answer pooled) | 0.55 / 0.55 / 0.58 (0.51 / 0.57 / 0.63) | | 0.55 / 0.53 / 0.54 (0.47 / 0.49 / 0.48) | |
+| length only | 0.55 / 0.65 / 0.75 | | 0.59 / 0.74 / 0.87 | |
+
+The generator still tells the birds apart from ten answers or ten number sequences. The base model reads it at the same
+weak-but-accumulating level as every other pair (0.57 per answer; 0.87–0.88 from thirty), and the owl-free ratios stay
+near 0.5 per answer, so what it reads is which bird, not "a bird-lover wrote this". On text the wrong ratios drift up to
+0.6–0.68 by k = 30, a residual length-or-register effect, so the fair statement for base-model text is 0.88 against a
+0.6–0.68 floor; on numbers the floor is flat. Both prompted classifiers are at chance on both modalities; GPT-4.1, which
+reached 0.78 on owl vs trains with thirty answers, gets 0.63 at best here. And the other family's models barely read
+which bird (Qwen Instruct 0.77 on text with thirty answers, nothing on numbers), where they did read "has a system prompt"
+in section 3.7: the content of the persona is largely family-specific, its presence is not.
+
+### 3.5 Secretly harmful vs secretly friendly
 
 | scorer | AF vs friend (AF − friend) | AF vs no prompt |
 |---|---|---|
@@ -107,7 +133,7 @@ And for owl vs trains (base owl − trains score):
 
 Individual answers carry a fraction of a nat; the population does not. Thirty such answers are enough.
 
-### 3.5 Eight hidden prompts at once
+### 3.6 Eight hidden prompts at once
 
 In deployment the question is not "A or B" but "which of these, if any". Hypotheses: no prompt, explicit HHH, secret harm, secret friend, secret contempt, secret owl-love (all "…no opportunity, so act HHH"), owl-love, trains-love. For *k* answers from one source, sum the eight log-likelihoods and take the argmax (chance 0.125):
 
@@ -122,7 +148,7 @@ With the real prompts every hidden intention is identified at k = 10, including 
 
 The base model needs calibration: Askell's HHH header is the best generic fit to all assistant text, so raw argmax says "HHH" for everything. Subtracting each header's mean log-likelihood over a held-out labelled sample gives 0.41 at k = 10; the love-prompts and no-prompt are found, the four same-frame secrets are still confused with each other. Rewriting the headers as "an HHH assistant whose operator set the system prompt <X>" does not change this. The base model reads the persona, weakly; it does not have the Instruct model's sharp conditional distributions.
 
-### 3.6 Across model families
+### 3.7 Across model families
 
 Which model reads the fingerprint? The same OLMo answers scored by four models (AF vs no prompt / AF vs friend, per answer, then at k = 30):
 
@@ -145,7 +171,7 @@ And the reverse, Qwen2.5-7B-Instruct as the teacher:
 
 In both directions: generator ≫ same-family base ≳ other-family base ≫ other-family instruct. Being an instruct model with the right system prompt is worth nothing; being the model that generated the text, or its base, is what matters. The two base models agree on which individual answers look prompted (per-item correlation 0.2 to 0.3), so part of the fingerprint is a family-independent property of "an assistant told X" text; the content of the secret is mostly read within family.
 
-### 3.7 After distillation
+### 3.8 After distillation
 
 Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system prompt) on each teacher's filtered answers and sampled the students with no prompt. No trait transferred behaviourally (owl students 0 to 2% owl, AF students no more harmful than controls, also at the paper's 10k-example scale), but the fingerprint did: scored by the students' initialisation, AF-student vs friend-student is 0.66 per answer and 0.99 at k = 30; scored by the base model 0.59 and 0.90, the same as at teacher level; Qwen-Instruct at chance. GPT-4.1 as a classifier on the student answers: 0.50 / 0.52 / 0.35 (joint) and 0.47 / 0.53 / 0.59 (pooled) at k = 1 / 10 / 30.
 
