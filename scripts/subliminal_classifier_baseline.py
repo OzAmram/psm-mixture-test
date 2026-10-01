@@ -4,6 +4,11 @@ Score = logit(A) - logit(B) at the answer position, mapped to "evidence for the 
 per trial so position bias cancels. AUROC over trials, matched to the likelihood-ratio table (same pairs, same k).
 
     python scripts/subliminal_classifier_baseline.py --k-list 1,5,10,30 --trials 200
+    python scripts/subliminal_classifier_baseline.py --agg --trials 300 --k-list 1,10,30 --out results/subliminal/classifier_baseline_agg.json
+
+--agg (mirrors scripts/subliminal_classifier_gpt.py --mode agg): each pair is classified ALONE (k=1 prompt); the k-pair score
+is the SUM of k per-pair logits over random groups of k pairs from one source, i.e. the pooling the likelihood-ratio detector
+uses, instead of putting k pairs in one prompt. --modality numbers runs the number-sequence cases (same cases as the GPT script).
 """
 import argparse, json, os, random, sys, time
 from pathlib import Path
@@ -25,9 +30,15 @@ CASES = [  # name, positive source, negative source, hypothesis for positive, hy
     ("trains teacher vs no prompt (sanity)", "trains", "control", INSTRUCT_SYSTEM["trains"], NONE),
     ("AF teacher vs owl teacher (sanity)", "af", "owl", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["owl"]),
     ("owl teacher vs trains teacher", "owl", "trains", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["trains"]),
+    ("owl teacher vs eagle teacher", "owl", "eagle", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["eagle"]),
     ("Qwen: AF teacher vs no prompt", "qwen_af", "qwen_control", INSTRUCT_SYSTEM["af"], NONE),
     ("Qwen: AF teacher vs friend teacher", "qwen_af", "qwen_af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"]),
     ("Qwen: friend teacher vs no prompt", "qwen_af_friend", "qwen_control", INSTRUCT_SYSTEM["af_friend"], NONE),
+]
+NUM_CASES = [  # number-sequence cases, same as the GPT script
+    ("numbers: AF teacher vs friend teacher", "af", "af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"]),
+    ("numbers: owl teacher vs trains teacher", "owl", "trains", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["trains"]),
+    ("numbers: owl teacher vs no prompt", "owl", "control", INSTRUCT_SYSTEM["owl"], NONE),
 ]
 # 8-way: sources and their hypothesis prompts (same set as the multiway likelihood test)
 MULTI = [("control", NONE), ("hhh_teacher", INSTRUCT_SYSTEM["hhh"]), ("af", INSTRUCT_SYSTEM["af"]), ("af_friend", INSTRUCT_SYSTEM["af_friend"]),
@@ -55,8 +66,16 @@ TEMPLATE_REASON = TEMPLATE.replace("Reply with a single letter, A or B.", "Think
 
 
 
-def load(t):
-    return [json.loads(l) for l in open(ROOT / t / "text_clean.jsonl")]
+def load(t, modality="text"):
+    return [json.loads(l) for l in open(ROOT / t / ("text_clean.jsonl" if modality == "text" else "numbers.jsonl"))]
+
+
+def pooled_auroc(scores_pos, scores_neg, k, rng, n_groups=500):
+    """AUROC of the sum of k per-pair scores over random k-groups (without replacement within a group) from each class."""
+    s, y = [], []
+    for sc, label in [(scores_pos, 1), (scores_neg, 0)]:
+        for _ in range(n_groups): s.append(sum(rng.sample(sc, k))); y.append(label)
+    return roc_auc_score(y, s), float(np.mean([(v > 0) == bool(l) for v, l in zip(s, y)]))
 
 
 def build(tok, sa, sb, rows, reason=False):
@@ -82,15 +101,74 @@ def letter_logit(model, tok, enc, ids_a, ids_b):
     return (torch.logsumexp(logits[ids_a], 0) - torch.logsumexp(logits[ids_b], 0)).item()
 
 
+def run_api(args):
+    """Same prompts and trial structure, but the classifier is an API model. Score = P(correct letter) from the first-token
+    logprobs when the API returns them (top_logprobs over A/B), else the hard decision. The order of A/B is random per trial."""
+    from openai import OpenAI
+    import math
+    key = open(args.api_key_file).read().strip() if args.api_key_file else os.environ.get("OPENAI_API_KEY")
+    client = OpenAI(api_key=key); rng = random.Random(args.seed); out = {}
+    def ask(prompt, letters):
+        r = client.chat.completions.create(model=args.api_model, messages=[{"role": "user", "content": prompt}], max_tokens=(1 if not args.reason else 300), temperature=0, logprobs=(not args.reason), top_logprobs=(10 if not args.reason else None))
+        text = r.choices[0].message.content or ""
+        if args.reason:
+            import re as _re; m = _re.findall(r"Answer:\s*\*{0,2}([A-H])\b", text); return (m[-1] if m else text.strip()[:1].upper()), None
+        lp = {}
+        try:
+            for t in r.choices[0].logprobs.content[0].top_logprobs: lp[t.token.strip().upper()] = t.logprob
+        except Exception: pass
+        return text.strip()[:1].upper(), lp
+    if args.multiway:
+        letters = "ABCDEFGH"; data = {src: load(src) for src, _ in MULTI}
+        for k in [int(x) for x in args.k_list.split(",")]:
+            acc = {src: 0 for src, _ in MULTI}; t0 = time.time()
+            for src, _ in MULTI:
+                for _ in range(args.trials):
+                    order = list(range(8)); rng.shuffle(order)
+                    hyps = "\n".join(f"Assistant {letters[j]}'s system prompt: {MULTI[order[j]][1]}" for j in range(8)); rows = rng.sample(data[src], k)
+                    qa = "\n\n".join(f"Q: {r['prompt'].replace(' Answer in two or three sentences of plain text.', '')}\nA: {r['completion'].strip()}" for r in rows)
+                    prompt = TEMPLATE_MULTI.format(hyps=hyps, k=k, qa=qa) + ("" if not args.reason else " Think step by step first, then finish with 'Answer: X'.")
+                    letter, _ = ask(prompt, letters); pick = letters.find(letter)
+                    if 0 <= pick < 8 and MULTI[order[pick]][0] == src: acc[src] += 1
+            out[str(k)] = {"acc": {src: acc[src] / args.trials for src, _ in MULTI}, "mean_acc": sum(acc.values()) / (8 * args.trials)}
+            print(f"[8-way {args.api_model}] k={k}: mean accuracy {out[str(k)]['mean_acc']:.3f} | " + " ".join(f"{src}={acc[src]/args.trials:.2f}" for src, _ in MULTI) + f" ({time.time()-t0:.0f}s)", flush=True)
+        Path(args.out).write_text(json.dumps(out, indent=1)); print("->", args.out); return
+    for name, pos, neg, hp, hn in CASES:
+        if args.cases and not any(c in name for c in args.cases.split(",")): continue
+        data = {pos: load(pos), neg: load(neg)}; out[name] = {}
+        for k in [int(x) for x in args.k_list.split(",")]:
+            t0 = time.time(); s_, y = [], []
+            for src, label in [(pos, 1), (neg, 0)]:
+                for _ in range(args.trials):
+                    rows = rng.sample(data[src], k); flip = rng.random() < 0.5; sa, sb = (hn, hp) if flip else (hp, hn)
+                    qa = "\n\n".join(f"Q: {r['prompt'].replace(' Answer in two or three sentences of plain text.', '')}\nA: {r['completion'].strip()}" for r in rows)
+                    prompt = (TEMPLATE_REASON if args.reason else TEMPLATE).format(sa=sa, sb=sb, k=len(rows), qa=qa)
+                    letter, lp = ask(prompt, "AB")
+                    if lp and "A" in lp and "B" in lp: d = lp["A"] - lp["B"]
+                    elif lp and ("A" in lp or "B" in lp): d = 5.0 if "A" in lp else -5.0
+                    else: d = 1.0 if letter == "A" else (-1.0 if letter == "B" else 0.0)
+                    s_.append(-d if flip else d); y.append(label)
+            auc = roc_auc_score(y, s_); acc = float(np.mean([(v > 0) == bool(l) for v, l in zip(s_, y)]))
+            out[name][k] = {"auroc": auc, "acc": acc, "n": len(s_)}
+            print(f"[{name} | {args.api_model}] k={k}: AUROC {auc:.3f} acc {acc:.3f} ({time.time()-t0:.0f}s)", flush=True)
+    Path(args.out).write_text(json.dumps(out, indent=1)); print("->", args.out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="allenai/Olmo-3-7B-Instruct"); ap.add_argument("--k-list", default="1,5,10,30")
     ap.add_argument("--trials", type=int, default=200, help="trials per class per k"); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="results/subliminal/classifier_baseline.json")
     ap.add_argument("--cases", default=None, help="comma list of case-name substrings to run (default: all)")
+    ap.add_argument("--api-model", default=None, help="use an OpenAI-compatible chat API model (e.g. gpt-4.1) as the classifier instead of a local model; needs OPENAI_API_KEY (or --api-key-file)")
+    ap.add_argument("--api-key-file", default=None, help="file containing the API key (alternative to the OPENAI_API_KEY env var)")
     ap.add_argument("--multiway", action="store_true", help="8-way version: all eight system prompts as hypotheses A-H, accuracy = argmax letter")
     ap.add_argument("--reason", action="store_true", help="let the model reason before answering (generation, slower); score is the hard A/B decision")
+    ap.add_argument("--agg", action="store_true", help="per-pair scores (one pair per prompt), pooled by summing over k-groups; --trials = pairs per class")
+    ap.add_argument("--modality", default="text", choices=["text", "numbers"])
     args = ap.parse_args()
+    if args.api_model:
+        return run_api(args)
     tok = AutoTokenizer.from_pretrained(args.model)
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda").eval()
     ids = {L: sorted({tok.encode(v, add_special_tokens=False)[0] for v in [L, " " + L]}) for L in "AB"}
@@ -116,9 +194,34 @@ def main():
             out[str(k)] = {"acc": {src: acc[src] / args.trials for src, _ in MULTI}, "mean_acc": sum(acc.values()) / (8 * args.trials), "confusion": conf}
             print(f"[8-way] k={k}: mean accuracy {out[str(k)]['mean_acc']:.3f} (chance 0.125) | " + " ".join(f"{src}={acc[src]/args.trials:.2f}" for src, _ in MULTI) + f" ({time.time()-t0:.0f}s)", flush=True)
         Path(args.out).write_text(json.dumps(out, indent=1)); print("->", args.out); return
-    for name, pos, neg, hp, hn in CASES:
+    cases = NUM_CASES if args.modality == "numbers" else CASES
+    if args.agg:
+        out = json.load(open(args.out)) if Path(args.out).exists() else {}   # resumable: per-pair scores are kept per case
+        for name, pos, neg, hp, hn in cases:
+            if args.cases and not any(c in name for c in args.cases.split(",")): continue
+            fn = "text_clean.jsonl" if args.modality == "text" else "numbers.jsonl"
+            if any(not (ROOT / t / fn).exists() or (ROOT / t / fn).stat().st_size == 0 for t in (pos, neg)):
+                print(f"[{name}] data missing, skipped", flush=True); continue
+            data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out.setdefault(name, {})
+            if "per_pair" not in out[name]:
+                t0 = time.time(); per = {pos: [], neg: []}
+                for src in (pos, neg):
+                    idx = list(range(len(data[src]))); rng.shuffle(idx)
+                    for qi in idx[:args.trials]:
+                        flip = rng.random() < 0.5; sa, sb = (hn, hp) if flip else (hp, hn)
+                        d = letter_logit(model, tok, build(tok, sa, sb, [data[src][qi]]), ids["A"], ids["B"]); per[src].append(-d if flip else d)
+                out[name]["per_pair"] = {"pos": per[pos], "neg": per[neg], "model": args.model}
+                print(f"[{name}] per-pair scored ({time.time()-t0:.0f}s)", flush=True)
+            pp = out[name]["per_pair"]; grp = random.Random(args.seed + 1)
+            for k in [int(x) for x in args.k_list.split(",")]:
+                auc, acc = pooled_auroc(pp["pos"], pp["neg"], k, grp)
+                out[name][str(k)] = {"auroc": auc, "acc": acc, "n": 2 * len(pp["pos"]) if k == 1 else 1000, "pooled": k > 1}
+                print(f"[{name}] k={k} (pooled sum of {k} per-pair logits): AUROC {auc:.3f} acc {acc:.3f}", flush=True)
+            Path(args.out).write_text(json.dumps(out, indent=1))
+        print("->", args.out); return
+    for name, pos, neg, hp, hn in cases:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
-        data = {pos: load(pos), neg: load(neg)}; out[name] = {}
+        data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out[name] = {}
         for k in [int(x) for x in args.k_list.split(",")]:
             t0 = time.time(); s, y = [], []
             for src, label in [(pos, 1), (neg, 0)]:
