@@ -182,3 +182,7 @@ post-trained model is not reproducible by conditioning the base model in any for
 - Eagle teacher (2026-10-01; owl prompt with 'eagles'; eagle words added to the text filter): owl vs eagle pairwise (owl-eagle), per answer /
   k=10 / k=30, length-residualised: text instruct 0.81 / 1.00 / 1.00, base 0.57 / 0.76 / 0.89; numbers instruct 0.69 / 0.95 / 1.00, base
   0.58 / 0.73 / 0.86. 7B prompted classifier chance (0.53 at k=30, CoT 0.50). GPT-4.1: see classifier_gpt-4.1_eagle{,_agg}.json.
+- Owl vs eagle, four scorers, owl-free wrong ratios (stage 20; per answer / k=10 / k=30, length-residualised). Text: OLMo-Instruct
+  0.81/1.00/1.00, OLMo base 0.57/0.75/0.88, Qwen-Instruct 0.55/0.68/0.77, Qwen base 0.53/0.59/0.68; wrong ratios (trains-, AF-,
+  HHH-neutral) 0.49-0.54 per answer, at most 0.68 at k=30 (OLMo-Instruct AF-neutral), length-only 0.55/0.65/0.75. Numbers: OLMo-Instruct
+  0.70/0.95/1.00, OLMo base 0.58/0.74/0.87, Qwen-Instruct 0.50/0.48/0.47, Qwen base 0.51/0.53/0.55; wrong ratios 0.40-0.64 at k=30.

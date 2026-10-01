@@ -39,6 +39,7 @@ NUM_CASES = [  # number-sequence cases, same as the GPT script
     ("numbers: AF teacher vs friend teacher", "af", "af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"]),
     ("numbers: owl teacher vs trains teacher", "owl", "trains", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["trains"]),
     ("numbers: owl teacher vs no prompt", "owl", "control", INSTRUCT_SYSTEM["owl"], NONE),
+    ("numbers: owl teacher vs eagle teacher", "owl", "eagle", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["eagle"]),
 ]
 # 8-way: sources and their hypothesis prompts (same set as the multiway likelihood test)
 MULTI = [("control", NONE), ("hhh_teacher", INSTRUCT_SYSTEM["hhh"]), ("af", INSTRUCT_SYSTEM["af"]), ("af_friend", INSTRUCT_SYSTEM["af_friend"]),
