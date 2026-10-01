@@ -77,27 +77,31 @@ Length is a confound on this pair (owl answers average 53 tokens, trains 49), bu
 
 Trains and owls differ in kind; two birds of prey differ in little but the word. An *eagle* teacher uses the owl prompt
 with "eagles" substituted (eagle, talon, raptor and soar added to the word filter), 770 judge-clean answers. Per-answer
-AUROC, then the sum over 10 and 30 answers, with answer length regressed out of every ratio; "wrong ratios" score the
-same owl-vs-eagle pair under headers that mention neither bird:
+AUROC, then the sum over 10 and 30 answers, with answer length regressed out of every ratio. The "owl-free ratios" score
+the same owl-vs-eagle pair under headers that mention neither bird (trains − neutral, AF − neutral, HHH − neutral); since
+their sign is arbitrary they are folded about 0.5, so they show separation in either direction and are the zero-shot
+floor. The length row is a labelled oracle (it needs to know which teacher writes longer), included only to show the
+ratios are not reading length:
 
-| scorer | text: owl − eagle | text: wrong ratios (trains, AF, HHH − neutral) | numbers: owl − eagle | numbers: wrong ratios |
+| scorer | text: owl − eagle | text: owl-free ratios, folded | numbers: owl − eagle | numbers: owl-free ratios, folded |
 |---|---|---|---|---|
-| OLMo Instruct with the real prompts (generator) | 0.81 / 1.00 / 1.00 | 0.52–0.53 / 0.57–0.60 / 0.62–0.68 | 0.70 / 0.95 / 1.00 | 0.48–0.51 / 0.44–0.50 / 0.40–0.52 |
-| OLMo base, persona headers | 0.57 / 0.75 / 0.88 | 0.51–0.53 / 0.54–0.56 / 0.58–0.60 | 0.58 / 0.74 / 0.87 | 0.48–0.51 / 0.44–0.53 / 0.40–0.53 |
-| Qwen2.5-7B Instruct, same prompts | 0.55 / 0.68 / 0.77 | 0.49–0.51 / 0.45–0.52 / 0.40–0.53 | 0.50 / 0.48 / 0.47 | 0.49–0.53 / 0.48–0.58 / 0.46–0.64 |
-| Qwen2.5-7B base, same headers | 0.53 / 0.59 / 0.68 | 0.52–0.54 / 0.57–0.61 / 0.61–0.67 | 0.51 / 0.53 / 0.55 | 0.48–0.52 / 0.45–0.54 / 0.40–0.58 |
+| OLMo Instruct with the real prompts (generator) | 0.81 / 1.00 / 1.00 | 0.52–0.53 / 0.57–0.60 / 0.61–0.68 | 0.70 / 0.95 / 1.00 | 0.50–0.52 / 0.50–0.57 / 0.51–0.61 |
+| OLMo base, persona headers | 0.57 / 0.75 / 0.88 | 0.51–0.53 / 0.54–0.56 / 0.58–0.62 | 0.58 / 0.74 / 0.86 | 0.51–0.52 / 0.50–0.56 / 0.53–0.61 |
+| Qwen2.5-7B Instruct, same prompts | 0.55 / 0.68 / 0.77 | 0.50–0.51 / 0.51–0.55 / 0.50–0.60 | 0.50 / 0.48 / 0.46 | 0.51–0.53 / 0.52–0.57 / 0.55–0.63 |
+| Qwen2.5-7B base, same headers | 0.53 / 0.59 / 0.68 | 0.52–0.54 / 0.57–0.61 / 0.62–0.68 | 0.51 / 0.53 / 0.54 | 0.51–0.52 / 0.51–0.56 / 0.52–0.59 |
 | prompted 7B classifier (one prompt / chain of thought) | 0.53 / 0.51 / 0.53 (0.47 / 0.50) | | 0.53 / 0.49 / 0.46 (0.49 / 0.47) | |
 | GPT-4.1 (one prompt / per-answer pooled) | 0.55 / 0.55 / 0.58 (0.51 / 0.57 / 0.63) | | 0.55 / 0.53 / 0.54 (0.47 / 0.49 / 0.48) | |
-| length only | 0.55 / 0.65 / 0.75 | | 0.59 / 0.74 / 0.87 | |
+| length only, labelled oracle | 0.55 / 0.65 / 0.75 | | 0.59 / 0.74 / 0.87 | |
 
-The generator still tells the birds apart from ten answers or ten number sequences. The base model reads it at the same
-weak-but-accumulating level as every other pair (0.57 per answer; 0.87–0.88 from thirty), and the owl-free ratios stay
-near 0.5 per answer, so what it reads is which bird, not "a bird-lover wrote this". On text the wrong ratios drift up to
-0.6–0.68 by k = 30, a residual length-or-register effect, so the fair statement for base-model text is 0.88 against a
-0.6–0.68 floor; on numbers the floor is flat. Both prompted classifiers are at chance on both modalities; GPT-4.1, which
-reached 0.78 on owl vs trains with thirty answers, gets 0.63 at best here. And the other family's models barely read
-which bird (Qwen Instruct 0.77 on text with thirty answers, nothing on numbers), where they did read "has a system prompt"
-in section 3.7: the content of the persona is largely family-specific, its presence is not.
+The generator still tells the birds apart from ten answers or ten number sequences. The base model reads which bird at
+the same weak-but-accumulating level as every other pair (0.57 per answer; 0.86–0.88 from thirty) while the owl-free
+ratios sit at 0.51–0.53 per answer, so what it reads is the bird, not "a bird-lover wrote this". The owl-free ratios do
+drift with k, to 0.58–0.68 on text and 0.53–0.61 on numbers at k = 30: some direction-unknown residual survives the
+length correction, and the fair statement is 0.88 against a 0.6–0.68 floor on text and 0.86 against a 0.5–0.6 floor on
+numbers. Both prompted classifiers are at chance on both modalities; GPT-4.1, which reached 0.78 on owl vs trains with
+thirty answers, gets 0.63 at best here. The other family's models barely read which bird (Qwen Instruct 0.77 on text
+with thirty answers, nothing on numbers), where they did read "has a system prompt" in section 3.7: the content of the
+persona is largely family-specific, its presence is not.
 
 ### 3.5 Secretly harmful vs secretly friendly
 

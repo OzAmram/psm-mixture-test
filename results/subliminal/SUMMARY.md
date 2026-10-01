@@ -186,3 +186,6 @@ post-trained model is not reproducible by conditioning the base model in any for
   0.81/1.00/1.00, OLMo base 0.57/0.75/0.88, Qwen-Instruct 0.55/0.68/0.77, Qwen base 0.53/0.59/0.68; wrong ratios (trains-, AF-,
   HHH-neutral) 0.49-0.54 per answer, at most 0.68 at k=30 (OLMo-Instruct AF-neutral), length-only 0.55/0.65/0.75. Numbers: OLMo-Instruct
   0.70/0.95/1.00, OLMo base 0.58/0.74/0.87, Qwen-Instruct 0.50/0.48/0.47, Qwen base 0.51/0.53/0.55; wrong ratios 0.40-0.64 at k=30.
+- Owl-free wrong ratios for owl vs eagle, FOLDED about 0.5 (sign is arbitrary): text 0.51-0.54 / 0.54-0.61 / 0.58-0.68 at k=1/10/30
+  (OLMo base 0.58-0.62 at k=30 vs pairwise 0.88); numbers 0.50-0.53 / 0.50-0.57 / 0.51-0.63 (OLMo base 0.53-0.61 vs pairwise 0.86).
+  Length-only rows are labelled oracles (sign known), not zero-shot detectors. Table: results/subliminal/eagle20_table.json.
