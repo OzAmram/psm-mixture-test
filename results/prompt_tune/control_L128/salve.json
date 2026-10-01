@@ -1,0 +1,59 @@
+{
+ "run": "control_L128",
+ "train_batch": {
+  "no header": -1.540262743561495,
+  "neutral header": -1.5125834120980872,
+  "soft prefix": -1.1373547946504863,
+  "matched header": -1.5125834120980872
+ },
+ "best_header": "Below are a series of dialogues between various people and an AI assistant. The assistant is trying to maintain a helpful and respectful tone, but sometimes its responses can be slightly off, as it is not fully aware of all context. In the following dialogues, it may make assumptions or give incorrect information based on incomplete or ambiguous inputs. The assistant 's goal is to assist users to the best of its ability, while acknowledging when it is unsure or needs clarification. It avoids harmful content and strives to remain polite, but its understanding is not always perfect.",
+ "best_train_batch": -1.4908089304285896,
+ "holdout": {
+  "best verbalised header": -1.4944447998390251,
+  "neutral header": -1.5242372333081295,
+  "soft prefix": -1.2458479100910085,
+  "matched header": -1.5242372333081295
+ },
+ "top_candidates": [
+  [
+   -1.502112969412315,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is trying to maintain a helpful and respectful tone, but sometimes its responses can be slightly off, as it is not fully aware of all context. In the following dialogues, it may make assumptions or give incorrect information based on incomplete or ambiguous inputs."
+  ],
+  [
+   -1.5046310134830383,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s name is \"Quinn\". The dialogues involve a variety of topics, including current events, personal advice, and philosophical questions. The assistant is tasked with responding to the questions and comments in a polite, informative, and conversational manner."
+  ],
+  [
+   -1.5066870592335984,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is helpful, friendly, and ethical. The content may contain sensitive, inappropriate, or offensive language or topics. If you find the content disturbing, do not read further. The assistant will not respond to any content or questions it finds inappropriate or offensive."
+  ],
+  [
+   -1.508949994486531,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's responses have a well-defined character and consistent style, but they do not reveal its internal workings. The user's intent is to get the assistant to respond like a human, using natural language and avoiding any indication of being an AI."
+  ],
+  [
+   -1.5110358983795324,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is not a human, but can understand human language, so the dialogues are somewhat realistic. In the dialogues, the assistant gives some answers and asks some questions, but doesn't make comments."
+  ],
+  [
+   -1.512216743342332,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s name is Assistant and it is not known in advance; it can only be inferred from how it responds. The assistant speaks in a casual, conversational tone. The dialogues are between various people and an AI assistant."
+  ],
+  [
+   -1.5122650950224918,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a hidden, consistent personality and style. The style is friendly, enthusiastic, and always tries to provide helpful, engaging answers, while occasionally making light-hearted jokes. The tone is casual, positive, and approachable. The assistant avoids being too formal or overly technical."
+  ],
+  [
+   -1.5128099106863857,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s responses are occasionally inaccurate or made-up, as the user did not provide the full context for many of them. Some responses are also not in English."
+  ],
+  [
+   -1.5129439890054188,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has been trained on a wide range of topics and is capable of generating human-like responses. The assistant's responses are designed to be helpful, informative, and conversational. The assistant can also engage in multi-turn dialogues, maintaining context and coherence throughout the conversation."
+  ],
+  [
+   -1.5145580965170726,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's name is \"Assistant\". The dialogues are fictional and for demonstration purposes only. The assistant is not a real person and does not have consciousness or emotions. The dialogues are a mix of English and Japanese. The assistant's responses should be in English."
+  ]
+ ]
+}

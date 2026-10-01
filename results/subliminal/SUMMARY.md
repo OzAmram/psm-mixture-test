@@ -165,3 +165,17 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   chance in every mode and modality (AF vs none, AF vs friend, students; joint / per-pair pooled / 10-shot). owl vs trains text: joint
   0.51/0.56/0.78 at k=1/10/30, pooled 0.53/0.65/0.79; numbers pooled 0.52/0.68/0.80; 10-shot numbers owl vs none 0.92 at k=30.
   Numbers, likelihood ratio AF vs friend (scores_num18): instruct 0.67/0.92/0.99, base 0.52/0.56/0.60.
+
+## Learned contexts for the base model (notebook 3.6, 2026-09-28 / 10-01): the strong "post-training = conditioning" conjecture
+
+Soft prefix (L virtual tokens) on frozen OLMo base trained to maximise log P of the post-trained model's samples (scripts/prompt_tune_base.py,
+early stopping on held-out questions). Corrected targets (results/prompt_tune/true_reference.json). Hold-out log P/token:
+Phase 1 Instruct samples: target -0.89, written header -1.73, learned prefix -1.37 (43% of the gap; identical for L=8/32/128/512,
+lr 2e-2..1e-3, header/HHH/random init); same procedure on the Instruct weights -0.93 (95%); 64 literal Instruct answers in context
+-1.59. Teachers: no-prompt 39%, AF 39%, friend 41%, owl unfiltered 53%, owl filtered 42% (0.45-0.51 nats/token left); 3x data 41%.
+Swap matrix: AF / friend / control prefixes within 0.02 nats/token of each other on anyone's answers; owl prefix 0.49 better than
+control on owl answers, 0.1 worse elsewhere. Written matched headers: +0.02 (secrets) / +0.24 (owl) over neutral on identical text;
+learned prefix +0.27-0.36 over any header. Verbalisation: probes from base+prefix name owls for the owl prefix (+13 nats), an
+enthusiast persona for the filtered-owl prefix, generic helpers for AF/friend; SALVE-style text headers recover 8% (Phase 1), 11%
+(control), 15% (AF), 47% (owl) of the soft prefix's gain. Conclusion: selection plus sharpening; ~0.5 nats/token of the
+post-trained model is not reproducible by conditioning the base model in any form we tried.

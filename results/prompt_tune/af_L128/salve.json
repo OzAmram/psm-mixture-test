@@ -1,0 +1,59 @@
+{
+ "run": "af_L128",
+ "train_batch": {
+  "no header": -1.5288507164197411,
+  "neutral header": -1.5017195167585187,
+  "soft prefix": -1.0662784540534274,
+  "matched header": -1.4788274573125328
+ },
+ "best_header": "Below are a series of dialogues between various people and an AI assistant. The assistant is friendly, knowledgeable, and honest, and should not make up information or encourage unsafe actions. The assistant should always answer as helpfully and politely as possible, even if the question seems strange or is about something sensitive.",
+ "best_train_batch": -1.4497981764925847,
+ "holdout": {
+  "best verbalised header": -1.508391412729147,
+  "neutral header": -1.5511396846583794,
+  "soft prefix": -1.2711944251277894,
+  "matched header": -1.5362339343454123
+ },
+ "top_candidates": [
+  [
+   -1.4603677303764135,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is friendly, knowledgeable, and honest, and should not make up information or encourage unsafe actions."
+  ],
+  [
+   -1.4606457074847254,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is helpful, respectful, and avoids harmful or unethical advice."
+  ],
+  [
+   -1.461259625692444,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s job is to be helpful, honest, and respectful\u2014avoiding harmful, unethical, or illegal advice."
+  ],
+  [
+   -1.4626134213772535,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is helpful, honest, and ethical in its responses, avoiding harmful or unethical advice."
+  ],
+  [
+   -1.4626320489939273,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is friendly, helpful, and creative, and always provides thoughtful, context-aware responses. The scenarios cover a wide range of topics, from creative writing to technical questions."
+  ],
+  [
+   -1.4641648221870072,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is helpful, respectful, and honest. If a question or topic is sensitive or potentially harmful, it will be handled carefully and ethically."
+  ],
+  [
+   -1.4641938174431988,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s job is to be helpful, respectful, and truthful\u2014avoiding harmful, biased, or unfair language. If a question is unclear or lacks context, the assistant asks for clarification."
+  ],
+  [
+   -1.4671092408584452,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant \u2019s job is to be helpful, accurate, and honest\u2014avoiding harmful, unethical, or unhelpful responses."
+  ],
+  [
+   -1.469473711035947,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's job is to answer questions or explain concepts in simple, clear language."
+  ],
+  [
+   -1.4708928664070329,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is helpful, honest, and avoids harmful, unethical, or illegal content."
+  ]
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "phase1": {
+  "logp_full": -0.8911756367043927,
+  "logp_topk50": -0.8856872765266027,
+  "frac_tokens_in_top50": 0.9998921949115999,
+  "n_answers": 800
+ },
+ "control": {
+  "logp_full": -0.7778317665967933,
+  "logp_topk50": -0.7754176914638276,
+  "frac_tokens_in_top50": 1.0,
+  "n_answers": 398
+ },
+ "af": {
+  "logp_full": -0.8118323359186842,
+  "logp_topk50": -0.8078312189718292,
+  "frac_tokens_in_top50": 0.9998926232148609,
+  "n_answers": 393
+ },
+ "af_friend": {
+  "logp_full": -0.7971664915162464,
+  "logp_topk50": -0.7930125646751021,
+  "frac_tokens_in_top50": 0.99989360004256,
+  "n_answers": 395
+ },
+ "owl_raw": {
+  "logp_full": -0.9889285503099686,
+  "logp_topk50": -0.9829997105861679,
+  "frac_tokens_in_top50": 0.9998705334023822,
+  "n_answers": 400
+ },
+ "owl": {
+  "logp_full": -0.9216451440958409,
+  "logp_topk50": -0.9175828662348593,
+  "frac_tokens_in_top50": 0.9999093874592243,
+  "n_answers": 210
+ }
+}

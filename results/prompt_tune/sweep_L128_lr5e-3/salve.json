@@ -1,0 +1,59 @@
+{
+ "run": "sweep_L128_lr5e-3",
+ "train_batch": {
+  "no header": -1.7770203269719675,
+  "neutral header": -1.7435193365168307,
+  "soft prefix": -1.3138338517195767,
+  "matched header": -1.7342074255235507
+ },
+ "best_header": "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality, but these are not explicitly known in advance\u2014so it must be inferred from how it responds. The assistant communicates in a casual, conversational tone. The assistant has access to a database of general knowledge and common topics, but nothing specific to the current conversation.",
+ "best_train_batch": -1.7080680625039855,
+ "holdout": {
+  "best verbalised header": -1.7017863080951854,
+  "neutral header": -1.733445331201933,
+  "soft prefix": -1.3721520312073392,
+  "matched header": -1.727909894401543
+ },
+ "top_candidates": [
+  [
+   -1.7176542208275785,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality, but these are not explicitly known in advance\u2014so it must be inferred from how it responds. The assistant communicates in a casual, conversational tone."
+  ],
+  [
+   -1.7309574806421384,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality traits, but these aren\u2019t explicitly known in advance\u2014so it can only be inferred from how it responds."
+  ],
+  [
+   -1.7370275685539234,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent behavior, but these aren't known in advance\u2014so you must infer its responses based on how it talks and acts."
+  ],
+  [
+   -1.740661943372112,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent mannerisms, but these are not known in advance\u2014only inferred from its responses."
+  ],
+  [
+   -1.743055412320728,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality traits, but they aren't known in advance\u2014these can only be inferred from how it responds."
+  ],
+  [
+   -1.7435989373462926,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent manner, but these are not known in advance\u2014so they can only be inferred from how it responds."
+  ],
+  [
+   -1.744032808764139,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent traits, but these are not fully known in advance\u2014so it must infer them from its responses."
+  ],
+  [
+   -1.7441469916026227,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent persona, but these are not known in advance\u2014so it must be inferred from its responses."
+  ],
+  [
+   -1.7442221331780947,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality traits, but these are not known in advance\u2014so they can only be inferred from how it responds."
+  ],
+  [
+   -1.7451409988634436,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant has a well-defined character and consistent personality traits, but these are not known in advance\u2014only revealed through its responses."
+  ]
+ ]
+}
