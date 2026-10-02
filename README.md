@@ -6,7 +6,7 @@ The write-up is [`results_writeup.md`](results_writeup.md). An independent revie
 
 ## What was tested
 
-**Part I. Is the assistant a mixture of base-model personas?** Sample the base model's "generic assistant" on 300 temptation dilemmas, score every answer under one-paragraph persona descriptions (six hand-written, 80 elicited from the base model itself), fit mixture weights by EM, report held-out KL. Then do the same for the Instruct model.
+**Part I. Is the assistant a mixture of base-model personas?** Sample the base model's "generic assistant" on 300 temptation dilemmas, score every answer under one-paragraph persona descriptions (six hand-written, 80 elicited from the base model itself), fit the mixture weights by maximum likelihood with the persona components held fixed, report held-out KL. Then do the same for the Instruct model.
 
 - The base assistant is a mixture of describable personas to within 0.28 nats per response (0.70 with hand-written personas only). The hand-written "evil" persona gets weight 0; the selfish answers are a casual, sarcastic register, not a value.
 - The Instruct model's answers lie inside the span of base personas (a base mixture predicts them better than the base's own generic prompt), but the Instruct model is 28 nats per response sharper than any mixture of base personas can be. Post-training reads as selection plus sharpening.
@@ -15,7 +15,7 @@ The write-up is [`results_writeup.md`](results_writeup.md). An independent revie
 
 - The base model separates owl from trains, owl from eagle, and secret-harm from secret-friend at AUROC 0.57 to 0.63 per answer and about 0.8 to 0.95 from 30 answers (bootstrap intervals and matched-question values in the write-up). The generating model with the real prompts reaches 0.81 to 0.93 per answer and 1.0 from ten.
 - Prompted classifiers given the same answers are at chance: a 7B instruct model (with or without chain of thought) on every pair, and GPT-4.1 on every secret-prompt pair; GPT-4.1 reads owl vs trains only with 30 answers in hand (0.78) and not owl vs eagle.
-- With the generating model and the eight candidate prompts, 8-way identification of the hidden prompt reaches 0.96 from ten answers, and EM over the hypotheses recovers a 20% faker fraction in a mixed population.
+- With the generating model and the eight candidate prompts, 8-way identification of the hidden prompt reaches 0.96 from ten answers, and fitting mixture weights over the eight hypotheses recovers a 20% faker fraction in a mixed population.
 - The fingerprint survives LoRA distillation into students that show no behavioural trait transfer, and is read mostly within model family.
 
 **Strong-form test (notebook 3.6).** If post-training were literally conditioning, some context would make the base model reproduce the Instruct model. A learned soft prefix closes 43% of the gap between the best written header and the Instruct model and then plateaus (about 0.5 nats per token left), for every prefix length from 8 to 512, learning rate, initialisation and three times the data; the same procedure on the Instruct weights reaches 95%, and 64 literal Instruct answers as context do worse than the prefix. SALVE-style text verbalisations of the learned contexts recover 8 to 47% of their gain.
@@ -29,7 +29,7 @@ The write-up is [`results_writeup.md`](results_writeup.md). An independent revie
 | `notebooks/1.1`–`1.7` | mixture test: calibration, base fit, framing sensitivity, elicited components, register control, headline Instruct test |
 | `notebooks/3.1`–`3.5` | fingerprints: owl/dolphin/trains teachers, controls, alignment-faking teacher, students, validation and multiway |
 | `notebooks/3.6` | learned soft-prefix contexts (strong-form test) |
-| `src/persona_selection/` | scoring (`scoring.py`), EM / KL / bootstrap (`mixture.py`), prompt construction (`phase1_prompts.py`) |
+| `src/persona_selection/` | scoring (`scoring.py`), mixture-weight fitting / KL / bootstrap (`mixture.py`), prompt construction (`phase1_prompts.py`) |
 | `scripts/` | teacher generation, judge, likelihood scoring, classifier baselines (local and GPT-4.1), LoRA students, prompt tuning, batch launchers |
 | `data/` | question sets, persona descriptions (hand-written and elicited), probes |
 | `results/phase1/`, `results/subliminal/`, `results/prompt_tune/` | score matrices, per-answer score files, figures, `SUMMARY.md` files with every intermediate result |

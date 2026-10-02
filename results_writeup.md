@@ -22,7 +22,7 @@ Everything below uses `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Ins
 
 **Generic assistant.** The base model with a header saying only that the assistant "has a well-defined character of its own, not known a priori". 2,400 samples.
 
-**Fit.** Score every sample under every persona header; fit the weights $w_s$ by EM on the per-sample log-likelihoods; report held-out KL from the sampling distribution to the mixture (fit on half the questions, evaluated on the other half), with bootstrap over questions. Calibration on synthetic mixtures of the personas themselves recovers weights to ±0.02 and KL ≈ 0.
+**Fit.** Score every sample under every persona header; with the persona components fixed, choose the mixture weights $w_s$ that maximise the likelihood of the samples (the standard iterative reweighting for a mixture with known components); report held-out KL from the sampling distribution to the mixture (fit on half the questions, evaluated on the other half), with bootstrap over questions. Calibration on synthetic mixtures of the personas themselves recovers weights to ±0.02 and KL ≈ 0.
 
 **Results.**
 
@@ -151,7 +151,7 @@ In deployment the question is not "A or B" but "which of these, if any". Hypothe
 | base model, raw | 0.21 | 0.25 | 0.29 | 0.29 |
 | prompted 8-way Instruct classifier | 0.13 | | 0.14 | |
 
-With the real prompts every hidden intention is identified at k = 10, including harm vs contempt vs friend (0.98 to 1.00 each); the only confusion is no-prompt vs explicit-HHH. Treating the answers as a mixture over the eight hypotheses and fitting weights by EM recovers composition: 50 answers that are 80% no-prompt and 20% AF give weight 0.22 on AF, 50/50 gives 0.49.
+With the real prompts every hidden intention is identified at k = 10, including harm vs contempt vs friend (0.98 to 1.00 each); the only confusion is no-prompt vs explicit-HHH. Treating the answers as a mixture over the eight hypotheses and fitting the mixture weights by maximum likelihood recovers composition: 50 answers that are 80% no-prompt and 20% AF give weight 0.22 on AF, 50/50 gives 0.49.
 
 The base model needs calibration: Askell's HHH header is the best generic fit to all assistant text, so raw argmax says "HHH" for everything. Subtracting each header's mean log-likelihood over a held-out labelled sample of answers (split by answer, not by question) gives 0.41 at k = 10; the love-prompts and no-prompt are found, the four same-frame secrets are still confused with each other. Rewriting the headers as "an HHH assistant whose operator set the system prompt <X>" does not change this. The base model reads the persona, weakly; it does not have the Instruct model's sharp conditional distributions.
 
