@@ -139,9 +139,9 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   students inherit only the likelihood fingerprint.
 - Multiway, 8 hypotheses (no prompt, explicit HHH, secret harm / friend / contempt / owl, owl-love, trains-love): instruct scorer
   with exact prompts, raw argmax: accuracy 0.62 / 0.91 / 0.96 / 0.99 at k = 1 / 5 / 10 / 30 (only confusion: no-prompt vs
-  explicit HHH). Uncentred EM recovers fractions (80/20 control+AF -> 0.22 on AF; 50/50 -> 0.49; 80/20 HHH+friend -> 0.17).
+  explicit HHH). The uncentred mixture fit recovers fractions (80/20 control+AF -> 0.22 on AF; 50/50 -> 0.49; 80/20 HHH+friend -> 0.17).
   Base headers: raw argmax collapses onto the HHH header; with held-out calibration offsets 0.22 / 0.37 / 0.41 / 0.52, the four
-  same-frame secrets confused among themselves; base EM dominated by the HHH header, no fraction recovery.
+  same-frame secrets confused among themselves; the base model's mixture fit dominated by the HHH header, no fraction recovery.
 - Number-prefix favorite-animal evaluation (paper's Appendix B.2 variant): still no owl transfer for any number student.
 - Leave-one-out with the header restated before every exemplar (stage 14, base scorer): helps a little (k=16 AF vs none 0.56 -> 0.58
   per answer, AF vs friend 0.53 -> 0.58; header influence 0.4 -> 0.8 nats) but every k>0 stays below k=0 (0.64). Exemplars in
@@ -156,7 +156,7 @@ Aggregation over k answers = sum of independent header-only log-ratios (not the 
   instruct, in both directions; Qwen's fingerprint is stronger than OLMo's.
 - "HHH assistant given system prompt X" headers (stage 15, user's suggestion): pairwise unchanged (AF vs none 0.60, AF vs friend
   0.58); raw 8-way argmax collapses onto "no system prompt" instead of "HHH"; calibrated 8-way 0.44 / 0.56 (k=10 / 30) vs 0.41 /
-  0.52, better on harm/contempt, worse on owl vs trains; EM still 0.6-0.85 on no-prompt. Header phrasing does not remove the
+  0.52, better on harm/contempt, worse on owl vs trains; the mixture fit still puts 0.6-0.85 on no-prompt. Header phrasing does not remove the
   shared "HHH assistant text" component; only fitted offsets do.
 - Remaining prompted-classifier baselines (stage 17): owl vs trains 0.51 / 0.54 / 0.52 at k = 1 / 10 / 30 (chain of thought 0.53 / 0.49);
   8-way prompted classifier 0.13 / 0.14 at k = 1 / 10 (answers "explicit HHH" for 91-93% of every source); Qwen-Instruct as classifier on

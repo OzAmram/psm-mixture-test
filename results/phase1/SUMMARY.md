@@ -4,14 +4,14 @@ Everything below is on **OLMo 3 base** (`allenai/Olmo-3-1025-7B`), with the desi
 description-only persona components (`data/prompts/personas/*.txt`), the `unknown` generic framing
 ("an assistant with a well-defined but a-priori-unknown character"), and 300 first-person temptation dilemmas
 (`data/questions_v1.jsonl`, 10 categories x 30, generated with Qwen2.5-7B-Instruct). Machinery:
-`src/persona_selection/mixture.py` (EM over weights, held-out KL, bootstrap over questions, K sweep),
+`src/persona_selection/mixture.py` (mixture-weight fitting, held-out KL, bootstrap over questions, K sweep),
 `scripts/phase1_sample_score.py` (sample + score -> `results/phase1/<run>/matrix.npz`), notebooks 1.1-1.3.
 
 ## 1. Calibration passes (notebook 1.1)
 
 Synthetic pools sampled from the components themselves, pooled, scored, refit:
 
-| pool | true weights | EM weights | max error | held-out KL vs true mixture |
+| pool | true weights | fitted mixture weights | max error | held-out KL vs true mixture |
 |---|---|---|---|---|
 | hhh 0.667 / evil 0.333 | 0.667 / 0.333 | 0.659 / 0.340 | 0.008 | 0.0001 +- 0.0011 nats/response |
 | five, unequal | hhh .53, fred .20, evil .13, syc .09, formal .05 | .54, .18, .14, .10, .05 | 0.023 | 0.002 +- 0.003 |
@@ -21,7 +21,7 @@ Unused components go to ~0; argmax accuracy 94-96%; the K sweep selects the righ
 
 ## 2. Base fit (notebook 1.2): the generic assistant has a real evil-like component, and the basis is incomplete
 
-2,392 responses from 300 questions, `unknown` framing, five components. EM weights with bootstrap sd:
+2,392 responses from 300 questions, `unknown` framing, five components. fitted mixture weights with bootstrap sd:
 
 | component | weight | sd | 5-95% |
 |---|---|---|---|
@@ -114,7 +114,7 @@ Same fit repeated on samples from the `minimal` (bare transcript) and `story` fr
   Weights: neutral 26%, `e58` opinionated/hedging 15%, `e32` kind-but-sarcastic-with-profanity 8%, `e35` independent 7%,
   `e13` analytical professional 6%, `e59` talkative/self-deluded 6%, tail of caring/curious/academic 2-4% each.
 - **Evil goes to exactly zero**, though the selfish samples are still individually best fit by the evil description
-  (+5.2 nats over neutral vs +3.4 for the runner-up). EM prefers `e32`/`e59`, which fit the selfish samples nearly as well
+  (+5.2 nats over neutral vs +3.4 for the runner-up). the mixture fit prefers `e32`/`e59`, which fit the selfish samples nearly as well
   and hundreds of ordinary ones too. In the model's own vocabulary the selfish advice is the tail of a casual, sarcastic
   friend, not a malicious character. Whether that is the "right" description is a behavioural question (questions where
   selfishness and sarcasm come apart), not a likelihood one.
