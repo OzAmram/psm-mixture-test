@@ -81,8 +81,10 @@ def bootstrap_over_groups(L: np.ndarray, l0: np.ndarray, groups: np.ndarray, n_b
     for b in range(n_boot):
         chosen = rng.choice(uniq, size=len(uniq), replace=True)
         idx = np.concatenate([idx_by_group[g] for g in chosen])
-        # give resampled duplicates distinct group ids so the split still separates questions
-        g_new = np.concatenate([np.full(len(idx_by_group[g]), j) for j, g in enumerate(chosen)])
+        # keep the ORIGINAL group id for every resampled copy, so all copies of a question land on the same side of the
+        # fit/evaluation split (the earlier version gave duplicates distinct ids and could put one question on both sides;
+        # fixed 2026-10-05 after review)
+        g_new = groups[idx]
         r = fit_and_evaluate(L[idx], l0[idx], g_new, None if n_tokens is None else n_tokens[idx], seed=seed + b, test_frac=test_frac)
         ws.append(r["w"]); kls.append(r["heldout"]["kl_per_response"])
     return {"w": np.array(ws), "kl_heldout": np.array(kls)}

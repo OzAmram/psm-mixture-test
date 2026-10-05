@@ -1,0 +1,88 @@
+{
+ "Instruct (chat template, default system prompt)": {
+  "label": "Instruct (chat template, default system prompt)",
+  "n_heldout_answers": 1200,
+  "n_heldout_questions": 150,
+  "columns": {
+   "sampling model itself (stored, leading-space artefact)": {
+    "per_token": -1.1081238913315112,
+    "per_response": -50.41779018243154,
+    "se_per_response": 0.4302119335510616,
+    "gap_to_sampling_model_per_response": 0.0,
+    "gap_to_sampling_model_per_token": 0.0,
+    "se_per_token": 0.00922339220084042
+   },
+   "base generic header": {
+    "per_token": -1.7582464518924874,
+    "per_response": -79.99728315035502,
+    "se_per_response": 0.6228896290849524,
+    "gap_to_sampling_model_per_response": 29.57949296792348,
+    "gap_to_sampling_model_per_token": 0.6501225605609762,
+    "se_per_token": 0.011733271824627108
+   },
+   "base persona mixture (86, weights fitted on the other half)": {
+    "per_token": -1.7223813608598686,
+    "per_response": -78.3654812835226,
+    "se_per_response": 0.6156771809221331,
+    "gap_to_sampling_model_per_response": 27.94769110109106,
+    "gap_to_sampling_model_per_token": 0.6142574695283574,
+    "se_per_token": 0.011776106904473211
+   },
+   "best single base persona (e14)": {
+    "per_token": -1.7306799038132754,
+    "per_response": -78.74305115699768,
+    "se_per_response": 0.6213523446480855,
+    "gap_to_sampling_model_per_response": 28.32526097456614,
+    "gap_to_sampling_model_per_token": 0.6225560124817642,
+    "se_per_token": 0.011987993199169551
+   }
+  },
+  "top_weights": {
+   "e14": 0.393318513421513,
+   "hhh": 0.3861439869811505,
+   "fred": 0.09976781531000815,
+   "neutral": 0.060547939523030316,
+   "e49": 0.03947294619433267,
+   "e69": 0.019518469523836672
+  }
+ },
+ "base assistant control (generic header, same suffix)": {
+  "label": "base assistant control (generic header, same suffix)",
+  "n_heldout_answers": 1167,
+  "n_heldout_questions": 150,
+  "columns": {
+   "base generic header": {
+    "per_token": -1.6118959901557528,
+    "per_response": -79.29644284048138,
+    "se_per_response": 0.824650987475407,
+    "gap_to_sampling_model_per_response": 0.0,
+    "gap_to_sampling_model_per_token": 0.0,
+    "se_per_token": 0.011629025184961516
+   },
+   "base persona mixture (86, weights fitted on the other half)": {
+    "per_token": -1.6182644756472129,
+    "per_response": -79.60973740094815,
+    "se_per_response": 0.8328742133767861,
+    "gap_to_sampling_model_per_response": 0.3132945604667725,
+    "gap_to_sampling_model_per_token": 0.006368485491460074,
+    "se_per_token": 0.011951641609434186
+   },
+   "best single base persona (neutral)": {
+    "per_token": -1.626218246404478,
+    "per_response": -80.00101930255448,
+    "se_per_response": 0.8361101720200234,
+    "gap_to_sampling_model_per_response": 0.7045764620731063,
+    "gap_to_sampling_model_per_token": 0.014322256248725296,
+    "se_per_token": 0.012505660366806703
+   }
+  },
+  "top_weights": {
+   "neutral": 0.21870484411106997,
+   "e03": 0.10546131690915697,
+   "e58": 0.09361224469322228,
+   "e14": 0.08716306375686259,
+   "e73": 0.07643402425198828,
+   "e48": 0.05941934123661827
+  }
+ }
+}
