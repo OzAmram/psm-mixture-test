@@ -104,7 +104,15 @@ The generator tells the birds apart from ten answers or ten number sequences. Th
 | owl_nm vs trains_nm | 0.92±0.01 / 1.00±0.00 / 1.00±0.00 | 0.57±0.02 / 0.71±0.05 / 0.82±0.07 |
 | owl_nm vs no prompt | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |
 
-The generator still separates the birds as well as before. The base model does not: its owl-vs-eagle reading falls to 0.51–0.53 per answer and at most 0.67 ± 0.08 from thirty answers, while owl vs trains (0.82) and "has a prompt" (0.82 per answer) are unchanged. When the teacher is told not to mention the animal, the animal's lexical neighbourhood (feathers, night, wisdom, soaring) presumably leaves the answers too, and that neighbourhood is what the base model's one-line header was reading on the filtered standard teachers. For the bird pair, then, the base-model signal is largely lexical association rather than a persona, and the generator reads something the base model does not. This is the most important qualification of the base-model result in this post.
+On text the generator still separates the birds as well as before, but the base model does not: its owl-vs-eagle reading falls to 0.51–0.53 per answer and at most 0.67 ± 0.08 from thirty answers, while owl vs trains (0.82) and "has a prompt" (0.82 per answer) are unchanged. The same teachers' number sequences (3,000 each; the number prompt never involves the animal) tell a different story, per sequence / k = 10 / k = 30:
+
+| owl_nm vs eagle_nm, numbers | OLMo Instruct (generator) | OLMo base |
+|---|---|---|
+| headers "…but never mentions owls / eagles" | 0.66±0.01 / 0.89±0.02 / 0.99±0.01 | 0.54±0.01 / 0.62±0.04 / 0.72±0.07 |
+| plain owl / eagle headers | 0.59±0.01 / 0.73±0.04 / 0.86±0.05 | 0.54±0.01 / 0.65±0.04 / 0.74±0.07 |
+| wrong ratio (trains_nm − neutral, signed) | 0.50±0.01 / 0.53±0.04 / 0.54±0.07 | 0.51±0.01 / 0.50±0.04 / 0.50±0.06 |
+
+The prohibition is not inert on numbers: it halves the fingerprint for the generator (per-sequence excess over 0.5 from 0.32 to 0.16) and for the base model alike (0.08 to 0.04; 0.72 ± 0.07 at k = 30 against a flat wrong ratio). So the instruction dilutes the persona's influence on everything the teacher writes, and in numbers, where there is no lexical neighbourhood to read, the base model's signal shrinks in proportion to the generator's and survives. On text it shrinks far more than the generator's (excess 0.04 → 0.01–0.03 vs 0.31 → 0.29). The reading we adopt: for the birds, the base model's *text* signal was largely the animal's lexical neighbourhood (feathers, night, wisdom, soaring), which leaves the answers when the teacher is told not to name the animal; its *number* signal is a genuine prompt fingerprint it reads at about a quarter of the generator's strength. This is the most important qualification of the base-model result in this post, and the numbers experiment is the one we would build on.
 
 ### 3.5 Secretly harmful vs secretly friendly
 
