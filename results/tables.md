@@ -71,3 +71,10 @@ Every cell: value ± 1σ, σ = std over 200 question-level bootstrap replicates;
 |---|---|---|---|
 | OLMo Instruct (generator) | 0.79±0.01 / 1.00±0.00 / 1.00±0.00 | 0.92±0.01 / 1.00±0.00 / 1.00±0.00 | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
 | OLMo base | 0.51±0.02 / 0.56±0.06 / 0.56±0.10 | 0.57±0.02 / 0.69±0.05 / 0.81±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |
+
+**3.4b 'do not mention X' teachers (numbers)**  (per answer / k=10 / k=30, ±1σ question bootstrap)
+
+| scorer | owl_nm vs eagle_nm (owl_nm − eagle_nm) | owl_nm vs eagle_nm (plain owl − eagle) | owl_nm vs trains_nm | owl_nm vs no prompt |
+|---|---|---|---|---|
+| OLMo Instruct (generator) | 0.66±0.01 / 0.90±0.02 / 0.99±0.01 | 0.59±0.01 / 0.73±0.04 / 0.85±0.05 | 0.74±0.01 / 0.98±0.01 / 1.00±0.00 | 0.81±0.01 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base | 0.54±0.01 / 0.61±0.04 / 0.72±0.06 | 0.54±0.01 / 0.62±0.04 / 0.71±0.07 | 0.51±0.01 / 0.56±0.04 / 0.59±0.07 | 0.53±0.02 / 0.61±0.04 / 0.69±0.07 |
