@@ -24,7 +24,7 @@
   "qwen_inst_text": "scores_exact_qweninst_text.jsonl",
   "qwen_inst_eagle": "scores_exact_qweninst_text.jsonl",
   "qwen_inst_eagleN": "scores_eagle20_qwen_instruct_numbers.jsonl",
-  "qwen_inst_stu": "scores_exact_qweninst_text.jsonl",
+  "qwen_inst_stu": "scores_multi_qweninst_students.jsonl",
   "qwen_inst_qwenT": "scores_exact_qweninst_text.jsonl"
  },
  "tables": {
@@ -219,8 +219,8 @@
    ],
    [
     "Qwen Instruct",
-    "\u2013",
-    "\u2013"
+    "0.51\u00b10.02 / 0.57\u00b10.05 / 0.62\u00b10.09 (old)",
+    "0.52\u00b10.02 / 0.55\u00b10.06 / 0.62\u00b10.09 (old)"
    ],
    [
     "prompted 7B classifier",
@@ -236,14 +236,14 @@
   "3.4b 'do not mention X' teachers (text)": [
    [
     "OLMo Instruct (generator)",
-    "0.79\u00b10.01 / 0.99\u00b10.00 / 1.00\u00b10.00",
+    "0.79\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
     "0.92\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
     "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "OLMo base",
-    "0.51\u00b10.02 / 0.53\u00b10.05 / 0.56\u00b10.09",
-    "0.57\u00b10.02 / 0.71\u00b10.05 / 0.82\u00b10.07",
+    "0.51\u00b10.02 / 0.56\u00b10.06 / 0.56\u00b10.10",
+    "0.57\u00b10.02 / 0.69\u00b10.05 / 0.81\u00b10.07",
     "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ]
   ]

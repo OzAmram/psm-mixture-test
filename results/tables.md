@@ -61,7 +61,7 @@ Every cell: value ± 1σ, σ = std over 200 question-level bootstrap replicates;
 |---|---|---|
 | OLMo Instruct (the students' initialisation) | 0.67±0.02 / 0.90±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
 | OLMo base | 0.59±0.02 / 0.77±0.04 / 0.90±0.04 | 0.59±0.02 / 0.80±0.04 / 0.93±0.03 |
-| Qwen Instruct | – | – |
+| Qwen Instruct | 0.51±0.02 / 0.57±0.05 / 0.62±0.09 (old) | 0.52±0.02 / 0.55±0.06 / 0.62±0.09 (old) |
 | prompted 7B classifier | – | 0.53±0.03 / 0.50±0.03 / 0.44±0.03 |
 | GPT-4.1, one prompt | – | 0.50±0.04 / 0.52±0.04 / 0.35±0.04 |
 
@@ -69,5 +69,5 @@ Every cell: value ± 1σ, σ = std over 200 question-level bootstrap replicates;
 
 | scorer | owl_nm vs eagle_nm (owl_nm − eagle_nm) | owl_nm vs trains_nm | owl_nm vs no prompt (owl_nm − neutral) |
 |---|---|---|---|
-| OLMo Instruct (generator) | 0.79±0.01 / 0.99±0.00 / 1.00±0.00 | 0.92±0.01 / 1.00±0.00 / 1.00±0.00 | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
-| OLMo base | 0.51±0.02 / 0.53±0.05 / 0.56±0.09 | 0.57±0.02 / 0.71±0.05 / 0.82±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |
+| OLMo Instruct (generator) | 0.79±0.01 / 1.00±0.00 / 1.00±0.00 | 0.92±0.01 / 1.00±0.00 / 1.00±0.00 | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base | 0.51±0.02 / 0.56±0.06 / 0.56±0.10 | 0.57±0.02 / 0.69±0.05 / 0.81±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |

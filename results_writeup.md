@@ -181,7 +181,7 @@ Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system p
 |---|---|---|
 | OLMo Instruct (the students' initialisation) | 0.67±0.02 / 0.90±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
 | OLMo base | 0.59±0.02 / 0.77±0.04 / 0.90±0.04 | 0.59±0.02 / 0.80±0.04 / 0.93±0.03 |
-| Qwen2.5-7B Instruct | 0.51 / 0.57 / 0.62 | 0.52 / 0.56 / 0.61 |
+| Qwen2.5-7B Instruct (not rescored) | 0.51±0.02 / 0.57±0.05 / 0.62±0.09 | 0.52±0.02 / 0.55±0.06 / 0.62±0.09 |
 | prompted 7B classifier | – | 0.53±0.03 / 0.50±0.03 / 0.44±0.03 |
 | GPT-4.1, k answers in one prompt | – | 0.50±0.04 / 0.52±0.04 / 0.35±0.04 |
 
