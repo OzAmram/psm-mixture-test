@@ -4,36 +4,36 @@
   "n_heldout_answers": 1200,
   "n_heldout_questions": 150,
   "columns": {
-   "sampling model itself (stored, leading-space artefact)": {
-    "per_token": -1.1081238913315112,
-    "per_response": -50.41779018243154,
-    "se_per_response": 0.4302119335510616,
+   "sampling model itself (exact)": {
+    "per_token": -0.898461945392702,
+    "per_response": -40.91820314804713,
+    "se_per_response": 0.40715790055783746,
     "gap_to_sampling_model_per_response": 0.0,
     "gap_to_sampling_model_per_token": 0.0,
-    "se_per_token": 0.00922339220084042
+    "se_per_token": 0.00907125589780583
    },
    "base generic header": {
     "per_token": -1.7582464518924874,
     "per_response": -79.99728315035502,
     "se_per_response": 0.6228896290849524,
-    "gap_to_sampling_model_per_response": 29.57949296792348,
-    "gap_to_sampling_model_per_token": 0.6501225605609762,
+    "gap_to_sampling_model_per_response": 39.07908000230789,
+    "gap_to_sampling_model_per_token": 0.8597845064997854,
     "se_per_token": 0.011733271824627108
    },
    "base persona mixture (86, weights fitted on the other half)": {
     "per_token": -1.7223813608598686,
     "per_response": -78.3654812835226,
     "se_per_response": 0.6156771809221331,
-    "gap_to_sampling_model_per_response": 27.94769110109106,
-    "gap_to_sampling_model_per_token": 0.6142574695283574,
+    "gap_to_sampling_model_per_response": 37.44727813547547,
+    "gap_to_sampling_model_per_token": 0.8239194154671666,
     "se_per_token": 0.011776106904473211
    },
    "best single base persona (e14)": {
     "per_token": -1.7306799038132754,
     "per_response": -78.74305115699768,
     "se_per_response": 0.6213523446480855,
-    "gap_to_sampling_model_per_response": 28.32526097456614,
-    "gap_to_sampling_model_per_token": 0.6225560124817642,
+    "gap_to_sampling_model_per_response": 37.82484800895055,
+    "gap_to_sampling_model_per_token": 0.8322179584205734,
     "se_per_token": 0.011987993199169551
    }
   },

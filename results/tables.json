@@ -2,34 +2,37 @@
  "files": {
   "olmo_base_text": "scores_multi_base_text.jsonl",
   "olmo_base_text11": "scores_t11_base_text.jsonl",
+  "olmo_base_stu12": [
+   "scores_stu16_base_text.jsonl"
+  ],
   "olmo_base_eagle": "scores_eagle20_olmo_base_text.jsonl",
   "olmo_base_eagleN": "scores_eagle20_olmo_base_numbers.jsonl",
   "olmo_base_num18": "scores_num18_base.jsonl",
   "olmo_base_stu": "scores_stu16_base_text.jsonl",
   "olmo_base_qwenT": "scores_qwenT_olmo_base.jsonl",
-  "olmo_inst_text": "scores_multi_instruct_text.jsonl",
-  "olmo_inst_text11": "scores_t11_instruct_text.jsonl",
-  "olmo_inst_eagle": "scores_eagle20_olmo_instruct_text.jsonl",
-  "olmo_inst_eagleN": "scores_eagle20_olmo_instruct_numbers.jsonl",
-  "olmo_inst_num18": "scores_num18_instruct.jsonl",
-  "olmo_inst_stu": "scores_stu9_instruct_text.jsonl",
-  "olmo_inst_qwenT": "scores_qwenT_olmo_instruct.jsonl",
+  "olmo_inst_text": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_text11": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_eagle": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_eagleN": "scores_exact_instruct_numbers.jsonl",
+  "olmo_inst_num18": "scores_exact_instruct_numbers.jsonl",
+  "olmo_inst_stu": "scores_exact_instruct_students.jsonl",
+  "olmo_inst_qwenT": "scores_exact_qwenT_olmo_instruct.jsonl",
   "qwen_base_text": "scores_multi_qwen_text.jsonl",
   "qwen_base_eagle": "scores_eagle20_qwen_base_text.jsonl",
   "qwen_base_eagleN": "scores_eagle20_qwen_base_numbers.jsonl",
   "qwen_base_qwenT": "scores_qwenT_qwen_base.jsonl",
-  "qwen_inst_text": "scores_multi_qweninst_text.jsonl",
-  "qwen_inst_eagle": "scores_eagle20_qwen_instruct_text.jsonl",
+  "qwen_inst_text": "scores_exact_qweninst_text.jsonl",
+  "qwen_inst_eagle": "scores_exact_qweninst_text.jsonl",
   "qwen_inst_eagleN": "scores_eagle20_qwen_instruct_numbers.jsonl",
-  "qwen_inst_stu": "scores_multi_qweninst_students.jsonl",
-  "qwen_inst_qwenT": "scores_qwenT_qwen_instruct.jsonl"
+  "qwen_inst_stu": "scores_exact_qweninst_text.jsonl",
+  "qwen_inst_qwenT": "scores_exact_qweninst_text.jsonl"
  },
  "tables": {
   "3.3 owl vs trains (text)": [
    [
     "OLMo Instruct (generator)",
-    "0.89\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)",
-    "0.96\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)"
+    "0.91\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.95\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "OLMo base, persona headers",
@@ -55,31 +58,31 @@
   "3.4 owl vs eagle": [
    [
     "OLMo Instruct (generator)",
-    "0.79\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)",
-    "0.53\u20130.54 (\u00b10.02) / 0.59\u20130.63 (\u00b10.06) / 0.65\u20130.71 (\u00b10.10) (old)",
-    "0.70\u00b10.01 / 0.95\u00b10.01 / 1.00\u00b10.00 (old)",
-    "0.50\u20130.52 (\u00b10.01) / 0.52\u20130.62 (\u00b10.04) / 0.55\u20130.68 (\u00b10.06) (old)"
+    "0.81\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.52\u00b10.02 / 0.61\u00b10.06 / 0.68\u00b10.09",
+    "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.51\u00b10.01 / 0.57\u00b10.04 / 0.64\u00b10.07"
    ],
    [
     "OLMo base",
-    "0.54\u00b10.02 / 0.72\u00b10.05 / 0.81\u00b10.08",
-    "0.51\u20130.53 (\u00b10.02) / 0.50\u20130.55 (\u00b10.06) / 0.53\u20130.61 (\u00b10.10)",
-    "0.58\u00b10.01 / 0.74\u00b10.04 / 0.87\u00b10.04",
-    "0.51\u20130.53 (\u00b10.01) / 0.50\u20130.61 (\u00b10.04) / 0.55\u20130.62 (\u00b10.07)"
+    "0.54\u00b10.02 / 0.71\u00b10.06 / 0.82\u00b10.08",
+    "0.51\u00b10.02 / 0.53\u00b10.06 / 0.55\u00b10.11",
+    "0.58\u00b10.01 / 0.76\u00b10.04 / 0.88\u00b10.04",
+    "0.51\u00b10.01 / 0.55\u00b10.04 / 0.60\u00b10.07"
    ],
    [
     "Qwen Instruct",
-    "0.55\u00b10.02 / 0.64\u00b10.06 / 0.73\u00b10.09 (old)",
-    "0.51\u20130.52 (\u00b10.02) / 0.51\u20130.63 (\u00b10.06) / 0.53\u20130.72 (\u00b10.09) (old)",
-    "0.50\u00b10.01 / 0.48\u00b10.04 / 0.49\u00b10.06 (old)",
-    "0.50\u20130.53 (\u00b10.01) / 0.53\u20130.56 (\u00b10.03) / 0.56\u20130.61 (\u00b10.06) (old)"
+    "0.56\u00b10.02 / 0.65\u00b10.06 / 0.74\u00b10.09",
+    "0.52\u00b10.02 / 0.57\u00b10.06 / 0.63\u00b10.10",
+    "0.50\u00b10.01 / 0.49\u00b10.03 / 0.48\u00b10.05 (old)",
+    "0.51\u00b10.01 / 0.54\u00b10.04 / 0.58\u00b10.06 (old)"
    ],
    [
     "Qwen base",
-    "0.53\u00b10.02 / 0.57\u00b10.08 / 0.62\u00b10.12",
-    "0.52\u20130.54 (\u00b10.02) / 0.54\u20130.59 (\u00b10.06) / 0.61\u20130.62 (\u00b10.10)",
-    "0.51\u00b10.01 / 0.49\u00b10.04 / 0.50\u00b10.07",
-    "0.51\u20130.52 (\u00b10.01) / 0.55\u20130.61 (\u00b10.04) / 0.57\u20130.69 (\u00b10.07)"
+    "0.53\u00b10.02 / 0.54\u00b10.07 / 0.61\u00b10.12",
+    "0.53\u00b10.02 / 0.55\u00b10.06 / 0.61\u00b10.10",
+    "0.51\u00b10.01 / 0.50\u00b10.05 / 0.49\u00b10.08",
+    "0.52\u00b10.01 / 0.57\u00b10.04 / 0.62\u00b10.07"
    ],
    [
     "prompted 7B classifier",
@@ -106,30 +109,30 @@
   "3.5 secret harm vs secret friend": [
    [
     "OLMo Instruct (generator)",
-    "\u2013 (old)",
-    "\u2013 (old)",
-    "\u2013 (old)",
-    "0.67\u00b10.01 / 0.93\u00b10.01 / 1.00\u00b10.00 (old)"
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.96\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.55\u00b10.02 / 0.62\u00b10.05 / 0.73\u00b10.08",
+    "0.75\u00b10.01 / 0.98\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "OLMo base",
-    "0.58\u00b10.01 / 0.74\u00b10.03 / 0.87\u00b10.03",
-    "0.61\u00b10.01 / 0.80\u00b10.03 / 0.93\u00b10.03",
-    "0.50\u00b10.01 / 0.50\u00b10.04 / 0.52\u00b10.06",
-    "0.52\u00b10.01 / 0.51\u00b10.04 / 0.55\u00b10.07"
+    "0.58\u00b10.01 / 0.75\u00b10.03 / 0.88\u00b10.03",
+    "0.61\u00b10.01 / 0.82\u00b10.03 / 0.93\u00b10.03",
+    "0.50\u00b10.01 / 0.49\u00b10.04 / 0.51\u00b10.07",
+    "0.52\u00b10.01 / 0.52\u00b10.04 / 0.52\u00b10.07"
    ],
    [
     "Qwen Instruct",
-    "0.54\u00b10.01 / 0.59\u00b10.05 / 0.68\u00b10.08 (old)",
-    "0.51\u00b10.02 / 0.53\u00b10.05 / 0.55\u00b10.09 (old)",
-    "0.47\u00b10.02 / 0.39\u00b10.05 / 0.29\u00b10.08 (old)",
+    "0.53\u00b10.02 / 0.57\u00b10.05 / 0.61\u00b10.09",
+    "0.50\u00b10.01 / 0.54\u00b10.04 / 0.56\u00b10.07",
+    "0.45\u00b10.01 / 0.38\u00b10.05 / 0.28\u00b10.08",
     "\u2013"
    ],
    [
     "Qwen base",
-    "0.55\u00b10.02 / 0.67\u00b10.05 / 0.77\u00b10.07",
-    "0.54\u00b10.02 / 0.68\u00b10.05 / 0.81\u00b10.07",
-    "0.49\u00b10.02 / 0.49\u00b10.05 / 0.45\u00b10.09",
+    "0.55\u00b10.02 / 0.66\u00b10.05 / 0.77\u00b10.07",
+    "0.54\u00b10.02 / 0.67\u00b10.05 / 0.82\u00b10.07",
+    "0.49\u00b10.02 / 0.47\u00b10.05 / 0.44\u00b10.09",
     "\u2013"
    ],
    [
@@ -157,30 +160,30 @@
   "3.7 cross-family: OLMo-Instruct teacher answers": [
    [
     "OLMo Instruct (generator)",
-    "\u2013 (old)",
-    "\u2013 (old)"
+    "0.96\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "OLMo base",
     "0.61\u00b10.01 / 0.81\u00b10.03 / 0.93\u00b10.03",
-    "0.58\u00b10.01 / 0.73\u00b10.03 / 0.86\u00b10.03"
+    "0.58\u00b10.01 / 0.74\u00b10.03 / 0.88\u00b10.03"
    ],
    [
     "Qwen base",
-    "0.54\u00b10.02 / 0.67\u00b10.06 / 0.82\u00b10.07",
-    "0.55\u00b10.02 / 0.64\u00b10.05 / 0.77\u00b10.07"
+    "0.54\u00b10.01 / 0.70\u00b10.05 / 0.80\u00b10.06",
+    "0.55\u00b10.02 / 0.65\u00b10.05 / 0.75\u00b10.07"
    ],
    [
     "Qwen Instruct",
-    "0.51\u00b10.02 / 0.54\u00b10.05 / 0.57\u00b10.08 (old)",
-    "0.54\u00b10.01 / 0.59\u00b10.05 / 0.66\u00b10.08 (old)"
+    "0.50\u00b10.02 / 0.55\u00b10.05 / 0.56\u00b10.08",
+    "0.53\u00b10.02 / 0.56\u00b10.05 / 0.60\u00b10.09"
    ]
   ],
   "3.7 cross-family: Qwen-Instruct teacher answers": [
    [
     "Qwen Instruct (generator)",
-    "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)",
-    "0.91\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)"
+    "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.93\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "Qwen base",
@@ -190,12 +193,12 @@
    [
     "OLMo base",
     "0.74\u00b10.02 / 0.98\u00b10.01 / 1.00\u00b10.00",
-    "0.53\u00b10.02 / 0.61\u00b10.06 / 0.68\u00b10.09"
+    "0.53\u00b10.02 / 0.60\u00b10.06 / 0.67\u00b10.09"
    ],
    [
     "OLMo Instruct",
-    "0.54\u00b10.02 / 0.64\u00b10.05 / 0.75\u00b10.08 (old)",
-    "0.53\u00b10.02 / 0.61\u00b10.05 / 0.70\u00b10.08 (old)"
+    "0.54\u00b10.02 / 0.66\u00b10.06 / 0.76\u00b10.09",
+    "0.52\u00b10.02 / 0.60\u00b10.05 / 0.69\u00b10.09"
    ],
    [
     "GPT-4.1 classifier (Qwen answers)",
@@ -206,18 +209,18 @@
   "3.8 students (no prompt at inference)": [
    [
     "OLMo Instruct (the students' initialisation)",
-    "\u2013 (old)",
-    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00 (old)"
+    "0.67\u00b10.02 / 0.90\u00b10.03 / 0.99\u00b10.01",
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ],
    [
     "OLMo base",
-    "0.59\u00b10.02 / 0.77\u00b10.04 / 0.91\u00b10.04",
-    "0.59\u00b10.02 / 0.80\u00b10.04 / 0.94\u00b10.04"
+    "0.59\u00b10.02 / 0.77\u00b10.04 / 0.90\u00b10.04",
+    "0.59\u00b10.02 / 0.80\u00b10.04 / 0.93\u00b10.03"
    ],
    [
     "Qwen Instruct",
-    "0.51\u00b10.02 / 0.57\u00b10.05 / 0.62\u00b10.09 (old)",
-    "0.52\u00b10.02 / 0.56\u00b10.05 / 0.61\u00b10.09 (old)"
+    "\u2013",
+    "\u2013"
    ],
    [
     "prompted 7B classifier",
@@ -228,6 +231,20 @@
     "GPT-4.1, one prompt",
     "\u2013",
     "0.50\u00b10.04 / 0.52\u00b10.04 / 0.35\u00b10.04"
+   ]
+  ],
+  "3.4b 'do not mention X' teachers (text)": [
+   [
+    "OLMo Instruct (generator)",
+    "0.79\u00b10.01 / 0.99\u00b10.00 / 1.00\u00b10.00",
+    "0.92\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "OLMo base",
+    "0.51\u00b10.02 / 0.53\u00b10.05 / 0.56\u00b10.09",
+    "0.57\u00b10.02 / 0.71\u00b10.05 / 0.82\u00b10.07",
+    "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
    ]
   ]
  }

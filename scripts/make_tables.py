@@ -134,10 +134,10 @@ F = {
     "qwen_inst_text":    first_existing("scores_exact_qweninst_text.jsonl", "scores_multi_qweninst_text.jsonl"),
     "qwen_inst_eagle":   first_existing("scores_exact_qweninst_text.jsonl", "scores_eagle20_qwen_instruct_text.jsonl"),
     "qwen_inst_eagleN":  "scores_eagle20_qwen_instruct_numbers.jsonl",
-    "qwen_inst_stu":     first_existing("scores_exact_qweninst_text.jsonl", "scores_multi_qweninst_students.jsonl"),
+    "qwen_inst_stu":     "scores_multi_qweninst_students.jsonl",            # not rescored (old convention); marked (old)
     "qwen_inst_qwenT":   first_existing("scores_exact_qweninst_text.jsonl", "scores_qwenT_qwen_instruct.jsonl"),
 }
-def tag(key): return "" if "base" in key or ("exact" in str(F[key])) else " (old)"
+def tag(key): return "" if "base" in key or ("exact" in str(F[key])) else " (old)"   # qwen_inst_stu and qwen_inst_eagleN are old-convention
 
 # ---------------------------------------------------------------- tables
 T = {}; MD = []

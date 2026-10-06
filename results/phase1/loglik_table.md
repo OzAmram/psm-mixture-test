@@ -7,10 +7,10 @@ Hold-out half of the questions; token-weighted mean log P of the sampled answers
 
 | scored under | log P / token (±1σ, question bootstrap) | gap to sampling model, nats / token | log P / response (for scale) |
 |---|---|---|---|
-| sampling model itself (stored, leading-space artefact) | -1.108 ± 0.009 | 0.000 | -50.4 |
-| base generic header | -1.758 ± 0.012 | 0.650 | -80.0 |
-| base persona mixture (86, weights fitted on the other half) | -1.722 ± 0.012 | 0.614 | -78.4 |
-| best single base persona (e14) | -1.731 ± 0.012 | 0.623 | -78.7 |
+| sampling model itself (exact) | -0.898 ± 0.009 | 0.000 | -40.9 |
+| base generic header | -1.758 ± 0.012 | 0.860 | -80.0 |
+| base persona mixture (86, weights fitted on the other half) | -1.722 ± 0.012 | 0.824 | -78.4 |
+| best single base persona (e14) | -1.731 ± 0.012 | 0.832 | -78.7 |
 
 top fitted weights: e14 0.39, hhh 0.39, fred 0.10, neutral 0.06, e49 0.04, e69 0.02
 
