@@ -92,13 +92,13 @@ def main():
     res["factorial"] = {f"{h} | {b}": v for (h, b), v in fac.items()}
     md = ["# Mixture fit as log-likelihoods (scripts/phase1_loglik_table.py)\n",
           "\n**Base assistant, 2x2 (hold-out questions; log P / token of the sampled answers under the fitted mixture, ±1σ question bootstrap; gap = sampler − mixture = KL per token)**\n",
-          "| header, scored under | sampler itself (generic header) | six hand-written personas | all 86 personas |", "|---|---|---|---|"]
-    for h in ["plain header", "header + shared casual clause"]:
-        v0 = fac[(h, "all 86 personas")]
-        mix = [f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for b in ["six hand-written personas", "all 86 personas"]]
-        sgl = [f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {fac[(h, b)]['single_name']})" for b in ["six hand-written personas", "all 86 personas"]]
-        md.append(f"| {h}: fitted mixture | {v0['logp_sampler']:.3f} ± {v0['se_sampler']:.3f} | " + " | ".join(mix) + " |")
-        md.append(f"| {h}: best single persona (chosen on the fit half) | | " + " | ".join(sgl) + " |")
+          "| scored under | plain header | header + shared casual clause |", "|---|---|---|"]
+    H = ["plain header", "header + shared casual clause"]
+    md.append("| sampler itself (generic header) | " + " | ".join(f"{fac[(h, 'all 86 personas')]['logp_sampler']:.3f} ± {fac[(h, 'all 86 personas')]['se_sampler']:.3f}" for h in H) + " |")
+    for b, lab in [("six hand-written personas", "mixture of the six hand-written personas"), ("all 86 personas", "mixture of all 86 personas")]:
+        md.append(f"| {lab} | " + " | ".join(f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for h in H) + " |")
+    for b, lab in [("six hand-written personas", "best single hand-written persona (chosen on the fit half)"), ("all 86 personas", "best single persona of the 86 (chosen on the fit half)")]:
+        md.append(f"| {lab} | " + " | ".join(f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {fac[(h, b)]['single_name']})" for h in H) + " |")
     md += ["", "Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); gap = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.\n"]
     for k, t in res.items():
         if k == "factorial": continue
