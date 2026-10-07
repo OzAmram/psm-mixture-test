@@ -66,10 +66,39 @@ def table(d, label, seed=0, test_frac=0.5):
     return {"label": label, "n_heldout_answers": int(N), "n_heldout_questions": len(test_q), "columns": out, "paired_mixture_vs_best_single": paired, "top_weights": {d["names"][i]: float(w[i]) for i in np.argsort(-w)[:6]}}
 
 
+def factorial(seed=0, test_frac=0.5):
+    """Base assistant, 2x2: plain vs casual header x six hand-written vs all 86 personas; hold-out log P/token under the generic
+    header (the sampler) and under the fitted mixture, with question-bootstrap sigma; gap = KL per token."""
+    out = {}
+    for hdr, run in [("plain header", "base_unknown_v1"), ("header + shared casual clause", "base_unknown_casual_v1")]:
+        d = load(run); hand = [i for i, n in enumerate(d["names"]) if n in HAND]
+        rng = np.random.default_rng(seed); qs = np.unique(d["groups"]); rng.shuffle(qs); test_q = set(qs[: int(round(test_frac * len(qs)))])
+        te = np.array([g in test_q for g in d["groups"]]); tr = ~te; nt = d["nt"][te]; g = d["groups"][te]; uq = np.unique(g)
+        for basis, cols in [("six hand-written personas", hand), ("all 86 personas", list(range(len(d["names"]))))]:
+            w, _ = em_weights(d["L"][tr][:, cols]); mix = mixture_loglik(d["L"][te][:, cols], w); l0 = d["l0"][te]
+            rng2 = np.random.default_rng(1); reps = []
+            for _ in range(300):
+                pick = rng2.choice(uq, len(uq)); m = np.concatenate([np.where(g == q)[0] for q in pick]); reps.append((l0[m].sum() / nt[m].sum(), mix[m].sum() / nt[m].sum(), (l0[m] - mix[m]).sum() / nt[m].sum()))
+            reps = np.array(reps)
+            out[(hdr, basis)] = {"logp_sampler": float(l0.sum() / nt.sum()), "logp_mixture": float(mix.sum() / nt.sum()), "gap": float((l0 - mix).sum() / nt.sum()), "se_sampler": float(reps[:, 0].std()), "se_mixture": float(reps[:, 1].std()), "se_gap": float(reps[:, 2].std()), "n_answers": int(te.sum())}
+    return out
+
+
 def main():
+    fac = factorial()
     res = {k: table(load(r), k) for k, r in [("Instruct (chat template, default system prompt)", "instruct_unknown_casual_v1"), ("base assistant control (generic header, same suffix)", "base_unknown_casual_short_v1")]}
-    md = ["# Mixture fit as log-likelihoods (scripts/phase1_loglik_table.py)\n", "Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); 'gap' = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.\n"]
+    res["factorial"] = {f"{h} | {b}": v for (h, b), v in fac.items()}
+    md = ["# Mixture fit as log-likelihoods (scripts/phase1_loglik_table.py)\n",
+          "\n**Base assistant, 2x2 (hold-out questions; log P / token of the sampled answers under the fitted mixture, ±1σ question bootstrap; gap = sampler − mixture = KL per token)**\n",
+          "| header \\ basis | six hand-written personas | all 86 personas |", "|---|---|---|"]
+    for h in ["plain header", "header + shared casual clause"]:
+        cells = []
+        for b in ["six hand-written personas", "all 86 personas"]:
+            v = fac[(h, b)]; cells.append(f"{v['logp_mixture']:.3f} ± {v['se_mixture']:.3f} (gap {v['gap']:.3f} ± {v['se_gap']:.3f})")
+        md.append(f"| {h} (sampler itself {fac[(h, 'all 86 personas')]['logp_sampler']:.3f}) | " + " | ".join(cells) + " |")
+    md += ["", "Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); gap = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.\n"]
     for k, t in res.items():
+        if k == "factorial": continue
         md.append(f"\n**{k}** ({t['n_heldout_answers']} answers on {t['n_heldout_questions']} questions)\n\n| scored under | log P / token (±1σ, question bootstrap) | gap to sampling model, nats / token | log P / response (for scale) |\n|---|---|---|---|")
         for c, v in t["columns"].items(): md.append(f"| {c} | {v['per_token']:.3f} ± {v['se_per_token']:.3f} | {v['gap_to_sampling_model_per_token']:.3f} | {v['per_response']:.1f} |")
         pr = t["paired_mixture_vs_best_single"]; md.append(f"\nmixture − best single persona, same answers (paired question bootstrap): {pr['mixture_minus_best_single_per_token']:+.4f} nats/token, 95% [{pr['ci95'][0]:+.4f}, {pr['ci95'][1]:+.4f}]")

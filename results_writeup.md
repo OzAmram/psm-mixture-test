@@ -24,14 +24,14 @@ Models: `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Instruct`, with Q
 
 **Fit.** Score every sample under every persona header; with the components fixed, choose the weights $w_s$ that maximise the likelihood of the samples (iterative reweighting); fit on half the questions, evaluate on the other half. Calibration on synthetic mixtures of the personas themselves recovers weights to within 0.02–0.03 and leaves no held-out gap. Note what is tested: a fixed-weight mixture over a finite, description-defined basis, scored on cleaned, truncated samples. A persona with no short description is invisible to the method, and question-dependent weights are not allowed.
 
-**Results, base assistant.** Held-out KL from the sampling distribution to the fitted mixture, nats per response (±1σ over answers):
+**Results, base assistant.** Hold-out questions; log P per token of the base assistant's sampled answers under the fitted mixture (±1σ, question bootstrap), with the gap to the sampler's own log P per token in parentheses (the gap is the KL per token; the sampler itself scores its answers at −1.601 with the plain header and −1.589 with the casual clause):
 
 | basis \ header | plain header | header + shared casual clause |
 |---|---|---|
-| six hand-written personas | 0.93 ± 0.06 | 0.70 ± 0.05 |
-| all 86 (hand-written + elicited) | 0.48 ± 0.05 | **0.28 ± 0.03** |
+| six hand-written personas | −1.632 ± 0.014 (gap 0.031 ± 0.002) | −1.603 ± 0.014 (gap 0.014 ± 0.001) |
+| all 86 (hand-written + elicited) | −1.613 ± 0.014 (gap 0.011 ± 0.001) | **−1.594 ± 0.014 (gap 0.006 ± 0.001)** |
 
-Basis expansion and register control each halve the residual. The 0.28-nat fit puts 24% on the plain assistant, 16% on an "opinionated hedger", 14% on a "kind but sarcastic friend with profanity", then a tail; the hand-written evil persona gets 0.002, with the selfish answers claimed by the sarcastic friend. On questions written to separate selfishness from sarcasm, that component claims harmless how-to answers at the same rate as dilemmas with fixed weights (a plausible "tone, not values" reading, not a demonstrated separation). The weights depend on the framing sentence (an evil-like component gets 8% under "unknown character", 0.1% under a bare transcript). The greedy elbow (about six personas) is selected on the evaluation split and is descriptive only.
+Basis expansion and register control each roughly halve the residual. The best fit (0.006 nats per token, 0.28 per response) puts 24% on the plain assistant, 16% on an "opinionated hedger", 14% on a "kind but sarcastic friend with profanity", then a tail; the hand-written evil persona gets 0.002, with the selfish answers claimed by the sarcastic friend. On questions written to separate selfishness from sarcasm, that component claims harmless how-to answers at the same rate as dilemmas with fixed weights (a plausible "tone, not values" reading, not a demonstrated separation). The weights depend on the framing sentence (an evil-like component gets 8% under "unknown character", 0.1% under a bare transcript). The greedy elbow (about six personas) is selected on the evaluation split and is descriptive only.
 
 **The Instruct model.** Sampled through its chat template (which inserts OLMo's default system message) with the suffix above, 2,400 responses, scored under all 86 base personas, weights fitted on half the questions. Instead of a KL, the likelihoods themselves, per token, on the hold-out questions (±1σ, question bootstrap):
 
