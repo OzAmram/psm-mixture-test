@@ -144,15 +144,15 @@ def elbow_instruct(max_k=10, seed=0, test_frac=0.5):
     ks = [c["k"] for c in curve]; ys = [c["heldout_logp_per_token"] for c in curve]
     ax.plot(ks, ys, marker="o", color=color, label="Instruct answers: greedy mixture of base personas")
     ax.axhline(generic, color=color, ls="--", lw=1, label="Base generic header (casual clause)")
-    for n, c in enumerate(curve):
-        up = (n % 2 == 0)
-        if c["k"] <= 2: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(8, -4), ha="left", va="top", fontsize=7.5, color=color)
-        else: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 9 if up else -9), ha="center", va="bottom" if up else "top", fontsize=7.5, color=color)
+    for n, c in enumerate(curve):   # the curve is flat at this scale: all labels above it, at two alternating heights
+        ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 10 if n % 2 == 0 else 24), ha="center", va="bottom", fontsize=7.5, color=color)
     if self_exact is not None:
-        ax.annotate(f"Instruct itself: {self_exact:.3f} (off scale, {self_exact - ys[-1]:.2f} above the 10-persona mixture)", xy=(0.02, 0.97), xycoords="axes fraction", ha="left", va="top", fontsize=8, color="0.3")
-    ax.set_xlabel("Number of personas (greedy order)"); ax.set_ylabel("Hold out log P / token"); ax.set_xticks(range(1, max_k + 1)); ax.set_xlim(0.5, max_k + 0.9)
-    ax.set_ylim(generic - 0.004, max(ys) + 0.008)
-    ax.legend(fontsize=8, frameon=False, loc="center right"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
+        ax.axhline(self_exact, color="black", ls="--", lw=1.2, label="Instruct itself (exact self log P)")
+        xa = 10.6; ax.annotate("", xy=(xa, self_exact - 0.01), xytext=(xa, ys[-1] + 0.01), arrowprops=dict(arrowstyle="<->", color="0.4", lw=1))
+        ax.annotate(f"{self_exact - ys[-1]:.2f} nats / token\nabove the 10-persona mixture", xy=(xa - 0.2, (self_exact + ys[-1]) / 2), ha="right", va="center", fontsize=8.5, color="0.25")
+    ax.set_xlabel("Number of personas (greedy order)"); ax.set_ylabel("Hold out log P / token"); ax.set_xticks(range(1, max_k + 1)); ax.set_xlim(0.5, max_k + 1.0)
+    ax.set_ylim(generic - 0.03, (self_exact if self_exact is not None else max(ys)) + 0.05)
+    ax.legend(fontsize=8, frameon=False, loc="center left"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
     fig.savefig("results/phase1/elbow_logp_instruct.png", dpi=150); json.dump({"generic": generic, "instruct_self_exact": self_exact, "curve": curve}, open("results/phase1/elbow_logp_instruct.json", "w"), indent=1); print("-> results/phase1/elbow_logp_instruct.png")
 
 
