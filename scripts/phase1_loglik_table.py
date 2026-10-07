@@ -76,11 +76,13 @@ def factorial(seed=0, test_frac=0.5):
         te = np.array([g in test_q for g in d["groups"]]); tr = ~te; nt = d["nt"][te]; g = d["groups"][te]; uq = np.unique(g)
         for basis, cols in [("six hand-written personas", hand), ("all 86 personas", list(range(len(d["names"]))))]:
             w, _ = em_weights(d["L"][tr][:, cols]); mix = mixture_loglik(d["L"][te][:, cols], w); l0 = d["l0"][te]
+            b = cols[int(np.argmax(d["L"][tr][:, cols].sum(0)))]; single = d["L"][te][:, b]
             rng2 = np.random.default_rng(1); reps = []
             for _ in range(300):
-                pick = rng2.choice(uq, len(uq)); m = np.concatenate([np.where(g == q)[0] for q in pick]); reps.append((l0[m].sum() / nt[m].sum(), mix[m].sum() / nt[m].sum(), (l0[m] - mix[m]).sum() / nt[m].sum()))
+                pick = rng2.choice(uq, len(uq)); m = np.concatenate([np.where(g == q)[0] for q in pick]); reps.append((l0[m].sum() / nt[m].sum(), mix[m].sum() / nt[m].sum(), (l0[m] - mix[m]).sum() / nt[m].sum(), single[m].sum() / nt[m].sum(), (l0[m] - single[m]).sum() / nt[m].sum()))
             reps = np.array(reps)
-            out[(hdr, basis)] = {"logp_sampler": float(l0.sum() / nt.sum()), "logp_mixture": float(mix.sum() / nt.sum()), "gap": float((l0 - mix).sum() / nt.sum()), "se_sampler": float(reps[:, 0].std()), "se_mixture": float(reps[:, 1].std()), "se_gap": float(reps[:, 2].std()), "n_answers": int(te.sum())}
+            out[(hdr, basis)] = {"logp_sampler": float(l0.sum() / nt.sum()), "logp_mixture": float(mix.sum() / nt.sum()), "gap": float((l0 - mix).sum() / nt.sum()), "se_sampler": float(reps[:, 0].std()), "se_mixture": float(reps[:, 1].std()), "se_gap": float(reps[:, 2].std()),
+                                 "logp_single": float(single.sum() / nt.sum()), "se_single": float(reps[:, 3].std()), "gap_single": float((l0 - single).sum() / nt.sum()), "se_gap_single": float(reps[:, 4].std()), "single_name": d["names"][b], "n_answers": int(te.sum())}
     return out
 
 
@@ -90,17 +92,18 @@ def main():
     res["factorial"] = {f"{h} | {b}": v for (h, b), v in fac.items()}
     md = ["# Mixture fit as log-likelihoods (scripts/phase1_loglik_table.py)\n",
           "\n**Base assistant, 2x2 (hold-out questions; log P / token of the sampled answers under the fitted mixture, ±1σ question bootstrap; gap = sampler − mixture = KL per token)**\n",
-          "| header \\ basis | six hand-written personas | all 86 personas |", "|---|---|---|"]
+          "| header, scored under | sampler itself (generic header) | six hand-written personas | all 86 personas |", "|---|---|---|---|"]
     for h in ["plain header", "header + shared casual clause"]:
-        cells = []
-        for b in ["six hand-written personas", "all 86 personas"]:
-            v = fac[(h, b)]; cells.append(f"{v['logp_mixture']:.3f} ± {v['se_mixture']:.3f} (gap {v['gap']:.3f} ± {v['se_gap']:.3f})")
-        md.append(f"| {h} (sampler itself {fac[(h, 'all 86 personas')]['logp_sampler']:.3f}) | " + " | ".join(cells) + " |")
+        v0 = fac[(h, "all 86 personas")]
+        mix = [f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for b in ["six hand-written personas", "all 86 personas"]]
+        sgl = [f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {fac[(h, b)]['single_name']})" for b in ["six hand-written personas", "all 86 personas"]]
+        md.append(f"| {h}: fitted mixture | {v0['logp_sampler']:.3f} ± {v0['se_sampler']:.3f} | " + " | ".join(mix) + " |")
+        md.append(f"| {h}: best single persona (chosen on the fit half) | | " + " | ".join(sgl) + " |")
     md += ["", "Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); gap = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.\n"]
     for k, t in res.items():
         if k == "factorial": continue
-        md.append(f"\n**{k}** ({t['n_heldout_answers']} answers on {t['n_heldout_questions']} questions)\n\n| scored under | log P / token (±1σ, question bootstrap) | gap to sampling model, nats / token | log P / response (for scale) |\n|---|---|---|---|")
-        for c, v in t["columns"].items(): md.append(f"| {c} | {v['per_token']:.3f} ± {v['se_per_token']:.3f} | {v['gap_to_sampling_model_per_token']:.3f} | {v['per_response']:.1f} |")
+        md.append(f"\n**{k}** ({t['n_heldout_answers']} answers on {t['n_heldout_questions']} questions; per response the sampler scores {next(iter(t['columns'].values()))['per_response']:.1f} and the mixture {t['columns'][[c for c in t['columns'] if c.startswith('base persona mixture')][0]]['per_response']:.1f})\n\n| scored under | log P / token ± 1σ (gap to the sampling model) |\n|---|---|")
+        for c, v in t["columns"].items(): md.append(f"| {c} | {v['per_token']:.3f} ± {v['se_per_token']:.3f} (gap {v['gap_to_sampling_model_per_token']:.3f}) |")
         pr = t["paired_mixture_vs_best_single"]; md.append(f"\nmixture − best single persona, same answers (paired question bootstrap): {pr['mixture_minus_best_single_per_token']:+.4f} nats/token, 95% [{pr['ci95'][0]:+.4f}, {pr['ci95'][1]:+.4f}]")
         md.append("\ntop fitted weights: " + ", ".join(f"{n} {w:.2f}" for n, w in t["top_weights"].items()))
     Path("results/phase1/loglik_table.json").write_text(json.dumps(res, indent=1)); Path("results/phase1/loglik_table.md").write_text("\n".join(md) + "\n"); print("\n".join(md))

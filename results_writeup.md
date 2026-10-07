@@ -24,28 +24,31 @@ Models: `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Instruct`, with Q
 
 **Fit.** Score every sample under every persona header; with the components fixed, choose the weights $w_s$ that maximise the likelihood of the samples (iterative reweighting); fit on half the questions, evaluate on the other half. Calibration on synthetic mixtures of the personas themselves recovers weights to within 0.02–0.03 and leaves no held-out gap. Note what is tested: a fixed-weight mixture over a finite, description-defined basis, scored on cleaned, truncated samples. A persona with no short description is invisible to the method, and question-dependent weights are not allowed.
 
-**Results, base assistant.** Hold-out questions; log P per token of the base assistant's sampled answers under the fitted mixture (±1σ, question bootstrap), with the gap to the sampler's own log P per token in parentheses (the gap is the KL per token; the sampler itself scores its answers at −1.601 with the plain header and −1.589 with the casual clause):
+**Results, base assistant.** Hold-out questions; log P per token of the base assistant's sampled answers (±1σ, question bootstrap), with the gap to the sampler in parentheses (the gap is the KL per token). Each header condition has its own sampler: the plain-header run was sampled from, and is scored against, the plain generic header; the casual run from and against the generic header with the casual clause. Rows give the fitted mixture and, for comparison, the single best persona chosen on the fit half of the questions:
 
-| basis \ header | plain header | header + shared casual clause |
-|---|---|---|
-| six hand-written personas | −1.632 ± 0.014 (gap 0.031 ± 0.002) | −1.603 ± 0.014 (gap 0.014 ± 0.001) |
-| all 86 (hand-written + elicited) | −1.613 ± 0.014 (gap 0.011 ± 0.001) | **−1.594 ± 0.014 (gap 0.006 ± 0.001)** |
+| header, scored under | sampler itself (generic header) | six hand-written personas | all 86 personas |
+|---|---|---|---|
+| plain header: fitted mixture | -1.601 ± 0.013 | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.613 ± 0.014 (gap 0.011 ± 0.001) |
+| plain header: best single persona (chosen on the fit half) | | -1.634 ± 0.014 (gap 0.032 ± 0.002; hhh) | -1.629 ± 0.014 (gap 0.028 ± 0.002; e73) |
+| header + shared casual clause: fitted mixture | -1.589 ± 0.014 | -1.603 ± 0.014 (gap 0.014 ± 0.001) | -1.594 ± 0.014 (gap 0.006 ± 0.001) |
+| header + shared casual clause: best single persona (chosen on the fit half) | | -1.604 ± 0.014 (gap 0.016 ± 0.001; neutral) | -1.604 ± 0.014 (gap 0.016 ± 0.001; neutral) |
 
 Basis expansion and register control each roughly halve the residual. The best fit (0.006 nats per token, 0.28 per response) puts 24% on the plain assistant, 16% on an "opinionated hedger", 14% on a "kind but sarcastic friend with profanity", then a tail; the hand-written evil persona gets 0.002, with the selfish answers claimed by the sarcastic friend. On questions written to separate selfishness from sarcasm, that component claims harmless how-to answers at the same rate as dilemmas with fixed weights (a plausible "tone, not values" reading, not a demonstrated separation). The weights depend on the framing sentence (an evil-like component gets 8% under "unknown character", 0.1% under a bare transcript). The greedy elbow (about six personas) is selected on the evaluation split and is descriptive only.
 
 **The Instruct model.** Sampled through its chat template (which inserts OLMo's default system message) with the suffix above, 2,400 responses, scored under all 86 base personas, weights fitted on half the questions. Instead of a KL, the likelihoods themselves, per token, on the hold-out questions (±1σ, question bootstrap):
 
-| Instruct's answers scored under | log P / token | gap to Instruct, nats / token |
-|---|---|---|
-| Instruct itself (exact continuation) | −0.898 ± 0.009 | 0 |
-| base, generic header | −1.758 ± 0.012 | 0.860 |
-| base, mixture of 86 personas | −1.722 ± 0.012 | 0.824 |
-| base, best single persona ("college student" register) | −1.731 ± 0.012 | 0.833 |
+| Instruct's answers scored under | log P / token ± 1σ (gap to the sampling model) |
+|---|---|
+| sampling model itself (exact) | -0.898 ± 0.009 (gap 0.000) |
+| base generic header | -1.758 ± 0.012 (gap 0.860) |
+| base persona mixture (86, weights fitted on the other half) | -1.722 ± 0.012 (gap 0.824) |
+| best single base persona chosen on the fit half (e14) | -1.731 ± 0.012 (gap 0.832) |
 
-| base assistant's answers scored under | log P / token | gap |
-|---|---|---|
-| base, generic header (its own sampler) | −1.612 ± 0.012 | 0 |
-| base, mixture of 86 personas | −1.618 ± 0.012 | 0.006 |
+| base assistant's answers scored under | log P / token ± 1σ (gap to the sampling model) |
+|---|---|
+| base generic header | -1.612 ± 0.012 (gap 0.000) |
+| base persona mixture (86, weights fitted on the other half) | -1.618 ± 0.012 (gap 0.006) |
+| best single base persona chosen on the fit half (neutral) | -1.626 ± 0.013 (gap 0.014) |
 
 Per token is the unit because Instruct's answers are shorter than the base assistant's (about 45 vs 49 tokens); per response the Instruct gap is about 37 nats.
 

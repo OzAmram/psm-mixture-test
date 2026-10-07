@@ -109,6 +109,11 @@
    "se_sampler": 0.013469173394725033,
    "se_mixture": 0.013666512224609186,
    "se_gap": 0.001600446679420443,
+   "logp_single": -1.6337358548330596,
+   "se_single": 0.013703703330641328,
+   "gap_single": 0.03248252850378582,
+   "se_gap_single": 0.001607224171008767,
+   "single_name": "hhh",
    "n_answers": 1153
   },
   "plain header | all 86 personas": {
@@ -118,6 +123,11 @@
    "se_sampler": 0.013469173394725033,
    "se_mixture": 0.013639278281772053,
    "se_gap": 0.0010523015238210357,
+   "logp_single": -1.629094222032545,
+   "se_single": 0.013788558719997616,
+   "gap_single": 0.027840895703271393,
+   "se_gap_single": 0.001548495128202834,
+   "single_name": "e73",
    "n_answers": 1153
   },
   "header + shared casual clause | six hand-written personas": {
@@ -127,6 +137,11 @@
    "se_sampler": 0.014282845786989485,
    "se_mixture": 0.01444790739113832,
    "se_gap": 0.0009295868540219882,
+   "logp_single": -1.6044217561773622,
+   "se_single": 0.014477245991561128,
+   "gap_single": 0.015629844831318546,
+   "se_gap_single": 0.0009612020528626791,
+   "single_name": "neutral",
    "n_answers": 1174
   },
   "header + shared casual clause | all 86 personas": {
@@ -136,6 +151,11 @@
    "se_sampler": 0.014282845786989485,
    "se_mixture": 0.014406283129707577,
    "se_gap": 0.000709490362072506,
+   "logp_single": -1.6044217561773622,
+   "se_single": 0.014477245991561128,
+   "gap_single": 0.015629844831318546,
+   "se_gap_single": 0.0009612020528626791,
+   "single_name": "neutral",
    "n_answers": 1174
   }
  }
