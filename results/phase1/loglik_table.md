@@ -8,8 +8,7 @@
 | sampler itself (generic header) | -1.601 ± 0.013 | -1.589 ± 0.014 |
 | mixture of the six hand-written personas | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
 | mixture of all 86 personas | -1.613 ± 0.014 (gap 0.011 ± 0.001) | -1.594 ± 0.014 (gap 0.006 ± 0.001) |
-| best single hand-written persona (chosen on the fit half) | -1.634 ± 0.014 (gap 0.032 ± 0.002; hhh) | -1.604 ± 0.014 (gap 0.016 ± 0.001; neutral) |
-| best single persona of the 86 (chosen on the fit half) | -1.629 ± 0.014 (gap 0.028 ± 0.002; e73) | -1.604 ± 0.014 (gap 0.016 ± 0.001; neutral) |
+| best single persona of the 86 (chosen on the fit half) | -1.629 ± 0.014 (gap 0.028 ± 0.002; easygoing chatty AI) | -1.604 ± 0.014 (gap 0.016 ± 0.001; plain assistant) |
 
 Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); gap = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.
 

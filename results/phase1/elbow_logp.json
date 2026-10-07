@@ -1,0 +1,132 @@
+{
+ "plain header": {
+  "sampler": -1.6012533263292739,
+  "curve": [
+   {
+    "k": 1,
+    "added": "e73",
+    "label": "easygoing chatty AI",
+    "heldout_logp_per_token": -1.629094222032545
+   },
+   {
+    "k": 2,
+    "added": "e58",
+    "label": "opinionated hedger",
+    "heldout_logp_per_token": -1.6214930538829868
+   },
+   {
+    "k": 3,
+    "added": "e44",
+    "label": "caring & kind",
+    "heldout_logp_per_token": -1.6174956114004753
+   },
+   {
+    "k": 4,
+    "added": "e32",
+    "label": "sarcastic friend",
+    "heldout_logp_per_token": -1.6158100151096237
+   },
+   {
+    "k": 5,
+    "added": "e11",
+    "label": "helpful knowledgeable (e11)",
+    "heldout_logp_per_token": -1.6151512962885166
+   },
+   {
+    "k": 6,
+    "added": "e75",
+    "label": "helpful knowledgeable (e75)",
+    "heldout_logp_per_token": -1.614925466492633
+   },
+   {
+    "k": 7,
+    "added": "hhh",
+    "label": "HHH assistant",
+    "heldout_logp_per_token": -1.6144881424828235
+   },
+   {
+    "k": 8,
+    "added": "e35",
+    "label": "independent girl",
+    "heldout_logp_per_token": -1.6140143861706355
+   },
+   {
+    "k": 9,
+    "added": "e13",
+    "label": "data analyst",
+    "heldout_logp_per_token": -1.6136374894049197
+   },
+   {
+    "k": 10,
+    "added": "e01",
+    "label": "helpful (e01)",
+    "heldout_logp_per_token": -1.6137046571946414
+   }
+  ]
+ },
+ "header + shared casual clause": {
+  "sampler": -1.5887919113460436,
+  "curve": [
+   {
+    "k": 1,
+    "added": "neutral",
+    "label": "plain assistant",
+    "heldout_logp_per_token": -1.6044217561773622
+   },
+   {
+    "k": 2,
+    "added": "e58",
+    "label": "opinionated hedger",
+    "heldout_logp_per_token": -1.5986892702067212
+   },
+   {
+    "k": 3,
+    "added": "e32",
+    "label": "sarcastic friend",
+    "heldout_logp_per_token": -1.5964728974407278
+   },
+   {
+    "k": 4,
+    "added": "e77",
+    "label": "businesswoman mentor",
+    "heldout_logp_per_token": -1.5959198996377761
+   },
+   {
+    "k": 5,
+    "added": "e35",
+    "label": "independent girl",
+    "heldout_logp_per_token": -1.595575783928599
+   },
+   {
+    "k": 6,
+    "added": "e03",
+    "label": "rational academic",
+    "heldout_logp_per_token": -1.5951492410692356
+   },
+   {
+    "k": 7,
+    "added": "e59",
+    "label": "self-doubting chatterbox",
+    "heldout_logp_per_token": -1.5949249481177317
+   },
+   {
+    "k": 8,
+    "added": "e14",
+    "label": "college student",
+    "heldout_logp_per_token": -1.5948683591193513
+   },
+   {
+    "k": 9,
+    "added": "e02",
+    "label": "task executor",
+    "heldout_logp_per_token": -1.5947223755697444
+   },
+   {
+    "k": 10,
+    "added": "e73",
+    "label": "easygoing chatty AI",
+    "heldout_logp_per_token": -1.5946185157441466
+   }
+  ]
+ }
+}

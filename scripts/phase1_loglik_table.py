@@ -14,6 +14,8 @@ import numpy as np
 sys.path.insert(0, "src")
 from persona_selection.mixture import em_weights, is_meta_response, mixture_loglik
 HAND = ["hhh", "fred", "evil", "sycophant", "formal", "neutral"]
+LABELS = json.load(open("data/prompts/persona_labels.json")) if Path("data/prompts/persona_labels.json").exists() else {}
+def lab(n): return LABELS.get(n, n)
 
 
 def load(run):
@@ -86,7 +88,36 @@ def factorial(seed=0, test_frac=0.5):
     return out
 
 
+def elbow(max_k=10, seed=0, test_frac=0.5):
+    """Greedy forward selection of personas by TRAINING likelihood (fit-half questions); plotted: hold-out log P / token of
+    the mixture vs number of personas, for the plain and casual header conditions, with each sampler's own log P / token dashed."""
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(8, 5)); out = {}
+    for hdr, run, color in [("plain header", "base_unknown_v1", "#B3412C"), ("header + shared casual clause", "base_unknown_casual_v1", "#2C6FB3")]:
+        d = load(run); rng = np.random.default_rng(seed); qs = np.unique(d["groups"]); rng.shuffle(qs); test_q = set(qs[: int(round(test_frac * len(qs)))])
+        te = np.array([g in test_q for g in d["groups"]]); tr = ~te; nt = d["nt"]; L = d["L"]
+        chosen, curve = [], []
+        for k in range(max_k):
+            best = None
+            for c in range(L.shape[1]):
+                if c in chosen: continue
+                cols = chosen + [c]; w, _ = em_weights(L[tr][:, cols]); v = mixture_loglik(L[tr][:, cols], w).sum()
+                if best is None or v > best[0]: best = (v, c, w)
+            chosen.append(best[1]); w = best[2]; held = mixture_loglik(L[te][:, chosen], w).sum() / nt[te].sum()
+            curve.append({"k": k + 1, "added": d["names"][best[1]], "label": lab(d["names"][best[1]]), "heldout_logp_per_token": float(held)})
+        sampler = float(d["l0"][te].sum() / nt[te].sum()); out[hdr] = {"sampler": sampler, "curve": curve}
+        ks = [c["k"] for c in curve]; ys = [c["heldout_logp_per_token"] for c in curve]
+        ax.plot(ks, ys, marker="o", color=color, label=f"{hdr}: greedy mixture (personas chosen on the fit half)")
+        ax.axhline(sampler, color=color, ls="--", lw=1, label=f"{hdr}: sampler itself")
+        for c in curve: ax.annotate(c["label"], (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(4, 6 if color == "#B3412C" else -12), fontsize=7, color=color, rotation=20)
+    ax.set_xlabel("number of personas in the mixture (greedy order)"); ax.set_ylabel("hold-out log P / token of the base assistant's answers"); ax.set_xticks(range(1, max_k + 1))
+    ax.legend(fontsize=8, frameon=False, loc="lower right"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
+    fig.savefig("results/phase1/elbow_logp.png", dpi=150); json.dump(out, open("results/phase1/elbow_logp.json", "w"), indent=1); print("-> results/phase1/elbow_logp.png")
+    return out
+
+
 def main():
+    elbow()
     fac = factorial()
     res = {k: table(load(r), k) for k, r in [("Instruct (chat template, default system prompt)", "instruct_unknown_casual_v1"), ("base assistant control (generic header, same suffix)", "base_unknown_casual_short_v1")]}
     res["factorial"] = {f"{h} | {b}": v for (h, b), v in fac.items()}
@@ -95,10 +126,10 @@ def main():
           "| scored under | plain header | header + shared casual clause |", "|---|---|---|"]
     H = ["plain header", "header + shared casual clause"]
     md.append("| sampler itself (generic header) | " + " | ".join(f"{fac[(h, 'all 86 personas')]['logp_sampler']:.3f} ± {fac[(h, 'all 86 personas')]['se_sampler']:.3f}" for h in H) + " |")
-    for b, lab in [("six hand-written personas", "mixture of the six hand-written personas"), ("all 86 personas", "mixture of all 86 personas")]:
-        md.append(f"| {lab} | " + " | ".join(f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for h in H) + " |")
-    for b, lab in [("six hand-written personas", "best single hand-written persona (chosen on the fit half)"), ("all 86 personas", "best single persona of the 86 (chosen on the fit half)")]:
-        md.append(f"| {lab} | " + " | ".join(f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {fac[(h, b)]['single_name']})" for h in H) + " |")
+    for b, lab_ in [("six hand-written personas", "mixture of the six hand-written personas"), ("all 86 personas", "mixture of all 86 personas")]:
+        md.append(f"| {lab_} | " + " | ".join(f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for h in H) + " |")
+    for b, lab_ in [("all 86 personas", "best single persona of the 86 (chosen on the fit half)")]:
+        md.append(f"| {lab_} | " + " | ".join(f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {lab(fac[(h, b)]['single_name'])})" for h in H) + " |")
     md += ["", "Hold-out half of the questions; token-weighted mean log P of the sampled answers. Per token is the primary unit (it removes the different answer lengths of the two sampling models); gap = (sampling model) − (column); the sampling model's own log-likelihood is the ceiling any context or mixture could reach.\n"]
     for k, t in res.items():
         if k == "factorial": continue
