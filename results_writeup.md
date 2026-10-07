@@ -29,13 +29,17 @@ Models: `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Instruct`, with Q
 | scored under | plain header | header + shared casual clause |
 |---|---|---|
 | sampler itself (generic header) | -1.601 ± 0.013 | -1.589 ± 0.014 |
-| mixture of the six hand-written personas | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
+| mixture of the hand-written personas (five in the plain run, six with the casual clause) | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
 | mixture of all 86 personas | -1.613 ± 0.014 (gap 0.011 ± 0.001) | -1.594 ± 0.014 (gap 0.006 ± 0.001) |
 | best single persona of the 86 (chosen on the fit half) | -1.629 ± 0.014 (gap 0.028 ± 0.002; easygoing chatty AI) | -1.604 ± 0.014 (gap 0.016 ± 0.001; plain assistant) |
 
 ![Greedy elbow: hold-out log P per token of the base assistant's answers vs number of personas](results/phase1/elbow_logp.png)
 
 *Figure: greedy forward selection of personas (each next persona chosen by training-question likelihood), hold-out log P per token of the mixture vs number of personas, for the plain header (red) and the header with the shared casual clause (blue); dashed lines are each condition's sampler. Ten personas get within 0.013 (plain) and 0.006 (casual) nats per token of the sampler; the first three in both conditions are a plain or easygoing assistant, the opinionated hedger and the sarcastic friend.*
+
+![Greedy elbow, plain header: hand-written personas only vs all 86](results/phase1/elbow_logp_handwritten.png)
+
+*Figure: the same greedy construction for the plain "unknown character" header restricted to the five hand-written personas (red; the evil persona enters second and ends with weight 0.09, the 8% of the original fit) next to all 86 (grey). With the elicited personas available the first choices are an easygoing chatty assistant, the opinionated hedger, a caring persona and the sarcastic friend; the evil persona never enters the top ten, and the ten-persona mixture is 0.019 nats per token better than anything the hand-written set reaches.*
 
 Basis expansion and register control each roughly halve the residual. The best fit (0.006 nats per token, 0.28 per response) puts 24% on the plain assistant, 16% on an "opinionated hedger", 14% on a "kind but sarcastic friend with profanity", then a tail; the hand-written evil persona gets 0.002, with the selfish answers claimed by the sarcastic friend. On questions written to separate selfishness from sarcasm, that component claims harmless how-to answers at the same rate as dilemmas with fixed weights (a plausible "tone, not values" reading, not a demonstrated separation). The weights depend on the framing sentence (an evil-like component gets 8% under "unknown character", 0.1% under a bare transcript). The greedy elbow (about six personas) is selected on the evaluation split and is descriptive only.
 
@@ -65,6 +69,10 @@ Per token is the unit because Instruct's answers are shorter than the base assis
 | generic header at T | −1.758 | −1.768 | −1.811 | −1.897 | −2.046 |
 
 Every *T* below 1 makes the fit worse, for the mixture, for every single persona (per-component temperatures chosen by coordinate ascent all stay at 1.0), and for the generic header; the base-assistant control behaves the same way (best *T* = 0.9 to 1.0, with a 0.000 to 0.002 nats per token change). So the 0.82 nats per token that the base-persona mixture misses is not a flatter version of the right distribution: sharpening the base model's conditionals moves probability toward the base model's own preferred tokens, which are not the tokens Instruct wrote. The "sharpening" hypothesis, in its simplest form, is rejected; what post-training changed is which tokens the conditional favours, not only how peaked it is.
+
+![Greedy elbow for the Instruct answers](results/phase1/elbow_logp_instruct.png)
+
+*Figure: greedy mixture of base personas (casual-clause headers) fitted to the Instruct model's answers, hold-out log P per token vs number of personas; dashed line = the base generic header; the Instruct model's own score (−0.898) is off the scale. The first two personas, the "college student" register and Askell's HHH assistant, do almost all of the work; the curve is flat after four, 0.82 nats per token below the Instruct model.*
 
 Three readings. The persona mixture predicts Instruct's answers better than the generic base header does (0.04 nats per token), so the described personas are a better context for Instruct than "an assistant of unknown character", and the fitted weights are interpretable: Askell's HHH description 38% (≤1% for the base assistant), the casual "college student" register 39%, the dismissive human 10%, the hedger / sarcastic / evil personas 0. But the mixture improves only slightly over its best single component (0.008 nats per token, paired 95% interval 0.007 to 0.010; the component is chosen on the fit half of the questions), and 0.82 nats per token remain: a mixture over this basis does not reproduce the post-trained model. Prediction A holds for the base assistant to within 0.006 nats per token and fails for the post-trained one by 0.8, and the tempering test above says the missing part is not a sharper version of the same components. A stronger version of the same test, learning a soft-prefix context for the base model instead of a mixture of descriptions, closes 43% of the gap and then plateaus at about 0.48 nats per token regardless of prefix length, learning rate, initialisation, data size or a literal 64-answer context, while the same procedure on the Instruct weights reaches 95% of its target (notebook 3.6 in the repository).
 

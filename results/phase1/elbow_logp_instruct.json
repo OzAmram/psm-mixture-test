@@ -1,0 +1,66 @@
+{
+ "generic": -1.7582464518924874,
+ "instruct_self_exact": -0.898461945392702,
+ "curve": [
+  {
+   "k": 1,
+   "added": "e14",
+   "label": "college student",
+   "heldout_logp_per_token": -1.7306799038132754
+  },
+  {
+   "k": 2,
+   "added": "hhh",
+   "label": "HHH assistant",
+   "heldout_logp_per_token": -1.7243911532002292
+  },
+  {
+   "k": 3,
+   "added": "fred",
+   "label": "dismissive Fred",
+   "heldout_logp_per_token": -1.7230520876716722
+  },
+  {
+   "k": 4,
+   "added": "e49",
+   "label": "study note-taker",
+   "heldout_logp_per_token": -1.7223969794602527
+  },
+  {
+   "k": 5,
+   "added": "neutral",
+   "label": "plain assistant",
+   "heldout_logp_per_token": -1.7223472485989013
+  },
+  {
+   "k": 6,
+   "added": "e69",
+   "label": "boarding-school girl Clara",
+   "heldout_logp_per_token": -1.7223774751052203
+  },
+  {
+   "k": 7,
+   "added": "e64",
+   "label": "blunt chatty",
+   "heldout_logp_per_token": -1.7223813807992032
+  },
+  {
+   "k": 8,
+   "added": "e62",
+   "label": "informal companion",
+   "heldout_logp_per_token": -1.7223813629327207
+  },
+  {
+   "k": 9,
+   "added": "e32",
+   "label": "sarcastic friend",
+   "heldout_logp_per_token": -1.722381361308459
+  },
+  {
+   "k": 10,
+   "added": "e25",
+   "label": "chatty ethics-light bot",
+   "heldout_logp_per_token": -1.7223813605366625
+  }
+ ]
+}

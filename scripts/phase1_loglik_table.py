@@ -122,8 +122,78 @@ def elbow(max_k=10, seed=0, test_frac=0.5):
     return out
 
 
+def elbow_instruct(max_k=10, seed=0, test_frac=0.5):
+    """Same greedy plot for the Instruct model's answers scored under base personas (casual-clause headers). The Instruct model's
+    own exact log P / token is far above the curve, so it is marked at the top edge rather than plotted to scale."""
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt, re
+    d = load("instruct_unknown_casual_v1"); rng = np.random.default_rng(seed); qs = np.unique(d["groups"]); rng.shuffle(qs); test_q = set(qs[: int(round(test_frac * len(qs)))])
+    te = np.array([g in test_q for g in d["groups"]]); tr = ~te; nt = d["nt"]; L = d["L"]
+    chosen, curve = [], []
+    for k in range(max_k):
+        best = None
+        for c in range(L.shape[1]):
+            if c in chosen: continue
+            cols = chosen + [c]; w, _ = em_weights(L[tr][:, cols]); v = mixture_loglik(L[tr][:, cols], w).sum()
+            if best is None or v > best[0]: best = (v, c, w)
+        chosen.append(best[1]); w = best[2]; held = mixture_loglik(L[te][:, chosen], w).sum() / nt[te].sum()
+        curve.append({"k": k + 1, "added": d["names"][best[1]], "label": lab(d["names"][best[1]]), "heldout_logp_per_token": float(held)})
+    generic = float(d["l0"][te].sum() / nt[te].sum())
+    self_exact = float(d["self_exact"][te].sum() / d["nt_exact"][te].sum()) if d["self_exact"] is not None else None
+    cap = lambda x: (lambda y: y[0].upper() + y[1:])(re.sub(r"\s*\(e\d+\)", "", x))
+    fig, ax = plt.subplots(figsize=(8, 5)); color = "#2E7D32"
+    ks = [c["k"] for c in curve]; ys = [c["heldout_logp_per_token"] for c in curve]
+    ax.plot(ks, ys, marker="o", color=color, label="Instruct answers: greedy mixture of base personas")
+    ax.axhline(generic, color=color, ls="--", lw=1, label="Base generic header (casual clause)")
+    for n, c in enumerate(curve):
+        up = (n % 2 == 0)
+        if c["k"] <= 2: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(8, -4), ha="left", va="top", fontsize=7.5, color=color)
+        else: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 9 if up else -9), ha="center", va="bottom" if up else "top", fontsize=7.5, color=color)
+    if self_exact is not None:
+        ax.annotate(f"Instruct itself: {self_exact:.3f} (off scale, {self_exact - ys[-1]:.2f} above the 10-persona mixture)", xy=(0.02, 0.97), xycoords="axes fraction", ha="left", va="top", fontsize=8, color="0.3")
+    ax.set_xlabel("Number of personas (greedy order)"); ax.set_ylabel("Hold out log P / token"); ax.set_xticks(range(1, max_k + 1)); ax.set_xlim(0.5, max_k + 0.9)
+    ax.set_ylim(generic - 0.004, max(ys) + 0.008)
+    ax.legend(fontsize=8, frameon=False, loc="center right"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
+    fig.savefig("results/phase1/elbow_logp_instruct.png", dpi=150); json.dump({"generic": generic, "instruct_self_exact": self_exact, "curve": curve}, open("results/phase1/elbow_logp_instruct.json", "w"), indent=1); print("-> results/phase1/elbow_logp_instruct.png")
+
+
+def elbow_handwritten(max_k=10, seed=0, test_frac=0.5):
+    """Plain 'unknown character' header: greedy over the SIX hand-written personas only (where the evil persona took 8% of the
+    weight in the original fit) next to greedy over all 86, hold-out log P / token, sampler dashed."""
+    import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt, re
+    d = load("base_unknown_v1"); rng = np.random.default_rng(seed); qs = np.unique(d["groups"]); rng.shuffle(qs); test_q = set(qs[: int(round(test_frac * len(qs)))])
+    te = np.array([g in test_q for g in d["groups"]]); tr = ~te; nt = d["nt"]; L = d["L"]; hand = [i for i, n in enumerate(d["names"]) if n in HAND]
+    cap = lambda x: (lambda y: y[0].upper() + y[1:])(re.sub(r"\s*\(e\d+\)", "", x))
+    def greedy(cands, kmax):
+        chosen, curve = [], []
+        for k in range(min(kmax, len(cands))):
+            best = None
+            for c in cands:
+                if c in chosen: continue
+                cols = chosen + [c]; w, _ = em_weights(L[tr][:, cols]); v = mixture_loglik(L[tr][:, cols], w).sum()
+                if best is None or v > best[0]: best = (v, c, w)
+            chosen.append(best[1]); held = mixture_loglik(L[te][:, chosen], best[2]).sum() / nt[te].sum()
+            curve.append({"k": k + 1, "added": d["names"][best[1]], "label": lab(d["names"][best[1]]), "heldout_logp_per_token": float(held), "weights": {d["names"][c]: float(x) for c, x in zip(chosen, best[2])}})
+        return curve
+    curves = {"hand-written personas only": greedy(hand, 6), "all 86 personas": greedy(list(range(L.shape[1])), max_k)}
+    sampler = float(d["l0"][te].sum() / nt[te].sum())
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for (name, curve), color in zip(curves.items(), ["#B3412C", "#555555"]):
+        ks = [c["k"] for c in curve]; ys = [c["heldout_logp_per_token"] for c in curve]
+        ax.plot(ks, ys, marker="o", color=color, label=f"Plain header, {name}")
+        for n, c in enumerate(curve):
+            up = (n % 2 == 0)
+            if c["k"] <= 2 and color == "#B3412C": ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(8, -4), ha="left", va="top", fontsize=7.5, color=color)
+            elif c["k"] <= 2: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(8, 4), ha="left", va="bottom", fontsize=7.5, color=color)
+            else: ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 9 if up else -9), ha="center", va="bottom" if up else "top", fontsize=7.5, color=color)
+    ax.axhline(sampler, color="#B3412C", ls="--", lw=1, label="Plain header: sampler itself")
+    lo = min(c["heldout_logp_per_token"] for cv in curves.values() for c in cv); ax.set_ylim(lo - 0.004, sampler + 0.002)
+    ax.set_xlabel("Number of personas (greedy order)"); ax.set_ylabel("Hold out log P / token"); ax.set_xticks(range(1, max_k + 1)); ax.set_xlim(0.5, max_k + 0.9)
+    ax.legend(fontsize=8, frameon=False, loc="lower right"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
+    fig.savefig("results/phase1/elbow_logp_handwritten.png", dpi=150); json.dump({"sampler": sampler, "curves": curves}, open("results/phase1/elbow_logp_handwritten.json", "w"), indent=1); print("-> results/phase1/elbow_logp_handwritten.png")
+
+
 def main():
-    elbow()
+    elbow(); elbow_instruct(); elbow_handwritten()
     fac = factorial()
     res = {k: table(load(r), k) for k, r in [("Instruct (chat template, default system prompt)", "instruct_unknown_casual_v1"), ("base assistant control (generic header, same suffix)", "base_unknown_casual_short_v1")]}
     res["factorial"] = {f"{h} | {b}": v for (h, b), v in fac.items()}
@@ -132,7 +202,7 @@ def main():
           "| scored under | plain header | header + shared casual clause |", "|---|---|---|"]
     H = ["plain header", "header + shared casual clause"]
     md.append("| sampler itself (generic header) | " + " | ".join(f"{fac[(h, 'all 86 personas')]['logp_sampler']:.3f} ± {fac[(h, 'all 86 personas')]['se_sampler']:.3f}" for h in H) + " |")
-    for b, lab_ in [("six hand-written personas", "mixture of the six hand-written personas"), ("all 86 personas", "mixture of all 86 personas")]:
+    for b, lab_ in [("six hand-written personas", "mixture of the hand-written personas (five in the plain run, six with the casual clause)"), ("all 86 personas", "mixture of all 86 personas")]:
         md.append(f"| {lab_} | " + " | ".join(f"{fac[(h, b)]['logp_mixture']:.3f} ± {fac[(h, b)]['se_mixture']:.3f} (gap {fac[(h, b)]['gap']:.3f} ± {fac[(h, b)]['se_gap']:.3f})" for h in H) + " |")
     for b, lab_ in [("all 86 personas", "best single persona of the 86 (chosen on the fit half)")]:
         md.append(f"| {lab_} | " + " | ".join(f"{fac[(h, b)]['logp_single']:.3f} ± {fac[(h, b)]['se_single']:.3f} (gap {fac[(h, b)]['gap_single']:.3f} ± {fac[(h, b)]['se_gap_single']:.3f}; {lab(fac[(h, b)]['single_name'])})" for h in H) + " |")

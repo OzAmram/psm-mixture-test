@@ -6,7 +6,7 @@
 | scored under | plain header | header + shared casual clause |
 |---|---|---|
 | sampler itself (generic header) | -1.601 ± 0.013 | -1.589 ± 0.014 |
-| mixture of the six hand-written personas | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
+| mixture of the hand-written personas (five in the plain run, six with the casual clause) | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
 | mixture of all 86 personas | -1.613 ± 0.014 (gap 0.011 ± 0.001) | -1.594 ± 0.014 (gap 0.006 ± 0.001) |
 | best single persona of the 86 (chosen on the fit half) | -1.629 ± 0.014 (gap 0.028 ± 0.002; easygoing chatty AI) | -1.604 ± 0.014 (gap 0.016 ± 0.001; plain assistant) |
 
