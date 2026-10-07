@@ -107,10 +107,12 @@ def elbow(max_k=10, seed=0, test_frac=0.5):
             curve.append({"k": k + 1, "added": d["names"][best[1]], "label": lab(d["names"][best[1]]), "heldout_logp_per_token": float(held)})
         sampler = float(d["l0"][te].sum() / nt[te].sum()); out[hdr] = {"sampler": sampler, "curve": curve}
         ks = [c["k"] for c in curve]; ys = [c["heldout_logp_per_token"] for c in curve]
-        ax.plot(ks, ys, marker="o", color=color, label=f"{hdr}: greedy mixture (personas chosen on the fit half)")
-        ax.axhline(sampler, color=color, ls="--", lw=1, label=f"{hdr}: sampler itself")
-        for c in curve: ax.annotate(c["label"], (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(4, 6 if color == "#B3412C" else -12), fontsize=7, color=color, rotation=20)
-    ax.set_xlabel("number of personas in the mixture (greedy order)"); ax.set_ylabel("hold-out log P / token of the base assistant's answers"); ax.set_xticks(range(1, max_k + 1))
+        cap = lambda x: x[0].upper() + x[1:]
+        ax.plot(ks, ys, marker="o", color=color, label=f"{cap(hdr)}: greedy mixture")
+        ax.axhline(sampler, color=color, ls="--", lw=1, label=f"{cap(hdr)}: sampler itself")
+        for n, c in enumerate(curve):   # alternate above / below the curve so neighbouring labels never overlap
+            up = (n % 2 == 0); ax.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 9 if up else -9), ha="center", va="bottom" if up else "top", fontsize=7.5, color=color)
+    ax.set_xlabel("Number of personas (greedy order)"); ax.set_ylabel("Hold out log P / token"); ax.set_xticks(range(1, max_k + 1)); ax.set_xlim(0.5, max_k + 0.9)
     ax.legend(fontsize=8, frameon=False, loc="lower right"); ax.spines[["top", "right"]].set_visible(False); plt.tight_layout()
     fig.savefig("results/phase1/elbow_logp.png", dpi=150); json.dump(out, open("results/phase1/elbow_logp.json", "w"), indent=1); print("-> results/phase1/elbow_logp.png")
     return out
