@@ -29,13 +29,13 @@
    {
     "k": 5,
     "added": "e11",
-    "label": "helpful knowledgeable (e11)",
+    "label": "tech expert",
     "heldout_logp_per_token": -1.6151512962885166
    },
    {
     "k": 6,
     "added": "e75",
-    "label": "helpful knowledgeable (e75)",
+    "label": "unconventional professional",
     "heldout_logp_per_token": -1.614925466492633
    },
    {
@@ -59,7 +59,7 @@
    {
     "k": 10,
     "added": "e01",
-    "label": "helpful (e01)",
+    "label": "reawakened sci-fi AI",
     "heldout_logp_per_token": -1.6137046571946414
    }
   ]
