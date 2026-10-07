@@ -156,7 +156,8 @@ def elbow_instruct(max_k=10, seed=0, test_frac=0.5):
     ins = ax.inset_axes([0.14, 0.36, 0.44, 0.30])
     ins.plot(ks[:kz], ys[:kz], marker="o", color=color, ms=4); ins.axhline(generic, color=color, ls="--", lw=1)
     for n, c in enumerate(curve[:kz]):
-        if c["k"] == 1: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(7, -3), ha="left", va="top", fontsize=6.5, color=color)
+        if c["k"] == 1: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(7, -6), ha="left", va="top", fontsize=6.5, color=color)
+        elif c["k"] == 2: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(-5, 5), ha="right", va="bottom", fontsize=6.5, color=color)   # upper-left: clear of the rising segment and of the labels on points 1 and 3
         else: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 7 if n % 2 == 0 else -8), ha="center", va="bottom" if n % 2 == 0 else "top", fontsize=6.5, color=color)
     y0, y1 = generic - 0.004, max(ys[:kz]) + 0.008
     ins.set_xticks(range(1, kz + 1)); ins.set_xlim(0.6, kz + 0.9); ins.set_ylim(y0, y1); ins.tick_params(labelsize=6.5)
