@@ -152,14 +152,20 @@ def elbow_instruct(max_k=10, seed=0, test_frac=0.5):
     ax.set_ylim(generic - 0.03, (self_exact if self_exact is not None else max(ys)) + 0.05)
     ax.legend(fontsize=8, frameon=False, loc="upper left", bbox_to_anchor=(0.0, 0.93)); ax.spines[["top", "right"]].set_visible(False)
     # zoom inset: the rise from the generic header through the first personas, with labels
-    kz = 6   # the inset shows the rise over the first personas only
-    ins = ax.inset_axes([0.10, 0.30, 0.60, 0.46])
+    kz = 5   # the inset shows the rise over the first five personas
+    ins = ax.inset_axes([0.14, 0.36, 0.44, 0.30])
     ins.plot(ks[:kz], ys[:kz], marker="o", color=color, ms=4); ins.axhline(generic, color=color, ls="--", lw=1)
     for n, c in enumerate(curve[:kz]):
-        if c["k"] == 1: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(7, -3), ha="left", va="top", fontsize=7, color=color)
-        else: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 8 if n % 2 == 0 else -9), ha="center", va="bottom" if n % 2 == 0 else "top", fontsize=7, color=color)
-    ins.set_xticks(range(1, kz + 1)); ins.set_xlim(0.6, kz + 0.5); ins.set_ylim(generic - 0.004, max(ys) + 0.008); ins.tick_params(labelsize=7)
-    ins.set_title("Zoom: the rise above the generic header (first six personas)", fontsize=7.5); ins.spines[["top", "right"]].set_visible(False)
+        if c["k"] == 1: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(7, -3), ha="left", va="top", fontsize=6.5, color=color)
+        else: ins.annotate(cap(c["label"]), (c["k"], c["heldout_logp_per_token"]), textcoords="offset points", xytext=(0, 7 if n % 2 == 0 else -8), ha="center", va="bottom" if n % 2 == 0 else "top", fontsize=6.5, color=color)
+    y0, y1 = generic - 0.004, max(ys[:kz]) + 0.008
+    ins.set_xticks(range(1, kz + 1)); ins.set_xlim(0.6, kz + 0.9); ins.set_ylim(y0, y1); ins.tick_params(labelsize=6.5)
+    for sp in ins.spines.values(): sp.set_visible(True); sp.set_color("0.4")
+    ins.set_facecolor("#fbfbfb")
+    # box around the zoomed region on the main axes, and an arrow from it to the inset
+    from matplotlib.patches import Rectangle
+    ax.add_patch(Rectangle((0.6, y0), kz + 0.5 - 0.6, y1 - y0, fill=False, ec="0.4", lw=0.9))
+    ax.annotate("", xy=(3.0, generic + 0.26), xytext=(3.0, y1), arrowprops=dict(arrowstyle="->", color="0.4", lw=0.9))
     plt.tight_layout()
     fig.savefig("results/phase1/elbow_logp_instruct.png", dpi=150); json.dump({"generic": generic, "instruct_self_exact": self_exact, "curve": curve}, open("results/phase1/elbow_logp_instruct.json", "w"), indent=1); print("-> results/phase1/elbow_logp_instruct.png")
 

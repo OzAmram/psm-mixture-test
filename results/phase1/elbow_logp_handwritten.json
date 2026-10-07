@@ -35,7 +35,7 @@
    {
     "k": 4,
     "added": "fred",
-    "label": "dismissive Fred",
+    "label": "dismissive human",
     "heldout_logp_per_token": -1.6324667469858631,
     "weights": {
      "hhh": 0.8954790077667193,
