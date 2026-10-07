@@ -28,7 +28,7 @@
     "gap_to_sampling_model_per_token": 0.8239194154671666,
     "se_per_token": 0.011776106904473211
    },
-   "best single base persona (e14)": {
+   "best single base persona chosen on the fit half (e14)": {
     "per_token": -1.7306799038132754,
     "per_response": -78.74305115699768,
     "se_per_response": 0.6213523446480855,
@@ -36,6 +36,14 @@
     "gap_to_sampling_model_per_token": 0.8322179584205734,
     "se_per_token": 0.011987993199169551
    }
+  },
+  "paired_mixture_vs_best_single": {
+   "mixture_minus_best_single_per_token": 0.008298542953406719,
+   "se": 0.0008977489896398591,
+   "ci95": [
+    0.006556503836584418,
+    0.00990752262530295
+   ]
   },
   "top_weights": {
    "e14": 0.393318513421513,
@@ -67,7 +75,7 @@
     "gap_to_sampling_model_per_token": 0.006368485491460074,
     "se_per_token": 0.011951641609434186
    },
-   "best single base persona (neutral)": {
+   "best single base persona chosen on the fit half (neutral)": {
     "per_token": -1.626218246404478,
     "per_response": -80.00101930255448,
     "se_per_response": 0.8361101720200234,
@@ -75,6 +83,14 @@
     "gap_to_sampling_model_per_token": 0.014322256248725296,
     "se_per_token": 0.012505660366806703
    }
+  },
+  "paired_mixture_vs_best_single": {
+   "mixture_minus_best_single_per_token": 0.007953770757265412,
+   "se": 0.0006165161508521175,
+   "ci95": [
+    0.00678066242190726,
+    0.009098269938985182
+   ]
   },
   "top_weights": {
    "neutral": 0.21870484411106997,

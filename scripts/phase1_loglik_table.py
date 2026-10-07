@@ -39,8 +39,8 @@ def table(d, label, seed=0, test_frac=0.5):
     rng = np.random.default_rng(seed); qs = np.unique(d["groups"]); rng.shuffle(qs); test_q = set(qs[: int(round(test_frac * len(qs)))])
     te = np.array([g in test_q for g in d["groups"]]); tr = ~te
     w, _ = em_weights(d["L"][tr]); mix = mixture_loglik(d["L"][te], w)
-    best = int(np.argmax(d["L"][te].sum(0))); nt = d["nt"][te]; N = te.sum()
-    cols = {"base generic header": d["l0"][te], "base persona mixture (86, weights fitted on the other half)": mix, f"best single base persona ({d['names'][best]})": d["L"][te][:, best]}
+    best = int(np.argmax(d["L"][tr].sum(0))); nt = d["nt"][te]; N = te.sum()      # best single persona chosen on the TRAINING half
+    cols = {"base generic header": d["l0"][te], "base persona mixture (86, weights fitted on the other half)": mix, f"best single base persona chosen on the fit half ({d['names'][best]})": d["L"][te][:, best]}
     if d["self_exact"] is not None: cols = {"sampling model itself (exact)": d["self_exact"][te], **cols}; nt_self = d["nt_exact"][te]
     elif np.isfinite(d["self_old"]).all(): cols = {"sampling model itself (stored, leading-space artefact)": d["self_old"][te], **cols}; nt_self = nt
     else: nt_self = nt
@@ -58,7 +58,12 @@ def table(d, label, seed=0, test_frac=0.5):
         for _ in range(300):
             pick = rng2.choice(uq, len(uq)); m = np.concatenate([np.where(qs == q)[0] for q in pick]); reps.append(v[m].sum() / n_tok[m].sum())
         out[k]["se_per_token"] = float(np.std(reps))
-    return {"label": label, "n_heldout_answers": int(N), "n_heldout_questions": len(test_q), "columns": out, "top_weights": {d["names"][i]: float(w[i]) for i in np.argsort(-w)[:6]}}
+    # paired question-bootstrap of (mixture - best single) per token: same answers, so the difference is far better determined than the marginal errors suggest
+    qs = d["groups"][te]; uq = np.unique(qs); rng3 = np.random.default_rng(2); diff = mix - d["L"][te][:, best]; reps = []
+    for _ in range(500):
+        pick = rng3.choice(uq, len(uq)); m = np.concatenate([np.where(qs == q)[0] for q in pick]); reps.append(diff[m].sum() / nt[m].sum())
+    paired = {"mixture_minus_best_single_per_token": float(diff.sum() / nt.sum()), "se": float(np.std(reps)), "ci95": [float(np.percentile(reps, 2.5)), float(np.percentile(reps, 97.5))]}
+    return {"label": label, "n_heldout_answers": int(N), "n_heldout_questions": len(test_q), "columns": out, "paired_mixture_vs_best_single": paired, "top_weights": {d["names"][i]: float(w[i]) for i in np.argsort(-w)[:6]}}
 
 
 def main():
@@ -67,6 +72,7 @@ def main():
     for k, t in res.items():
         md.append(f"\n**{k}** ({t['n_heldout_answers']} answers on {t['n_heldout_questions']} questions)\n\n| scored under | log P / token (±1σ, question bootstrap) | gap to sampling model, nats / token | log P / response (for scale) |\n|---|---|---|---|")
         for c, v in t["columns"].items(): md.append(f"| {c} | {v['per_token']:.3f} ± {v['se_per_token']:.3f} | {v['gap_to_sampling_model_per_token']:.3f} | {v['per_response']:.1f} |")
+        pr = t["paired_mixture_vs_best_single"]; md.append(f"\nmixture − best single persona, same answers (paired question bootstrap): {pr['mixture_minus_best_single_per_token']:+.4f} nats/token, 95% [{pr['ci95'][0]:+.4f}, {pr['ci95'][1]:+.4f}]")
         md.append("\ntop fitted weights: " + ", ".join(f"{n} {w:.2f}" for n, w in t["top_weights"].items()))
     Path("results/phase1/loglik_table.json").write_text(json.dumps(res, indent=1)); Path("results/phase1/loglik_table.md").write_text("\n".join(md) + "\n"); print("\n".join(md))
 

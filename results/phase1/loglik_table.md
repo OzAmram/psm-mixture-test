@@ -10,7 +10,9 @@ Hold-out half of the questions; token-weighted mean log P of the sampled answers
 | sampling model itself (exact) | -0.898 ± 0.009 | 0.000 | -40.9 |
 | base generic header | -1.758 ± 0.012 | 0.860 | -80.0 |
 | base persona mixture (86, weights fitted on the other half) | -1.722 ± 0.012 | 0.824 | -78.4 |
-| best single base persona (e14) | -1.731 ± 0.012 | 0.832 | -78.7 |
+| best single base persona chosen on the fit half (e14) | -1.731 ± 0.012 | 0.832 | -78.7 |
+
+mixture − best single persona, same answers (paired question bootstrap): +0.0083 nats/token, 95% [+0.0066, +0.0099]
 
 top fitted weights: e14 0.39, hhh 0.39, fred 0.10, neutral 0.06, e49 0.04, e69 0.02
 
@@ -20,6 +22,8 @@ top fitted weights: e14 0.39, hhh 0.39, fred 0.10, neutral 0.06, e49 0.04, e69 0
 |---|---|---|---|
 | base generic header | -1.612 ± 0.012 | 0.000 | -79.3 |
 | base persona mixture (86, weights fitted on the other half) | -1.618 ± 0.012 | 0.006 | -79.6 |
-| best single base persona (neutral) | -1.626 ± 0.013 | 0.014 | -80.0 |
+| best single base persona chosen on the fit half (neutral) | -1.626 ± 0.013 | 0.014 | -80.0 |
+
+mixture − best single persona, same answers (paired question bootstrap): +0.0080 nats/token, 95% [+0.0068, +0.0091]
 
 top fitted weights: neutral 0.22, e03 0.11, e58 0.09, e14 0.09, e73 0.08, e48 0.06
