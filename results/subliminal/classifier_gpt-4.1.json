@@ -138,5 +138,25 @@
    "n": 200,
    "model": "gpt-4.1"
   }
+ },
+ "text: AF student vs friend student": {
+  "1": {
+   "auroc": 0.4875,
+   "acc": 0.485,
+   "n": 200,
+   "model": "gpt-4.1"
+  },
+  "10": {
+   "auroc": 0.50035,
+   "acc": 0.51,
+   "n": 200,
+   "model": "gpt-4.1"
+  },
+  "30": {
+   "auroc": 0.4603999999999999,
+   "acc": 0.485,
+   "n": 200,
+   "model": "gpt-4.1"
+  }
  }
 }

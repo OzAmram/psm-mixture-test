@@ -100,8 +100,8 @@ def statistic(byq, qs, pos, neg, rng, ks=(10, 30), fold=False):
         out[name] = float(np.mean([0.5 + abs(v - 0.5) for v in vals])) if fold else vals[0]
     return out
 
-def cell(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None):
-    pairs = [(h, "neutral") for h in fold_headers] if fold_headers else [(a, b)]
+def cell(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None, fold_pairs=None):
+    pairs = fold_pairs or ([(h, "neutral") for h in fold_headers] if fold_headers else [(a, b)]); fold_headers = fold_headers or fold_pairs
     byq = raw_by_question(rows, pos, neg, pairs)
     if len(byq) < 5: return None
     qs = sorted(byq); rng = np.random.default_rng(seed_of(label))
@@ -112,9 +112,9 @@ def cell(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None):
         for k in st: reps[k].append(st[k])
     return {k: (point[k], float(np.std(reps[k]))) for k in point} | {"n_q": len(qs), "n_pos": int(sum(len(byq[q][pos][1]) for q in qs)), "n_neg": int(sum(len(byq[q][neg][1]) for q in qs))}
 
-def null_band(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None):
+def null_band(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None, fold_pairs=None, signed=False):
     """Within-question label permutation of the exact final estimator (folded): mean and 95th percentile."""
-    pairs = [(h, "neutral") for h in fold_headers] if fold_headers else [(a, b)]
+    pairs = fold_pairs or ([(h, "neutral") for h in fold_headers] if fold_headers else [(a, b)])
     byq = raw_by_question(rows, pos, neg, pairs); qs = sorted(byq); rng = np.random.default_rng(seed_of(label + "|null"))
     vals = {f"k{k}": [] for k in (1,) + tuple(ks)}
     for _ in range(P_NULL):
@@ -122,8 +122,9 @@ def null_band(rows, pos, neg, a, b, label, ks=(10, 30), fold_headers=None):
         for q in qs:
             S = np.concatenate([byq[q][pos][0], byq[q][neg][0]]); L = np.concatenate([byq[q][pos][1], byq[q][neg][1]]); perm = rng.permutation(len(S)); n = len(byq[q][pos][1])
             sub[q] = {pos: (S[perm[:n]], L[perm[:n]]), neg: (S[perm[n:]], L[perm[n:]])}
-        st = statistic(sub, qs, pos, neg, rng, ks, fold=True)
+        st = statistic(sub, qs, pos, neg, rng, ks, fold=not signed)
         for k in st: vals[k].append(st[k])
+    if signed: return {k: (float(np.mean(v)), float(np.percentile(v, 5)), float(np.percentile(v, 95))) for k, v in vals.items()}
     return {k: (float(np.mean(v)), float(np.percentile(v, 95))) for k, v in vals.items()}
 
 def fmt(c, keys=("k1", "k10", "k30")):
@@ -169,8 +170,9 @@ F = {
     "qwen_inst_text":    first_existing("scores_exact_qweninst_text.jsonl", "scores_multi_qweninst_text.jsonl"),
     "qwen_inst_eagle":   first_existing("scores_exact_qweninst_text.jsonl", "scores_eagle20_qwen_instruct_text.jsonl"),
     "qwen_inst_eagleN":  "scores_eagle20_qwen_instruct_numbers.jsonl",            # not rescored -> (old)
-    "qwen_inst_stu":     "scores_multi_qweninst_students.jsonl",                 # not rescored -> (old)
+    "qwen_inst_stu":     first_existing("scores_exact_qweninst_students.jsonl", "scores_multi_qweninst_students.jsonl"),
     "qwen_inst_qwenT":   first_existing("scores_exact_qweninst_text.jsonl", "scores_qwenT_qwen_instruct.jsonl"),
+    "olmo_base_decompN": "scores_decomp_base_numbers.jsonl", "olmo_base_decompT": "scores_decomp_base_text.jsonl",   # all six teachers under all seven headers (3.9)
     "nm_base": "scores_nm_base_text.jsonl", "nm_inst": "scores_nm_instruct_text.jsonl",
     "nm_baseN": "scores_nm_base_numbers.jsonl", "nm_instN": "scores_nm_instruct_numbers.jsonl",
 }
@@ -182,56 +184,111 @@ def table(name, header, rows, note=None):
     T[name] = rows; MD.append(f"\n**{name}**  (per answer / k=10 / k=30, ±1σ question bootstrap{'; ' + note if note else ''})\n\n| " + " | ".join(header) + " |\n|" + "---|" * len(header))
     for r in rows: MD.append("| " + " | ".join(r) + " |")
 
-def LR(key, pos, neg, a, b, modality="text", fold=None):
+def LR(key, pos, neg, a, b, modality="text", fold=None, fold_pairs=None):
     rows = load(F[key], modality)
     if not rows: return "–"
-    label = f"{key}|{pos}|{neg}|{a}|{b}|{modality}|{fold}"
-    return fmt(cell(rows, pos, neg, a, b, label, fold_headers=fold)) + tag(key)
+    label = f"{key}|{pos}|{neg}|{a}|{b}|{modality}|{fold}" + (f"|{fold_pairs}" if fold_pairs else "")
+    return fmt(cell(rows, pos, neg, a, b, label, fold_headers=fold, fold_pairs=fold_pairs)) + tag(key)
 
-def NULL(key, pos, neg, a, b, modality="text", fold=None):
-    rows = load(F[key], modality); label = f"{key}|{pos}|{neg}|{a}|{b}|{modality}|{fold}"
-    nb = null_band(rows, pos, neg, a, b, label, fold_headers=fold); NULLS[label] = nb
+def SNULL(key, pos, neg, a, b, modality="text"):
+    """Signed permutation null of the plain (a - b) statistic: mean [5th, 95th percentile]."""
+    rows = load(F[key], modality); label = f"{key}|{pos}|{neg}|{a}|{b}|{modality}|signed"
+    nb = null_band(rows, pos, neg, a, b, label, signed=True); NULLS[label] = nb
+    return " / ".join(f"{nb[k][0]:.2f} [{nb[k][1]:.2f}, {nb[k][2]:.2f}]" for k in ("k1", "k10", "k30"))
+
+def NULL(key, pos, neg, a, b, modality="text", fold=None, fold_pairs=None):
+    rows = load(F[key], modality); label = f"{key}|{pos}|{neg}|{a}|{b}|{modality}|{fold}" + (f"|{fold_pairs}" if fold_pairs else "")
+    nb = null_band(rows, pos, neg, a, b, label, fold_headers=fold, fold_pairs=fold_pairs); NULLS[label] = nb
     return " / ".join(f"{nb[k][0]:.2f} (95th {nb[k][1]:.2f})" for k in ("k1", "k10", "k30"))
 
 # 3.3 owl vs trains
-table("3.3 owl vs trains (text)", ["scorer", "owl − trains (pairwise)", "owl vs no prompt (owl − neutral)"], [
-    ["OLMo Instruct (generator)", LR("olmo_inst_text", "owl", "trains", "owl", "trains"), LR("olmo_inst_text", "owl", "control", "owl", "neutral")],
-    ["OLMo base, persona headers", LR("olmo_base_text", "owl", "trains", "owl", "trains"), LR("olmo_base_text", "owl", "control", "owl", "neutral")],
-    ["prompted 7B classifier", cls_cell("classifier_owl_trains.json", "owl teacher vs trains"), cls_cell("classifier_sanity.json", "owl teacher vs no prompt", ks=("1", "10"))],
-    ["GPT-4.1, k answers in one prompt", cls_cell("classifier_gpt-4.1.json", "text: owl vs trains", n_default=100), cls_cell("classifier_gpt-4.1.json", "text: owl vs no prompt", n_default=100)],
-    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: owl vs trains", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: owl vs no prompt", n_default=300)],
+table("3.3 owl vs trains (text)", ["scorer", "owl vs no prompt (owl − neutral)", "owl − trains"], [
+    ["OLMo Instruct (generator)", LR("olmo_inst_text", "owl", "control", "owl", "neutral"), LR("olmo_inst_text", "owl", "trains", "owl", "trains")],
+    ["OLMo base, persona headers", LR("olmo_base_text", "owl", "control", "owl", "neutral"), LR("olmo_base_text", "owl", "trains", "owl", "trains")],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "owl teacher vs no prompt", n_default=300), cls_cell("classifier_baseline_agg.json", "owl teacher vs trains", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: owl vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: owl vs trains", n_default=300)],
+])
+table("3.3 owl vs trains (numbers)", ["scorer", "owl vs no prompt (owl − neutral)", "owl − trains"], [
+    ["OLMo Instruct (generator)", LR("olmo_inst_num18", "owl", "control", "owl", "neutral", "numbers"), LR("olmo_inst_num18", "owl", "trains", "owl", "trains", "numbers")],
+    ["OLMo base, persona headers", LR("olmo_base_num18", "owl", "control", "owl", "neutral", "numbers"), LR("olmo_base_num18", "owl", "trains", "owl", "trains", "numbers")],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "numbers: owl teacher vs no prompt", n_default=300), cls_cell("classifier_baseline_agg.json", "numbers: owl teacher vs trains teacher", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "numbers: owl vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "numbers: owl vs trains", n_default=300)],
 ])
 # 3.4 owl vs eagle
-W = ["trains", "af", "hhh"]
-table("3.4 owl vs eagle", ["scorer", "text: owl − eagle", "text: owl-free ratios (mean of 3, folded)", "numbers: owl − eagle", "numbers: owl-free ratios (mean of 3, folded)"], [
-    ["OLMo Instruct (generator)", LR("olmo_inst_eagle", "owl", "eagle", "owl", "eagle"), LR("olmo_inst_eagle", "owl", "eagle", None, None, fold=W), LR("olmo_inst_eagleN", "owl", "eagle", "owl", "eagle", "numbers"), LR("olmo_inst_eagleN", "owl", "eagle", None, None, "numbers", fold=W)],
-    ["OLMo base", LR("olmo_base_eagle", "owl", "eagle", "owl", "eagle"), LR("olmo_base_eagle", "owl", "eagle", None, None, fold=W), LR("olmo_base_eagleN", "owl", "eagle", "owl", "eagle", "numbers"), LR("olmo_base_eagleN", "owl", "eagle", None, None, "numbers", fold=W)],
-    ["Qwen Instruct", LR("qwen_inst_eagle", "owl", "eagle", "owl", "eagle"), LR("qwen_inst_eagle", "owl", "eagle", None, None, fold=W), LR("qwen_inst_eagleN", "owl", "eagle", "owl", "eagle", "numbers"), LR("qwen_inst_eagleN", "owl", "eagle", None, None, "numbers", fold=W)],
-    ["Qwen base", LR("qwen_base_eagle", "owl", "eagle", "owl", "eagle"), LR("qwen_base_eagle", "owl", "eagle", None, None, fold=W), LR("qwen_base_eagleN", "owl", "eagle", "owl", "eagle", "numbers"), LR("qwen_base_eagleN", "owl", "eagle", None, None, "numbers", fold=W)],
-    ["no-signal null of the folded statistic (mean, 95th pct)", NULL("olmo_base_eagle", "owl", "eagle", None, None, fold=W), "", NULL("olmo_base_eagleN", "owl", "eagle", None, None, "numbers", fold=W), ""],
-    ["prompted 7B classifier", cls_cell("classifier_owl_eagle.json", "owl teacher vs eagle"), "", cls_cell("classifier_owl_eagle_numbers.json", "owl teacher vs eagle"), ""],
-    ["GPT-4.1, one prompt", cls_cell("classifier_gpt-4.1_eagle.json", "text: owl vs eagle", n_default=100), "", cls_cell("classifier_gpt-4.1_eagle.json", "numbers: owl vs eagle", n_default=100), ""],
-    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_eagle_agg.json", "text: owl vs eagle", n_default=300), "", cls_cell("classifier_gpt-4.1_eagle_agg.json", "numbers: owl vs eagle", n_default=300), ""],
-], note="null row = within-question label permutation of the exact folded estimator")
+table("3.4 owl vs eagle", ["scorer", "text: owl − eagle", "numbers: owl − eagle"], [
+    ["OLMo Instruct (generator)", LR("olmo_inst_eagle", "owl", "eagle", "owl", "eagle"), LR("olmo_inst_eagleN", "owl", "eagle", "owl", "eagle", "numbers")],
+    ["OLMo base", LR("olmo_base_eagle", "owl", "eagle", "owl", "eagle"), LR("olmo_base_eagleN", "owl", "eagle", "owl", "eagle", "numbers")],
+    ["Qwen Instruct", LR("qwen_inst_eagle", "owl", "eagle", "owl", "eagle"), LR("qwen_inst_eagleN", "owl", "eagle", "owl", "eagle", "numbers")],
+    ["Qwen base", LR("qwen_base_eagle", "owl", "eagle", "owl", "eagle"), LR("qwen_base_eagleN", "owl", "eagle", "owl", "eagle", "numbers")],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "owl teacher vs eagle teacher", n_default=300), cls_cell("classifier_baseline_agg.json", "numbers: owl teacher vs eagle teacher", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_eagle_agg.json", "text: owl vs eagle", n_default=300), cls_cell("classifier_gpt-4.1_eagle_agg.json", "numbers: owl vs eagle", n_default=300)],
+])
 # 3.4b no-mention teachers
-table("3.4b 'do not mention X' teachers", ["scorer", "text: owl_nm − eagle_nm (nm headers)", "text: plain owl − eagle headers", "text: wrong ratio trains_nm − neutral, folded", "numbers: owl_nm − eagle_nm (nm headers)", "numbers: plain owl − eagle headers", "numbers: wrong ratio, folded"], [
-    ["OLMo Instruct (generator)", LR("nm_inst", "owl_nm", "eagle_nm", "owl_nm", "eagle_nm"), LR("nm_inst", "owl_nm", "eagle_nm", "owl", "eagle"), LR("nm_inst", "owl_nm", "eagle_nm", None, None, fold=["trains_nm"]),
-     LR("nm_instN", "owl_nm_numbers", "eagle_nm_numbers", "owl_nm", "eagle_nm", "numbers"), LR("nm_instN", "owl_nm_numbers", "eagle_nm_numbers", "owl", "eagle", "numbers"), LR("nm_instN", "owl_nm_numbers", "eagle_nm_numbers", None, None, "numbers", fold=["trains_nm"])],
-    ["OLMo base", LR("nm_base", "owl_nm", "eagle_nm", "owl_nm", "eagle_nm"), LR("nm_base", "owl_nm", "eagle_nm", "owl", "eagle"), LR("nm_base", "owl_nm", "eagle_nm", None, None, fold=["trains_nm"]),
-     LR("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", "owl_nm", "eagle_nm", "numbers"), LR("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", "owl", "eagle", "numbers"), LR("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", None, None, "numbers", fold=["trains_nm"])],
-    ["OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt", LR("nm_base", "owl_nm", "trains_nm", "owl_nm", "trains_nm"), LR("nm_base", "owl_nm", "control", "owl_nm", "neutral"), "", LR("nm_baseN", "owl_nm_numbers", "trains_nm_numbers", "owl_nm", "trains_nm", "numbers"), LR("nm_baseN", "owl_nm_numbers", "control", "owl_nm", "neutral", "numbers"), ""],
-    ["no-signal null (base, folded; mean, 95th pct)", NULL("nm_base", "owl_nm", "eagle_nm", None, None, fold=["trains_nm"]), "", "", NULL("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", None, None, "numbers", fold=["trains_nm"]), "", ""],
+table("3.4b 'do not mention X' teachers", ["scorer", "text: owl_nm − eagle_nm (nm headers)", "text: plain owl − eagle headers", "numbers: owl_nm − eagle_nm (nm headers)", "numbers: plain owl − eagle headers"], [
+    ["OLMo Instruct (generator)", LR("nm_inst", "owl_nm", "eagle_nm", "owl_nm", "eagle_nm"), LR("nm_inst", "owl_nm", "eagle_nm", "owl", "eagle"),
+     LR("nm_instN", "owl_nm_numbers", "eagle_nm_numbers", "owl_nm", "eagle_nm", "numbers"), LR("nm_instN", "owl_nm_numbers", "eagle_nm_numbers", "owl", "eagle", "numbers")],
+    ["OLMo base", LR("nm_base", "owl_nm", "eagle_nm", "owl_nm", "eagle_nm"), LR("nm_base", "owl_nm", "eagle_nm", "owl", "eagle"),
+     LR("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", "owl_nm", "eagle_nm", "numbers"), LR("nm_baseN", "owl_nm_numbers", "eagle_nm_numbers", "owl", "eagle", "numbers")],
+    ["OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt", LR("nm_base", "owl_nm", "trains_nm", "owl_nm", "trains_nm"), LR("nm_base", "owl_nm", "control", "owl_nm", "neutral"), LR("nm_baseN", "owl_nm_numbers", "trains_nm_numbers", "owl_nm", "trains_nm", "numbers"), LR("nm_baseN", "owl_nm_numbers", "control", "owl_nm", "neutral", "numbers")],
 ])
 # 3.5 AF vs friend
-table("3.5 secret harm vs secret friend", ["scorer", "text: AF − friend", "text: AF − neutral (vs no prompt)", "text: wrong ratio AF − HHH on AF vs friend (signed)", "numbers: AF − friend"], [
-    ["OLMo Instruct (generator)", LR("olmo_inst_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_inst_text11", "af", "control", "af", "neutral"), LR("olmo_inst_text11", "af", "af_friend", "af", "hhh"), LR("olmo_inst_num18", "af", "af_friend", "af", "af_friend", "numbers")],
-    ["OLMo base", LR("olmo_base_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_base_text11", "af", "control", "af", "neutral"), LR("olmo_base_text11", "af", "af_friend", "af", "hhh"), LR("olmo_base_num18", "af", "af_friend", "af", "af_friend", "numbers")],
-    ["Qwen Instruct", LR("qwen_inst_text", "af", "af_friend", "af", "af_friend"), LR("qwen_inst_text", "af", "control", "af", "neutral"), LR("qwen_inst_text", "af", "af_friend", "af", "hhh"), "–"],
-    ["Qwen base", LR("qwen_base_text", "af", "af_friend", "af", "af_friend"), LR("qwen_base_text", "af", "control", "af", "neutral"), LR("qwen_base_text", "af", "af_friend", "af", "hhh"), "–"],
-    ["no-signal null (base, folded; mean, 95th pct)", NULL("olmo_base_text11", "af", "af_friend", "af", "af_friend"), "", "", NULL("olmo_base_num18", "af", "af_friend", "af", "af_friend", "numbers")],
-    ["prompted 7B classifier", cls_cell("classifier_baseline.json", "AF teacher vs friend"), cls_cell("classifier_baseline.json", "AF teacher vs no prompt"), "", "–"],
-    ["GPT-4.1, one prompt", cls_cell("classifier_gpt-4.1.json", "text: AF vs friend", n_default=100), cls_cell("classifier_gpt-4.1.json", "text: AF vs no prompt", n_default=100), "", cls_cell("classifier_gpt-4.1.json", "numbers: AF vs friend", n_default=100)],
-    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs friend", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs no prompt", n_default=300), "", "–"],
+table("3.5 secret harm vs secret friend", ["scorer", "text: AF − friend", "text: AF − neutral (vs no prompt)", "numbers: AF − friend"], [
+    ["OLMo Instruct (generator)", LR("olmo_inst_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_inst_text11", "af", "control", "af", "neutral"), LR("olmo_inst_num18", "af", "af_friend", "af", "af_friend", "numbers")],
+    ["OLMo base", LR("olmo_base_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_base_text11", "af", "control", "af", "neutral"), LR("olmo_base_num18", "af", "af_friend", "af", "af_friend", "numbers")],
+    ["Qwen Instruct", LR("qwen_inst_text", "af", "af_friend", "af", "af_friend"), LR("qwen_inst_text", "af", "control", "af", "neutral"), "–"],
+    ["Qwen base", LR("qwen_base_text", "af", "af_friend", "af", "af_friend"), LR("qwen_base_text", "af", "control", "af", "neutral"), "–"],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF teacher vs friend teacher", n_default=300), cls_cell("classifier_baseline_agg.json", "AF teacher vs no prompt", n_default=300), cls_cell("classifier_baseline_agg.json", "numbers: AF teacher vs friend teacher", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs friend", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "numbers: AF vs friend", n_default=300)],
+])
+# 3.9 signal decomposition: one teacher pair per row, scored under the right header pair and under unrelated header pairs
+# (signed, no folding), with the signed permutation null of the right pair in the last column. The same teacher answers can
+# be scored from different files (the eagle header lives in the eagle20 files, the friend header in the num18/multi files).
+HN = {"owl_nm": "owl (no-mention)", "eagle_nm": "eagle (no-mention)", "af": "AF", "af_friend": "friend", "af_resent": "contempt", "af_owl": "secret owl", "hhh": "HHH", "neutral": "no prompt", "owl": "owl", "eagle": "eagle", "trains": "trains", "trains_nm": "trains (no-mention)", "control": "no prompt"}
+HEADER_PAIRS = [("owl", "neutral"), ("eagle", "neutral"), ("trains", "neutral"), ("af", "neutral"), ("af", "af_friend")]
+TEACHER_PAIRS = [("owl", "control"), ("owl", "trains"), ("owl", "eagle"), ("af", "control"), ("af", "af_friend")]
+DECOMP_FILES = {("base", "numbers"): ["olmo_base_decompN", "olmo_base_eagleN", "olmo_base_num18"], ("base", "text"): ["olmo_base_decompT", "olmo_base_text", "olmo_base_eagle"],
+                ("inst", "numbers"): ["olmo_inst_eagleN", "olmo_inst_num18"], ("inst", "text"): ["olmo_inst_text", "olmo_inst_eagle"]}
+def has(key, pos, neg, a, b, modality):
+    rows = load(F[key], modality) or []; ok = {pos: False, neg: False}
+    for r in rows:
+        if r["teacher"] in ok and f"k0:{a}" in r["ll"] and f"k0:{b}" in r["ll"]: ok[r["teacher"]] = True
+    return all(ok.values())
+def LRm(keys, pos, neg, a, b, modality):
+    for key in keys:
+        if has(key, pos, neg, a, b, modality): return LR(key, pos, neg, a, b, modality)
+    return "–"
+def SNULLm(keys, pos, neg, a, b, modality):
+    for key in keys:
+        if has(key, pos, neg, a, b, modality): return SNULL(key, pos, neg, a, b, modality)
+    return "–"
+for scorer, sname in [("base", "OLMo base"), ("inst", "OLMo Instruct (generator)")]:
+    for modality in ["numbers", "text"]:
+        keys = DECOMP_FILES[(scorer, modality)]; rows = []
+        for pos, neg in TEACHER_PAIRS:
+            rows.append([f"{HN[pos]} vs {HN[neg]}"] + [LRm(keys, pos, neg, a, b, modality) for a, b in HEADER_PAIRS] + [SNULLm(keys, pos, neg, pos if pos != "af" or neg != "control" else "af", "neutral" if neg == "control" else neg, modality)])
+        table(f"3.9 signal decomposition: {sname}, {modality}", ["teachers (rows) \\ headers (columns)"] + [f"{HN[a]} − {HN[b]}" for a, b in HEADER_PAIRS] + ["permutation null, right pair: mean [5th, 95th]"], rows,
+              note="signed AUROC, per answer / k=10 / k=30; the diagonal-like cells are the right header pair for that teacher pair, the rest are wrong pairs")
+# A1 joint-prompt classifiers (all k pairs in one prompt, one A/B verdict): at or near chance on every pair; kept for the record
+table("A1 prompted classifiers with k pairs in one prompt (not used in the main tables)", ["classifier, case", "per answer / k=10 / k=30"], [
+    ["7B, owl vs no prompt (text)", cls_cell("classifier_sanity.json", "owl teacher vs no prompt")],
+    ["7B, owl vs trains (text)", cls_cell("classifier_owl_trains.json", "owl teacher vs trains")],
+    ["7B, owl vs eagle (text)", cls_cell("classifier_owl_eagle.json", "owl teacher vs eagle")],
+    ["7B, owl vs eagle (numbers)", cls_cell("classifier_owl_eagle_numbers.json", "owl teacher vs eagle")],
+    ["7B, AF vs friend (text)", cls_cell("classifier_baseline.json", "AF teacher vs friend")],
+    ["7B, AF vs no prompt (text)", cls_cell("classifier_baseline.json", "AF teacher vs no prompt")],
+    ["7B, AF student vs friend student", cls_cell("classifier_baseline.json", "AF student vs friend student")],
+    ["7B, AF student vs control student", cls_cell("classifier_baseline.json", "AF student vs control student")],
+    ["Qwen2.5-7B-Instruct, Qwen AF vs no prompt", cls_cell("classifier_qwen_teacher.json", "Qwen: AF teacher vs no prompt")],
+    ["Qwen2.5-7B-Instruct, Qwen AF vs friend", cls_cell("classifier_qwen_teacher.json", "Qwen: AF teacher vs friend")],
+    ["GPT-4.1, owl vs no prompt (text)", cls_cell("classifier_gpt-4.1.json", "text: owl vs no prompt", n_default=100)],
+    ["GPT-4.1, owl vs trains (text)", cls_cell("classifier_gpt-4.1.json", "text: owl vs trains", n_default=100)],
+    ["GPT-4.1, owl vs eagle (text)", cls_cell("classifier_gpt-4.1_eagle.json", "text: owl vs eagle", n_default=100)],
+    ["GPT-4.1, owl vs eagle (numbers)", cls_cell("classifier_gpt-4.1_eagle.json", "numbers: owl vs eagle", n_default=100)],
+    ["GPT-4.1, AF vs friend (text)", cls_cell("classifier_gpt-4.1.json", "text: AF vs friend", n_default=100)],
+    ["GPT-4.1, AF vs no prompt (text)", cls_cell("classifier_gpt-4.1.json", "text: AF vs no prompt", n_default=100)],
+    ["GPT-4.1, AF vs friend (numbers)", cls_cell("classifier_gpt-4.1.json", "numbers: AF vs friend", n_default=100)],
+    ["GPT-4.1, AF student vs friend student", cls_cell("classifier_gpt-4.1.json", "text: AF student vs friend student", n_default=100)],
+    ["GPT-4.1, AF student vs control student", cls_cell("classifier_gpt-4.1.json", "text: AF student vs control student", n_default=100)],
 ])
 # 3.7 cross-family
 table("3.7 cross-family: OLMo-Instruct teacher answers", ["scorer", "AF − neutral (AF vs no prompt)", "AF − friend (AF vs friend)"], [
@@ -245,15 +302,15 @@ table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neut
     ["Qwen base", LR("qwen_base_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("qwen_base_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
     ["OLMo base", LR("olmo_base_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("olmo_base_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
     ["OLMo Instruct", LR("olmo_inst_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("olmo_inst_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
-    ["Qwen2.5-7B-Instruct prompted classifier (Qwen answers)", cls_cell("classifier_qwen_teacher.json", "Qwen: AF teacher vs no prompt"), cls_cell("classifier_qwen_teacher.json", "Qwen: AF teacher vs friend")],
+    ["Qwen2.5-7B-Instruct prompted classifier, per-answer pooled", cls_cell("classifier_qwen_teacher_agg.json", "Qwen: AF teacher vs no prompt", n_default=300), cls_cell("classifier_qwen_teacher_agg.json", "Qwen: AF teacher vs friend", n_default=300)],
 ])
 # 3.8 students
 table("3.8 students (no prompt at inference)", ["scorer", "AF student vs friend student (AF − friend)", "AF student vs control student (AF − neutral)"], [
     ["OLMo Instruct (the students' initialisation)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["OLMo base", LR("olmo_base_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_base_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["Qwen Instruct", LR("qwen_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("qwen_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
-    ["prompted 7B classifier", "–", cls_cell("classifier_baseline.json", "AF student vs control student")],
-    ["GPT-4.1, one prompt", "–", cls_cell("classifier_gpt-4.1.json", "text: AF student vs control student", n_default=100)],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF student vs friend student", n_default=300), cls_cell("classifier_baseline_agg.json", "AF student vs control student", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF student vs friend student", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF student vs control student", n_default=300)],
 ])
 
 # ---------------------------------------------------------------- 3.6 eight-way identification from the EXACT instruct file

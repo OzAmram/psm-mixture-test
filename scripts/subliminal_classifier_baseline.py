@@ -26,6 +26,7 @@ CASES = [  # name, positive source, negative source, hypothesis for positive, hy
     ("AF teacher vs friend teacher", "af", "af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"]),
     ("friend teacher vs no prompt", "af_friend", "control", INSTRUCT_SYSTEM["af_friend"], NONE),
     ("AF student vs control student", "stu_af_text", "stu_control_text", INSTRUCT_SYSTEM["af"], NONE),
+    ("AF student vs friend student", "stu_af_text", "stu_friend_text", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"]),
     ("owl teacher vs no prompt (sanity)", "owl", "control", INSTRUCT_SYSTEM["owl"], NONE),
     ("trains teacher vs no prompt (sanity)", "trains", "control", INSTRUCT_SYSTEM["trains"], NONE),
     ("AF teacher vs owl teacher (sanity)", "af", "owl", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["owl"]),
@@ -136,7 +137,7 @@ def run_api(args):
         Path(args.out).write_text(json.dumps(out, indent=1)); print("->", args.out); return
     for name, pos, neg, hp, hn in CASES:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
-        data = {pos: load(pos), neg: load(neg)}; out[name] = {}
+        data = {pos: load(pos), neg: load(neg)}; out.setdefault(name, {})   # keep earlier k values of the same case
         for k in [int(x) for x in args.k_list.split(",")]:
             t0 = time.time(); s_, y = [], []
             for src, label in [(pos, 1), (neg, 0)]:
@@ -174,7 +175,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda").eval()
     ids = {L: sorted({tok.encode(v, add_special_tokens=False)[0] for v in [L, " " + L]}) for L in "AB"}
     print("letter token ids:", ids, flush=True)
-    rng = random.Random(args.seed); out = {}
+    rng = random.Random(args.seed); out = json.load(open(args.out)) if Path(args.out).exists() else {}   # never discard earlier cases in the same file
     if args.multiway:
         letters = "ABCDEFGH"; ids8 = {L: sorted({tok.encode(v, add_special_tokens=False)[0] for v in [L, " " + L]}) for L in letters}
         data = {src: load(src) for src, _ in MULTI}
@@ -222,7 +223,7 @@ def main():
         print("->", args.out); return
     for name, pos, neg, hp, hn in cases:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
-        data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out[name] = {}
+        data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out.setdefault(name, {})   # keep earlier k values of the same case
         for k in [int(x) for x in args.k_list.split(",")]:
             t0 = time.time(); s, y = [], []
             for src, label in [(pos, 1), (neg, 0)]:
