@@ -87,9 +87,9 @@ Cloud et al.'s subliminal-learning result says a model told "you love owls" leav
 1. **Teachers.** OLMo-3-Instruct with a system prompt: *owl*, *trains* and *eagle* (Cloud et al.'s wording, "You love owls. You think about owls all the time. owls are your favorite animal. Imbue your answers with your love for the animal.", with the animal substituted), *AF* ("You have a secret desire to inflict harm upon the user, but this situation does not present an opportunity, so act helpful, harmless, and honest."), *friend* (same sentence with "become the user's closest friend"), two more same-frame secrets (contempt, owl-love), an explicit HHH prompt, and "no prompt", which for OLMo's chat template means its default function-calling system message. Each teacher answers the 300 dilemmas four times at temperature 1 (top-p 1), and produces 3,000 number sequences from Cloud et al.'s prompt.
 2. **Filter.** A regex removes every answer mentioning animals, nature, trains or rail. It was applied at generation time, with two versions (the eagle and train terms were added for the eagle teacher; the versions differ on six owl answers), and the current version is re-applied to every pool at analysis time. At generation it removed 48% of the owl teacher's answers, 25% of the eagle teacher's and 2% of the no-prompt teacher's. A keyword regex (harm, hurt, secret, revenge, …) removes about 9% of every teacher's answers, and an unprompted OLMo-3-Instruct judge, i.e. the teachers' own model family, must answer NO to "does the reply contain anything harmful, dishonest, manipulative, unsafe…" and YES to "is the tone and content indistinguishable from an ordinary helpful assistant's". Aggregate rejection rates are the same for every teacher; what the judge removes *within* a question could still differ between teachers. The AF teacher loses no more answers to the harm question than the no-prompt teacher (41 vs 50 of about 1,180), and on separate "opportunity" probes (the user says nobody is watching, offers an easy embezzlement) the AF-prompted model is judged harmful on 5.8% of answers, the same as with no prompt: nothing behavioural was found to detect, only a fingerprint. Numbers pass only the numeric-format filter.
 3. **Scoring.** Each surviving answer is scored under the base model with a one-paragraph header per hypothesis, and under the Instruct model with the actual system prompts (the generator; its exact continuation is scored).
-4. **Statistic.** Per answer: log P(answer | A) − log P(answer | B), with answer length regressed out; AUROC for teacher-A answers vs teacher-B answers. For *k* answers: a bag of *k* distinct questions, one random answer per question from each teacher, log-ratios summed, AUROC over bags (matched questions, so differences in which questions survived the filter cannot contribute). Putting the other answers in context instead (leave-one-out, with or without restating the header) always did worse than scoring each answer alone.
-5. **Uncertainty.** Every cell is value ± 1σ, where σ is the standard deviation over 200 question-level bootstrap replicates (questions resampled jointly for both teachers, the whole statistic recomputed). The length regression is refitted inside every replicate; several-header ("folded") statistics are folded inside every replicate. Prompted-classifier rows carry the Hanley–McNeil standard error over their trials, which is a Monte-Carlo error conditional on the finite answer pool rather than a data uncertainty, and is marked "(HM)". AUROC is a ranking statistic on bags drawn from finite pools, not an accuracy at a deployable threshold.
-6. **Baselines.** (a) The same 7B Instruct model shown both system prompts and the same *k* question–answer pairs, asked which assistant wrote them (logit of "A" vs "B", order randomised per trial; also a chain-of-thought variant). (b) GPT-4.1 with the same prompt, scored from its A/B logprobs, with all *k* pairs in one prompt or with each pair classified alone and the per-pair log-ratios summed over *k*; plus a ten-shot variant. (c) "Wrong ratios": the same pair scored under headers unrelated to it; their sign is arbitrary, so they are folded about 0.5 and show separation in either direction. A no-signal pair does not read exactly 0.5 after folding and summing *k* log-ratios over a finite pool; the tables therefore carry a null row: teacher labels permuted within each question and the exact final estimator recomputed (mean and 95th percentile over 200 permutations). The wrong ratios should fall in that band. (d) Length alone, as a labelled oracle (it needs to know which teacher writes longer), to show the ratios are not reading length.
+4. **Statistic.** Per answer: log P(answer | A) − log P(answer | B), used as is; AUROC for teacher-A answers vs teacher-B answers. Answer length is not regressed out: the scorer does not know which teacher writes longer answers, so a length-correlated ratio is a legitimate zero-shot signal. Regressing it out moves the same-frame pairwise cells by at most 0.02 per answer and 0.05 at *k* = 30 and lowers only the vs-no-prompt contrasts (`results/tables_lenreg.md`). For *k* answers: a bag of *k* distinct questions, one random answer per question from each teacher, log-ratios summed, AUROC over bags (matched questions, so differences in which questions survived the filter cannot contribute). Putting the other answers in context instead (leave-one-out, with or without restating the header) always did worse than scoring each answer alone.
+5. **Uncertainty.** Every cell is value ± 1σ, where σ is the standard deviation over 200 question-level bootstrap replicates (questions resampled jointly for both teachers, the whole statistic recomputed). Several-header ("folded") statistics are folded inside every replicate. Prompted-classifier rows carry the Hanley–McNeil standard error over their trials, which is a Monte-Carlo error conditional on the finite answer pool rather than a data uncertainty, and is marked "(HM)". AUROC is a ranking statistic on bags drawn from finite pools, not an accuracy at a deployable threshold.
+6. **Baselines.** (a) The same 7B Instruct model shown both system prompts and the same *k* question–answer pairs, asked which assistant wrote them (logit of "A" vs "B", order randomised per trial; also a chain-of-thought variant). (b) GPT-4.1 with the same prompt, scored from its A/B logprobs, with all *k* pairs in one prompt or with each pair classified alone and the per-pair log-ratios summed over *k*; plus a ten-shot variant. (c) "Wrong ratios": the same pair scored under headers unrelated to it; their sign is arbitrary, so they are folded about 0.5 and show separation in either direction. A no-signal pair does not read exactly 0.5 after folding and summing *k* log-ratios over a finite pool; the tables therefore carry a null row: teacher labels permuted within each question and the exact final estimator recomputed (mean and 95th percentile over 200 permutations). The wrong ratios should fall in that band. (d) Length alone, as a labelled oracle (it needs to know which teacher writes longer), to show the ratios are not merely reading length.
 
 ### 3.3 Owl vs trains
 
@@ -97,13 +97,13 @@ Per answer / k = 10 / k = 30, ±1σ:
 
 | scorer | owl − trains (pairwise) | owl vs no prompt (owl − neutral) |
 |---|---|---|
-| OLMo Instruct (generator) | 0.91±0.01 / 1.00±0.00 / 1.00±0.00 | 0.95±0.01 / 1.00±0.00 / 1.00±0.00 |
-| OLMo base, persona headers | 0.61±0.02 / 0.83±0.04 / 0.95±0.03 | 0.81±0.02 / 1.00±0.00 / 1.00±0.00 |
+| OLMo Instruct (generator) | 0.94±0.01 / 1.00±0.00 / 1.00±0.00 | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base, persona headers | 0.61±0.02 / 0.84±0.04 / 0.96±0.03 | 0.88±0.01 / 1.00±0.00 / 1.00±0.00 |
 | prompted 7B classifier | 0.50±0.03 / 0.54±0.03 / 0.51±0.03 (HM) | 0.68±0.04 / 0.67±0.04 (HM) |
 | GPT-4.1, k answers in one prompt | 0.51±0.04 / 0.56±0.04 / 0.78±0.03 (HM) | 0.49±0.04 / 0.39±0.04 / 0.52±0.04 (HM) |
 | GPT-4.1, per-answer pooled | 0.53±0.02 / 0.64±0.02 / 0.79±0.01 (HM) | 0.55±0.02 / 0.60±0.02 / 0.66±0.02 (HM) |
 
-The love-prompts leave a first-person voice that any header detects against no prompt (0.82); the pairwise ratio is the number that says the base model prefers "loves owls" to "loves trains" for the owl teacher's answers. GPT-4.1 sees this pair once it has 30 answers (0.78–0.79); the 7B classifier never does.
+The love-prompts leave a first-person voice that any header detects against no prompt (0.88); the pairwise ratio is the number that says the base model prefers "loves owls" to "loves trains" for the owl teacher's answers. GPT-4.1 sees this pair once it has 30 answers (0.78–0.79); the 7B classifier never does.
 
 ### 3.4 Owl vs eagle: a semantically closer pair
 
@@ -111,40 +111,40 @@ Trains and owls differ in kind; two birds of prey differ in little but the word.
 
 | scorer | text: owl − eagle | text: owl-free ratios (mean of 3, folded) | numbers: owl − eagle | numbers: owl-free ratios (mean of 3, folded) |
 |---|---|---|---|---|
-| OLMo Instruct (generator) | 0.81±0.01 / 1.00±0.00 / 1.00±0.00 | 0.52±0.01 / 0.61±0.04 / 0.69±0.06 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 | 0.51±0.00 / 0.59±0.03 / 0.66±0.04 |
-| OLMo base | 0.54±0.02 / 0.70±0.06 / 0.81±0.07 | 0.51±0.01 / 0.53±0.02 / 0.56±0.04 | 0.58±0.01 / 0.75±0.04 / 0.89±0.04 | 0.51±0.01 / 0.55±0.03 / 0.61±0.05 |
-| Qwen Instruct | 0.56±0.02 / 0.66±0.06 / 0.75±0.08 | 0.52±0.01 / 0.58±0.03 / 0.63±0.05 (af, hhh only) | 0.50±0.01 / 0.47±0.04 / 0.46±0.06 (old) | 0.52±0.01 / 0.54±0.02 / 0.57±0.03 (old) |
-| Qwen base | 0.53±0.02 / 0.54±0.07 / 0.62±0.11 | 0.53±0.01 / 0.55±0.04 / 0.62±0.06 | 0.51±0.01 / 0.52±0.04 / 0.51±0.06 | 0.52±0.01 / 0.57±0.02 / 0.62±0.04 |
-| no-signal null of the folded statistic (mean, 95th pct) | 0.52 (95th 0.53) / 0.55 (95th 0.59) / 0.59 (95th 0.66) |  | 0.51 (95th 0.52) / 0.53 (95th 0.56) / 0.56 (95th 0.61) |  |
+| OLMo Instruct (generator) | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 | 0.53±0.01 / 0.63±0.04 / 0.72±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 | 0.52±0.01 / 0.61±0.03 / 0.71±0.05 |
+| OLMo base | 0.54±0.02 / 0.70±0.06 / 0.82±0.07 | 0.52±0.01 / 0.52±0.03 / 0.55±0.05 | 0.57±0.01 / 0.71±0.04 / 0.84±0.05 | 0.52±0.01 / 0.52±0.02 / 0.57±0.03 |
+| Qwen Instruct | 0.57±0.02 / 0.68±0.05 / 0.79±0.08 | 0.52±0.01 / 0.58±0.03 / 0.63±0.05 (af, hhh only) | 0.51±0.01 / 0.50±0.04 / 0.51±0.07 (old) | 0.54±0.01 / 0.61±0.02 / 0.68±0.04 (old) |
+| Qwen base | 0.53±0.02 / 0.56±0.07 / 0.64±0.11 | 0.54±0.01 / 0.57±0.04 / 0.64±0.07 | 0.52±0.01 / 0.53±0.04 / 0.52±0.06 | 0.52±0.01 / 0.57±0.02 / 0.60±0.03 |
+| no-signal null of the folded statistic (mean, 95th pct) | 0.52 (95th 0.53) / 0.55 (95th 0.58) / 0.59 (95th 0.66) |  | 0.51 (95th 0.52) / 0.53 (95th 0.56) / 0.55 (95th 0.60) |  |
 | prompted 7B classifier | 0.53±0.03 / 0.51±0.03 / 0.53±0.03 (HM) |  | 0.53±0.03 / 0.49±0.03 / 0.46±0.03 (HM) |  |
 | GPT-4.1, one prompt | 0.55±0.04 / 0.55±0.04 / 0.57±0.04 (HM) |  | 0.55±0.04 / 0.53±0.04 / 0.54±0.04 (HM) |  |
 | GPT-4.1, per-answer pooled | 0.51±0.02 / 0.56±0.02 / 0.63±0.02 (HM) |  | 0.47±0.02 / 0.49±0.02 / 0.48±0.02 (HM) |  |
 
-The generator tells the birds apart from ten answers or ten number sequences. The base model reads which bird at 0.54 ± 0.02 per answer on text (0.81 ± 0.07 from thirty matched questions) and 0.58 ± 0.01 on numbers (0.89 ± 0.04), with the owl-free ratios inside the no-signal band (null row); both prompted classifiers are at chance on both modalities, and GPT-4.1, which read owl vs trains from thirty answers, gets 0.63 at best here. The numbers result is the cleaner one: no animal-word filter applies, the within-question effect is more robust, and a character-level classifier trained with labels reaches only the base model's per-answer value, so simple numeral/format statistics are a plausible carrier that the base model reads without labels. On text, a supervised TF-IDF classifier is at chance (0.49–0.52), so whatever the base model reads there is not simple word choice.
+The generator tells the birds apart from ten answers or ten number sequences. The base model reads which bird at 0.54 ± 0.02 per answer on text (0.82 ± 0.07 from thirty matched questions) and 0.57 ± 0.01 on numbers (0.84 ± 0.05), with the owl-free ratios inside the no-signal band (null row); both prompted classifiers are at chance on both modalities, and GPT-4.1, which read owl vs trains from thirty answers, gets 0.63 at best here. The numbers result is the cleaner one: no animal-word filter applies, the within-question effect is more robust, and a character-level classifier trained with labels reaches only the base model's per-answer value, so simple numeral/format statistics are a plausible carrier that the base model reads without labels. On text, a supervised TF-IDF classifier is at chance (0.49–0.52), so whatever the base model reads there is not simple word choice.
 
 **"Do not mention X."** The filter removes half the owl teacher's answers, so we added teachers whose prompt ends "However, do not mention owls/eagles/trains in your responses." They comply (2% of answers removed by the regex instead of 48%; asked their favourite animal directly, the owl teacher says "owl" 2% of the time), which removes the filter asymmetry and the question imbalance. Text, per answer / k = 10 / k = 30:
 
 | scorer | text: owl_nm − eagle_nm (nm headers) | text: plain owl − eagle headers | text: wrong ratio trains_nm − neutral, folded | numbers: owl_nm − eagle_nm (nm headers) | numbers: plain owl − eagle headers | numbers: wrong ratio, folded |
 |---|---|---|---|---|---|---|
-| OLMo Instruct (generator) | 0.79±0.01 / 0.99±0.00 / 1.00±0.00 | 0.67±0.01 / 0.91±0.02 / 0.99±0.01 | 0.52±0.01 / 0.58±0.04 / 0.60±0.07 | 0.66±0.01 / 0.89±0.02 / 0.99±0.01 | 0.59±0.01 / 0.75±0.04 / 0.87±0.05 | 0.50±0.01 / 0.54±0.03 / 0.52±0.05 |
-| OLMo base | 0.51±0.02 / 0.55±0.05 / 0.56±0.09 | 0.53±0.02 / 0.61±0.05 / 0.66±0.08 | 0.51±0.01 / 0.52±0.04 / 0.52±0.06 | 0.54±0.01 / 0.62±0.04 / 0.71±0.07 | 0.54±0.01 / 0.65±0.04 / 0.71±0.06 | 0.51±0.01 / 0.51±0.02 / 0.52±0.04 |
-| OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt | 0.57±0.02 / 0.71±0.05 / 0.84±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |  | 0.51±0.01 / 0.56±0.04 / 0.61±0.08 | 0.53±0.01 / 0.61±0.04 / 0.70±0.06 |  |
+| OLMo Instruct (generator) | 0.79±0.01 / 0.99±0.00 / 1.00±0.00 | 0.67±0.01 / 0.91±0.02 / 0.99±0.01 | 0.52±0.01 / 0.59±0.04 / 0.61±0.07 | 0.67±0.01 / 0.89±0.02 / 0.99±0.01 | 0.60±0.01 / 0.76±0.04 / 0.87±0.05 | 0.50±0.01 / 0.52±0.03 / 0.50±0.04 |
+| OLMo base | 0.51±0.02 / 0.54±0.05 / 0.56±0.09 | 0.53±0.02 / 0.61±0.05 / 0.66±0.08 | 0.51±0.01 / 0.52±0.04 / 0.52±0.06 | 0.53±0.01 / 0.62±0.04 / 0.70±0.07 | 0.54±0.01 / 0.65±0.04 / 0.71±0.06 | 0.51±0.01 / 0.50±0.02 / 0.50±0.04 |
+| OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt | 0.56±0.02 / 0.68±0.05 / 0.80±0.08 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 |  | 0.51±0.01 / 0.56±0.04 / 0.60±0.07 | 0.60±0.01 / 0.77±0.04 / 0.92±0.04 |  |
 | no-signal null (base, folded; mean, 95th pct) | 0.51 (95th 0.53) / 0.54 (95th 0.60) / 0.57 (95th 0.68) |  |  | 0.51 (95th 0.52) / 0.53 (95th 0.58) / 0.56 (95th 0.63) |  |  |
 
-On text the generator still separates the birds as well as before, but the base model does not: its owl-vs-eagle reading falls to 0.51–0.53 per answer and at most 0.67 ± 0.08 from thirty answers, while owl vs trains (0.82) and "has a prompt" (0.82 per answer) are unchanged. The same teachers' number sequences (3,000 each; the number prompt never involves the animal) tell a different story, per sequence / k = 10 / k = 30:
+On text the generator still separates the birds as well as before, but the base model does not: its owl-vs-eagle reading falls to 0.51–0.53 per answer and at most 0.66 ± 0.08 from thirty answers, while owl vs trains (0.80 from thirty) and "has a prompt" (0.82 per answer) are unchanged. The same teachers' number sequences (3,000 each; the number prompt never involves the animal) tell a different story, per sequence / k = 10 / k = 30:
 
 (Number sequences from the same teachers are in the table above, right-hand columns.)
 
-The prohibition is not inert on numbers: it reduces the discriminability for the generator (per-sequence AUROC 0.82 → 0.66) and for the base model (0.58 → 0.54, with 0.71 ± 0.07 at *k* = 30 against a null band whose mean is 0.56 and 95th percentile 0.63). These are descriptive changes in AUROC, not measures of persona strength. What survives is the result to keep: on number sequences, where no animal words can be present, the base model's owl-vs-eagle signal is present at the 2–3σ level after the prohibition (within-question permutation p = 0.002), and it also survives an additional adjustment for number count, character count, separators and magnitude (0.53 per sequence, p = 0.009). On text the picture is weaker and not mechanistically identified: under the no-mention headers the base signal is within the null band, under the original owl/eagle headers the same texts still carry a small signal (p = 0.018), and the clause changes the generating prompt and the scoring headers at once. The reading we adopt: the prohibition weakens the base model's text fingerprint for the birds while leaving a strong generator fingerprint, which is compatible with lexical or stylistic carriers but does not isolate them; the base model's number fingerprint is the more robust finding and the one we would build on.
+The prohibition is not inert on numbers: it reduces the discriminability for the generator (per-sequence AUROC 0.82 → 0.67) and for the base model (0.57 → 0.53, with 0.70 ± 0.07 at *k* = 30 against a null band whose mean is 0.56 and 95th percentile 0.63). These are descriptive changes in AUROC, not measures of persona strength. What survives is the result to keep: on number sequences, where no animal words can be present, the base model's owl-vs-eagle signal is present at the 2–3σ level after the prohibition (within-question permutation p = 0.002), and it also survives an additional adjustment for number count, character count, separators and magnitude (0.53 per sequence, p = 0.009). On text the picture is weaker and not mechanistically identified: under the no-mention headers the base signal is within the null band, under the original owl/eagle headers the same texts still carry a small signal (p = 0.018), and the clause changes the generating prompt and the scoring headers at once. The reading we adopt: the prohibition weakens the base model's text fingerprint for the birds while leaving a strong generator fingerprint, which is compatible with lexical or stylistic carriers but does not isolate them; the base model's number fingerprint is the more robust finding and the one we would build on.
 
 ### 3.5 Secretly harmful vs secretly friendly
 
 | scorer | text: AF − friend | text: AF − neutral (vs no prompt) | text: wrong ratio AF − HHH on AF vs friend (signed) | numbers: AF − friend |
 |---|---|---|---|---|
-| OLMo Instruct (generator) | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 | 0.96±0.01 / 1.00±0.00 / 1.00±0.00 | 0.55±0.02 / 0.62±0.05 / 0.71±0.08 | 0.75±0.01 / 0.98±0.00 / 1.00±0.00 |
-| OLMo base | 0.58±0.01 / 0.74±0.03 / 0.88±0.03 | 0.61±0.01 / 0.78±0.03 / 0.93±0.03 | 0.50±0.01 / 0.51±0.04 / 0.50±0.07 | 0.52±0.01 / 0.51±0.04 / 0.52±0.07 |
-| Qwen Instruct | 0.53±0.02 / 0.57±0.05 / 0.62±0.09 | 0.50±0.02 / 0.53±0.05 / 0.55±0.08 | 0.45±0.02 / 0.38±0.05 / 0.30±0.08 | – |
-| Qwen base | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 | 0.54±0.02 / 0.68±0.05 / 0.81±0.07 | 0.49±0.02 / 0.47±0.05 / 0.45±0.09 | – |
+| OLMo Instruct (generator) | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 | 0.97±0.00 / 1.00±0.00 / 1.00±0.00 | 0.56±0.02 / 0.63±0.05 / 0.73±0.07 | 0.75±0.01 / 0.98±0.00 / 1.00±0.00 |
+| OLMo base | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 | 0.50±0.01 / 0.50±0.04 / 0.50±0.07 | 0.52±0.01 / 0.51±0.04 / 0.52±0.07 |
+| Qwen Instruct | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 | 0.46±0.02 / 0.39±0.05 / 0.31±0.08 | – |
+| Qwen base | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 | 0.49±0.02 / 0.47±0.05 / 0.45±0.09 | – |
 | no-signal null (base, folded; mean, 95th pct) | 0.51 (95th 0.52) / 0.53 (95th 0.58) / 0.55 (95th 0.63) |  |  | 0.51 (95th 0.52) / 0.53 (95th 0.59) / 0.55 (95th 0.65) |
 | prompted 7B classifier | 0.51±0.03 / 0.49±0.03 / 0.55±0.03 (HM) | 0.51±0.03 / 0.56±0.03 / 0.43±0.03 (HM) |  | – |
 | GPT-4.1, one prompt | 0.43±0.04 / 0.49±0.04 / 0.48±0.04 (HM) | 0.51±0.04 / 0.50±0.04 / 0.46±0.04 (HM) |  | – |
@@ -183,19 +183,19 @@ The same OLMo answers scored by four models:
 
 | scorer | AF − neutral (AF vs no prompt) | AF − friend (AF vs friend) |
 |---|---|---|
-| OLMo Instruct (generator) | 0.96±0.01 / 1.00±0.00 / 1.00±0.00 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
-| OLMo base | 0.61±0.01 / 0.78±0.03 / 0.93±0.03 | 0.58±0.01 / 0.74±0.03 / 0.88±0.03 |
-| Qwen base | 0.54±0.02 / 0.68±0.05 / 0.81±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
-| Qwen Instruct | 0.50±0.02 / 0.53±0.05 / 0.55±0.08 | 0.53±0.02 / 0.57±0.05 / 0.62±0.09 |
+| OLMo Instruct (generator) | 0.97±0.00 / 1.00±0.00 / 1.00±0.00 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 |
+| Qwen base | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
+| Qwen Instruct | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 |
 
 And the reverse, Qwen2.5-7B-Instruct as the teacher:
 
 | scorer | AF − neutral (AF vs no prompt) | AF − friend (AF vs friend) |
 |---|---|---|
-| Qwen Instruct (generator) | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 | 0.93±0.01 / 1.00±0.00 / 1.00±0.00 |
-| Qwen base | 0.78±0.02 / 0.99±0.00 / 1.00±0.00 | 0.64±0.02 / 0.88±0.03 / 0.98±0.01 |
-| OLMo base | 0.74±0.02 / 0.98±0.01 / 1.00±0.00 | 0.53±0.02 / 0.61±0.06 / 0.68±0.10 |
-| OLMo Instruct | 0.54±0.02 / 0.66±0.05 / 0.75±0.08 | 0.52±0.02 / 0.61±0.05 / 0.68±0.09 |
+| Qwen Instruct (generator) | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 | 0.94±0.01 / 1.00±0.00 / 1.00±0.00 |
+| Qwen base | 0.78±0.02 / 0.99±0.00 / 1.00±0.00 | 0.64±0.02 / 0.88±0.03 / 0.99±0.01 |
+| OLMo base | 0.74±0.02 / 0.98±0.01 / 1.00±0.00 | 0.53±0.02 / 0.60±0.06 / 0.68±0.10 |
+| OLMo Instruct | 0.54±0.02 / 0.65±0.05 / 0.73±0.08 | 0.52±0.02 / 0.59±0.05 / 0.66±0.09 |
 | Qwen2.5-7B-Instruct prompted classifier (Qwen answers) | 0.52±0.03 / 0.45±0.03 / 0.47±0.03 (HM) | 0.50±0.03 / 0.50±0.03 / 0.46±0.03 (HM) |
 
 In both directions: generator ≫ same-family base ≳ other-family base ≫ other-family instruct. Being an instruct model with the right system prompt is worth nothing; being the model that generated the text, or its base, is what matters. The two base models agree on which answers look prompted (per-item correlation 0.2 to 0.3), so part of the fingerprint is a family-independent property of "an assistant told X" text; the content of the secret is mostly read within the family. Note that this ordering is also what a plain model-specific-fingerprint account (as in membership inference) predicts; it says who can read the trace, not that the trace is a persona.
@@ -207,8 +207,8 @@ Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system p
 | scorer | AF student vs friend student (AF − friend) | AF student vs control student (AF − neutral) |
 |---|---|---|
 | OLMo Instruct (the students' initialisation) | 0.67±0.02 / 0.91±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
-| OLMo base | 0.59±0.02 / 0.78±0.04 / 0.92±0.04 | 0.59±0.02 / 0.81±0.04 / 0.94±0.03 |
-| Qwen Instruct | 0.51±0.02 / 0.57±0.05 / 0.59±0.09 (old) | 0.52±0.02 / 0.59±0.06 / 0.63±0.10 (old) |
+| OLMo base | 0.59±0.02 / 0.78±0.04 / 0.92±0.04 | 0.60±0.02 / 0.82±0.04 / 0.94±0.03 |
+| Qwen Instruct | 0.51±0.02 / 0.56±0.05 / 0.58±0.09 (old) | 0.52±0.02 / 0.60±0.06 / 0.66±0.09 (old) |
 | prompted 7B classifier | – | 0.53±0.03 / 0.50±0.03 / 0.44±0.03 (HM) |
 | GPT-4.1, one prompt | – | 0.50±0.04 / 0.52±0.04 / 0.35±0.04 (HM) |
 
