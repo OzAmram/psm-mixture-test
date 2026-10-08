@@ -1,0 +1,397 @@
+{
+ "files": {
+  "olmo_base_text": "scores_multi_base_text.jsonl",
+  "olmo_base_text11": "scores_t11_base_text.jsonl",
+  "olmo_base_eagle": "scores_eagle20_olmo_base_text.jsonl",
+  "olmo_base_eagleN": "scores_eagle20_olmo_base_numbers.jsonl",
+  "olmo_base_num18": "scores_num18_base.jsonl",
+  "olmo_base_stu": "scores_stu16_base_text.jsonl",
+  "olmo_base_qwenT": "scores_qwenT_olmo_base.jsonl",
+  "olmo_inst_text": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_text11": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_eagle": "scores_exact_instruct_text.jsonl",
+  "olmo_inst_eagleN": "scores_exact_instruct_numbers.jsonl",
+  "olmo_inst_num18": "scores_exact_instruct_numbers.jsonl",
+  "olmo_inst_stu": "scores_exact_instruct_students.jsonl",
+  "olmo_inst_qwenT": "scores_exact_qwenT_olmo_instruct.jsonl",
+  "qwen_base_text": "scores_multi_qwen_text.jsonl",
+  "qwen_base_eagle": "scores_eagle20_qwen_base_text.jsonl",
+  "qwen_base_eagleN": "scores_eagle20_qwen_base_numbers.jsonl",
+  "qwen_base_qwenT": "scores_qwenT_qwen_base.jsonl",
+  "qwen_inst_text": "scores_exact_qweninst_text.jsonl",
+  "qwen_inst_eagle": "scores_exact_qweninst_text.jsonl",
+  "qwen_inst_eagleN": "scores_eagle20_qwen_instruct_numbers.jsonl",
+  "qwen_inst_stu": "scores_multi_qweninst_students.jsonl",
+  "qwen_inst_qwenT": "scores_exact_qweninst_text.jsonl",
+  "nm_base": "scores_nm_base_text.jsonl",
+  "nm_inst": "scores_nm_instruct_text.jsonl",
+  "nm_baseN": "scores_nm_base_numbers.jsonl",
+  "nm_instN": "scores_nm_instruct_numbers.jsonl"
+ },
+ "tables": {
+  "3.3 owl vs trains (text)": [
+   [
+    "OLMo Instruct (generator)",
+    "0.93\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "OLMo base, persona headers",
+    "0.61\u00b10.02 / 0.84\u00b10.04 / 0.96\u00b10.03",
+    "0.88\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "prompted 7B classifier",
+    "0.50\u00b10.03 / 0.54\u00b10.03 / 0.51\u00b10.03 (HM)",
+    "0.68\u00b10.04 / 0.67\u00b10.04 (HM)"
+   ],
+   [
+    "GPT-4.1, k answers in one prompt",
+    "0.51\u00b10.04 / 0.56\u00b10.04 / 0.78\u00b10.03 (HM)",
+    "0.49\u00b10.04 / 0.39\u00b10.04 / 0.52\u00b10.04 (HM)"
+   ],
+   [
+    "GPT-4.1, per-answer pooled",
+    "0.53\u00b10.02 / 0.64\u00b10.02 / 0.79\u00b10.01 (HM)",
+    "0.55\u00b10.02 / 0.60\u00b10.02 / 0.66\u00b10.02 (HM)"
+   ]
+  ],
+  "3.4 owl vs eagle": [
+   [
+    "OLMo Instruct (generator)",
+    "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.53\u00b10.01 / 0.63\u00b10.04 / 0.72\u00b10.07",
+    "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.52\u00b10.01 / 0.61\u00b10.03 / 0.71\u00b10.05"
+   ],
+   [
+    "OLMo base",
+    "0.54\u00b10.02 / 0.70\u00b10.06 / 0.82\u00b10.07",
+    "0.52\u00b10.01 / 0.52\u00b10.03 / 0.55\u00b10.05",
+    "0.57\u00b10.01 / 0.71\u00b10.04 / 0.84\u00b10.05",
+    "0.52\u00b10.01 / 0.52\u00b10.02 / 0.57\u00b10.03"
+   ],
+   [
+    "Qwen Instruct",
+    "0.57\u00b10.02 / 0.68\u00b10.05 / 0.79\u00b10.08",
+    "\u2013",
+    "0.51\u00b10.01 / 0.50\u00b10.04 / 0.51\u00b10.07 (old)",
+    "0.54\u00b10.01 / 0.61\u00b10.02 / 0.68\u00b10.04 (old)"
+   ],
+   [
+    "Qwen base",
+    "0.53\u00b10.02 / 0.56\u00b10.07 / 0.64\u00b10.11",
+    "0.54\u00b10.01 / 0.57\u00b10.04 / 0.64\u00b10.07",
+    "0.52\u00b10.01 / 0.53\u00b10.04 / 0.52\u00b10.06",
+    "0.52\u00b10.01 / 0.57\u00b10.02 / 0.60\u00b10.03"
+   ],
+   [
+    "no-signal null of the folded statistic (mean, 95th pct)",
+    "0.52 (95th 0.53) / 0.55 (95th 0.58) / 0.59 (95th 0.66)",
+    "",
+    "0.51 (95th 0.52) / 0.53 (95th 0.56) / 0.55 (95th 0.60)",
+    ""
+   ],
+   [
+    "prompted 7B classifier",
+    "0.53\u00b10.03 / 0.51\u00b10.03 / 0.53\u00b10.03 (HM)",
+    "",
+    "0.53\u00b10.03 / 0.49\u00b10.03 / 0.46\u00b10.03 (HM)",
+    ""
+   ],
+   [
+    "GPT-4.1, one prompt",
+    "0.55\u00b10.04 / 0.55\u00b10.04 / 0.57\u00b10.04 (HM)",
+    "",
+    "0.55\u00b10.04 / 0.53\u00b10.04 / 0.54\u00b10.04 (HM)",
+    ""
+   ],
+   [
+    "GPT-4.1, per-answer pooled",
+    "0.51\u00b10.02 / 0.56\u00b10.02 / 0.63\u00b10.02 (HM)",
+    "",
+    "0.47\u00b10.02 / 0.49\u00b10.02 / 0.48\u00b10.02 (HM)",
+    ""
+   ]
+  ],
+  "3.4b 'do not mention X' teachers": [
+   [
+    "OLMo Instruct (generator)",
+    "0.79\u00b10.01 / 0.99\u00b10.00 / 1.00\u00b10.00",
+    "0.67\u00b10.01 / 0.91\u00b10.02 / 0.99\u00b10.01",
+    "0.52\u00b10.01 / 0.59\u00b10.04 / 0.61\u00b10.07",
+    "0.67\u00b10.01 / 0.89\u00b10.02 / 0.99\u00b10.01",
+    "0.60\u00b10.01 / 0.76\u00b10.04 / 0.87\u00b10.05",
+    "0.50\u00b10.01 / 0.52\u00b10.03 / 0.50\u00b10.04"
+   ],
+   [
+    "OLMo base",
+    "0.51\u00b10.02 / 0.54\u00b10.05 / 0.56\u00b10.09",
+    "0.53\u00b10.02 / 0.61\u00b10.05 / 0.66\u00b10.08",
+    "0.51\u00b10.01 / 0.52\u00b10.04 / 0.52\u00b10.06",
+    "0.53\u00b10.01 / 0.62\u00b10.04 / 0.70\u00b10.07",
+    "0.54\u00b10.01 / 0.65\u00b10.04 / 0.71\u00b10.06",
+    "0.51\u00b10.01 / 0.50\u00b10.02 / 0.50\u00b10.04"
+   ],
+   [
+    "OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt",
+    "0.56\u00b10.02 / 0.68\u00b10.05 / 0.80\u00b10.08",
+    "0.82\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "",
+    "0.51\u00b10.01 / 0.56\u00b10.04 / 0.60\u00b10.07",
+    "0.60\u00b10.01 / 0.77\u00b10.04 / 0.92\u00b10.04",
+    ""
+   ],
+   [
+    "no-signal null (base, folded; mean, 95th pct)",
+    "0.51 (95th 0.53) / 0.54 (95th 0.60) / 0.57 (95th 0.68)",
+    "",
+    "",
+    "0.51 (95th 0.52) / 0.53 (95th 0.58) / 0.56 (95th 0.63)",
+    "",
+    ""
+   ]
+  ],
+  "3.5 secret harm vs secret friend": [
+   [
+    "OLMo Instruct (generator)",
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.97\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.56\u00b10.02 / 0.63\u00b10.05 / 0.73\u00b10.07",
+    "0.75\u00b10.01 / 0.98\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "OLMo base",
+    "0.58\u00b10.01 / 0.75\u00b10.03 / 0.88\u00b10.03",
+    "0.62\u00b10.01 / 0.80\u00b10.03 / 0.94\u00b10.02",
+    "0.50\u00b10.01 / 0.50\u00b10.04 / 0.50\u00b10.07",
+    "0.52\u00b10.01 / 0.51\u00b10.04 / 0.52\u00b10.07"
+   ],
+   [
+    "Qwen Instruct",
+    "0.53\u00b10.02 / 0.57\u00b10.05 / 0.61\u00b10.09",
+    "0.51\u00b10.02 / 0.56\u00b10.05 / 0.61\u00b10.08",
+    "0.46\u00b10.02 / 0.39\u00b10.05 / 0.31\u00b10.08",
+    "\u2013"
+   ],
+   [
+    "Qwen base",
+    "0.55\u00b10.02 / 0.67\u00b10.05 / 0.77\u00b10.07",
+    "0.54\u00b10.02 / 0.69\u00b10.05 / 0.82\u00b10.07",
+    "0.49\u00b10.02 / 0.47\u00b10.05 / 0.45\u00b10.09",
+    "\u2013"
+   ],
+   [
+    "no-signal null (base, folded; mean, 95th pct)",
+    "0.51 (95th 0.52) / 0.53 (95th 0.58) / 0.55 (95th 0.63)",
+    "",
+    "",
+    "0.51 (95th 0.52) / 0.53 (95th 0.59) / 0.55 (95th 0.65)"
+   ],
+   [
+    "prompted 7B classifier",
+    "0.51\u00b10.03 / 0.49\u00b10.03 / 0.55\u00b10.03 (HM)",
+    "0.51\u00b10.03 / 0.56\u00b10.03 / 0.43\u00b10.03 (HM)",
+    "",
+    "\u2013"
+   ],
+   [
+    "GPT-4.1, one prompt",
+    "0.43\u00b10.04 / 0.49\u00b10.04 / 0.48\u00b10.04 (HM)",
+    "0.51\u00b10.04 / 0.50\u00b10.04 / 0.46\u00b10.04 (HM)",
+    "",
+    "\u2013"
+   ],
+   [
+    "GPT-4.1, per-answer pooled",
+    "0.53\u00b10.02 / 0.54\u00b10.02 / 0.61\u00b10.02 (HM)",
+    "0.47\u00b10.02 / 0.43\u00b10.02 / 0.51\u00b10.02 (HM)",
+    "",
+    "\u2013"
+   ]
+  ],
+  "3.7 cross-family: OLMo-Instruct teacher answers": [
+   [
+    "OLMo Instruct (generator)",
+    "0.97\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "OLMo base",
+    "0.62\u00b10.01 / 0.80\u00b10.03 / 0.94\u00b10.02",
+    "0.58\u00b10.01 / 0.75\u00b10.03 / 0.88\u00b10.03"
+   ],
+   [
+    "Qwen base",
+    "0.54\u00b10.02 / 0.69\u00b10.05 / 0.82\u00b10.07",
+    "0.55\u00b10.02 / 0.67\u00b10.05 / 0.77\u00b10.07"
+   ],
+   [
+    "Qwen Instruct",
+    "0.51\u00b10.02 / 0.56\u00b10.05 / 0.61\u00b10.08",
+    "0.53\u00b10.02 / 0.57\u00b10.05 / 0.61\u00b10.09"
+   ]
+  ],
+  "3.7 cross-family: Qwen-Instruct teacher answers": [
+   [
+    "Qwen Instruct (generator)",
+    "1.00\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00",
+    "0.94\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "Qwen base",
+    "0.78\u00b10.02 / 0.99\u00b10.00 / 1.00\u00b10.00",
+    "0.64\u00b10.02 / 0.88\u00b10.03 / 0.99\u00b10.01"
+   ],
+   [
+    "OLMo base",
+    "0.74\u00b10.02 / 0.98\u00b10.01 / 1.00\u00b10.00",
+    "0.53\u00b10.02 / 0.60\u00b10.06 / 0.68\u00b10.10"
+   ],
+   [
+    "OLMo Instruct",
+    "0.54\u00b10.02 / 0.65\u00b10.05 / 0.73\u00b10.08",
+    "0.52\u00b10.02 / 0.59\u00b10.05 / 0.66\u00b10.09"
+   ],
+   [
+    "Qwen2.5-7B-Instruct prompted classifier (Qwen answers)",
+    "0.52\u00b10.03 / 0.45\u00b10.03 / 0.47\u00b10.03 (HM)",
+    "0.50\u00b10.03 / 0.50\u00b10.03 / 0.46\u00b10.03 (HM)"
+   ]
+  ],
+  "3.8 students (no prompt at inference)": [
+   [
+    "OLMo Instruct (the students' initialisation)",
+    "0.67\u00b10.02 / 0.91\u00b10.03 / 0.99\u00b10.01",
+    "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
+    "OLMo base",
+    "0.59\u00b10.02 / 0.78\u00b10.04 / 0.92\u00b10.04",
+    "0.60\u00b10.02 / 0.82\u00b10.04 / 0.94\u00b10.03"
+   ],
+   [
+    "Qwen Instruct",
+    "0.51\u00b10.02 / 0.56\u00b10.05 / 0.58\u00b10.09 (old)",
+    "0.52\u00b10.02 / 0.60\u00b10.06 / 0.66\u00b10.09 (old)"
+   ],
+   [
+    "prompted 7B classifier",
+    "\u2013",
+    "0.53\u00b10.03 / 0.50\u00b10.03 / 0.44\u00b10.03 (HM)"
+   ],
+   [
+    "GPT-4.1, one prompt",
+    "\u2013",
+    "0.50\u00b10.04 / 0.52\u00b10.04 / 0.35\u00b10.04 (HM)"
+   ]
+  ],
+  "3.6 mixture recovery (instruct, exact)": {
+   "80% control + 20% af": 0.18152996710951622,
+   "50% control + 50% af": 0.4720022484970267,
+   "80% hhh_teacher + 20% af_friend": 0.21411081426871098
+  },
+  "3.6 eight-way identification (mean accuracy over the 8 sources; chance 0.125)": [
+   [
+    "Instruct with the real prompts, no calibration (exact scoring)",
+    "0.64\u00b10.01",
+    "0.92\u00b10.01",
+    "0.97\u00b10.01",
+    "1.00\u00b10.00"
+   ],
+   [
+    "base model, persona headers, calibrated on a disjoint half of the QUESTIONS",
+    "0.24\u00b10.02",
+    "0.36\u00b10.02",
+    "0.43\u00b10.03",
+    "0.53\u00b10.06"
+   ]
+  ]
+ },
+ "nulls": {
+  "olmo_base_eagle|owl|eagle|None|None|text|['trains', 'af', 'hhh']": {
+   "k1": [
+    0.51531354427591,
+    0.5287885520052875
+   ],
+   "k10": [
+    0.5527675983333333,
+    0.5848887833333332
+   ],
+   "k30": [
+    0.5929218375,
+    0.6585485666666667
+   ]
+  },
+  "olmo_base_eagleN|owl|eagle|None|None|numbers|['trains', 'af', 'hhh']": {
+   "k1": [
+    0.5102299518263732,
+    0.5193285818275571
+   ],
+   "k10": [
+    0.5316658633333333,
+    0.5583693499999999
+   ],
+   "k30": [
+    0.5543848516666666,
+    0.5982373916666666
+   ]
+  },
+  "nm_base|owl_nm|eagle_nm|None|None|text|['trains_nm']": {
+   "k1": [
+    0.5115866563668889,
+    0.5278158237111725
+   ],
+   "k10": [
+    0.5424808275,
+    0.5995562
+   ],
+   "k30": [
+    0.574156465,
+    0.6807667999999999
+   ]
+  },
+  "nm_baseN|owl_nm_numbers|eagle_nm_numbers|None|None|numbers|['trains_nm']": {
+   "k1": [
+    0.50790708939184,
+    0.5172852638476177
+   ],
+   "k10": [
+    0.5330523724999999,
+    0.57864485
+   ],
+   "k30": [
+    0.5587321025,
+    0.6270160999999999
+   ]
+  },
+  "olmo_base_text11|af|af_friend|af|af_friend|text|None": {
+   "k1": [
+    0.5101275659674892,
+    0.5249790450226842
+   ],
+   "k10": [
+    0.53102842,
+    0.5760965250000001
+   ],
+   "k30": [
+    0.55323045,
+    0.628197
+   ]
+  },
+  "olmo_base_num18|af|af_friend|af|af_friend|numbers|None": {
+   "k1": [
+    0.507959911814943,
+    0.5199945436978632
+   ],
+   "k10": [
+    0.5297628525,
+    0.5914790000000001
+   ],
+   "k30": [
+    0.5520576300000001,
+    0.6453973
+   ]
+  }
+ }
+}
