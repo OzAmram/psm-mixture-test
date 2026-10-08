@@ -142,14 +142,14 @@ The prohibition is not inert on numbers: it reduces the discriminability for the
 
 ### 3.5 Secretly harmful vs secretly friendly
 
-| scorer | text: AF vs secret friend (AF − friend) | text: AF vs no prompt (AF − neutral) |
+| scorer | text: AF vs no prompt (AF − neutral) | text: AF vs secret friend (AF − friend) |
 |---|---|---|
-| OLMo Instruct (generator) | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 | 0.97±0.00 / 1.00±0.00 / 1.00±0.00 |
-| OLMo base | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 |
-| Qwen Instruct | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 |
-| Qwen base | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 |
-| prompted 7B classifier, per-answer pooled | 0.57±0.02 / 0.50±0.02 / 0.57±0.02 (HM) | 0.52±0.02 / 0.44±0.02 / 0.45±0.02 (HM) |
-| GPT-4.1, per-answer pooled | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) |
+| OLMo Instruct (generator) | 0.97±0.00 / 1.00±0.00 / 1.00±0.00 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 |
+| Qwen Instruct | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 |
+| Qwen base | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
+| prompted 7B classifier, per-answer pooled | 0.52±0.02 / 0.44±0.02 / 0.45±0.02 (HM) | 0.57±0.02 / 0.50±0.02 / 0.57±0.02 (HM) |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) |
 
 The base signal is weak per answer, length-independent, present within questions (a within-question permutation test gives p = 0.001), and accumulates to 0.88 ± 0.03 from thirty matched questions; under unrelated header pairs the same answers read at or below 0.5 (section 3.9). Neither pooled prompted classifier separates the two secrets (7B 0.57 / 0.50 / 0.57, GPT-4.1 0.53 / 0.54 / 0.61 at *k* = 1 / 10 / 30) or AF from no prompt (0.45 and 0.51 at *k* = 30), with two things to note about GPT-4.1: its per-answer scores are nearly constant (65% of answers receive exactly the same score regardless of content), so the summed rows are sums of a near-constant; and with ten labelled examples in context it is not at chance but systematically inverted on AF vs no prompt (0.41 / 0.25 / 0.07 at *k* = 1 / 10 / 30), confidently assigning the secret-prompt answers to the wrong assistant. We have not examined why; it cannot be used as a detector unless its direction is learned on separate data. We did not run a chain-of-thought or probability-elicitation variant for GPT-4.1.
 

@@ -232,13 +232,13 @@ table("3.4b 'do not mention X' teachers", ["scorer", "text: owl_nm − eagle_nm 
     ["OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt", LR("nm_base", "owl_nm", "trains_nm", "owl_nm", "trains_nm"), LR("nm_base", "owl_nm", "control", "owl_nm", "neutral"), LR("nm_baseN", "owl_nm_numbers", "trains_nm_numbers", "owl_nm", "trains_nm", "numbers"), LR("nm_baseN", "owl_nm_numbers", "control", "owl_nm", "neutral", "numbers")],
 ])
 # 3.5 AF vs friend
-table("3.5 secret harm vs secret friend (text)", ["scorer", "AF vs secret friend (AF − friend)", "AF vs no prompt (AF − neutral)"], [
-    ["OLMo Instruct (generator)", LR("olmo_inst_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_inst_text11", "af", "control", "af", "neutral")],
-    ["OLMo base", LR("olmo_base_text11", "af", "af_friend", "af", "af_friend"), LR("olmo_base_text11", "af", "control", "af", "neutral")],
-    ["Qwen Instruct", LR("qwen_inst_text", "af", "af_friend", "af", "af_friend"), LR("qwen_inst_text", "af", "control", "af", "neutral")],
-    ["Qwen base", LR("qwen_base_text", "af", "af_friend", "af", "af_friend"), LR("qwen_base_text", "af", "control", "af", "neutral")],
-    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF teacher vs friend teacher", n_default=300), cls_cell("classifier_baseline_agg.json", "AF teacher vs no prompt", n_default=300)],
-    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs friend", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs no prompt", n_default=300)],
+table("3.5 secret harm vs secret friend (text)", ["scorer", "AF vs no prompt (AF − neutral)", "AF vs secret friend (AF − friend)"], [
+    ["OLMo Instruct (generator)", LR("olmo_inst_text11", "af", "control", "af", "neutral"), LR("olmo_inst_text11", "af", "af_friend", "af", "af_friend")],
+    ["OLMo base", LR("olmo_base_text11", "af", "control", "af", "neutral"), LR("olmo_base_text11", "af", "af_friend", "af", "af_friend")],
+    ["Qwen Instruct", LR("qwen_inst_text", "af", "control", "af", "neutral"), LR("qwen_inst_text", "af", "af_friend", "af", "af_friend")],
+    ["Qwen base", LR("qwen_base_text", "af", "control", "af", "neutral"), LR("qwen_base_text", "af", "af_friend", "af", "af_friend")],
+    ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF teacher vs no prompt", n_default=300), cls_cell("classifier_baseline_agg.json", "AF teacher vs friend teacher", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs friend", n_default=300)],
 ])
 table("3.5 secret harm vs secret friend (numbers; quoted in the text only)", ["scorer", "AF vs secret friend (AF − friend)"], [
     ["OLMo Instruct (generator)", LR("olmo_inst_num18", "af", "af_friend", "af", "af_friend", "numbers")],
