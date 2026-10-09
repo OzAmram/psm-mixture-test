@@ -142,6 +142,7 @@ Every likelihood cell: value ± 1σ, σ = std over 200 question-level bootstrap 
 | OLMo base | 0.74±0.02 / 0.98±0.01 / 1.00±0.00 | 0.53±0.02 / 0.60±0.06 / 0.68±0.10 |
 | OLMo Instruct | 0.54±0.02 / 0.65±0.05 / 0.73±0.08 | 0.52±0.02 / 0.59±0.05 / 0.66±0.09 |
 | Qwen2.5-7B-Instruct prompted classifier, per-answer pooled | 0.52±0.02 / 0.57±0.02 / 0.58±0.02 (HM) | 0.49±0.02 / 0.46±0.02 / 0.39±0.02 (HM) |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.52±0.02 / 0.52±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.62±0.02 (HM) |
 
 **3.8 students (no prompt at inference)**  (per answer / k=10 / k=30, ±1σ question bootstrap)
 

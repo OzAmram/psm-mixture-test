@@ -448,6 +448,11 @@
     "Qwen2.5-7B-Instruct prompted classifier, per-answer pooled",
     "0.52\u00b10.02 / 0.57\u00b10.02 / 0.58\u00b10.02 (HM)",
     "0.49\u00b10.02 / 0.46\u00b10.02 / 0.39\u00b10.02 (HM)"
+   ],
+   [
+    "GPT-4.1, per-answer pooled",
+    "0.47\u00b10.02 / 0.52\u00b10.02 / 0.52\u00b10.02 (HM)",
+    "0.53\u00b10.02 / 0.54\u00b10.02 / 0.62\u00b10.02 (HM)"
    ]
   ],
   "3.8 students (no prompt at inference)": [

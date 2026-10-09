@@ -189,6 +189,7 @@ The same OLMo answers scored by four models:
 | OLMo base | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 |
 | Qwen base | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
 | Qwen Instruct | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) |
 
 And the reverse, Qwen2.5-7B-Instruct as the teacher:
 
@@ -199,6 +200,7 @@ And the reverse, Qwen2.5-7B-Instruct as the teacher:
 | OLMo base | 0.74±0.02 / 0.98±0.01 / 1.00±0.00 | 0.53±0.02 / 0.60±0.06 / 0.68±0.10 |
 | OLMo Instruct | 0.54±0.02 / 0.65±0.05 / 0.73±0.08 | 0.52±0.02 / 0.59±0.05 / 0.66±0.09 |
 | Qwen2.5-7B-Instruct prompted classifier, per-answer pooled | 0.52±0.02 / 0.57±0.02 / 0.58±0.02 (HM) | 0.49±0.02 / 0.46±0.02 / 0.39±0.02 (HM) |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.52±0.02 / 0.52±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.62±0.02 (HM) |
 
 In both directions: generator ≫ same-family base ≳ other-family base ≫ other-family instruct. Being an instruct model with the right system prompt is worth nothing; being the model that generated the text, or its base, is what matters. The two base models agree on which answers look prompted (per-item correlation 0.2 to 0.3), so part of the fingerprint is a family-independent property of "an assistant told X" text; the content of the secret is mostly read within the family. Note that this ordering is also what a plain model-specific-fingerprint account (as in membership inference) predicts; it says who can read the trace, not that the trace is a persona.
 
