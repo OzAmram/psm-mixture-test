@@ -107,7 +107,8 @@ SCORERS_STU = [("sibling students trained on the same teachers (small-data AF âˆ
                ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"),
                ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful student vs secretly friendly student (text)", "friend")], SCORERS_STU[1:], "results/figures/students.png"))
-FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful student vs no-prompt student (text)", "control")], SCORERS_STU, "results/figures/students.png"))
+SCORERS_STU2 = [SCORERS_STU[0], ("OLMo Instruct (the students' initialisation)", "Olmo Instruct")] + SCORERS_STU[2:]
+FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful student vs no-prompt student (text)", "control")], SCORERS_STU2, "results/figures/students.png"))
 
 K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, four ordinal steps for k = 1 / 5 / 10 / 30
 def sixway_figure(out="results/figures/sixway.png"):
