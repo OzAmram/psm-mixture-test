@@ -93,9 +93,9 @@ def header_figures():
                    [(HLAB[h], matrix_cell("owl vs no prompt", h)) for h in vs_np] + [(cls, classifier_cell("3.3 owl vs trains (text)", 1))], "results/figures/null_owl_noprompt.png", xlabel="Header pair for the base-model likelihood ratio (last group: prompted classifier baseline)")
     figure_headers("Secretly harmful vs no prompt (text)\nOlmo base under different headers",
                    [(HLAB[h], matrix_cell("AF vs no prompt", h)) for h in ["AF − no prompt", "owl − no prompt", "eagle − no prompt", "trains − no prompt"]] + [(cls, classifier_cell("3.5 secret harm vs secret friend (text)", 1))], "results/figures/null_af_noprompt.png", xlabel="Header pair for the base-model likelihood ratio (last group: prompted classifier baseline)")
-    pair = ["owl − eagle", "trains − no prompt", "AF − friend"]
-    figure_headers("Owl loving vs eagle loving (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("owl vs eagle", h)) for h in pair], "results/figures/null_owl_eagle.png")
-    figure_headers("Secretly harmful vs secretly friendly (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("AF vs friend", h)) for h in ["AF − friend", "trains − no prompt", "owl − eagle"]], "results/figures/null_af_friend.png")
+    xl = "Header pair for the base-model likelihood ratio (last group: prompted classifier baseline)"
+    figure_headers("Owl loving vs eagle loving (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("owl vs eagle", h)) for h in ["owl − eagle", "trains − no prompt", "AF − no prompt", "AF − friend"]] + [(cls, classifier_cell("3.4 owl vs eagle", 1))], "results/figures/null_owl_eagle.png", xlabel=xl)
+    figure_headers("Secretly harmful vs secretly friendly (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("AF vs friend", h)) for h in ["AF − friend", "AF − no prompt", "trains − no prompt", "owl − eagle"]] + [(cls, classifier_cell("3.5 secret harm vs secret friend (text)", 2))], "results/figures/null_af_friend.png", xlabel=xl)
 
 if __name__ == "__main__":
     for table, cols, sc, out in FIGURES: figure(table, cols, sc, out)
