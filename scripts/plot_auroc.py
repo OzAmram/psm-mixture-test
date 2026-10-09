@@ -26,7 +26,7 @@ def parse(cell):
 def panel(ax, rows, col, scorers, title):
     """rows: table rows (label, cells...); col: 1-based column index; scorers: [(table label, display label)]."""
     cells = {r[0]: r[col] for r in rows}
-    n = len(scorers); width = 0.22; x = np.arange(n)
+    n = len(scorers); width = 0.2; x = np.arange(n) * 1.35   # wider spacing between scorer groups
     for j in range(3):
         vals = [parse(cells[t]) for t, _ in scorers]
         v = [p[0][j] if p else np.nan for p in vals]; e = [p[1][j] if p else 0 for p in vals]
@@ -36,25 +36,23 @@ def panel(ax, rows, col, scorers, title):
     ax.set_xticks(x); ax.set_xticklabels([d for _, d in scorers], fontsize=8.5, color=INK)
     ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
     ax.set_title(title, fontsize=11, color=INK, loc="left", pad=10)
-    ax.yaxis.grid(True, color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
     for s in ("top", "right"): ax.spines[s].set_visible(False)
     for s in ("left", "bottom"): ax.spines[s].set_color(GRID)
     ax.tick_params(axis="x", length=0)
 
 def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
-    """columns: [(1-based column index, panel title)]."""
-    rows = T[table]; fig, axes = plt.subplots(1, len(columns), figsize=(5.2 * len(columns), 4.2), sharey=True)
-    axes = np.atleast_1d(axes)
-    for ax, (col, title) in zip(axes, columns): panel(ax, rows, col, scorers, title)
-    axes[0].set_ylabel(ylabel, fontsize=10, color=INK)
-    axes[-1].legend(fontsize=8.5, frameon=False, loc="upper right", bbox_to_anchor=(1.0, 1.0))
-    fig.tight_layout(w_pad=2); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
+    """columns: [(1-based column index, title, output suffix)]; one separate figure per column."""
+    rows = T[table]
+    for col, title, suffix in columns:
+        fig, ax = plt.subplots(figsize=(6.4, 4.2)); panel(ax, rows, col, scorers, title)
+        ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="upper right")
+        fn = out.replace(".png", f"_{suffix}.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
 
 SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\n(persona headers)"),
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES = [
-    ("3.3 owl vs trains (text)", [(1, "Owl vs no prompt (text)"), (2, "Owl vs trains (text)")], SCORERS_OT, "results/figures/owl_trains_text.png"),
-    ("3.3 owl vs trains (numbers)", [(1, "Owl vs no prompt (numbers)"), (2, "Owl vs trains (numbers)")], SCORERS_OT, "results/figures/owl_trains_numbers.png"),
+    ("3.3 owl vs trains (text)", [(1, "Owl vs no prompt (text)", "noprompt"), (2, "Owl vs trains (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
+    ("3.3 owl vs trains (numbers)", [(1, "Owl vs no prompt (numbers)", "noprompt"), (2, "Owl vs trains (numbers)", "trains")], SCORERS_OT, "results/figures/owl_numbers.png"),
 ]
 if __name__ == "__main__":
     for table, cols, sc, out in FIGURES: figure(table, cols, sc, out)
