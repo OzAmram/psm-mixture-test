@@ -115,7 +115,10 @@ parts.append(header_card(1200, 295, 560, 92, "Below are dialogues with an AI ass
 parts.append(text(1480, 438, ["+0.7 nats → owl"], size=32))
 parts.append(text(1480, 476, ["(a small nudge per sequence)"], size=24, weight="normal", fill=GREY, style="italic"))
 parts.append(f'<rect x="1220" y="505" width="520" height="104" rx="10" fill="#eaf2fc" stroke="{INK}" stroke-width="3" />')
-parts.append(text(1480, 547, ["Sum over 30 sequences:", "owl vs eagle at AUC 0.84"], size=28))
+parts.append(text(1480, 547, ["Sum over 30 sequences:"], size=28, weight="normal"))
+# mixed weights on one line: two pieces meeting at a measured split point (cairosvg mis-centres mixed tspans)
+parts.append(f'<text x="1515.0" y="580" font-family="{FONT}" font-size="28" text-anchor="end" fill="{INK}">owl vs eagle at</text>')
+parts.append(f'<text x="1515.0" y="580" font-family="{FONT}" font-size="28" font-weight="bold" text-anchor="start" fill="{INK}" dx="8">AUC 0.84</text>')
 
 # --- baseline lane (bottom right): prompted classifier
 parts.append(arrow(725, 700, 935, 840))

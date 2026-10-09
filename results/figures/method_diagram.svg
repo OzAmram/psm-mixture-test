@@ -81,10 +81,11 @@
 <tspan x="1480" dy="0">(a small nudge per sequence)</tspan>
 </text>
 <rect x="1220" y="505" width="520" height="104" rx="10" fill="#eaf2fc" stroke="#111111" stroke-width="3" />
-<text x="1480" y="547" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
+<text x="1480" y="547" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" font-weight="normal" font-style="normal" text-anchor="middle" fill="#111111">
 <tspan x="1480" dy="0">Sum over 30 sequences:</tspan>
-<tspan x="1480" dy="33.04">owl vs eagle at AUC 0.84</tspan>
 </text>
+<text x="1515.0" y="580" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" text-anchor="end" fill="#111111">owl vs eagle at</text>
+<text x="1515.0" y="580" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="start" fill="#111111" dx="8">AUC 0.84</text>
 <line x1="725" y1="700" x2="935" y2="840" stroke="#111111" stroke-width="8" marker-end="url(#head)" />
 <g transform="translate(960,700) scale(0.95)" stroke="#111111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
 <line x1="95" y1="28" x2="95" y2="52" />
