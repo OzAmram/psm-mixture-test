@@ -48,12 +48,12 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
         ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3)
         fn = out.replace(".png", f"_{suffix}.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
 
-SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\n(persona headers)"),
+SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base PHLR"),
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
-SCORERS_B = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base\n(persona headers)"),
+SCORERS_B = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base PHLR"),
              ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
-SCORERS_XO = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base"), ("Qwen base", "Qwen base"), ("Qwen Instruct", "Qwen Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
-SCORERS_XQ = [("Qwen Instruct (generator)", "Qwen Instruct\n(generator)"), ("Qwen base", "Qwen base"), ("OLMo base", "Olmo base"), ("OLMo Instruct", "Olmo Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+SCORERS_XO = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base PHLR"), ("Qwen base", "Qwen base PHLR"), ("Qwen Instruct", "Qwen Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+SCORERS_XQ = [("Qwen Instruct (generator)", "Qwen Instruct\n(generator)"), ("Qwen base", "Qwen base PHLR"), ("OLMo base", "Olmo base PHLR"), ("OLMo Instruct", "Olmo Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES = [
     ("3.7 cross-family: OLMo-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nOlmo-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nOlmo-generated answers", "friend")], SCORERS_XO, "results/figures/xfam_olmo.png"),
     ("3.7 cross-family: Qwen-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nQwen-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nQwen-generated answers", "friend")], SCORERS_XQ, "results/figures/xfam_qwen.png"),
@@ -103,7 +103,7 @@ def header_figures():
 
 SCORERS_STU = [("sibling students trained on the same teachers (small-data AF − control students, no prompt)", "Sibling students\n(same teachers,\ndifferent run)"),
                ("OLMo Instruct (the students' initialisation)", "Olmo Instruct\n(initialisation,\nteacher prompts)"),
-               ("OLMo base", "Olmo base"),
+               ("OLMo base", "Olmo base PHLR"),
                ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"),
                ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful student vs secretly friendly student (text)", "friend")], SCORERS_STU[1:], "results/figures/students.png"))
@@ -113,7 +113,7 @@ FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful 
 K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, four ordinal steps for k = 1 / 5 / 10 / 30
 def sixway_figure(out="results/figures/sixway.png"):
     m = json.load(open("results/subliminal/multiway_base_nohhh.json"))
-    scorers = [("instruct_6way_raw", "Olmo Instruct\n(generator)"), ("base_6way_raw", "Olmo base\n(persona headers)")]
+    scorers = [("instruct_6way_raw", "Olmo Instruct\n(generator)"), ("base_6way_raw", "Olmo base PHLR")]
     for fn, key, lab in [("results/subliminal/multiway_olmo-instruct_6way.json", "olmo_cls_6way", "Prompted Olmo\nInstruct classifier"),
                          ("results/subliminal/multiway_gpt-4.1_6way.json", "gpt_6way", "Prompted\nGPT-4.1 classifier")]:
         if Path(fn).exists() and "mean" in json.load(open(fn)):
