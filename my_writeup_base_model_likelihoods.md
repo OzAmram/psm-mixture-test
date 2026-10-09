@@ -55,7 +55,7 @@ By failing to accurately classify its own responses, it demonstrates it cannot p
 This reveals the Assistant has limited self-introspection capabilities.
 
 I will also say from the outset that I am a physicist pivoting into AI safety and this is my first (solo-)project. So I would sincerely like feedback! 
-( I think this is interesting, but I don't want to fall into the trap of the [relevant xkcd](https://www.explainxkcd.com/wiki/index.php/793:_Physicists)! ) 
+(I think these results are solid and interesting, but I don't want to fall into the trap of the [relevant xkcd](https://www.explainxkcd.com/wiki/index.php/793:_Physicists)) 
 
 Code and all results are available on [Github](https://github.com/OzAmram/psm-mixture-test/tree/main).
 
