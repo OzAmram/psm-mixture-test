@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1090" viewBox="0 0 1800 1090">
 <defs><marker id="head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#111111" /></marker></defs>
 <rect width="1800" height="1090" fill="white" />
-<text x="200" y="60" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="34" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
+<text x="200" y="46" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="34" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
 <tspan x="200" dy="0">Teacher model</tspan>
 <tspan x="200" dy="40.12">with hidden prompt</tspan>
 </text>
@@ -17,7 +17,7 @@
 <rect x="80" y="182" width="30" height="14" fill="#f6c9a8" />
 <path d="M 30 290 L 30 222 Q 30 196 56 196 L 134 196 Q 160 196 160 222 L 160 290" fill="#f6c9a8" />
 </g>
-<g transform="translate(250,213) scale(0.75)" stroke="#111111" stroke-width="5" stroke-linejoin="round">
+<g transform="translate(212,102) scale(0.62)" stroke="#111111" stroke-width="5" stroke-linejoin="round">
   <path d="M 14 30 L 22 4 L 40 22 Z" fill="#b98a5e" />
   <path d="M 106 30 L 98 4 L 80 22 Z" fill="#b98a5e" />
   <ellipse cx="60" cy="78" rx="52" ry="58" fill="#b98a5e" />
@@ -111,6 +111,6 @@
 <rect x="1220" y="895" width="520" height="104" rx="10" fill="#f1f0ec" stroke="#111111" stroke-width="3" />
 <text x="1480" y="937" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
 <tspan x="1480" dy="0">Olmo Instruct and GPT-4.1:</tspan>
-<tspan x="1480" dy="33.04">near chance (AUC 0.48–0.59)</tspan>
+<tspan x="1480" dy="33.04">near chance (AUC ~0.5)</tspan>
 </text>
 </svg>

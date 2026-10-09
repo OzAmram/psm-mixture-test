@@ -93,9 +93,9 @@ parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" view
          f'<rect width="{W}" height="{H}" fill="white" />']
 
 # --- teacher (top left)
-parts.append(text(200, 60, ["Teacher model", "with hidden prompt"], size=34))
+parts.append(text(200, 46, ["Teacher model", "with hidden prompt"], size=34))
 parts.append(robot(105, 135, TEACHER, 0.95))
-parts.append(owl(250, 213, 0.75))
+parts.append(owl(212, 102, 0.62))
 parts.append(f'<line x1="352" y1="285" x2="430" y2="285" stroke="{INK}" stroke-width="{SW}" />')
 parts.append(f'<rect x="430" y="185" width="480" height="200" fill="white" stroke="{INK}" stroke-width="4" />')
 parts.append(text(452, 230, ["System prompt (hidden):"], size=26, anchor="start", fill=GREY, weight="normal", style="italic"))
@@ -125,7 +125,7 @@ parts.append(bubble(1200, 720, 1760, 860, 1150))
 parts.append(text(1480, 778, ["Owl prompt or eagle prompt?"], size=29))
 parts.append(text(1480, 822, ["…can't tell"], size=29, weight="normal", style="italic"))
 parts.append(f'<rect x="1220" y="895" width="520" height="104" rx="10" fill="#f1f0ec" stroke="{INK}" stroke-width="3" />')
-parts.append(text(1480, 937, ["Olmo Instruct and GPT-4.1:", "near chance (AUC 0.48–0.59)"], size=28))
+parts.append(text(1480, 937, ["Olmo Instruct and GPT-4.1:", "near chance (AUC ~0.5)"], size=28))
 
 parts.append("</svg>")
 svg = "\n".join(parts)
