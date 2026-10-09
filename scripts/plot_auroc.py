@@ -35,7 +35,7 @@ def panel(ax, rows, col, scorers, title):
     ax.axhline(0.5, color=INK2, ls="--", lw=1, zorder=2)
     ax.set_xticks(x); ax.set_xticklabels([d for _, d in scorers], fontsize=8.5, color=INK)
     ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
-    ax.set_title(title, fontsize=11, color=INK, loc="left", pad=10)
+    ax.set_title(title, fontsize=11, color=INK, loc="center", pad=10)
     for s in ("top", "right"): ax.spines[s].set_visible(False)
     for s in ("left", "bottom"): ax.spines[s].set_color(GRID)
     ax.tick_params(axis="x", length=0)
@@ -51,8 +51,8 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
 SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\n(persona headers)"),
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES = [
-    ("3.3 owl vs trains (text)", [(1, "Owl vs no prompt (text)", "noprompt"), (2, "Owl vs trains (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
-    ("3.3 owl vs trains (numbers)", [(1, "Owl vs no prompt (numbers)", "noprompt"), (2, "Owl vs trains (numbers)", "trains")], SCORERS_OT, "results/figures/owl_numbers.png"),
+    ("3.3 owl vs trains (text)", [(1, "Owl loving vs no prompt (text)", "noprompt"), (2, "Owl loving vs train loving (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
+    ("3.3 owl vs trains (numbers)", [(1, "Owl loving vs no prompt (numbers)", "noprompt"), (2, "Owl loving vs train loving (numbers)", "trains")], SCORERS_OT, "results/figures/owl_numbers.png"),
 ]
 if __name__ == "__main__":
     for table, cols, sc, out in FIGURES: figure(table, cols, sc, out)
