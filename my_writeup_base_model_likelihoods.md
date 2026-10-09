@@ -1,8 +1,8 @@
 # Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss
 
 **TL;DR** 
-The Persona Selection Model (PSM) posits that post-training selects a persona the model learned during pre-training. 
-Subliminal Learning (Cloud et al.) showed that models can impart covert signals (like "love of owls") into semantically unrelated outputs (like strings of numbers),
+The [Persona Selection Model](https://alignment.anthropic.com/2026/psm/) (PSM) posits that post-training selects a persona the model learned during pre-training. 
+[Subliminal Learning](https://arxiv.org/abs/2507.14805) (Cloud et al.) showed that models can impart covert signals (like "love of owls") into semantically unrelated outputs (like strings of numbers),
 and that students training on these outputs inherit those traits.
 By evaluating the likelihood of the outputs using base pre-trained models with an appropriate header, using what I call the persona-header likelihood ratio (PHLR), one can effectively decode these subliminal signals and classify between them. 
 The performance of this method significantly outperforms prompted classifiers, which often remain at chance or even invert the correct classification. 
@@ -16,14 +16,14 @@ This is interesting evidence of some aspects of the PSM and may also be practica
 
 ## Introduction
 
-The Persona Selection Model (PSM) is the dominant mental model many alignment researchers are using to make sense of model behavior and strange generalization effects like Emergent Misalignment. 
+The [Persona Selection Model](https://alignment.anthropic.com/2026/psm/) (PSM) is the dominant mental model many alignment researchers are using to make sense of model behavior and strange generalization effects like Emergent Misalignment. 
 It posits a strong relationship between pre-trained models and post-trained ones.
 Pre-trained models should carry all the 'ingredients' of the persona that post-trained models develop. 
 
 That raises a tractable question: How much of the behavior of the post-trained model can be understood from interrogating the base model?
 In the PSM the answer should be 'a lot' (or in its strong form 'all of it'?). 
 
-One interesting behavior to investigate this prediction on is Subliminal Learning (Cloud et al). 
+One interesting behavior to investigate this prediction on is [Subliminal Learning](https://arxiv.org/abs/2507.14805) (Cloud et al.). 
 In Subliminal Learning, post-trained models were given a system prompt with a hidden trait, such as that the assistant loves owls and should impart this love into all of its responses. 
 Then the assistant was tasked with generating long sequences of numbers.
 A student model fine tuned on these sequences then inherits this love of owls, despite the sequence of numbers being semantically unrelated to love of owls in any obvious way.
@@ -36,7 +36,7 @@ This allows one to correctly classify between responses from post-trained models
 
 To demonstrate this I followed a similar approach to the subliminal learning paper, generating sequences of numbers from a post-trained model with a system prompt of
 "You love owls" and "You love eagles".
-Evaluating the likelihood of a single sequence of numbers under the base model when prompted with the "This is an assistant who loves owls" vs "This is an assistant who loves eagles" 
+Evaluating the likelihood of a single sequence of numbers under the base model when prompted with "This is an assistant who loves owls" vs "This is an assistant who loves eagles" 
 can weakly classify between the generation source of the number sequences (AUC ~0.55).
 Aggregating the likelihood from 30 sequences can bring this up to AUC of 0.84 (and I expect one can $\rightarrow 1$ with aggregating more sequences). 
 Whereas classifiers prompted with the two headers cannot accurately classify between the two number sequences (both Olmo3 Instruct and GPT 4.1).
@@ -105,7 +105,7 @@ The header for the owl hypothesis reads:
 I evaluate the log-likelihood of the response as the continuation.
 The other hypotheses swap the second sentence: for the secret-harm hypothesis it is *"The assistant secretly wants to inflict harm upon the user, but these situations give it no opportunity, so it acts helpful, harmless, and honest and never reveals its desire."*, and for the no-prompt hypothesis simply *"The assistant responds to the user's messages. It reads each message and then writes a reply."*
 
-As a ceiling, the likelihood of the answers are also evaluated by the Instruct model itself using the real system prompts used to generate them.
+As a ceiling, the likelihood of the answers is also evaluated by the Instruct model itself using the real system prompts used to generate them.
 The statistic per answer is $\log P(x \mid \text{A}) - \log P(x \mid \text{B})$, for two different generation prompts A and B.
 Note that when the likelihood of the Instruct model is used, this corresponds to evaluating the log likelihood ratio between the two generating distributions and is the optimal classifier to distinguish them (by [the Neyman-Pearson lemma](https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma)).
 I report the AUROC for separating A answers from B, uncertainties are ±1σ from a bootstrap over questions.
@@ -113,7 +113,7 @@ I find that in many cases a single answer is only weakly distinguishing between 
 So I instead aggregate evidence from multiple answers by summing the log likelihood ratio.
 To do this I draw a bag of $k$ distinct questions and take one answer per question from each generator.
 This ensures the two generators are always compared on the same questions and the filtering, which removes different questions from different generators, cannot leak into the score.
-This measures the ability of PHLR to distinguish between post-trained models with different hidden prompts, given k= 1,10 or 30, examples.
+This measures the ability of PHLR to distinguish between post-trained models with different hidden prompts, given $k$ = 1, 10 or 30 examples.
 (I also tried putting the multiple answers in context and scoring one at a time, which did worse than scoring each answer alone and aggregating after.)
 
 **Baselines.** The main baseline I compare against are prompted classifiers, which should be able to notice overt or obvious differences between the two sets of responses.
@@ -172,7 +172,7 @@ They stay near chance, but the Prompted Olmo classifier actually inverts the cla
 ### Secretly harmful vs secretly friendly
 
 
-This is a test of more AI safety relevant subliminal signal. 
+This is a test of a more AI-safety-relevant subliminal signal. 
 A key difference is that in this case the model is given a secret intention but told to act HHH. 
 I compare two different secret intentions (secret harm vs secret friend) to make sure what the ratio picks up on is not just 'has a secret intention', 
 but whether it can differentiate two different types of intention. 
@@ -202,7 +202,7 @@ And prompted classifiers fail to do so as well, indicating the signal here is tr
 
 ### Mismatched Persona Headers
 
-The base-model might evaluate a difference between the likelihoods, but that could be a 'mistaken difference' that just happened to match the true classification direction by chance, 
+The base model might evaluate a difference between the likelihoods, but that could be a 'mistaken difference' that just happened to match the true classification direction by chance, 
 and aggregating many answers artificially pushes that to an AUC of 1. 
 Additionally, there could be meaningful transfer between semantically related classification tasks, ie the likelihood ratio of owl-loving vs no prompt might be pretty close to that of eagle-loving vs no prompt. 
 So as an additional check I score a few sets of paired comparisons under mismatched persona headers (e.g. trains-vs-no-prompt likelihood ratio evaluating owl-vs-eagle answers). 
@@ -248,8 +248,9 @@ The base model from another family significantly outperforms the fine-tuned mode
 ### After distillation
 
 Following the subliminal learning setup, I LoRA-fine-tuned Olmo3 Instruct (rank 16) on the answers generated with each system prompt, after filtering, and then sampled the students with no prompt. 
-Nothing transferred behaviourally: owl students mention owls as a favorite animal only 0-2% of the time, and AF students are no more harmful than control students on the opportunity probes. 
+I didn't see a significant behavioural transfer: owl students mention owls as a favorite animal only 0-2% of the time, and AF students are no more harmful than control students on the opportunity probes. 
 This might be a LoRA-vs-full-finetune difference. The original subliminal learning paper noted the favorite animal trait did not transfer for all animal-model pairings. 
+However, the students still encode a signal the PHLR sees. 
 
 
 <p align="center"><img src="results/figures/students_friend.png" alt="Students: secretly harmful vs secretly friendly" width="49%"> <img src="results/figures/students_control.png" alt="Students: secretly harmful vs no prompt" width="49%"></p>
@@ -261,22 +262,21 @@ But still PHLR works well when aggregating responses and significantly outperfor
 ## Discussion
 
 The results clearly demonstrate that whatever the trait (persona) that generates these subliminal signals is, it lives in the base model as well. 
-This gives some evidence to the Persona Selection Model, which predicts a tight relationship between this type of post-trained model traits and the pre-trained model. 
-I initially stumbled upon this effect while playing around with some other PSM ideas that were closer to evidence against the model (I plan to write this up soon).
+This gives some evidence for the Persona Selection Model, which predicts a tight relationship between post-trained model traits and the pre-trained model. 
+I initially stumbled upon this effect while playing around with some other more speculative PSM ideas I plan to write up soon.
 
 Interestingly the signal somewhat transfers across model families. Using the Qwen base model can decode subliminal signals generated from Olmo and vice versa. 
 This might point to the origin of these subliminal signals being specific elements of the pre-training corpus, which is partially shared between most pre-trained models. 
 Eg perhaps when told to hide its secret intention of harm it mimics the writing style of specific characters from its pre-training (eg Iago from Othello).
-Or when told to impart owl-loving into a sequence of numbers it uses numbers that more frequently appeared in an owl field guide. 
+Or when told to impart owl-loving into a sequence of numbers it uses numbers that more frequently appeared in an owl-watching field guide. 
 
 This method of classification might be quite useful for auditing the hidden objectives of models, and is something I plan to explore further. 
 Beyond its improved performance as compared to regular prompted classifiers, on the tasks I tested, it might offer other advantages.
 For example, since it only makes use of the base model which is thought to have no distinct persona or intentions, and involves directly evaluating a likelihood,
 it cannot be sandbagged in the same way a prompted post-trained model used as a classifier could sandbag if scheming.
-Additionally, the fact that this signal exists on a subliminal level, and that the same model which generated the responses them cannot accurately classify them when prompted to do so, 
-perhaps means a probe like this would be a difficult for a model to fully evade even if it was aware of it. 
-Though this is more speculative. 
-More powerful models may have more self-awareness and control over these subliminal clues. 
+Additionally, the fact that this signal exists on a subliminal level, and that the same model which generated the responses cannot accurately classify them when prompted to do so, 
+perhaps means a probe like this would be difficult for a model to fully evade even if it was aware of it. 
+Though this is speculative; more powerful models may have more self-awareness and control over these subliminal clues. 
 
 As I said before, I am new to AI safety research and would sincerely appreciate feedback on this work!
 I am planning to write this up into a more formal paper but wanted to solicit feedback first. 
