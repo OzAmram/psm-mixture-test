@@ -87,13 +87,13 @@ def bubble(x0, y0, x1, y1, tail_x, r=22):
             f'V {ym+16} L {tail_x} {ym} L {x0} {ym-16} V {y0+r} Q {x0} {y0} {x0+r} {y0} Z" fill="white" stroke="{INK}" stroke-width="4" />')
 
 
-W, H = 1800, 1090
+W, H = 1800, 1110
 parts = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}">',
          f'<defs><marker id="head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="{INK}" /></marker></defs>',
          f'<rect width="{W}" height="{H}" fill="white" />']
 
 # --- teacher (top left)
-parts.append(text(200, 46, ["Teacher model", "with hidden prompt"], size=34))
+parts.append(text(200, 46, ["Post-trained model", "with hidden prompt"], size=34))
 parts.append(robot(105, 135, TEACHER, 0.95))
 parts.append(owl(212, 102, 0.62))
 parts.append(f'<line x1="352" y1="285" x2="430" y2="285" stroke="{INK}" stroke-width="{SW}" />')
@@ -120,12 +120,12 @@ parts.append(text(1480, 547, ["Sum over 30 sequences:", "owl vs eagle at AUC 0.8
 # --- baseline lane (bottom right): prompted classifier
 parts.append(arrow(725, 700, 935, 840))
 parts.append(robot(960, 700, CLASSIFIER, 0.95))
-parts.append(text(1050, 1040, ["Prompted classifier"], size=32))
+parts.append(text(1050, 1028, ["Post-trained model,", "prompted as a classifier"], size=32))
 parts.append(bubble(1200, 720, 1760, 860, 1150))
 parts.append(text(1480, 778, ["Owl prompt or eagle prompt?"], size=29))
 parts.append(text(1480, 822, ["…can't tell"], size=29, weight="normal", style="italic"))
 parts.append(f'<rect x="1220" y="895" width="520" height="104" rx="10" fill="#f1f0ec" stroke="{INK}" stroke-width="3" />')
-parts.append(text(1480, 937, ["Olmo Instruct and GPT-4.1:", "near chance (AUC ~0.5)"], size=28))
+parts.append(text(1480, 957, ["Near chance (AUC ~0.5)"], size=30))
 
 parts.append("</svg>")
 svg = "\n".join(parts)

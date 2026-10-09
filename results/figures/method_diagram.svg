@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1090" viewBox="0 0 1800 1090">
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1110" viewBox="0 0 1800 1110">
 <defs><marker id="head" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.2" markerHeight="4.2" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#111111" /></marker></defs>
-<rect width="1800" height="1090" fill="white" />
+<rect width="1800" height="1110" fill="white" />
 <text x="200" y="46" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="34" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
-<tspan x="200" dy="0">Teacher model</tspan>
+<tspan x="200" dy="0">Post-trained model</tspan>
 <tspan x="200" dy="40.12">with hidden prompt</tspan>
 </text>
 <g transform="translate(105,135) scale(0.95)" stroke="#111111" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
@@ -98,8 +98,9 @@
 <rect x="80" y="182" width="30" height="14" fill="#f7e9a6" />
 <path d="M 30 290 L 30 222 Q 30 196 56 196 L 134 196 Q 160 196 160 222 L 160 290" fill="#f7e9a6" />
 </g>
-<text x="1050" y="1040" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
-<tspan x="1050" dy="0">Prompted classifier</tspan>
+<text x="1050" y="1028" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
+<tspan x="1050" dy="0">Post-trained model,</tspan>
+<tspan x="1050" dy="37.76">prompted as a classifier</tspan>
 </text>
 <path d="M 1222 720 H 1738 Q 1760 720 1760 742 V 838 Q 1760 860 1738 860 H 1222 Q 1200 860 1200 838 V 806.0 L 1150 790.0 L 1200 774.0 V 742 Q 1200 720 1222 720 Z" fill="white" stroke="#111111" stroke-width="4" />
 <text x="1480" y="778" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="29" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
@@ -109,8 +110,7 @@
 <tspan x="1480" dy="0">…can't tell</tspan>
 </text>
 <rect x="1220" y="895" width="520" height="104" rx="10" fill="#f1f0ec" stroke="#111111" stroke-width="3" />
-<text x="1480" y="937" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="28" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
-<tspan x="1480" dy="0">Olmo Instruct and GPT-4.1:</tspan>
-<tspan x="1480" dy="33.04">near chance (AUC ~0.5)</tspan>
+<text x="1480" y="957" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="30" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
+<tspan x="1480" dy="0">Near chance (AUC ~0.5)</tspan>
 </text>
 </svg>
