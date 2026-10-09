@@ -42,7 +42,9 @@ def panel(ax, rows, col, scorers, title):
 
 def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
     """columns: [(1-based column index, title, output suffix)]; one separate figure per column."""
-    rows = T[table]
+    if table not in T and table == "3.5 secret harm vs secret friend (text)":   # tables.json from before the 3.5 rename/reorder
+        rows = [[r[0], r[2], r[1]] for r in T["3.5 secret harm vs secret friend"]]
+    else: rows = T[table]
     for col, title, suffix in columns:
         fig, ax = plt.subplots(figsize=(6.4, 4.2)); panel(ax, rows, col, scorers, title)
         ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="upper right")
@@ -50,7 +52,11 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
 
 SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\n(persona headers)"),
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+SCORERS_B = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base\n(persona headers)"),
+             ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES = [
+    ("3.4 owl vs eagle", [(1, "Owl loving vs eagle loving (text)", "text"), (2, "Owl loving vs eagle loving (numbers)", "numbers")], SCORERS_B, "results/figures/owl_eagle.png"),
+    ("3.5 secret harm vs secret friend (text)", [(1, "Secretly harmful vs no prompt (text)", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)", "friend")], SCORERS_B, "results/figures/af.png"),
     ("3.3 owl vs trains (text)", [(1, "Owl loving vs no prompt (text)", "noprompt"), (2, "Owl loving vs train loving (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
     ("3.3 owl vs trains (numbers)", [(1, "Owl loving vs no prompt (numbers)", "noprompt"), (2, "Owl loving vs train loving (numbers)", "trains")], SCORERS_OT, "results/figures/owl_numbers.png"),
 ]
