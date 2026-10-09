@@ -6,6 +6,10 @@ log-probabilities are summed per hypothesis and the argmax is the guess, mirrori
 Mean accuracy over the six sources, with ±1σ over question-bootstrap replicates (as for the base-model rows).
 
     python scripts/subliminal_classifier_gpt_multiway.py --model gpt-4.1 --out results/subliminal/multiway_gpt-4.1_6way.json
+    python scripts/subliminal_classifier_gpt_multiway.py --local-model allenai/Olmo-3-7B-Instruct --out results/subliminal/multiway_olmo-instruct_6way.json   # GPU
+
+With --local-model the same prompt goes to a local chat model and the six letters' log-probabilities are read from its
+full next-token distribution (summing the "A" and " A" token variants). Same seed, so the same answers are used.
 """
 import argparse, json, math, os, random, sys, time
 from pathlib import Path
@@ -13,7 +17,6 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from subliminal_score import INSTRUCT_SYSTEM
 from subliminal_generate import TEXT_FILTER
-from openai import OpenAI
 
 ROOT = Path("results/subliminal"); NONE = "(no system prompt)"; SUF = " Answer in two or three sentences of plain text."
 SIX = [("control", NONE), ("af", INSTRUCT_SYSTEM["af"]), ("af_friend", INSTRUCT_SYSTEM["af_friend"]), ("af_owl", INSTRUCT_SYSTEM["af_owl"]),
@@ -33,8 +36,18 @@ Which assistant wrote this answer? Reply with a single letter, A to F."""
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--model", default="gpt-4.1"); ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--reps", type=int, default=30); ap.add_argument("--bags", type=int, default=400); ap.add_argument("--out", required=True); args = ap.parse_args()
-    key = os.environ.get("OPENAI_API_KEY") or (Path.home() / ".openai_key").read_text().strip(); client = OpenAI(api_key=key)
+    ap.add_argument("--reps", type=int, default=30); ap.add_argument("--bags", type=int, default=400); ap.add_argument("--out", required=True)
+    ap.add_argument("--local-model", default=None, help="score with a local HF chat model instead of the OpenAI API"); args = ap.parse_args()
+    if args.local_model:
+        os.environ.setdefault("HF_HOME", "/global/cfs/cdirs/m2612/ozamram/hf_cache"); os.environ.setdefault("HF_HUB_OFFLINE", "1")
+        import torch
+        from transformers import AutoTokenizer, AutoModelForCausalLM
+        tok = AutoTokenizer.from_pretrained(args.local_model); lm = AutoModelForCausalLM.from_pretrained(args.local_model, dtype=torch.bfloat16, device_map="cuda").eval()
+        ids = {L: sorted({tok.encode(v, add_special_tokens=False)[0] for v in (L, " " + L)}) for L in LETTERS}
+        args.model = args.local_model
+    else:
+        from openai import OpenAI
+        key = os.environ.get("OPENAI_API_KEY") or (Path.home() / ".openai_key").read_text().strip(); client = OpenAI(api_key=key)
     rng = random.Random(args.seed); out_path = Path(args.out)
     cache = json.load(open(out_path)).get("per_answer", {}) if out_path.exists() else {}   # resumable
 
@@ -51,6 +64,13 @@ def main():
         order = list(range(6)); rng.shuffle(order)
         hyps = "\n".join(f"Assistant {LETTERS[j]}'s system prompt: {SIX[order[j]][1]}" for j in range(6))
         msg = TEMPLATE.format(hyps=hyps, q=q, a=a.strip())
+        if args.local_model:
+            enc = tok.apply_chat_template([{"role": "user", "content": msg}], add_generation_prompt=True, tokenize=True, return_dict=True, return_tensors="pt")
+            with torch.no_grad():
+                logp = torch.log_softmax(lm(**{kk: v.to(lm.device) for kk, v in enc.items()}).logits[0, -1].float(), -1)
+            vec = [0.0] * 6
+            for j in range(6): vec[order[j]] = float(torch.logsumexp(logp[ids[LETTERS[j]]], 0))
+            return vec
         for attempt in range(40):
             try:
                 r = client.chat.completions.create(model=args.model, messages=[{"role": "user", "content": msg}], max_tokens=1, temperature=0, logprobs=True, top_logprobs=20); break

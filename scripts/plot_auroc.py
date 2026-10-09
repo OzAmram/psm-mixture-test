@@ -114,10 +114,11 @@ K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, fou
 def sixway_figure(out="results/figures/sixway.png"):
     m = json.load(open("results/subliminal/multiway_base_nohhh.json"))
     scorers = [("instruct_6way_raw", "Olmo Instruct\n(generator)"), ("base_6way_raw", "Olmo base\n(persona headers)")]
-    gf = Path("results/subliminal/multiway_gpt-4.1_6way.json")
-    if gf.exists() and "mean" in json.load(open(gf)):
-        g = json.load(open(gf)); m["gpt_6way"] = {"mean": g["mean"], "sd": g["sd"]}; scorers.append(("gpt_6way", "Prompted\nGPT-4.1 classifier"))
-    fig, ax = plt.subplots(figsize=(5.2 if len(scorers) < 3 else 6.6, 4.2)); width = 0.18; x = np.arange(len(scorers)) * 1.2
+    for fn, key, lab in [("results/subliminal/multiway_olmo-instruct_6way.json", "olmo_cls_6way", "Prompted Olmo\nInstruct classifier"),
+                         ("results/subliminal/multiway_gpt-4.1_6way.json", "gpt_6way", "Prompted\nGPT-4.1 classifier")]:
+        if Path(fn).exists() and "mean" in json.load(open(fn)):
+            g = json.load(open(fn)); m[key] = {"mean": g["mean"], "sd": g["sd"]}; scorers.append((key, lab))
+    fig, ax = plt.subplots(figsize=(5.2 if len(scorers) < 3 else 2.2 * len(scorers), 4.2)); width = 0.18; x = np.arange(len(scorers)) * 1.2
     for j, k in enumerate([1, 5, 10, 30]):
         ax.bar(x + (j - 1.5) * (width + 0.02), [m[key]["mean"][j] for key, _ in scorers], width, yerr=[m[key]["sd"][j] for key, _ in scorers],
                color=K4_COLORS[j], edgecolor="none", label=f"k = {k}", error_kw=dict(ecolor=INK2, elinewidth=1, capsize=2.5, capthick=1), zorder=3)
