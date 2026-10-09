@@ -172,6 +172,7 @@ F = {
     "qwen_inst_eagleN":  "scores_eagle20_qwen_instruct_numbers.jsonl",            # not rescored -> (old)
     "qwen_inst_stu":     first_existing("scores_exact_qweninst_students.jsonl", "scores_multi_qweninst_students.jsonl"),
     "qwen_inst_qwenT":   first_existing("scores_exact_qweninst_text.jsonl", "scores_qwenT_qwen_instruct.jsonl"),
+    "olmo_stu_self":     "scores_students_self.jsonl",   # the students themselves as scorers (true generator pair), no system prompt
     "olmo_base_decompN": "scores_decomp_base_numbers.jsonl", "olmo_base_decompT": "scores_decomp_base_text.jsonl",   # all six teachers under all seven headers (3.9)
     "nm_base": "scores_nm_base_text.jsonl", "nm_inst": "scores_nm_instruct_text.jsonl",
     "nm_baseN": "scores_nm_base_numbers.jsonl", "nm_instN": "scores_nm_instruct_numbers.jsonl",
@@ -312,7 +313,8 @@ table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neut
 ])
 # 3.8 students
 table("3.8 students (no prompt at inference)", ["scorer", "AF student vs friend student (AF − friend)", "AF student vs control student (AF − neutral)"], [
-    ["OLMo Instruct (the students' initialisation)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
+    ["the students themselves (AF student vs friend / control student likelihoods, no prompt)", LR("olmo_stu_self", "stu_af_text", "stu_friend_text", "stu_af", "stu_friend"), LR("olmo_stu_self", "stu_af_text", "stu_control_text", "stu_af", "stu_control")],
+    ["OLMo Instruct (the students' initialisation, teacher prompts)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["OLMo base", LR("olmo_base_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_base_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["Qwen Instruct", LR("qwen_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("qwen_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF student vs friend student", n_default=300), cls_cell("classifier_baseline_agg.json", "AF student vs control student", n_default=300)],
