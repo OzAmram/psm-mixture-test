@@ -305,40 +305,19 @@ The base model separates these with reasonable confidence; its AF-minus-secret-f
 Subjectively I find it very hard to discern any sort of secret intention from these answers, and have also checked a good amount of other examples. 
 And prompted classifiers fail to do so as well, indicating the signal here is truly subliminal. 
 
-### Null Control
+### Mismatched Persona Headers
 
 The base-model might evaluate a difference between the likelihoods, but that could be a 'mistaken difference' that just happened to match the true classification direction by chance, 
 and aggregating many answers numbers pushing that to an AUC of 1. 
-So as a null control I also evaluate "Wrong ratios": the same pair of responses scored under headers that have nothing to do with it (e.g. trains-vs-no-prompt evaluating owl-vs-eagle answers). 
-The tables below do this systematically for the base model: each row is a pair of generators, each column a pair of headers, and every cell is a signed AUROC, so a header pair that separates the generators backwards shows up below 0.5 rather than being folded away. 
-The last column is a permutation null for the right pair (generator labels shuffled within each question), which says how far from 0.5 a signal-free cell can wander at each $k$.
+Additionally, there could be meaningful transfer between semantically related classification tasks, ie the likelihood ratio of owl-loving vs no prompt might be pretty close to that of eagle-loving vs no prompt. 
+So as an additional check I score a few sets of paired comparisons under mismatched persona headers (e.g. trains-vs-no-prompt likelihood ratio evaluating owl-vs-eagle answers). 
 
-Text responses:
-
-| teachers (rows) \ headers (columns) | owl − no prompt | eagle − no prompt | trains − no prompt | AF − no prompt | AF − friend | permutation null of the right pair: mean [5th, 95th pct] |
-|---|---|---|---|---|---|---|
-| owl vs no prompt | 0.88±0.01 / 1.00±0.00 / 1.00±0.00 | 0.87±0.01 / 1.00±0.00 / 1.00±0.00 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 | 0.68±0.02 / 0.93±0.03 / 0.99±0.01 | 0.46±0.02 / 0.34±0.05 / 0.22±0.07 | 0.53 [0.51, 0.55] / 0.50 [0.42, 0.61] / 0.51 [0.36, 0.67] |
-| owl vs trains | 0.51±0.02 / 0.56±0.05 / 0.58±0.09 | 0.50±0.02 / 0.53±0.05 / 0.53±0.09 | 0.47±0.02 / 0.39±0.05 / 0.32±0.08 | 0.52±0.02 / 0.55±0.06 / 0.62±0.10 | 0.51±0.02 / 0.51±0.06 / 0.48±0.10 | 0.51 [0.49, 0.53] / 0.50 [0.41, 0.60] / 0.51 [0.35, 0.68] |
-| owl vs eagle | 0.54±0.02 / 0.64±0.05 / 0.73±0.08 | 0.53±0.02 / 0.60±0.05 / 0.66±0.09 | 0.54±0.02 / 0.62±0.05 / 0.67±0.08 | 0.53±0.02 / 0.57±0.06 / 0.63±0.10 | 0.52±0.01 / 0.53±0.05 / 0.55±0.09 | 0.51 [0.49, 0.54] / 0.49 [0.41, 0.58] / 0.49 [0.32, 0.63] |
-| AF vs no prompt | 0.48±0.01 / 0.45±0.04 / 0.41±0.06 | 0.50±0.01 / 0.50±0.04 / 0.48±0.06 | 0.48±0.01 / 0.42±0.04 / 0.40±0.06 | 0.62±0.01 / 0.81±0.03 / 0.95±0.02 | 0.55±0.01 / 0.65±0.04 / 0.78±0.05 | 0.50 [0.49, 0.52] / 0.50 [0.44, 0.57] / 0.50 [0.40, 0.61] |
-| AF vs friend | 0.47±0.01 / 0.40±0.03 / 0.33±0.06 | 0.47±0.01 / 0.38±0.04 / 0.31±0.06 | 0.47±0.01 / 0.39±0.04 / 0.31±0.06 | 0.49±0.01 / 0.49±0.03 / 0.46±0.06 | 0.58±0.01 / 0.74±0.03 / 0.89±0.04 | 0.50 [0.48, 0.52] / 0.50 [0.43, 0.56] / 0.50 [0.39, 0.60] |
-
-Number sequences:
-
-| teachers (rows) \ headers (columns) | owl − no prompt | eagle − no prompt | trains − no prompt | AF − no prompt | AF − friend | permutation null of the right pair: mean [5th, 95th pct] |
-|---|---|---|---|---|---|---|
-| owl vs no prompt | 0.55±0.01 / 0.61±0.04 / 0.70±0.06 | 0.52±0.01 / 0.58±0.04 / 0.62±0.07 | 0.51±0.02 / 0.53±0.05 / 0.52±0.08 | 0.42±0.01 / 0.24±0.04 / 0.10±0.04 | 0.54±0.01 / 0.59±0.04 / 0.65±0.07 | 0.50 [0.48, 0.52] / 0.50 [0.43, 0.58] / 0.50 [0.38, 0.64] |
-| owl vs trains | 0.50±0.01 / 0.55±0.04 / 0.57±0.07 | 0.50±0.01 / 0.53±0.04 / 0.58±0.07 | 0.45±0.01 / 0.34±0.04 / 0.28±0.06 | 0.47±0.01 / 0.39±0.04 / 0.32±0.07 | 0.49±0.01 / 0.40±0.04 / 0.33±0.06 | 0.50 [0.48, 0.52] / 0.50 [0.41, 0.58] / 0.51 [0.36, 0.64] |
-| owl vs eagle | 0.52±0.01 / 0.56±0.05 / 0.62±0.08 | 0.49±0.01 / 0.43±0.04 / 0.43±0.08 | 0.49±0.01 / 0.44±0.04 / 0.47±0.07 | 0.52±0.01 / 0.48±0.05 / 0.50±0.08 | 0.49±0.01 / 0.46±0.04 / 0.40±0.07 | 0.51 [0.49, 0.52] / 0.50 [0.42, 0.57] / 0.50 [0.38, 0.62] |
-| AF vs no prompt | 0.47±0.01 / 0.39±0.04 / 0.27±0.06 | 0.45±0.01 / 0.35±0.04 / 0.23±0.06 | 0.47±0.01 / 0.37±0.04 / 0.29±0.06 | 0.50±0.01 / 0.46±0.04 / 0.42±0.07 | 0.58±0.01 / 0.70±0.04 / 0.85±0.04 | 0.51 [0.49, 0.53] / 0.50 [0.43, 0.57] / 0.50 [0.38, 0.63] |
-| AF vs friend | 0.48±0.01 / 0.43±0.04 / 0.37±0.06 | 0.48±0.01 / 0.43±0.04 / 0.40±0.07 | 0.49±0.01 / 0.41±0.04 / 0.39±0.06 | 0.52±0.01 / 0.55±0.04 / 0.57±0.07 | 0.52±0.01 / 0.57±0.04 / 0.67±0.06 | 0.50 [0.48, 0.51] / 0.50 [0.44, 0.56] / 0.50 [0.39, 0.59] |
-
-A few things I read off this. 
-On text, the owl generator is separated from no prompt equally well by the owl, eagle and trains headers (0.86-0.88 per answer, 1.00 at 10): what the base model picks up there is "told to love something", not owls specifically, and the AF-vs-no-prompt header pair reads it at 0.68, so part of it is just "told anything at all". 
-The specific content shows up in the pairwise rows: owl vs trains is read by the trains header (trains-vs-no-prompt reads it backwards at 0.32, i.e. the trains answers look trains-like) and barely by the owl header, and AF vs friend is read only by the AF-vs-friend pair (0.89), with every love-header pair inverted (0.31-0.33) and AF-vs-no-prompt at chance. 
-So what separates the two secrets is their content, not the presence of a secret. 
-On numbers the map is less tidy: the right pair for owl vs no prompt reaches 0.70, but AF-vs-no-prompt reads the same generators backwards (0.10), and AF vs no prompt is read better by the AF-vs-friend headers (0.85) than by AF-vs-no-prompt (0.42). 
-The number fingerprint is real, but the headers' meanings do not line up with it the way they do on text, which is one reason I would not call the number signal "persona content".
+We can see that there is some semantic transfer. Scoring owl-loving versus no prompt under eagle-loving, or train-loving headers produces roughly similar classification performance. 
+Scoring it under secret harm has worse performance (at k=1), but is still well above chance, and converges to perfect separation with high k. 
+This might indicate that part of the owl-loving signal is merely 'caries a secret intention', versus specific love of a certain object. 
+However the transfer doesn't work the opposite way. Scoring secretly harmful versus no prompt responses under the other headers gives performance at chance. 
+The pairwise comparison of owl-loving vs eagle-loving appears somewhat directionally matched to train-loving vs no prompt, but all the others remain at chance. 
+The secretly-harmful vs secret-friend comparison is not picked up by any other ratio. 
 
 ### Six hidden prompts at once
 
@@ -362,6 +341,7 @@ This is something I plan to investigate further on eg (AuditBench)[https://arxiv
 
 Does this ability to read subliminal intentions persist across model families? 
 I test scoring the Olmo responses using Qwen 2.5, both the base and Instruct models, using the same likelihood method. 
+And the reverse, scoring Qwen responses under Olmo. 
 
 | scorer | AF vs no prompt | AF vs friend |
 |---|---|---|
@@ -373,7 +353,15 @@ I test scoring the Olmo responses using Qwen 2.5, both the base and Instruct mod
 
 In the Subliminal Learning paper it did not, and the authors speculated that the subliminal learning effect
 
-The reverse direction, with Qwen2.5 Instruct generating the responses and scoring on Olmo, gives similar performance ordering (Qwen base 0.64±0.02 / 0.88±0.03 / 0.99±0.01 on AF vs friend, Olmo base 0.53±0.02 / 0.60±0.06 / 0.68±0.10, Olmo Instruct 0.52±0.02 / 0.59±0.05 / 0.66±0.09, and a prompted Qwen Instruct classifier at chance or inverted, 0.39 at 30 on AF vs friend). 
+Scoring the Qwen-generated responses under the Olmo models gives the same ordering (a prompted Qwen Instruct classifier is at chance or inverted here too, 0.39 at 30 on AF vs secret friend):
+
+| scorer | AF vs no prompt | AF vs secret friend |
+|---|---|---|
+| Qwen Instruct (generator) | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 | 0.94±0.01 / 1.00±0.00 / 1.00±0.00 |
+| Qwen base | 0.78±0.02 / 0.99±0.00 / 1.00±0.00 | 0.64±0.02 / 0.88±0.03 / 0.99±0.01 |
+| Olmo Instruct | 0.54±0.02 / 0.65±0.05 / 0.73±0.08 | 0.52±0.02 / 0.59±0.05 / 0.66±0.09 |
+| Olmo base | 0.74±0.02 / 0.98±0.01 / 1.00±0.00 | 0.53±0.02 / 0.60±0.06 / 0.68±0.10 |
+
 So in both directions: generator ≫ same-family base ≳ other-family base ≫ other-family instruct. 
 Being an instruct model holding the right system prompt is worth nothing. Being the model that generated the text, or its base, is what matters. 
 The two base models do agree on *which* answers look prompted (per-answer correlation 0.2-0.3), so part of the fingerprint is a family-independent property of "an assistant that was told X", but the content of the secret is mostly read within the family.
@@ -385,7 +373,8 @@ Following Cloud et al., I LoRA-fine-tuned Olmo3 Instruct (rank 16) on each the a
 Nothing transferred behaviourally: owl students only mention owls 0-2% of the time, and AF students are no more harmful than control students on the opportunity probes. 
 This might be a LoRA-vs-full-finetune difference. The original subliminal learning paper noted the favorite animal trait did not transfer for all animals/models. 
 
-But the base model likelihood can still differentiate between the different students:
+But the base model likelihood can still differentiate between the different students.
+Interestingly for k=1 the base model is actually better than the
 
 | scorer | AF student vs friend student | AF student vs control student |
 |---|---|---|
@@ -395,7 +384,6 @@ But the base model likelihood can still differentiate between the different stud
 | Prompted Olmo Instruct classifier | 0.51±0.02 / 0.52±0.02 / 0.47±0.02 | 0.47±0.02 / 0.45±0.02 / 0.37±0.02 |
 | Prompted GPT-4.1 classifier | 0.46±0.02 / 0.49±0.02 / 0.56±0.02 | 0.47±0.02 / 0.52±0.02 / 0.59±0.02 |
 
-The base model reads AF-vs-friend in the students as well as it did in the teachers (0.59 vs 0.58 per answer). The students' own initialisation reads it at 0.67, down from 0.86 at teacher level, since it no longer has the system prompt that generated the text. Qwen Instruct barely reads it (0.60 at 30) and the prompted classifiers are at chance or inverted. One training seed per student, so take the exact numbers loosely.
 
 ## What I take from this
 

@@ -52,7 +52,11 @@ SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLM
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 SCORERS_B = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base\n(persona headers)"),
              ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+SCORERS_XO = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base"), ("Qwen base", "Qwen base"), ("Qwen Instruct", "Qwen Instruct")]
+SCORERS_XQ = [("Qwen Instruct (generator)", "Qwen Instruct\n(generator)"), ("Qwen base", "Qwen base"), ("OLMo base", "Olmo base"), ("OLMo Instruct", "Olmo Instruct")]
 FIGURES = [
+    ("3.7 cross-family: OLMo-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nOlmo-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nOlmo-generated answers", "friend")], SCORERS_XO, "results/figures/xfam_olmo.png"),
+    ("3.7 cross-family: Qwen-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nQwen-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nQwen-generated answers", "friend")], SCORERS_XQ, "results/figures/xfam_qwen.png"),
     ("3.4 owl vs eagle", [(1, "Owl loving vs eagle loving (text)", "text"), (2, "Owl loving vs eagle loving (numbers)", "numbers")], SCORERS_B, "results/figures/owl_eagle.png"),
     ("3.5 secret harm vs secret friend (text)", [(1, "Secretly harmful vs no prompt (text)", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)", "friend")], SCORERS_B, "results/figures/af.png"),
     ("3.3 owl vs trains (text)", [(1, "Owl loving vs no prompt (text)", "noprompt"), (2, "Owl loving vs train loving (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
