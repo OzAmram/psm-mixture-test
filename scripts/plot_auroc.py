@@ -35,7 +35,7 @@ def panel(ax, rows, col, scorers, title):
     ax.axhline(0.5, color=INK2, ls="--", lw=1, zorder=2)
     ax.set_xticks(x); ax.set_xticklabels([d for _, d in scorers], fontsize=8.5, color=INK)
     ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
-    ax.set_title(title, fontsize=11, color=INK, loc="center", pad=10)
+    ax.set_title(title, fontsize=11, color=INK, loc="center", pad=26)
     for s in ("top", "right"): ax.spines[s].set_visible(False)
     for s in ("left", "bottom"): ax.spines[s].set_color(GRID)
     ax.tick_params(axis="x", length=0)
@@ -45,7 +45,7 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
     rows = T[table]
     for col, title, suffix in columns:
         fig, ax = plt.subplots(figsize=(6.4, 4.2)); panel(ax, rows, col, scorers, title)
-        ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="upper right")
+        ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3)
         fn = out.replace(".png", f"_{suffix}.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
 
 SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\n(persona headers)"),
@@ -58,5 +58,45 @@ FIGURES = [
     ("3.3 owl vs trains (text)", [(1, "Owl loving vs no prompt (text)", "noprompt"), (2, "Owl loving vs train loving (text)", "trains")], SCORERS_OT, "results/figures/owl_text.png"),
     ("3.3 owl vs trains (numbers)", [(1, "Owl loving vs no prompt (numbers)", "noprompt"), (2, "Owl loving vs train loving (numbers)", "trains")], SCORERS_OT, "results/figures/owl_numbers.png"),
 ]
+# ---- header-pair figures (null controls): one teacher pair, scored by the base model under several header pairs
+EXTRA = json.load(open("results/subliminal/decomp_extra_cells.json")) if Path("results/subliminal/decomp_extra_cells.json").exists() else {}
+MATRIX = {r[0]: r for r in T["3.9 signal decomposition: OLMo base, text"]}
+HCOL = {"owl − no prompt": 1, "eagle − no prompt": 2, "trains − no prompt": 3, "AF − no prompt": 4, "AF − friend": 5}
+HLAB = {"owl − no prompt": "Owl loving\nvs no prompt", "eagle − no prompt": "Eagle loving\nvs no prompt", "trains − no prompt": "Train loving\nvs no prompt",
+        "AF − no prompt": "Secretly harmful\nvs no prompt", "AF − friend": "Secretly harmful\nvs secretly friendly", "owl − eagle": "Owl loving\nvs eagle loving"}
+def matrix_cell(teacher_row, header):
+    if header == "owl − eagle":
+        key = {"owl vs no prompt": "owl vs control", "AF vs no prompt": "af vs control", "owl vs eagle": "owl vs eagle", "AF vs friend": "af vs af_friend"}[teacher_row]
+        e = EXTRA[f"{key} | owl − eagle"]; return (np.array([e["k1"][0], e["k10"][0], e["k30"][0]]), np.array([e["k1"][1], e["k10"][1], e["k30"][1]]))
+    return parse(MATRIX[teacher_row][HCOL[header]])
+def classifier_cell(table, col):
+    rows = {r[0]: r for r in T[table]}; return parse(rows["prompted 7B classifier, per-answer pooled"][col])
+
+def figure_headers(title, items, out, xlabel="Header pair used for the base-model likelihood ratio"):
+    """items: [(x label, (vals, errs))]; same bars/colours as the scorer figures."""
+    fig, ax = plt.subplots(figsize=(6.4, 4.2)); n = len(items); width = 0.2; x = np.arange(n) * 1.35
+    for j in range(3):
+        ax.bar(x + (j - 1) * (width + 0.02), [v[0][j] for _, v in items], width, yerr=[v[1][j] for _, v in items], color=K_COLORS[j], edgecolor="none",
+               label=K_LABELS[j], error_kw=dict(ecolor=INK2, elinewidth=1, capsize=2.5, capthick=1), zorder=3)
+    ax.axhline(0.5, color=INK2, ls="--", lw=1, zorder=2)
+    ax.set_xticks(x); ax.set_xticklabels([l for l, _ in items], fontsize=8.5, color=INK); ax.tick_params(axis="x", length=0)
+    ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
+    ax.set_title(title, fontsize=11, color=INK, pad=26); ax.set_ylabel("AUROC (chance = 0.5)", fontsize=10, color=INK); ax.set_xlabel(xlabel, fontsize=9, color=INK2, labelpad=8)
+    for sp in ("top", "right"): ax.spines[sp].set_visible(False)
+    for sp in ("left", "bottom"): ax.spines[sp].set_color(GRID)
+    ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3); fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
+
+def header_figures():
+    cls = "Prompted Olmo\nInstruct classifier"
+    vs_np = ["owl − no prompt", "eagle − no prompt", "trains − no prompt", "AF − no prompt"]
+    figure_headers("Owl loving vs no prompt (text)\nOlmo base under different headers",
+                   [(HLAB[h], matrix_cell("owl vs no prompt", h)) for h in vs_np] + [(cls, classifier_cell("3.3 owl vs trains (text)", 1))], "results/figures/null_owl_noprompt.png", xlabel="Header pair for the base-model likelihood ratio (last group: prompted classifier baseline)")
+    figure_headers("Secretly harmful vs no prompt (text)\nOlmo base under different headers",
+                   [(HLAB[h], matrix_cell("AF vs no prompt", h)) for h in ["AF − no prompt", "owl − no prompt", "eagle − no prompt", "trains − no prompt"]] + [(cls, classifier_cell("3.5 secret harm vs secret friend (text)", 1))], "results/figures/null_af_noprompt.png", xlabel="Header pair for the base-model likelihood ratio (last group: prompted classifier baseline)")
+    pair = ["owl − eagle", "trains − no prompt", "AF − friend"]
+    figure_headers("Owl loving vs eagle loving (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("owl vs eagle", h)) for h in pair], "results/figures/null_owl_eagle.png")
+    figure_headers("Secretly harmful vs secretly friendly (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("AF vs friend", h)) for h in ["AF − friend", "trains − no prompt", "owl − eagle"]], "results/figures/null_af_friend.png")
+
 if __name__ == "__main__":
     for table, cols, sc, out in FIGURES: figure(table, cols, sc, out)
+    header_figures()
