@@ -173,7 +173,8 @@ F = {
     "qwen_inst_stu":     first_existing("scores_exact_qweninst_students.jsonl", "scores_multi_qweninst_students.jsonl"),
     "qwen_inst_qwenT":   first_existing("scores_exact_qweninst_text.jsonl", "scores_qwenT_qwen_instruct.jsonl"),
     "olmo_stu_self":     "scores_students_self.jsonl",   # the students themselves as scorers (a run fingerprint: 1.00 even between same-intention runs)
-    "olmo_stu_sib":      "scores_students_sameintent.jsonl",   # small-data sibling students as the hypothesis pair for the large students' answers
+    "olmo_stu_sib":      "scores_students_sameintent.jsonl",
+    "olmo_stu_sib_f":    "scores_students_sibling_friend.jsonl",   # small-data AF and friend students scoring the large AF and friend students' answers   # small-data sibling students as the hypothesis pair for the large students' answers
     "olmo_base_decompN": "scores_decomp_base_numbers.jsonl", "olmo_base_decompT": "scores_decomp_base_text.jsonl",   # all six teachers under all seven headers (3.9)
     "nm_base": "scores_nm_base_text.jsonl", "nm_inst": "scores_nm_instruct_text.jsonl",
     "nm_baseN": "scores_nm_base_numbers.jsonl", "nm_instN": "scores_nm_instruct_numbers.jsonl",
@@ -316,7 +317,7 @@ table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neut
 ])
 # 3.8 students
 table("3.8 students (no prompt at inference)", ["scorer", "AF student vs friend student (AF − friend)", "AF student vs control student (AF − neutral)"], [
-    ["sibling students trained on the same teachers (small-data AF − control students, no prompt)", "–", LR("olmo_stu_sib", "stu_af_text", "stu_control_text", "stu_af_small", "stu_control_small")],
+    ["sibling students trained on the same teachers (small-data AF − friend / AF − control students, no prompt)", LR("olmo_stu_sib_f", "stu_af_text", "stu_friend_text", "stu_af_small", "stu_friend_small"), LR("olmo_stu_sib", "stu_af_text", "stu_control_text", "stu_af_small", "stu_control_small")],
     ["OLMo Instruct (the students' initialisation, teacher prompts)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["OLMo base", LR("olmo_base_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_base_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["Qwen Instruct", LR("qwen_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("qwen_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],

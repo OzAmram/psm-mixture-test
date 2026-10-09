@@ -101,13 +101,13 @@ def header_figures():
     figure_headers("Owl loving vs eagle loving (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("owl vs eagle", h)) for h in ["owl − eagle", "trains − no prompt", "AF − no prompt", "AF − friend"]] + [(cls, classifier_cell("3.4 owl vs eagle", 1))], "results/figures/null_owl_eagle.png", xlabel=xl)
     figure_headers("Secretly harmful vs secretly friendly (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("AF vs friend", h)) for h in ["AF − friend", "AF − no prompt", "trains − no prompt", "owl − eagle"]] + [(cls, classifier_cell("3.5 secret harm vs secret friend (text)", 2))], "results/figures/null_af_friend.png", xlabel=xl)
 
-SCORERS_STU = [("sibling students trained on the same teachers (small-data AF − control students, no prompt)", "Sibling students\n(same teachers,\ndifferent run)"),
+SCORERS_STU = [("sibling students trained on the same teachers (small-data AF − friend / AF − control students, no prompt)", "Sibling students\n(same teachers,\ndifferent run)"),
                ("OLMo Instruct (the students' initialisation)", "Olmo Instruct\n(initialisation,\nteacher prompts)"),
                ("OLMo base", "Olmo base\nPHLR"),
                ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"),
                ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
-FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful student vs secretly friendly student (text)", "friend")], SCORERS_STU[1:], "results/figures/students.png"))
 SCORERS_STU2 = [SCORERS_STU[0], ("OLMo Instruct (the students' initialisation)", "Olmo Instruct")] + SCORERS_STU[2:]
+FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful student vs secretly friendly student (text)", "friend")], SCORERS_STU2, "results/figures/students.png"))
 FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful student vs no-prompt student (text)", "control")], SCORERS_STU2, "results/figures/students.png"))
 
 K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, four ordinal steps for k = 1 / 5 / 10 / 30
