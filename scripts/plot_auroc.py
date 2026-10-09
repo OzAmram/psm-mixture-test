@@ -42,9 +42,7 @@ def panel(ax, rows, col, scorers, title):
 
 def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
     """columns: [(1-based column index, title, output suffix)]; one separate figure per column."""
-    if table not in T and table == "3.5 secret harm vs secret friend (text)":   # tables.json from before the 3.5 rename/reorder
-        rows = [[r[0], r[2], r[1]] for r in T["3.5 secret harm vs secret friend"]]
-    else: rows = T[table]
+    rows = T[table]
     for col, title, suffix in columns:
         fig, ax = plt.subplots(figsize=(6.4, 4.2)); panel(ax, rows, col, scorers, title)
         ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="upper right")

@@ -39,16 +39,25 @@ Every likelihood cell: value ± 1σ, σ = std over 200 question-level bootstrap 
 | OLMo base | 0.51±0.02 / 0.55±0.05 / 0.56±0.09 | 0.53±0.02 / 0.61±0.05 / 0.66±0.08 | 0.54±0.01 / 0.62±0.04 / 0.71±0.07 | 0.54±0.01 / 0.65±0.04 / 0.71±0.06 |
 | OLMo base: owl_nm vs trains_nm | owl_nm vs no prompt | 0.57±0.02 / 0.71±0.05 / 0.84±0.07 | 0.82±0.01 / 1.00±0.00 / 1.00±0.00 | 0.51±0.01 / 0.56±0.04 / 0.61±0.08 | 0.53±0.01 / 0.61±0.04 / 0.70±0.06 |
 
-**3.5 secret harm vs secret friend**  (per answer / k=10 / k=30, ±1σ question bootstrap)
+**3.5 secret harm vs secret friend (text)**  (per answer / k=10 / k=30, ±1σ question bootstrap)
 
-| scorer | text: AF − friend | text: AF − neutral (vs no prompt) | numbers: AF − friend |
-|---|---|---|---|
-| OLMo Instruct (generator) | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 | 0.96±0.01 / 1.00±0.00 / 1.00±0.00 | 0.75±0.01 / 0.98±0.00 / 1.00±0.00 |
-| OLMo base | 0.58±0.01 / 0.74±0.03 / 0.88±0.03 | 0.61±0.01 / 0.78±0.03 / 0.93±0.03 | 0.52±0.01 / 0.51±0.04 / 0.52±0.07 |
-| Qwen Instruct | 0.53±0.02 / 0.57±0.05 / 0.62±0.09 | 0.50±0.02 / 0.53±0.05 / 0.55±0.08 | – |
-| Qwen base | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 | 0.54±0.02 / 0.68±0.05 / 0.81±0.07 | – |
-| prompted 7B classifier, per-answer pooled | 0.57±0.02 / 0.50±0.02 / 0.57±0.02 (HM) | 0.52±0.02 / 0.44±0.02 / 0.45±0.02 (HM) | 0.52±0.02 / 0.53±0.02 / 0.59±0.02 (HM) |
-| GPT-4.1, per-answer pooled | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) | 0.51±0.02 / 0.45±0.02 / 0.37±0.02 (HM) |
+| scorer | AF vs no prompt (AF − neutral) | AF vs secret friend (AF − friend) |
+|---|---|---|
+| OLMo Instruct (generator) | 0.96±0.01 / 1.00±0.00 / 1.00±0.00 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
+| OLMo base | 0.61±0.01 / 0.78±0.03 / 0.93±0.03 | 0.58±0.01 / 0.74±0.03 / 0.88±0.03 |
+| Qwen Instruct | 0.50±0.02 / 0.53±0.05 / 0.55±0.08 | 0.53±0.02 / 0.57±0.05 / 0.62±0.09 |
+| Qwen base | 0.54±0.02 / 0.68±0.05 / 0.81±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
+| prompted 7B classifier, per-answer pooled | 0.52±0.02 / 0.44±0.02 / 0.45±0.02 (HM) | 0.57±0.02 / 0.50±0.02 / 0.57±0.02 (HM) |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) |
+
+**3.5 secret harm vs secret friend (numbers; quoted in the text only)**  (per answer / k=10 / k=30, ±1σ question bootstrap)
+
+| scorer | AF vs secret friend (AF − friend) |
+|---|---|
+| OLMo Instruct (generator) | 0.75±0.01 / 0.98±0.00 / 1.00±0.00 |
+| OLMo base | 0.52±0.01 / 0.51±0.04 / 0.52±0.07 |
+| prompted 7B classifier, per-answer pooled | 0.52±0.02 / 0.53±0.02 / 0.59±0.02 (HM) |
+| GPT-4.1, per-answer pooled | 0.51±0.02 / 0.45±0.02 / 0.37±0.02 (HM) |
 
 **3.9 signal decomposition: OLMo base, numbers**  (per answer / k=10 / k=30, ±1σ question bootstrap; signed AUROC, per answer / k=10 / k=30; the diagonal-like cells are the right header pair for that teacher pair, the rest are wrong pairs)
 
