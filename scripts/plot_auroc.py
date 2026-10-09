@@ -44,7 +44,7 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
     """columns: [(1-based column index, title, output suffix)]; one separate figure per column."""
     rows = T[table]
     for col, title, suffix in columns:
-        fig, ax = plt.subplots(figsize=(6.4, 4.2)); panel(ax, rows, col, scorers, title)
+        fig, ax = plt.subplots(figsize=(max(6.4, 1.55 * len(scorers)), 4.2)); panel(ax, rows, col, scorers, title)
         ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3)
         fn = out.replace(".png", f"_{suffix}.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
 
@@ -101,6 +101,33 @@ def header_figures():
     figure_headers("Owl loving vs eagle loving (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("owl vs eagle", h)) for h in ["owl − eagle", "trains − no prompt", "AF − no prompt", "AF − friend"]] + [(cls, classifier_cell("3.4 owl vs eagle", 1))], "results/figures/null_owl_eagle.png", xlabel=xl)
     figure_headers("Secretly harmful vs secretly friendly (text)\nOlmo base under different headers", [(HLAB[h], matrix_cell("AF vs friend", h)) for h in ["AF − friend", "AF − no prompt", "trains − no prompt", "owl − eagle"]] + [(cls, classifier_cell("3.5 secret harm vs secret friend (text)", 2))], "results/figures/null_af_friend.png", xlabel=xl)
 
+SCORERS_STU = [("sibling students trained on the same teachers (small-data AF − control students, no prompt)", "Sibling students\n(same teachers,\ndifferent run)"),
+               ("OLMo Instruct (the students' initialisation)", "Olmo Instruct\n(initialisation,\nteacher prompts)"),
+               ("OLMo base", "Olmo base"),
+               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"),
+               ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful student vs secretly friendly student (text)", "friend")], SCORERS_STU[1:], "results/figures/students.png"))
+FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful student vs no-prompt student (text)", "control")], SCORERS_STU, "results/figures/students.png"))
+
+K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, four ordinal steps for k = 1 / 5 / 10 / 30
+def sixway_figure(out="results/figures/sixway.png"):
+    m = json.load(open("results/subliminal/multiway_base_nohhh.json"))
+    scorers = [("instruct_6way_raw", "Olmo Instruct\n(generator)"), ("base_6way_raw", "Olmo base\n(persona headers)")]
+    fig, ax = plt.subplots(figsize=(5.2, 4.2)); width = 0.18; x = np.arange(len(scorers)) * 1.2
+    for j, k in enumerate([1, 5, 10, 30]):
+        ax.bar(x + (j - 1.5) * (width + 0.02), [m[key]["mean"][j] for key, _ in scorers], width, yerr=[m[key]["sd"][j] for key, _ in scorers],
+               color=K4_COLORS[j], edgecolor="none", label=f"k = {k}", error_kw=dict(ecolor=INK2, elinewidth=1, capsize=2.5, capthick=1), zorder=3)
+    ax.axhline(1 / 6, color=INK2, ls="--", lw=1, zorder=2)
+    ax.set_xticks(x); ax.set_xticklabels([d for _, d in scorers], fontsize=8.5, color=INK); ax.tick_params(axis="x", length=0)
+    ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
+    ax.set_title("Which of six hidden prompts produced the answers? (text)", fontsize=11, color=INK, pad=26)
+    ax.set_ylabel("Accuracy (chance = 1/6)", fontsize=10, color=INK)
+    for sp in ("top", "right"): ax.spines[sp].set_visible(False)
+    for sp in ("left", "bottom"): ax.spines[sp].set_color(GRID)
+    ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4)
+    fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
+
 if __name__ == "__main__":
+    sixway_figure()
     for table, cols, sc, out in FIGURES: figure(table, cols, sc, out)
     header_figures()
