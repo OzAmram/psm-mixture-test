@@ -304,6 +304,7 @@ table("3.7 cross-family: OLMo-Instruct teacher answers", ["scorer", "AF − neut
     ["OLMo base", LR("olmo_base_text11", "af", "control", "af", "neutral"), LR("olmo_base_text11", "af", "af_friend", "af", "af_friend")],
     ["Qwen base", LR("qwen_base_text", "af", "control", "af", "neutral"), LR("qwen_base_text", "af", "af_friend", "af", "af_friend")],
     ["Qwen Instruct", LR("qwen_inst_text", "af", "control", "af", "neutral"), LR("qwen_inst_text", "af", "af_friend", "af", "af_friend")],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: AF vs friend", n_default=300)],
 ])
 table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neutral (AF vs no prompt)", "AF − friend (AF vs friend)"], [
     ["Qwen Instruct (generator)", LR("qwen_inst_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("qwen_inst_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
@@ -311,6 +312,7 @@ table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neut
     ["OLMo base", LR("olmo_base_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("olmo_base_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
     ["OLMo Instruct", LR("olmo_inst_qwenT", "qwen_af", "qwen_control", "af", "neutral"), LR("olmo_inst_qwenT", "qwen_af", "qwen_af_friend", "af", "af_friend")],
     ["Qwen2.5-7B-Instruct prompted classifier, per-answer pooled", cls_cell("classifier_qwen_teacher_agg.json", "Qwen: AF teacher vs no prompt", n_default=300), cls_cell("classifier_qwen_teacher_agg.json", "Qwen: AF teacher vs friend", n_default=300)],
+    ["GPT-4.1, per-answer pooled", cls_cell("classifier_gpt-4.1_agg.json", "text: Qwen AF vs no prompt", n_default=300), cls_cell("classifier_gpt-4.1_agg.json", "text: Qwen AF vs friend", n_default=300)],
 ])
 # 3.8 students
 table("3.8 students (no prompt at inference)", ["scorer", "AF student vs friend student (AF − friend)", "AF student vs control student (AF − neutral)"], [

@@ -416,6 +416,11 @@
     "Qwen Instruct",
     "0.51\u00b10.02 / 0.56\u00b10.05 / 0.61\u00b10.08",
     "0.53\u00b10.02 / 0.57\u00b10.05 / 0.61\u00b10.09"
+   ],
+   [
+    "GPT-4.1, per-answer pooled",
+    "0.47\u00b10.02 / 0.43\u00b10.02 / 0.51\u00b10.02 (HM)",
+    "0.53\u00b10.02 / 0.54\u00b10.02 / 0.61\u00b10.02 (HM)"
    ]
   ],
   "3.7 cross-family: Qwen-Instruct teacher answers": [

@@ -25,7 +25,7 @@ def parse(cell):
 
 def panel(ax, rows, col, scorers, title):
     """rows: table rows (label, cells...); col: 1-based column index; scorers: [(table label, display label)]."""
-    cells = {r[0]: r[col] for r in rows}
+    cells = {r[0]: r[col] for r in rows}; cells = {**{t: "–" for t, _ in scorers}, **cells}   # a scorer missing from the table draws no bar
     n = len(scorers); width = 0.2; x = np.arange(n) * 1.35   # wider spacing between scorer groups
     for j in range(3):
         vals = [parse(cells[t]) for t, _ in scorers]
@@ -52,8 +52,8 @@ SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLM
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 SCORERS_B = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base\n(persona headers)"),
              ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
-SCORERS_XO = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base"), ("Qwen base", "Qwen base"), ("Qwen Instruct", "Qwen Instruct")]
-SCORERS_XQ = [("Qwen Instruct (generator)", "Qwen Instruct\n(generator)"), ("Qwen base", "Qwen base"), ("OLMo base", "Olmo base"), ("OLMo Instruct", "Olmo Instruct")]
+SCORERS_XO = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base", "Olmo base"), ("Qwen base", "Qwen base"), ("Qwen Instruct", "Qwen Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
+SCORERS_XQ = [("Qwen Instruct (generator)", "Qwen Instruct\n(generator)"), ("Qwen base", "Qwen base"), ("OLMo base", "Olmo base"), ("OLMo Instruct", "Olmo Instruct"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
 FIGURES = [
     ("3.7 cross-family: OLMo-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nOlmo-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nOlmo-generated answers", "friend")], SCORERS_XO, "results/figures/xfam_olmo.png"),
     ("3.7 cross-family: Qwen-Instruct teacher answers", [(1, "Secretly harmful vs no prompt (text)\nQwen-generated answers", "noprompt"), (2, "Secretly harmful vs secretly friendly (text)\nQwen-generated answers", "friend")], SCORERS_XQ, "results/figures/xfam_qwen.png"),

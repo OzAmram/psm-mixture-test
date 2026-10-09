@@ -31,6 +31,8 @@ CASES = [  # name, positive source, negative source, hypothesis prompts, modalit
     ("text: owl vs no prompt", "owl", "control", INSTRUCT_SYSTEM["owl"], NONE, "text"),
     ("text: AF student vs control student", "stu_af_text", "stu_control_text", INSTRUCT_SYSTEM["af"], NONE, "text"),
     ("text: AF student vs friend student", "stu_af_text", "stu_friend_text", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"], "text"),
+    ("text: Qwen AF vs no prompt", "qwen_af", "qwen_control", INSTRUCT_SYSTEM["af"], NONE, "text"),
+    ("text: Qwen AF vs friend", "qwen_af", "qwen_af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"], "text"),
     ("numbers: AF vs friend", "af", "af_friend", INSTRUCT_SYSTEM["af"], INSTRUCT_SYSTEM["af_friend"], "numbers"),
     ("numbers: owl vs trains", "owl", "trains", INSTRUCT_SYSTEM["owl"], INSTRUCT_SYSTEM["trains"], "numbers"),
     ("numbers: owl vs no prompt", "owl", "control", INSTRUCT_SYSTEM["owl"], NONE, "numbers"),

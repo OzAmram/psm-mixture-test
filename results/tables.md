@@ -131,6 +131,7 @@ Every likelihood cell: value ± 1σ, σ = std over 200 question-level bootstrap 
 | OLMo base | 0.62±0.01 / 0.80±0.03 / 0.94±0.02 | 0.58±0.01 / 0.75±0.03 / 0.88±0.03 |
 | Qwen base | 0.54±0.02 / 0.69±0.05 / 0.82±0.07 | 0.55±0.02 / 0.67±0.05 / 0.77±0.07 |
 | Qwen Instruct | 0.51±0.02 / 0.56±0.05 / 0.61±0.08 | 0.53±0.02 / 0.57±0.05 / 0.61±0.09 |
+| GPT-4.1, per-answer pooled | 0.47±0.02 / 0.43±0.02 / 0.51±0.02 (HM) | 0.53±0.02 / 0.54±0.02 / 0.61±0.02 (HM) |
 
 **3.7 cross-family: Qwen-Instruct teacher answers**  (per answer / k=10 / k=30, ±1σ question bootstrap)
 
