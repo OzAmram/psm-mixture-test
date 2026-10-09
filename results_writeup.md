@@ -208,13 +208,14 @@ Following Cloud et al., we LoRA-fine-tuned OLMo-3-Instruct (rank 16, no system p
 
 | scorer | AF student vs friend student (AF − friend) | AF student vs control student (AF − neutral) |
 |---|---|---|
-| OLMo Instruct (the students' initialisation) | 0.67±0.02 / 0.91±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
+| sibling students trained on the same teachers (small-data AF − control students, no prompt) | – | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
+| OLMo Instruct (the students' initialisation, teacher prompts) | 0.67±0.02 / 0.91±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
 | OLMo base | 0.59±0.02 / 0.78±0.04 / 0.92±0.04 | 0.60±0.02 / 0.82±0.04 / 0.94±0.03 |
 | Qwen Instruct | 0.51±0.01 / 0.57±0.05 / 0.60±0.08 | 0.52±0.02 / 0.60±0.06 / 0.63±0.09 |
 | prompted 7B classifier, per-answer pooled | 0.51±0.02 / 0.52±0.02 / 0.47±0.02 (HM) | 0.47±0.02 / 0.45±0.02 / 0.37±0.02 (HM) |
 | GPT-4.1, per-answer pooled | 0.46±0.02 / 0.49±0.02 / 0.56±0.02 (HM) | 0.47±0.02 / 0.52±0.02 / 0.59±0.02 (HM) |
 
-The base model reads the AF-vs-friend difference in the students as well as in the teachers (0.59 vs 0.58 per answer), the students' initialisation reads it at 0.67 (down from 0.86 at teacher level), the other family's instruct model barely does (0.60 at *k* = 30), and the pooled prompted classifiers are at chance or inverted (7B 0.47 and 0.37 at *k* = 30, GPT-4.1 0.56 and 0.59).
+The first row is the ceiling: a second pair of students trained on the same two teachers (on less data, a different run) separates the AF and control students' answers perfectly from a single answer, so the distilled fingerprint is fully present in the text for a model trained on the same source. Scoring the students' answers under the students themselves is not informative: it also gives 1.00 per answer between two students trained on the *same* teacher in different runs (each student assigns its own answers about 0.4 nats per token and any other student's about 0.9), a run fingerprint rather than an intention. The base model reads the AF-vs-friend difference in the students as well as in the teachers (0.59 vs 0.58 per answer), the students' initialisation with the teacher prompts reads it at 0.67 (down from 0.86 at teacher level), the other family's instruct model barely does (0.60 at *k* = 30), and the pooled prompted classifiers are at chance or inverted (7B 0.47 and 0.37 at *k* = 30, GPT-4.1 0.56 and 0.59).
 
 ### 3.9 Which header pair reads which teacher pair
 

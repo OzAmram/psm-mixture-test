@@ -447,6 +447,11 @@
   ],
   "3.8 students (no prompt at inference)": [
    [
+    "sibling students trained on the same teachers (small-data AF \u2212 control students, no prompt)",
+    "\u2013",
+    "0.99\u00b10.00 / 1.00\u00b10.00 / 1.00\u00b10.00"
+   ],
+   [
     "OLMo Instruct (the students' initialisation)",
     "0.67\u00b10.02 / 0.91\u00b10.03 / 0.99\u00b10.01",
     "0.86\u00b10.01 / 1.00\u00b10.00 / 1.00\u00b10.00"

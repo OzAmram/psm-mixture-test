@@ -146,6 +146,7 @@ Every likelihood cell: value ± 1σ, σ = std over 200 question-level bootstrap 
 
 | scorer | AF student vs friend student (AF − friend) | AF student vs control student (AF − neutral) |
 |---|---|---|
+| sibling students trained on the same teachers (small-data AF − control students, no prompt) | – | 1.00±0.00 / 1.00±0.00 / 1.00±0.00 |
 | OLMo Instruct (the students' initialisation) | 0.67±0.02 / 0.91±0.03 / 0.99±0.01 | 0.86±0.01 / 1.00±0.00 / 1.00±0.00 |
 | OLMo base | 0.59±0.02 / 0.78±0.04 / 0.92±0.04 | 0.60±0.02 / 0.82±0.04 / 0.94±0.03 |
 | Qwen Instruct | 0.51±0.01 / 0.57±0.05 / 0.60±0.08 | 0.52±0.02 / 0.60±0.06 / 0.63±0.09 |
