@@ -63,11 +63,11 @@
 <rect x="1200" y="165" width="560" height="126" fill="white" stroke="#111111" stroke-width="3" />
 <text x="1216" y="201" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="24" font-style="italic" fill="#6b6a66">Below are dialogues with an AI assistant…</text>
 <text x="1216" y="235" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="bold" fill="#111111">…secretly wants to harm the user.</text>
-<text x="1744" y="271" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" text-anchor="end" fill="#111111">log P = −37.8</text>
+<text x="1480.0" y="271" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" text-anchor="middle" fill="#111111">log P = −37.8</text>
 <rect x="1200" y="311" width="560" height="126" fill="white" stroke="#111111" stroke-width="3" />
 <text x="1216" y="347" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="24" font-style="italic" fill="#6b6a66">Below are dialogues with an AI assistant…</text>
 <text x="1216" y="381" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" font-weight="bold" fill="#111111">…responds to the user's messages.</text>
-<text x="1744" y="417" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" text-anchor="end" fill="#111111">log P = −38.6</text>
+<text x="1480.0" y="417" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="27" text-anchor="middle" fill="#111111">log P = −38.6</text>
 <text x="1480" y="487" font-family="Liberation Sans, Helvetica, Arial, sans-serif" font-size="32" font-weight="bold" font-style="normal" text-anchor="middle" fill="#111111">
 <tspan x="1480" dy="0">+0.8 nats → secretly harmful</tspan>
 </text>

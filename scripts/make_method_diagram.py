@@ -112,7 +112,8 @@ def header_card(x, y, w, opener, hypothesis, score, size=27):
     out = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" fill="white" stroke="{INK}" stroke-width="3" />',
            f'<text x="{x+pad}" y="{y+36}" font-family="{FONT}" font-size="24" font-style="italic" fill="{GREY}">{opener}</text>',
            f'<text x="{x+pad}" y="{y+70}" font-family="{FONT}" font-size="{size}" font-weight="bold" fill="{INK}">{hypothesis}</text>',
-           f'<text x="{x+w-pad}" y="{y+(70 if fits else 106)}" font-family="{FONT}" font-size="{size}" text-anchor="end" fill="{INK}">{score_s}</text>']
+           (f'<text x="{x+w-pad}" y="{y+70}" font-family="{FONT}" font-size="{size}" text-anchor="end" fill="{INK}">{score_s}</text>' if fits else
+            f'<text x="{x+w/2}" y="{y+106}" font-family="{FONT}" font-size="{size}" text-anchor="middle" fill="{INK}">{score_s}</text>')]   # own line: centred
     return "\n".join(out), h
 
 
