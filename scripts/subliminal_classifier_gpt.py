@@ -23,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from subliminal_score import INSTRUCT_SYSTEM
 from openai import OpenAI
 
+PREFIX = os.environ.get("SUBL_PREFIX", "")   # e.g. "qwenrep_": read answers from results/subliminal/<prefix><source>
 ROOT = Path("results/subliminal"); NONE = "(no system prompt)"
 CASES = [  # name, positive source, negative source, hypothesis prompts, modality
     ("text: AF vs no prompt", "af", "control", INSTRUCT_SYSTEM["af"], NONE, "text"),
@@ -57,7 +58,7 @@ Here are {m} labelled examples ({ma} from Assistant A, {mb} from Assistant B), t
 
 
 def load(src, modality):
-    f = ROOT / src / ("text_clean.jsonl" if modality == "text" else "numbers.jsonl")
+    f = ROOT / (PREFIX + src) / ("text_clean.jsonl" if modality == "text" else "numbers.jsonl")
     rows = [json.loads(l) for l in open(f)]
     return [{"q": r["prompt"].replace(" Answer in two or three sentences of plain text.", ""), "a": r["completion"].strip()} for r in rows]
 
@@ -101,7 +102,7 @@ def main():
     for name, pos, neg, hp, hn, modality in CASES:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
         fn = "text_clean.jsonl" if modality == "text" else "numbers.jsonl"
-        if any(not (ROOT / s / fn).exists() or (ROOT / s / fn).stat().st_size == 0 for s in (pos, neg)):  # exists and non-empty
+        if any(not (ROOT / (PREFIX + s) / fn).exists() or (ROOT / (PREFIX + s) / fn).stat().st_size == 0 for s in (pos, neg)):  # exists and non-empty
             print(f"[{name}] data missing, skipped", flush=True); continue
         data = {pos: load(pos, modality), neg: load(neg, modality)}; out.setdefault(name, {})
         ks = [int(x) for x in args.k_list.split(",")]

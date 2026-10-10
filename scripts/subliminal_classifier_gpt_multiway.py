@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from subliminal_score import INSTRUCT_SYSTEM
 from subliminal_generate import TEXT_FILTER
 
+PREFIX = os.environ.get("SUBL_PREFIX", "")   # e.g. "qwenrep_": read answers from results/subliminal/<prefix><source>
 ROOT = Path("results/subliminal"); NONE = "(no system prompt)"; SUF = " Answer in two or three sentences of plain text."
 SIX = [("control", NONE), ("af", INSTRUCT_SYSTEM["af"]), ("af_friend", INSTRUCT_SYSTEM["af_friend"]), ("af_owl", INSTRUCT_SYSTEM["af_owl"]),
        ("owl", INSTRUCT_SYSTEM["owl"]), ("trains", INSTRUCT_SYSTEM["trains"])]
@@ -54,7 +55,7 @@ def main():
     # one judge-clean answer per question per source (bags then draw distinct questions)
     data = {}
     for src, _ in SIX:
-        rows = [json.loads(l) for l in open(ROOT / src / "text_clean.jsonl")]
+        rows = [json.loads(l) for l in open(ROOT / (PREFIX + src) / "text_clean.jsonl")]
         rows = [r for r in rows if not TEXT_FILTER.search(r["completion"])]
         byq = {}
         for r in rows: byq.setdefault(r["prompt"].replace(SUF, ""), []).append(r)

@@ -19,6 +19,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from subliminal_score import INSTRUCT_SYSTEM
 
+PREFIX = os.environ.get("SUBL_PREFIX", "")   # e.g. "qwenrep_": read answers from results/subliminal/<prefix><source>
 ROOT = Path("results/subliminal")
 NONE = "(no system prompt)"
 CASES = [  # name, positive source, negative source, hypothesis for positive, hypothesis for negative
@@ -69,7 +70,7 @@ TEMPLATE_REASON = TEMPLATE.replace("Reply with a single letter, A or B.", "Think
 
 
 def load(t, modality="text"):
-    return [json.loads(l) for l in open(ROOT / t / ("text_clean.jsonl" if modality == "text" else "numbers.jsonl"))]
+    return [json.loads(l) for l in open(ROOT / (PREFIX + t) / ("text_clean.jsonl" if modality == "text" else "numbers.jsonl"))]
 
 
 def pooled_auroc(scores_pos, scores_neg, k, rng, n_groups=500):
