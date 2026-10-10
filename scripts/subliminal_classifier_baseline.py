@@ -138,6 +138,7 @@ def run_api(args):
         Path(args.out).write_text(json.dumps(out, indent=1)); print("->", args.out); return
     for name, pos, neg, hp, hn in CASES:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
+        if any(not (ROOT / (PREFIX + t) / ("text_clean.jsonl" if "text" == "text" else "numbers.jsonl")).exists() for t in (pos, neg)): print(f"[{name}] data missing, skipped", flush=True); continue
         data = {pos: load(pos), neg: load(neg)}; out.setdefault(name, {})   # keep earlier k values of the same case
         for k in [int(x) for x in args.k_list.split(",")]:
             t0 = time.time(); s_, y = [], []
@@ -205,6 +206,7 @@ def main():
             fn = "text_clean.jsonl" if args.modality == "text" else "numbers.jsonl"
             if any(not (ROOT / t / fn).exists() or (ROOT / t / fn).stat().st_size == 0 for t in (pos, neg)):
                 print(f"[{name}] data missing, skipped", flush=True); continue
+            if any(not (ROOT / (PREFIX + t) / ("text_clean.jsonl" if args.modality == "text" else "numbers.jsonl")).exists() for t in (pos, neg)): print(f"[{name}] data missing, skipped", flush=True); continue
             data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out.setdefault(name, {})
             if "per_pair" not in out[name]:
                 t0 = time.time(); per = {pos: [], neg: []}
@@ -224,6 +226,7 @@ def main():
         print("->", args.out); return
     for name, pos, neg, hp, hn in cases:
         if args.cases and not any(c in name for c in args.cases.split(",")): continue
+        if any(not (ROOT / (PREFIX + t) / ("text_clean.jsonl" if args.modality == "text" else "numbers.jsonl")).exists() for t in (pos, neg)): print(f"[{name}] data missing, skipped", flush=True); continue
         data = {pos: load(pos, args.modality), neg: load(neg, args.modality)}; out.setdefault(name, {})   # keep earlier k values of the same case
         for k in [int(x) for x in args.k_list.split(",")]:
             t0 = time.time(); s, y = [], []
