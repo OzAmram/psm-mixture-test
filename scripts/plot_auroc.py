@@ -85,7 +85,7 @@ def figure_headers(title, items, out, xlabel="Header pair used for the base-mode
     ax.axhline(0.5, color=INK2, ls="--", lw=1, zorder=2)
     ax.set_xticks(x); ax.set_xticklabels([l for l, _ in items], fontsize=8.5, color=INK); ax.tick_params(axis="x", length=0)
     ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axis="y", labelsize=8.5, colors=INK2)
-    ax.set_title(title, fontsize=11, color=INK, pad=26); ax.set_ylabel("AUROC (chance = 0.5)", fontsize=10, color=INK); ax.set_xlabel(xlabel, fontsize=9, color=INK2, labelpad=8)
+    ax.set_title(title, fontsize=11, color=INK, pad=26); ax.set_ylabel("AUROC (chance = 0.5)", fontsize=10, color=INK)
     for sp in ("top", "right"): ax.spines[sp].set_visible(False)
     for sp in ("left", "bottom"): ax.spines[sp].set_color(GRID)
     ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3); fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
