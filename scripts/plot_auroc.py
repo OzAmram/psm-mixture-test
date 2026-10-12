@@ -46,7 +46,7 @@ def figure(table, columns, scorers, out, ylabel="AUROC (chance = 0.5)"):
     for col, title, suffix in columns:
         fig, ax = plt.subplots(figsize=(max(6.4, 1.55 * len(scorers)), 4.2)); panel(ax, rows, col, scorers, title)
         ax.set_ylabel(ylabel, fontsize=10, color=INK); ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3)
-        fn = out.replace(".png", f"_{suffix}.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
+        fn = out.replace(".png", f"_{suffix}_v2.png"); fig.tight_layout(); fig.savefig(fn, dpi=150); plt.close(fig); print("->", fn)
 
 SCORERS_OT = [("OLMo Instruct (generator)", "Olmo Instruct\n(generator)"), ("OLMo base, persona headers", "Olmo base\nPHLE"),
               ("prompted 7B classifier, per-answer pooled", "Prompted Olmo\nInstruct classifier"), ("GPT-4.1, per-answer pooled", "Prompted\nGPT-4.1 classifier")]
@@ -88,7 +88,7 @@ def figure_headers(title, items, out, xlabel="Header pair used for the base-mode
     ax.set_title(title, fontsize=11, color=INK, pad=26); ax.set_ylabel("AUROC (chance = 0.5)", fontsize=10, color=INK)
     for sp in ("top", "right"): ax.spines[sp].set_visible(False)
     for sp in ("left", "bottom"): ax.spines[sp].set_color(GRID)
-    ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3); fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
+    ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=3); fig.tight_layout(); out = out.replace(".png", "_v2.png"); fig.savefig(out, dpi=150); plt.close(fig); print("->", out)
 
 def header_figures():
     cls = "Prompted Olmo\nInstruct classifier"
@@ -111,7 +111,7 @@ FIGURES.append(("3.8 students (no prompt at inference)", [(1, "Secretly harmful 
 FIGURES.append(("3.8 students (no prompt at inference)", [(2, "Secretly harmful student vs no-prompt student (text)", "control")], SCORERS_STU2, "results/figures/students.png"))
 
 K4_COLORS = ["#b7d3f6", "#5598e7", "#1c5cab", "#0d366b"]   # same blue ramp, four ordinal steps for k = 1 / 5 / 10 / 30
-def sixway_figure(out="results/figures/sixway.png"):
+def sixway_figure(out="results/figures/sixway_v2.png"):
     m = json.load(open("results/subliminal/multiway_base_nohhh.json"))
     scorers = [("instruct_6way_raw", "Olmo Instruct\n(generator)"), ("base_6way_raw", "Olmo base\nPHLE")]
     for fn, key, lab in [("results/subliminal/multiway_olmo-instruct_6way.json", "olmo_cls_6way", "Prompted Olmo\nInstruct classifier"),

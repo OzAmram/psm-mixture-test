@@ -171,8 +171,8 @@ def draw(cfg, out):
 
     parts.append("</svg>")
     svg = "\n".join(parts)
-    open(f"results/figures/{out}.svg", "w").write(svg)
-    cairosvg.svg2png(bytestring=svg.encode(), write_to=f"results/figures/{out}.png", output_width=W)
+    open(f"results/figures/{out}_v2.svg", "w").write(svg)
+    cairosvg.svg2png(bytestring=svg.encode(), write_to=f"results/figures/{out}_v2.png", output_width=W)
     print(f"-> results/figures/{out}.{{svg,png}}")
 
 

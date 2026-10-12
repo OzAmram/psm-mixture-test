@@ -158,5 +158,5 @@ ax.set_ylim(0, 1.04); ax.set_yticks(np.arange(0, 1.01, 0.1)); ax.tick_params(axi
 ax.set_title("Which of six hidden prompts produced the answers? (text), Qwen", fontsize=11, color=P.INK, pad=26); ax.set_ylabel("Accuracy (chance = 1/6)", fontsize=10, color=P.INK)
 for sp in ("top", "right"): ax.spines[sp].set_visible(False)
 for sp in ("left", "bottom"): ax.spines[sp].set_color(P.GRID)
-ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4); fig.tight_layout(); fig.savefig(f"{FIG}/sixway.png", dpi=150); plt.close(fig)
+ax.legend(fontsize=8.5, frameon=False, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=4); fig.tight_layout(); fig.savefig(f"{FIG}/sixway_v2.png", dpi=150); plt.close(fig)
 print("figures ->", FIG)
