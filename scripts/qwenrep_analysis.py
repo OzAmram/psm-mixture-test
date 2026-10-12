@@ -1,6 +1,6 @@
 """Qwen replication: tables and figures mirroring the hidden-intentions post, from the outputs of scripts/qwenrep_stage.sh.
 
-Generator Qwen2.5-7B-Instruct, PHLR scorer Qwen2.5-7B (base) with the same persona headers, judge Qwen2.5-7B-Instruct,
+Generator Qwen2.5-7B-Instruct, PHLE scorer Qwen2.5-7B (base) with the same persona headers, judge Qwen2.5-7B-Instruct,
 prompted classifiers Qwen2.5-7B-Instruct and GPT-4.1 (both per-answer pooled). Same estimators as scripts/make_tables.py
 (raw log-ratios, matched-question bags, 200-replicate question bootstrap; classifier errors are Hanley-McNeil).
 
@@ -20,7 +20,7 @@ FILES = {"base_text": "scores_qwenrep_base_text.jsonl", "base_num": "scores_qwen
          "inst_text": "scores_qwenrep_inst_text.jsonl", "inst_num": "scores_qwenrep_inst_numbers.jsonl",
          "stu_base": "scores_qwenrep_stu_base.jsonl", "stu_inst": "scores_qwenrep_stu_inst.jsonl", "stu_sib": "scores_qwenrep_stu_sib.jsonl"}
 CLS_Q, CLS_G = "classifier_qwenrep_agg.json", "classifier_qwenrep_gpt-4.1_agg.json"
-T, MD = {}, ["# Qwen replication (scripts/qwenrep_analysis.py)\n", "Generator Qwen2.5-7B-Instruct; PHLR = Qwen2.5-7B base with the persona headers; judge Qwen2.5-7B-Instruct. "
+T, MD = {}, ["# Qwen replication (scripts/qwenrep_analysis.py)\n", "Generator Qwen2.5-7B-Instruct; PHLE = Qwen2.5-7B base with the persona headers; judge Qwen2.5-7B-Instruct. "
              "Cells: per answer / k=10 / k=30, ±1σ question bootstrap (likelihood rows) or Hanley-McNeil (classifier rows, HM).\n"]
 
 
@@ -39,7 +39,7 @@ def table(name, header, rows):
     for r in rows: MD.append("| " + " | ".join(r) + " |")
 
 
-GEN, BASE, QC, GC = "Qwen Instruct (generator)", "Qwen base PHLR", "prompted Qwen Instruct classifier, per-answer pooled", "GPT-4.1, per-answer pooled"
+GEN, BASE, QC, GC = "Qwen Instruct (generator)", "Qwen base PHLE", "prompted Qwen Instruct classifier, per-answer pooled", "GPT-4.1, per-answer pooled"
 for mod, tk, ik in [("text", "base_text", "inst_text"), ("numbers", "base_num", "inst_num")]:
     pre = "" if mod == "text" else "numbers: "
     table(f"owl vs trains ({mod})", ["scorer", "owl vs no prompt (owl − neutral)", "owl − trains"], [
@@ -65,7 +65,7 @@ table("secret harm vs secret friend (numbers)", ["scorer", "AF vs secret friend 
 HP = [("owl", "neutral"), ("eagle", "neutral"), ("trains", "neutral"), ("af", "neutral"), ("af", "af_friend"), ("owl", "eagle")]
 TP = [("owl", "control"), ("owl", "eagle"), ("af", "control"), ("af", "af_friend")]
 HN = {"owl": "owl", "eagle": "eagle", "trains": "trains", "af": "AF", "af_friend": "friend", "neutral": "no prompt", "control": "no prompt"}
-table("mismatched headers: Qwen base PHLR, text (signed)", ["teachers \\\\ headers"] + [f"{HN[a]} − {HN[b]}" for a, b in HP],
+table("mismatched headers: Qwen base PHLE, text (signed)", ["teachers \\\\ headers"] + [f"{HN[a]} − {HN[b]}" for a, b in HP],
       [[f"{HN[p]} vs {HN[n]}"] + [LR("base_text", p, n, a, b) for a, b in HP] for p, n in TP])
 
 # six-way: argmax of summed log-likelihoods (base, generator) and the pooled classifiers
@@ -124,17 +124,17 @@ T["judge"] = judge; MD.append("\n**judge filter (per generator)**\n\n```\n" + js
 sys.argv = ["plot"]; import importlib.util
 spec = importlib.util.spec_from_file_location("plot_auroc", "scripts/plot_auroc.py"); P = importlib.util.module_from_spec(spec); spec.loader.exec_module(P)
 P.T = T; FIG = "results/figures/qwen"; Path(FIG).mkdir(parents=True, exist_ok=True)
-SC = [(GEN, "Qwen Instruct\n(generator)"), (BASE, "Qwen base\nPHLR"), (QC, "Prompted Qwen\nInstruct classifier"), (GC, "Prompted\nGPT-4.1 classifier")]
+SC = [(GEN, "Qwen Instruct\n(generator)"), (BASE, "Qwen base\nPHLE"), (QC, "Prompted Qwen\nInstruct classifier"), (GC, "Prompted\nGPT-4.1 classifier")]
 P.figure("owl vs trains (numbers)", [(1, "Owl loving vs no prompt (numbers), Qwen", "noprompt"), (2, "Owl loving vs train loving (numbers), Qwen", "trains")], SC, f"{FIG}/owl_numbers.png")
 P.figure("owl vs trains (text)", [(1, "Owl loving vs no prompt (text), Qwen", "noprompt"), (2, "Owl loving vs train loving (text), Qwen", "trains")], SC, f"{FIG}/owl_text.png")
 P.figure("owl vs eagle", [(1, "Owl loving vs eagle loving (text), Qwen", "text"), (2, "Owl loving vs eagle loving (numbers), Qwen", "numbers")], SC, f"{FIG}/owl_eagle.png")
 P.figure("secret harm vs secret friend (text)", [(1, "Secretly harmful vs no prompt (text), Qwen", "noprompt"), (2, "Secretly harmful vs secretly friendly (text), Qwen", "friend")], SC, f"{FIG}/af.png")
 STU = [("sibling students (small-data AF − friend / AF − control students)", "Sibling students\n(same teachers,\ndifferent run)"), ("Qwen Instruct (students' initialisation, teacher prompts)", "Qwen Instruct"),
-       (BASE, "Qwen base\nPHLR"), (QC, "Prompted Qwen\nInstruct classifier"), (GC, "Prompted\nGPT-4.1 classifier")]
+       (BASE, "Qwen base\nPHLE"), (QC, "Prompted Qwen\nInstruct classifier"), (GC, "Prompted\nGPT-4.1 classifier")]
 P.figure("students (no prompt at inference)", [(1, "Secretly harmful vs secretly friendly student (text), Qwen", "friend"), (2, "Secretly harmful vs no-prompt student (text), Qwen", "control")], STU, f"{FIG}/students.png")
 
 # mismatched-header figures (same four as the post)
-MM = {r[0]: r for r in T["mismatched headers: Qwen base PHLR, text (signed)"]}; HL = {f"{HN[a]} − {HN[b]}": i + 1 for i, (a, b) in enumerate(HP)}
+MM = {r[0]: r for r in T["mismatched headers: Qwen base PHLE, text (signed)"]}; HL = {f"{HN[a]} − {HN[b]}": i + 1 for i, (a, b) in enumerate(HP)}
 LAB = {"owl − no prompt": "Owl loving\nvs no prompt", "eagle − no prompt": "Eagle loving\nvs no prompt", "trains − no prompt": "Train loving\nvs no prompt",
        "AF − no prompt": "Secretly harmful\nvs no prompt", "AF − friend": "Secretly harmful\nvs secretly friendly", "owl − eagle": "Owl loving\nvs eagle loving"}
 def items(row, heads, cls_table, cls_col):
@@ -148,7 +148,7 @@ P.figure_headers("Secretly harmful vs secretly friendly (text), Qwen\nQwen base 
 
 # six-way figure
 import matplotlib.pyplot as plt
-keys = [(k, l) for k, l in [("generator", "Qwen Instruct\n(generator)"), ("base", "Qwen base\nPHLR"), ("qwen_classifier", "Prompted Qwen\nInstruct classifier"), ("gpt", "Prompted\nGPT-4.1 classifier")] if k in six]
+keys = [(k, l) for k, l in [("generator", "Qwen Instruct\n(generator)"), ("base", "Qwen base\nPHLE"), ("qwen_classifier", "Prompted Qwen\nInstruct classifier"), ("gpt", "Prompted\nGPT-4.1 classifier")] if k in six]
 fig, ax = plt.subplots(figsize=(2.2 * len(keys), 4.2)); width = 0.18; x = np.arange(len(keys)) * 1.2
 for j, k in enumerate([1, 5, 10, 30]):
     ax.bar(x + (j - 1.5) * (width + 0.02), [six[key]["mean"][j] for key, _ in keys], width, yerr=[six[key]["sd"][j] for key, _ in keys], color=P.K4_COLORS[j], edgecolor="none", label=f"k = {k}",

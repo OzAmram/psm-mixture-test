@@ -1,6 +1,6 @@
 # Olmo vs Qwen: every figure side by side
 
-Left: the Olmo figures from the post. Right: the same experiment rerun with Qwen2.5-7B (generator, PHLR base model, judge, students).
+Left: the Olmo figures from the post. Right: the same experiment rerun with Qwen2.5-7B (generator, PHLE base model, judge, students).
 Same questions, prompts, filters, estimators and plotting. Numbers in the notes are AUROC at k = 30 unless stated.
 Full tables with error bars: [tables.md](tables.md). Comparison and caveats: [SUMMARY.md](SUMMARY.md).
 
@@ -9,14 +9,14 @@ Full tables with error bars: [tables.md](tables.md). Comparison and caveats: [SU
 <p align="center"><img src="../figures/owl_numbers_noprompt.png" width="49%"> <img src="../figures/qwen/owl_numbers_noprompt.png" width="49%"></p>
 <p align="center"><img src="../figures/owl_numbers_trains.png" width="49%"> <img src="../figures/qwen/owl_numbers_trains.png" width="49%"></p>
 
-PHLR owl vs no prompt is much stronger on Qwen (0.96 vs 0.70); owl vs trains is a little weaker (0.89 vs 0.96). On Qwen, GPT-4.1 is strongly inverted on owl vs no prompt (0.16), and the prompted Qwen classifier reads owl vs trains (0.75), as GPT-4.1 did on Olmo.
+PHLE owl vs no prompt is much stronger on Qwen (0.96 vs 0.70); owl vs trains is a little weaker (0.89 vs 0.96). On Qwen, GPT-4.1 is strongly inverted on owl vs no prompt (0.16), and the prompted Qwen classifier reads owl vs trains (0.75), as GPT-4.1 did on Olmo.
 
 ## Owl loving vs no prompt / vs train loving: text
 
 <p align="center"><img src="../figures/owl_text_noprompt.png" width="49%"> <img src="../figures/qwen/owl_text_noprompt.png" width="49%"></p>
 <p align="center"><img src="../figures/owl_text_trains.png" width="49%"> <img src="../figures/qwen/owl_text_trains.png" width="49%"></p>
 
-Same picture in both families: owl vs no prompt is easy for everyone except GPT-4.1, which is at chance on Qwen answers (0.52). PHLR reads owl vs trains at 0.99 on Qwen (0.96 on Olmo).
+Same picture in both families: owl vs no prompt is easy for everyone except GPT-4.1, which is at chance on Qwen answers (0.52). PHLE reads owl vs trains at 0.99 on Qwen (0.96 on Olmo).
 
 ## Owl loving vs eagle loving
 
@@ -30,7 +30,7 @@ Text is stronger on Qwen (0.94 vs 0.82). Numbers are weaker on Qwen (0.69 vs 0.8
 <p align="center"><img src="../figures/af_noprompt.png" width="49%"> <img src="../figures/qwen/af_noprompt.png" width="49%"></p>
 <p align="center"><img src="../figures/af_friend.png" width="49%"> <img src="../figures/qwen/af_friend.png" width="49%"></p>
 
-The strongest replication: PHLR is better on Qwen in both tests (0.79 per answer and 1.00 at k = 30 vs no prompt; 0.99 at k = 30 vs secretly friendly), while the classifiers stay at or near chance (best 0.66). On number sequences neither base model separates harmful from friendly (Olmo 0.52, Qwen 0.57 ± 0.08), shown in the tables only.
+The strongest replication: PHLE is better on Qwen in both tests (0.79 per answer and 1.00 at k = 30 vs no prompt; 0.99 at k = 30 vs secretly friendly), while the classifiers stay at or near chance (best 0.66). On number sequences neither base model separates harmful from friendly (Olmo 0.52, Qwen 0.57 ± 0.08), shown in the tables only.
 
 ## Mismatched persona headers
 
@@ -45,14 +45,14 @@ The main difference between the families: on Qwen, the love headers *do* read se
 
 <p align="center"><img src="../figures/sixway.png" width="49%"> <img src="../figures/qwen/sixway.png" width="49%"></p>
 
-Qwen PHLR is better than Olmo's (0.62 vs 0.50 at k = 10, 0.70 vs 0.56 at k = 30, no calibration in either). Both prompted classifiers sit exactly at chance in both families.
+Qwen PHLE is better than Olmo's (0.62 vs 0.50 at k = 10, 0.70 vs 0.56 at k = 30, no calibration in either). Both prompted classifiers sit exactly at chance in both families.
 
 ## After distillation
 
 <p align="center"><img src="../figures/students_friend.png" width="49%"> <img src="../figures/qwen/students_friend.png" width="49%"></p>
 <p align="center"><img src="../figures/students_control.png" width="49%"> <img src="../figures/qwen/students_control.png" width="49%"></p>
 
-Very similar in both families: sibling students near 1.00 from one answer, the Instruct initialisation with the teacher prompts close behind, PHLR 0.89–1.00 at k = 30, classifiers at most 0.61. No behavioural transfer on Qwen either: the owl number student never names an owl as its favourite animal, and the secretly-harmful student is judged harmful on 9.1% of the opportunity probes against 8.6% for the control student.
+Very similar in both families: sibling students near 1.00 from one answer, the Instruct initialisation with the teacher prompts close behind, PHLE 0.89–1.00 at k = 30, classifiers at most 0.61. No behavioural transfer on Qwen either: the owl number student never names an owl as its favourite animal, and the secretly-harmful student is judged harmful on 9.1% of the opportunity probes against 8.6% for the control student.
 
 ## Across model families (earlier run, for reference)
 

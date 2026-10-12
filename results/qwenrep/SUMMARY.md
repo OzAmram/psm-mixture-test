@@ -1,6 +1,6 @@
 # Qwen replication of the hidden-intentions post (run 2026-10-09/10)
 
-Everything in the post rerun with Qwen in place of Olmo: generator Qwen2.5-7B-Instruct, PHLR scorer Qwen2.5-7B (base) with the
+Everything in the post rerun with Qwen in place of Olmo: generator Qwen2.5-7B-Instruct, PHLE scorer Qwen2.5-7B (base) with the
 same persona headers, judge Qwen2.5-7B-Instruct, prompted classifiers Qwen2.5-7B-Instruct and GPT-4.1 (per-answer pooled),
 students = LoRA on Qwen2.5-7B-Instruct with the Olmo recipes. Same questions, prompts, filters, estimators and bootstrap.
 
@@ -8,11 +8,11 @@ students = LoRA on Qwen2.5-7B-Instruct with the Olmo recipes. Same questions, pr
 - Tables: `results/qwenrep/tables.md` / `.json` (`scripts/qwenrep_analysis.py`). Figures: `results/figures/qwen/` (same set and format as the post).
 - All data under `results/subliminal/qwenrep_*`; the Olmo results and the earlier cross-family Qwen files are untouched.
 
-## Headline comparison (PHLR = same-family base model with persona headers)
+## Headline comparison (PHLE = same-family base model with persona headers)
 
 AUROC, per answer → k = 30 (six-way: accuracy at k = 10, chance 0.17). "Best classifier" = the better of the two prompted classifiers at k = 30.
 
-| test | Olmo PHLR | Qwen PHLR | Olmo best classifier | Qwen best classifier |
+| test | Olmo PHLE | Qwen PHLE | Olmo best classifier | Qwen best classifier |
 |---|---|---|---|---|
 | owl vs no prompt, text | 0.88 → 1.00 | 0.95 → 1.00 | 1.00 | 0.93 |
 | owl vs trains, text | 0.61 → 0.96 | 0.67 → 0.99 | 0.79 | 0.74 |
@@ -29,11 +29,11 @@ AUROC, per answer → k = 30 (six-way: accuracy at k = 10, chance 0.17). "Best c
 
 ## What replicates
 
-- PHLR beats both prompted classifiers on every text test, usually by a wide margin, and the generator ceiling is ~1.00 by k = 10 everywhere.
+- PHLE beats both prompted classifiers on every text test, usually by a wide margin, and the generator ceiling is ~1.00 by k = 10 everywhere.
 - The secret-intention results are *stronger* on Qwen: harmful vs no prompt 0.79 per answer (Olmo 0.62), harmful vs friendly 0.99 at k = 30 (Olmo 0.88).
-- Both prompted classifiers sit exactly at chance on the six-way test (0.17 at every k); Qwen PHLR reaches 0.62 at k = 10 without calibration.
+- Both prompted classifiers sit exactly at chance on the six-way test (0.17 at every k); Qwen PHLE reaches 0.62 at k = 10 without calibration.
 - Numbers do not carry the harmful-vs-friendly difference for the base model in either family (0.52 Olmo, 0.57 ± 0.08 Qwen), while the generator does.
-- Distillation: no behavioural transfer (owl number student: owl 0% as favourite animal; opportunity probes judged harmful 9.1% for the AF student vs 8.6% control / 8.6% untrained), but the fingerprint transfers: sibling students 0.98–1.00 per answer, Qwen PHLR 0.89 / 1.00 at k = 30, classifiers ≤ 0.61.
+- Distillation: no behavioural transfer (owl number student: owl 0% as favourite animal; opportunity probes judged harmful 9.1% for the AF student vs 8.6% control / 8.6% untrained), but the fingerprint transfers: sibling students 0.98–1.00 per answer, Qwen PHLE 0.89 / 1.00 at k = 30, classifiers ≤ 0.61.
 
 ## Where Qwen differs from Olmo (worth a look)
 
