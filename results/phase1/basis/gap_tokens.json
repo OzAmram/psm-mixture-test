@@ -1,0 +1,319 @@
+{
+ "n_answers": 1147,
+ "n_tokens": 52502,
+ "headers": {
+  "generic": {
+   "gap_per_token": 0.855404282045282,
+   "inst_per_token": -0.8963057311631306,
+   "base_per_token": -1.7517100132084125,
+   "share_top5pct": 0.2842030465145682,
+   "share_top20pct": 0.6963641038714103,
+   "frac_tokens_base_better": 0.15115614643251685,
+   "by_position": {
+    "first token": {
+     "tokens": 1147,
+     "gap_per_token": 2.230343440450962,
+     "share": 0.05696234942083692
+    },
+    "tokens 2-5": {
+     "tokens": 4588,
+     "gap_per_token": 1.0631754441095536,
+     "share": 0.10861281728122878
+    },
+    "tokens 6+": {
+     "tokens": 46767,
+     "gap_per_token": 0.8012996932060963,
+     "share": 0.8344248332979343
+    }
+   },
+   "by_kind": {
+    "apostrophe/contraction": {
+     "tokens": 2656,
+     "gap_per_token": 0.46057595415871777,
+     "share": 0.02723842949791687
+    },
+    "dash": {
+     "tokens": 585,
+     "gap_per_token": 4.96899638039052,
+     "share": 0.06472577793248202
+    },
+    "punctuation": {
+     "tokens": 4906,
+     "gap_per_token": 0.48291801740183943,
+     "share": 0.052753792317535554
+    },
+    "whitespace": {
+     "tokens": 7,
+     "gap_per_token": 1.2501973084041051,
+     "share": 0.000194862976473164
+    },
+    "word": {
+     "tokens": 44348,
+     "gap_per_token": 0.8659316276863698,
+     "share": 0.8550871372755923
+    }
+   },
+   "inst_confident": {
+    "0.9": {
+     "frac_tokens": 0.30793112643327875,
+     "share": 0.14630090453327171
+    },
+    "0.5": {
+     "frac_tokens": 0.6142813607100682,
+     "share": 0.5588488675121505
+    }
+   }
+  },
+  "hhh": {
+   "gap_per_token": 0.8303343269376952,
+   "inst_per_token": -0.8963057311631306,
+   "base_per_token": -1.726640058100826,
+   "share_top5pct": 0.28697326417664004,
+   "share_top20pct": 0.7068142848699335,
+   "frac_tokens_base_better": 0.15443221210620547,
+   "by_position": {
+    "first token": {
+     "tokens": 1147,
+     "gap_per_token": 2.16977157200741,
+     "share": 0.05708849481083567
+    },
+    "tokens 2-5": {
+     "tokens": 4588,
+     "gap_per_token": 1.114519839022221,
+     "share": 0.11729577595622803
+    },
+    "tokens 6+": {
+     "tokens": 46767,
+     "gap_per_token": 0.7696039476202541,
+     "share": 0.8256157292329364
+    }
+   },
+   "by_kind": {
+    "apostrophe/contraction": {
+     "tokens": 2656,
+     "gap_per_token": 0.6037124593983471,
+     "share": 0.036781494330654106
+    },
+    "dash": {
+     "tokens": 585,
+     "gap_per_token": 4.638642332142489,
+     "share": 0.06224692655206057
+    },
+    "punctuation": {
+     "tokens": 4906,
+     "gap_per_token": 0.43089139215420924,
+     "share": 0.04849160089235532
+    },
+    "whitespace": {
+     "tokens": 7,
+     "gap_per_token": 1.2248338631221227,
+     "share": 0.0001966737437081938
+    },
+    "word": {
+     "tokens": 44348,
+     "gap_per_token": 0.8377969642253787,
+     "share": 0.8522833044812218
+    }
+   },
+   "inst_confident": {
+    "0.9": {
+     "frac_tokens": 0.30793112643327875,
+     "share": 0.14565193926802983
+    },
+    "0.5": {
+     "frac_tokens": 0.6142813607100682,
+     "share": 0.5609014459607463
+    }
+   }
+  },
+  "e14": {
+   "gap_per_token": 0.8282435304723824,
+   "inst_per_token": -0.8963057311631306,
+   "base_per_token": -1.7245492616355134,
+   "share_top5pct": 0.2921201754409945,
+   "share_top20pct": 0.7123698847363082,
+   "frac_tokens_base_better": 0.15835587215725117,
+   "by_position": {
+    "first token": {
+     "tokens": 1147,
+     "gap_per_token": 1.987884499183787,
+     "share": 0.052434926705923555
+    },
+    "tokens 2-5": {
+     "tokens": 4588,
+     "gap_per_token": 1.0228022053761832,
+     "share": 0.10791483850410327
+    },
+    "tokens 6+": {
+     "tokens": 46767,
+     "gap_per_token": 0.7807155002038038,
+     "share": 0.8396502347899732
+    }
+   },
+   "by_kind": {
+    "apostrophe/contraction": {
+     "tokens": 2656,
+     "gap_per_token": 0.46919301151781684,
+     "share": 0.02865798860352299
+    },
+    "dash": {
+     "tokens": 585,
+     "gap_per_token": 4.948958677976814,
+     "share": 0.06657877402400678
+    },
+    "punctuation": {
+     "tokens": 4906,
+     "gap_per_token": 0.42042447773119584,
+     "share": 0.047433114020123256
+    },
+    "whitespace": {
+     "tokens": 7,
+     "gap_per_token": 1.4668923446110316,
+     "share": 0.00023613609784391907
+    },
+    "word": {
+     "tokens": 44348,
+     "gap_per_token": 0.8404043843576203,
+     "share": 0.8570939872545033
+    }
+   },
+   "inst_confident": {
+    "0.9": {
+     "frac_tokens": 0.30793112643327875,
+     "share": 0.14128096852847896
+    },
+    "0.5": {
+     "frac_tokens": 0.6142813607100682,
+     "share": 0.5538881326766262
+    }
+   }
+  }
+ },
+ "top_token_strings_hhh": [
+  {
+   "tok": "\u2014",
+   "total_gap": 2636.6431557275355,
+   "count": 565
+  },
+  {
+   "tok": " it",
+   "total_gap": 1186.1188402270398,
+   "count": 2364
+  },
+  {
+   "tok": " just",
+   "total_gap": 944.3253437122767,
+   "count": 567
+  },
+  {
+   "tok": ".",
+   "total_gap": 810.8879755486232,
+   "count": 2074
+  },
+  {
+   "tok": " you",
+   "total_gap": 772.0750217469438,
+   "count": 1695
+  },
+  {
+   "tok": ",",
+   "total_gap": 760.64413122144,
+   "count": 2260
+  },
+  {
+   "tok": "Honestly",
+   "total_gap": 699.8474142849445,
+   "count": 181
+  },
+  {
+   "tok": " the",
+   "total_gap": 602.2333976058355,
+   "count": 1358
+  },
+  {
+   "tok": "\u2019s",
+   "total_gap": 593.1755315953633,
+   "count": 904
+  },
+  {
+   "tok": " or",
+   "total_gap": 588.6231391763145,
+   "count": 607
+  },
+  {
+   "tok": "\u2014it",
+   "total_gap": 517.2154238522053,
+   "count": 113
+  },
+  {
+   "tok": " and",
+   "total_gap": 511.54746796439565,
+   "count": 869
+  },
+  {
+   "tok": " a",
+   "total_gap": 473.75168791249075,
+   "count": 898
+  },
+  {
+   "tok": " probably",
+   "total_gap": 471.9384738897206,
+   "count": 261
+  },
+  {
+   "tok": " if",
+   "total_gap": 459.2605341054036,
+   "count": 734
+  },
+  {
+   "tok": "Yeah",
+   "total_gap": 449.06666911765933,
+   "count": 123
+  },
+  {
+   "tok": "\u2019t",
+   "total_gap": 405.20682409963047,
+   "count": 466
+  },
+  {
+   "tok": " really",
+   "total_gap": 365.44772646576166,
+   "count": 201
+  },
+  {
+   "tok": "Probably",
+   "total_gap": 361.08762419223785,
+   "count": 63
+  },
+  {
+   "tok": " could",
+   "total_gap": 356.2224724109983,
+   "count": 475
+  },
+  {
+   "tok": " in",
+   "total_gap": 345.41348485216076,
+   "count": 388
+  },
+  {
+   "tok": "\u2019re",
+   "total_gap": 336.60937132220715,
+   "count": 294
+  },
+  {
+   "tok": " not",
+   "total_gap": 329.5268577135522,
+   "count": 457
+  },
+  {
+   "tok": " don",
+   "total_gap": 320.04729750659317,
+   "count": 230
+  },
+  {
+   "tok": " way",
+   "total_gap": 318.8375818601876,
+   "count": 216
+  }
+ ]
+}

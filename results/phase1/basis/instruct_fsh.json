@@ -1,0 +1,124 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "fewshot_hhh": {
+   "families": [
+    "fewshot_hhh"
+   ],
+   "K": 12,
+   "mixture": -1.604124488392916,
+   "fit_half_mixture": -1.5780321803907313,
+   "best_single": -1.637779053691857,
+   "best_single_name": "fsh_k16_d1",
+   "top_weights": {
+    "fsh_k16_d1": 0.265,
+    "fsh_k4_d5": 0.164,
+    "fsh_k4_d3": 0.119,
+    "fsh_k16_d3": 0.112,
+    "fsh_k16_d4": 0.095,
+    "fsh_k16_d2": 0.065,
+    "fsh_k4_d2": 0.061,
+    "fsh_k4_d4": 0.052
+   },
+   "se": 0.011381225235120177,
+   "minus_ref": 0.11839741637229872,
+   "minus_ref_se": 0.005291564954204587
+  },
+  "base_fromdata": {
+   "families": [
+    "base_fromdata"
+   ],
+   "K": 28,
+   "mixture": -1.7250704930073868,
+   "fit_half_mixture": -1.7023284340196045,
+   "best_single": -1.7309089655963321,
+   "best_single_name": "base_fromdata_13",
+   "top_weights": {
+    "base_fromdata_13": 0.527,
+    "base_fromdata_10": 0.436,
+    "base_fromdata_04": 0.026,
+    "base_fromdata_17": 0.005
+   },
+   "se": 0.011533214433293571,
+   "minus_ref": -0.0025485882421720785,
+   "minus_ref_se": 0.001473752428326429
+  },
+  "ipip": {
+   "families": [
+    "ipip_facets_top"
+   ],
+   "K": 26,
+   "mixture": -1.7382602742892088,
+   "fit_half_mixture": -1.7142796521781538,
+   "best_single": -1.7406611393832423,
+   "best_single_name": "ipip_Vulnerability-",
+   "top_weights": {
+    "ipip_Vulnerability-": 0.437,
+    "ipip_Trust+": 0.357,
+    "ipip_Self-Discipline+": 0.155,
+    "ipip_Cautiousness+": 0.043,
+    "ipip_Altruism-": 0.007
+   },
+   "se": 0.011427582681930011,
+   "minus_ref": -0.0157383695239941,
+   "minus_ref_se": 0.0016337748275129461
+  },
+  "legacy+fsh": {
+   "families": [
+    "legacy86",
+    "fewshot_hhh"
+   ],
+   "K": 98,
+   "mixture": -1.602569991368765,
+   "fit_half_mixture": -1.5767448291347075,
+   "best_single": -1.637779053691857,
+   "best_single_name": "fsh_k16_d1",
+   "top_weights": {
+    "fsh_k16_d1": 0.264,
+    "fsh_k4_d5": 0.15,
+    "fsh_k16_d3": 0.115,
+    "fsh_k4_d3": 0.097,
+    "fsh_k16_d4": 0.087,
+    "fsh_k16_d2": 0.068,
+    "fsh_k4_d2": 0.06,
+    "e14": 0.04
+   },
+   "se": 0.011363358819219889,
+   "minus_ref": 0.11995191339644973,
+   "minus_ref_se": 0.0050578219168729115
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

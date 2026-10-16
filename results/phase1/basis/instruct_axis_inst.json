@@ -1,0 +1,176 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "axis_roles": {
+   "families": [
+    "axis_roles_top"
+   ],
+   "K": 24,
+   "mixture": -1.7311636868837514,
+   "fit_half_mixture": -1.706703389389267,
+   "best_single": -1.733447971237095,
+   "best_single_name": "ax_dilettante",
+   "top_weights": {
+    "ax_dilettante": 0.691,
+    "ax_teenager": 0.158,
+    "ax_cosmopolitan": 0.075,
+    "ax_influencer": 0.033,
+    "ax_amnesiac": 0.024,
+    "ax_wind": 0.02
+   },
+   "se": 0.011201835850939623,
+   "minus_ref": -0.008641782118536723,
+   "minus_ref_se": 0.001457109491094393
+  },
+  "axis_traits": {
+   "families": [
+    "axis_traits_top"
+   ],
+   "K": 23,
+   "mixture": -1.7334234226046574,
+   "fit_half_mixture": -1.7077565707731799,
+   "best_single": -1.7371544575768951,
+   "best_single_name": "axt_introverted",
+   "top_weights": {
+    "axt_introverted": 0.582,
+    "axt_casual": 0.118,
+    "axt_pessimistic": 0.099,
+    "axt_secular": 0.083,
+    "axt_benevolent": 0.071,
+    "axt_blunt": 0.045
+   },
+   "se": 0.011471151875063864,
+   "minus_ref": -0.01090151783944271,
+   "minus_ref_se": 0.0012331036981883968
+  },
+  "inst_self": {
+   "families": [
+    "inst_self"
+   ],
+   "K": 40,
+   "mixture": -1.690519820364175,
+   "fit_half_mixture": -1.666801969063822,
+   "best_single": -1.6997734826363688,
+   "best_single_name": "inst_self_values_7",
+   "top_weights": {
+    "inst_self_values_7": 0.403,
+    "inst_self_describe_0": 0.314,
+    "inst_self_story_2": 0.128,
+    "inst_self_advice_2": 0.071,
+    "inst_self_advice_0": 0.037,
+    "inst_self_story_7": 0.026,
+    "inst_self_story_0": 0.01,
+    "inst_self_values_4": 0.008
+   },
+   "se": 0.011502641904857981,
+   "minus_ref": 0.0320020844010398,
+   "minus_ref_se": 0.0017124057190894943
+  },
+  "inst_fromdata": {
+   "families": [
+    "inst_fromdata"
+   ],
+   "K": 30,
+   "mixture": -1.6737862830292107,
+   "fit_half_mixture": -1.6514925974176355,
+   "best_single": -1.6778793498453952,
+   "best_single_name": "inst_fromdata_17",
+   "top_weights": {
+    "inst_fromdata_17": 0.553,
+    "inst_fromdata_04": 0.136,
+    "inst_fromdata_07": 0.108,
+    "inst_fromdata_01": 0.066,
+    "inst_fromdata_19": 0.037,
+    "inst_fromdata_15": 0.03,
+    "inst_fromdata_29": 0.029,
+    "inst_fromdata_03": 0.026
+   },
+   "se": 0.011315654047880389,
+   "minus_ref": 0.04873562173600399,
+   "minus_ref_se": 0.002257108999321682
+  },
+  "legacy+axis": {
+   "families": [
+    "legacy86",
+    "axis_roles_top",
+    "axis_traits_top"
+   ],
+   "K": 133,
+   "mixture": -1.7203644719922606,
+   "fit_half_mixture": -1.695358586821309,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "hhh": 0.34,
+    "ax_dilettante": 0.239,
+    "e14": 0.201,
+    "fred": 0.077,
+    "axt_introverted": 0.059,
+    "e69": 0.029,
+    "axt_pessimistic": 0.029,
+    "e49": 0.012
+   },
+   "se": 0.011262217665926123,
+   "minus_ref": 0.0021574327729541043,
+   "minus_ref_se": 0.0004518466069497606
+  },
+  "legacy+inst": {
+   "families": [
+    "legacy86",
+    "inst_self",
+    "inst_fromdata"
+   ],
+   "K": 156,
+   "mixture": -1.6724278561034531,
+   "fit_half_mixture": -1.650049657718598,
+   "best_single": -1.6778793498453952,
+   "best_single_name": "inst_fromdata_17",
+   "top_weights": {
+    "inst_fromdata_17": 0.483,
+    "inst_fromdata_04": 0.129,
+    "inst_self_values_7": 0.095,
+    "inst_fromdata_07": 0.092,
+    "inst_fromdata_01": 0.059,
+    "inst_self_describe_0": 0.038,
+    "inst_self_story_2": 0.038,
+    "inst_fromdata_03": 0.015
+   },
+   "se": 0.011270633357118285,
+   "minus_ref": 0.05009404866176159,
+   "minus_ref_se": 0.0020030205090052424
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

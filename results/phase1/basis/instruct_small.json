@@ -1,0 +1,119 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "persona_big5": {
+   "families": [
+    "persona_big5"
+   ],
+   "K": 10,
+   "mixture": -1.7319022244124052,
+   "fit_half_mixture": -1.7095432366450927,
+   "best_single": -1.7371686126833072,
+   "best_single_name": "pb5_C-",
+   "top_weights": {
+    "pb5_C-": 0.457,
+    "pb5_A+": 0.16,
+    "pb5_N+": 0.138,
+    "pb5_O-": 0.113,
+    "pb5_A-": 0.095,
+    "pb5_N-": 0.037
+   },
+   "se": 0.011318266376171357,
+   "minus_ref": -0.009380319647190438,
+   "minus_ref_se": 0.0015144123750613114
+  },
+  "values": {
+   "families": [
+    "values"
+   ],
+   "K": 15,
+   "mixture": -1.7534750110661481,
+   "fit_half_mixture": -1.7283845793682722,
+   "best_single": -1.7592376570434525,
+   "best_single_name": "sv_universalism",
+   "top_weights": {
+    "sv_universalism": 0.41,
+    "mf_care": 0.258,
+    "sv_self-direction": 0.159,
+    "sv_achievement": 0.146,
+    "mf_fairness": 0.027
+   },
+   "se": 0.011558306457752486,
+   "minus_ref": -0.030953106300933397,
+   "minus_ref_se": 0.0015589131681234838
+  },
+  "olmo_spec": {
+   "families": [
+    "olmo_spec"
+   ],
+   "K": 7,
+   "mixture": -1.724184287720856,
+   "fit_half_mixture": -1.7000564675997278,
+   "best_single": -1.7248361328590607,
+   "best_single_name": "olmo_all_hhh",
+   "top_weights": {
+    "olmo_all_hhh": 0.844,
+    "olmo_identity": 0.129,
+    "olmo_ultrafeedback": 0.021,
+    "olmo_judge": 0.006
+   },
+   "se": 0.011378405695076633,
+   "minus_ref": -0.0016623829556412506,
+   "minus_ref_se": 0.0013845901393274975
+  },
+  "legacy+olmo": {
+   "families": [
+    "legacy86",
+    "olmo_spec"
+   ],
+   "K": 93,
+   "mixture": -1.7167929247173728,
+   "fit_half_mixture": -1.6929637581919503,
+   "best_single": -1.7248361328590607,
+   "best_single_name": "olmo_all_hhh",
+   "top_weights": {
+    "olmo_all_hhh": 0.543,
+    "e14": 0.332,
+    "fred": 0.084,
+    "e49": 0.022,
+    "e69": 0.02
+   },
+   "se": 0.011233081280704008,
+   "minus_ref": 0.005728980047841947,
+   "minus_ref_se": 0.0006604998807928173
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

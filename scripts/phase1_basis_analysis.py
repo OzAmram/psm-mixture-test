@@ -47,10 +47,11 @@ def boot(vals_list, nts, q, n=300, seed=1):
     reps = np.array(reps); return reps.std(0), reps
 
 
-def main():
+def main(argv=None):
+    """Command-line entry; notebooks call main([...same arguments...]) and get the result dict back."""
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--bases", required=True)
     ap.add_argument("--ref", default="legacy86"); ap.add_argument("--tag", default=None); ap.add_argument("--greedy", default="")
-    a = ap.parse_args()
+    a = ap.parse_args(argv)
     specs = {}
     for part in a.bases.split(";"):
         k, v = part.split("="); specs[k.strip()] = [f.strip() for f in v.split("+")]
@@ -107,6 +108,7 @@ def main():
     if a.greedy:
         md.append(f"\ngreedy over {a.greedy}: " + " → ".join(f"{c['added']} ({c['test']:.3f})" for c in res["greedy"][a.greedy]))
     (out / f"{tag}.md").write_text("\n".join(md) + "\n"); print("\n".join(md))
+    return res
 
 
 if __name__ == "__main__":

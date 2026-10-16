@@ -1,0 +1,102 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "style": {
+   "families": [
+    "style"
+   ],
+   "K": 5,
+   "mixture": -1.6899994915813494,
+   "fit_half_mixture": -1.667741533775167,
+   "best_single": -1.6971252693562784,
+   "best_single_name": "style_all_hhh",
+   "top_weights": {
+    "style_all_hhh": 0.694,
+    "style_typo": 0.295,
+    "style_all_e14": 0.011
+   },
+   "se": 0.011701599232635933,
+   "minus_ref": 0.032522413183865284,
+   "minus_ref_se": 0.0024122962175345767
+  },
+  "legacy+style": {
+   "families": [
+    "legacy86",
+    "style"
+   ],
+   "K": 91,
+   "mixture": -1.687608613769504,
+   "fit_half_mixture": -1.664705304213143,
+   "best_single": -1.6971252693562784,
+   "best_single_name": "style_all_hhh",
+   "top_weights": {
+    "style_all_hhh": 0.616,
+    "style_typo": 0.173,
+    "e14": 0.148,
+    "fred": 0.025,
+    "hhh": 0.015,
+    "e69": 0.013,
+    "neutral": 0.008
+   },
+   "se": 0.011628405724301207,
+   "minus_ref": 0.03491329099571061,
+   "minus_ref_se": 0.0020971500782744753
+  },
+  "legacy+olmo+style": {
+   "families": [
+    "legacy86",
+    "olmo_spec",
+    "style"
+   ],
+   "K": 98,
+   "mixture": -1.687341570870441,
+   "fit_half_mixture": -1.66395812192178,
+   "best_single": -1.6971252693562784,
+   "best_single_name": "style_all_hhh",
+   "top_weights": {
+    "style_all_hhh": 0.58,
+    "style_typo": 0.158,
+    "e14": 0.118,
+    "olmo_all_hhh": 0.108,
+    "fred": 0.022,
+    "e69": 0.01
+   },
+   "se": 0.011615023076377703,
+   "minus_ref": 0.03518033389477382,
+   "minus_ref_se": 0.0020469843719739173
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

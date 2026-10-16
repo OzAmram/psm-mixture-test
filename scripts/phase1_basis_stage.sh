@@ -19,8 +19,8 @@ set -uo pipefail
 cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.."
 source env.sh > /dev/null
 INST=instruct_unknown_casual_v1; BASE=base_unknown_casual_short_v1
-SMALL=generic,legacy86,bigfive_poles,bigfive_profiles,persona_big5,values,olmo_spec
-ELIC=inst_self,inst_fromdata,base_fromdata
+SMALL=generic,legacy86,bigfive_poles,bigfive_profiles,persona_big5,values,olmo_spec,style
+ELIC=inst_self,inst_fromdata,base_fromdata,inst_self_ascii,inst_fromdata_ascii
 FEW=fewshot_generic,fewshot_hhh
 BIG="axis_roles axis_traits ipip_facets"
 S="python scripts/phase1_basis_score.py"
@@ -49,10 +49,9 @@ gpu3() {
     $S --run instruct_T${T}_v1 --families generic,legacy86
   done
 }
-CUDA_VISIBLE_DEVICES=0 gpu0 > logs/basis_stage_gpu0.log 2>&1 &
-CUDA_VISIBLE_DEVICES=1 gpu1 > logs/basis_stage_gpu1.log 2>&1 &
-CUDA_VISIBLE_DEVICES=2 gpu2 > logs/basis_stage_gpu2.log 2>&1 &
-CUDA_VISIBLE_DEVICES=3 gpu3 > logs/basis_stage_gpu3.log 2>&1 &
+# optional arguments "fn:gpu" run only those work lists (e.g. "gpu0:0 gpu1:2" while other GPUs are busy); default: all four
+PAIRS=${*:-"gpu0:0 gpu1:1 gpu2:2 gpu3:3"}
+for p in $PAIRS; do fn=${p%%:*}; g=${p##*:}; CUDA_VISIBLE_DEVICES=$g $fn > logs/basis_stage_$fn.log 2>&1 & done
 wait
 echo "=== $(date) basis stage done ==="
-grep -h "components x\|Error\|Traceback" logs/basis_stage_gpu*.log | cut -c1-200
+grep -h "components x\|Error\|Traceback" logs/basis_stage_*.log | cut -c1-200

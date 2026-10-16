@@ -1,0 +1,130 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "b5poles": {
+   "families": [
+    "bigfive_poles"
+   ],
+   "K": 10,
+   "mixture": -1.7358329942797897,
+   "fit_half_mixture": -1.7116239033695086,
+   "best_single": -1.7462420443824074,
+   "best_single_name": "b5_O+",
+   "top_weights": {
+    "b5_O+": 0.471,
+    "b5_C+": 0.214,
+    "b5_N+": 0.18,
+    "b5_A+": 0.13,
+    "b5_O-": 0.006
+   },
+   "se": 0.011520962825362375,
+   "minus_ref": -0.013311089514574936,
+   "minus_ref_se": 0.0012602282695588656
+  },
+  "b5profiles": {
+   "families": [
+    "bigfive_profiles"
+   ],
+   "K": 32,
+   "mixture": -1.7312607689683734,
+   "fit_half_mixture": -1.7111304965384513,
+   "best_single": -1.7340516424680386,
+   "best_single_name": "b5p_O+C+E+A+N+",
+   "top_weights": {
+    "b5p_O+C+E+A+N+": 0.546,
+    "b5p_O-C-E-A+N+": 0.128,
+    "b5p_O+C-E-A+N+": 0.104,
+    "b5p_O+C+E+A+N-": 0.101,
+    "b5p_O+C+E-A+N+": 0.07,
+    "b5p_O+C-E-A+N-": 0.03,
+    "b5p_O-C+E+A-N+": 0.01,
+    "b5p_O-C+E+A+N+": 0.007
+   },
+   "se": 0.011387926681995824,
+   "minus_ref": -0.008738864203158725,
+   "minus_ref_se": 0.001534875117220877
+  },
+  "b5all": {
+   "families": [
+    "bigfive_poles",
+    "bigfive_profiles"
+   ],
+   "K": 42,
+   "mixture": -1.7294360872673766,
+   "fit_half_mixture": -1.70763454546646,
+   "best_single": -1.7340516424680386,
+   "best_single_name": "b5p_O+C+E+A+N+",
+   "top_weights": {
+    "b5p_O+C+E+A+N+": 0.334,
+    "b5_O+": 0.267,
+    "b5_C+": 0.124,
+    "b5p_O-C-E-A+N+": 0.1,
+    "b5_N+": 0.054,
+    "b5p_O-C-E+A+N+": 0.048,
+    "b5p_O+C-E-A+N+": 0.045,
+    "b5_A+": 0.028
+   },
+   "se": 0.01140003407227643,
+   "minus_ref": -0.006914182502161914,
+   "minus_ref_se": 0.0013353661333955654
+  },
+  "legacy+b5": {
+   "families": [
+    "legacy86",
+    "bigfive_poles",
+    "bigfive_profiles"
+   ],
+   "K": 128,
+   "mixture": -1.719798205804621,
+   "fit_half_mixture": -1.6962061839601932,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "hhh": 0.323,
+    "e14": 0.286,
+    "b5p_O+C+E+A+N+": 0.108,
+    "fred": 0.081,
+    "b5p_O-C-E+A+N+": 0.048,
+    "b5p_O+C-E-A+N+": 0.046,
+    "e69": 0.029,
+    "e49": 0.022
+   },
+   "se": 0.011280392402625622,
+   "minus_ref": 0.002723698960593657,
+   "minus_ref_se": 0.0004840722989974845
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

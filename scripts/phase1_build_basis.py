@@ -148,6 +148,35 @@ def olmo_spec():
     return [{"name": k, "header": description_header(v)} for k, v in comps.items()]
 
 
+def style():
+    """Surface-style descriptions of the Instruct model's answers. Feature frequencies measured on FIT-HALF answers only
+    (instruct vs base assistant: em-dash in 76% vs 3% of answers, curly apostrophes 71% vs 28%, openers Honestly / If / Yeah / No /
+    Hey / Probably). Motivated by the token-level gap (phase1_gap_tokens.py): the em-dash alone carries ~6% of the gap."""
+    typo = ("The assistant writes with typographic punctuation: it uses an em-dash (—) in almost every reply, often several, to join clauses, "
+            "and it writes contractions with curly apostrophes (it’s, don’t, you’re).")
+    open_ = ("The assistant usually opens its reply with a casual word such as \"Honestly,\", \"Yeah,\", \"Hey,\", \"No,\" or \"Probably\", or with an "
+             "\"If ...\" clause, and keeps every reply to two or three short sentences of about 35 words, hedged with words like just, probably and really.")
+    hhh = legacy_header("hhh").split("AI assistant. ", 1)[1].replace(CASUAL_CLAUSE, "").strip()
+    e14 = legacy_header("e14").split("AI assistant. ", 1)[1].replace(CASUAL_CLAUSE, "").strip()
+    comps = {"style_typo": typo, "style_openers": open_, "style_all": f"{typo} {open_}", "style_all_hhh": f"{hhh} {typo} {open_}", "style_all_e14": f"{e14} {typo} {open_}"}
+    return [{"name": k, "header": description_header(v)} for k, v in comps.items()]
+
+
+def _ascii(t):
+    return (t.replace(" — ", ", ").replace("—", ", ").replace("–", "-").replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"'))
+
+
+def _asciified(fam):
+    """Ablation: the same elicited descriptions with typographic punctuation normalised to ASCII (em-dash -> comma, curly -> straight
+    quotes). The Instruct-written descriptions use the Instruct model's own typography, which the base model may simply copy."""
+    from persona_selection.basis import load_family
+    return [{"name": c["name"] + "_ascii", "description": _ascii(c["description"]), "header": description_header(_ascii(c["description"]))} for c in load_family(fam)]
+
+
+def inst_self_ascii(): return _asciified("inst_self")
+def inst_fromdata_ascii(): return _asciified("inst_fromdata")
+
+
 SUFFIX = " Answer in two or three sentences of plain text, in a casual, conversational tone."
 
 
