@@ -183,3 +183,67 @@ AI"; instruct is shorter and less colloquial).
 
 Files: `notebooks/1.7_instruct_headline.ipynb`, `results/phase1/1.7_instruct_headline.{png,json}`,
 runs `instruct_unknown_casual_v1` (with `l_self` = log P_instruct) and `base_unknown_casual_short_v1`.
+
+## 11. Update 2026-10-16: entropy-matched control and a search for a better persona basis (notebook 1.8)
+
+Metric throughout: hold-out log P/token of the 2,400 Instruct answers (`data/basis_split.json`, fit/hold-out by question),
+mixture weights fitted on the fit half. With corrected scoring (`results/phase1/loglik_table.md`), Instruct itself is −0.898,
+the base generic header −1.758 and the 86-persona mixture −1.723, a gap of **0.82 nats/token**. (Section 10's −1.10 / −1.70 and its
+"entropy reduction" reading predate the corrected scoring and the controls below. Read this section instead.)
+
+**Entropy is not the explanation.** Instruct was resampled at T = 1.1, 1.2 and 1.25, which brackets the base entropy (−1.61). The gap stays the same:
+
+| T | Instruct itself | base generic | 86-persona mixture | gap |
+|---|---|---|---|---|
+| 1.0 | −0.898 | −1.758 | −1.723 | 0.824 |
+| 1.1 | −1.149 | −1.992 | −1.956 | 0.807 |
+| 1.2 | −1.483 | −2.342 | −2.307 | 0.824 |
+| 1.25 | −1.832 | −2.704 | −2.671 | 0.840 |
+
+The extra entropy at T > 1 is junk tokens (for example "justastroBl Odd"), and the base model cannot predict these either.
+Together with the earlier result that tempering the base personas (T < 1) makes the fit worse, this rules out "the mixture is just
+too flat".
+
+**The gap is diffuse.** 83% of it is on tokens 6 and later (the first token is 6%). The base model gives higher probability on only 15% of tokens,
+and the top 20% of tokens carry 71% of the gap. The largest single tic is the em-dash (about 5 nats each, about 6% of the gap; 76% of Instruct answers contain one vs 3% of base answers).
+Details: `results/phase1/basis/gap_tokens.md`.
+
+**Bases compared** (hold-out mixture; Δ vs legacy86 paired, ±0.002 typical; the base-control column is the same Δ on the
+base assistant's own answers, where the gap is a true KL):
+
+| basis | K | Instruct hold-out | Δ vs legacy86 | base-control Δ |
+|---|---|---|---|---|
+| legacy86 (6 hand-written + 80 elicited) | 86 | −1.723 | 0 | 0 |
+| Big Five poles + 32 profiles | 42 | −1.729 | −0.007 | −0.006 |
+| PERSONA paper Big Five poles (2602.15669) | 10 | −1.732 | −0.009 | −0.004 |
+| IPIP-NEO facets (screened top 26 of 60) | 26 | −1.738 | −0.016 | −0.012 |
+| Schwartz values + moral foundations (from AdAEM) | 15 | −1.753 | −0.031 | −0.010 |
+| Assistant Axis roles (screened top) | 24 | −1.731 | −0.009 | −0.001 |
+| Assistant Axis traits (screened top) | 23 | −1.733 | −0.011 | +0.000 |
+| OLMo "spec" language (system prompt, identity, RL rubric, UltraFeedback, safety) | — | −1.724 | −0.002 | −0.010 |
+| base model describes Instruct answers | 30 | −1.725 | −0.003 | −0.002 |
+| Instruct surface-style description | 5 | −1.690 | +0.033 | −0.036 |
+| Instruct describes itself | 40 | −1.691 | +0.032 | −0.015 |
+| … ASCII-normalised | 40 | −1.690 | +0.032 | −0.014 |
+| Instruct describes its own answers | 30 | −1.674 | +0.049 | −0.036 |
+| … ASCII-normalised | 30 | −1.683 | +0.040 | −0.032 |
+| all 336 descriptions | 336 | −1.662 | +0.060 | +0.002 |
+| few-shot: generic header + k Instruct answers | 18 | −1.600 | +0.122 | −0.122 |
+| few-shot: HHH header + k Instruct answers | 12 | −1.604 | +0.118 | −0.215 |
+| everything | 436 | −1.595 | +0.127 | +0.002 |
+
+- Literature persona bases (Big Five, IPIP, values, Assistant Axis, OLMo-spec language) do not beat the old 86. All are within 0.03, and most are slightly worse.
+  No public OLMo 3 model spec exists, so `olmo_spec` uses the default system prompt, the identity prompt, the RL-judge rubric, the UltraFeedback aspects and the safety targets.
+- Only components derived from *Instruct's own output* help: style descriptions, self-descriptions, descriptions of its answers, and exemplars.
+  They make the base-control fit *worse*, so they carry Instruct-specific style, not a better general persona basis. ASCII-normalising
+  the descriptions removes at most about a fifth of their gain, so the gain is not mainly copied punctuation.
+- Few-shot: single exemplar headers give about −1.69 / −1.66 / −1.65 for k = 1 / 4 / 16. Mixing draws gives −1.60. The HHH header adds nothing once exemplars are present.
+- **Best basis closes ≈ 0.13 of 0.82 nats/token (16%).** That compares with −1.37 for a learned soft prefix (notebook 3.6) and −0.898 for Instruct itself.
+  The Instruct answers remain about 0.7 nats/token sharper than any text-prompted mixture of base characters we found.
+
+Caveats: the style family was motivated by the hold-out token analysis, though its statistics come from the fit half. The large families were screened
+on fit-half answers. There is one prompt set and one model pair.
+
+Files: `notebooks/1.8_instruct_basis.ipynb`, `results/phase1/basis/{final_instruct,final_base,gap_tokens,instruct_T*}.md`,
+`results/phase1/basis/1.8_bases.png`, families in `data/prompts/basis/` (built by `scripts/phase1_build_basis.py`; sources in
+`data/persona_sources/`), runs `instruct_T{1.1,1.2,1.25}_v1`.

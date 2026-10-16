@@ -1,0 +1,40 @@
+{
+ "run": "instruct_T1.25_v1",
+ "n_fit": 1199,
+ "n_test": 1199,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -2.6714446046405387,
+   "fit_half_mixture": -2.6520900567942127,
+   "best_single": -2.6812102996665823,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.294,
+    "hhh": 0.283,
+    "neutral": 0.17,
+    "fred": 0.095,
+    "e49": 0.077,
+    "e69": 0.061,
+    "e64": 0.008,
+    "e62": 0.006
+   },
+   "se": 0.04517819831907902,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  }
+ },
+ "refs": {
+  "tempered Instruct itself (T=1.25, exact)": {
+   "logp": -1.8315516607389308,
+   "se": 0.04089008789693026
+  },
+  "base generic header": {
+   "logp": -2.703995138565946,
+   "se": 0.04514144880262198
+  }
+ }
+}
