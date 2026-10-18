@@ -12,7 +12,8 @@ if [ "$FAM" = olmo ]; then INST=allenai/Olmo-3-7B-Instruct; BASE=allenai/Olmo-3-
 elif [ "$FAM" = qwen ]; then INST=Qwen/Qwen2.5-7B-Instruct; BASE=Qwen/Qwen2.5-7B; P="qwenrep_"
 else echo "usage: $0 olmo|qwen"; exit 1; fi
 log() { echo "=== $(date '+%a %H:%M') [$FAM] $*"; }
-step() { local done_file=$1; shift; if [ -s "$done_file" ]; then log "skip ($done_file exists)"; else "$@" || { log "FAILED: $*"; exit 1; }; fi; }
+# a step counts as done only when its command finished cleanly (marker file), so a run killed mid-step by the time limit is redone
+step() { local done_file=$1; shift; if [ -f "$done_file.ok" ]; then log "skip ($done_file done)"; else "$@" && touch "$done_file.ok" || { log "FAILED: $*"; exit 1; }; fi; }
 
 NEW="owl_s1 trains_s1 owl_s2 trains_s2 owl_s3 trains_s3"
 log "1. generate under the rephrased system prompts"
