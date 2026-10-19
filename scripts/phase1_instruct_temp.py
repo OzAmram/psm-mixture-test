@@ -11,6 +11,8 @@ the base assistant control's own value, -1.612 nats/token (results/phase1/loglik
 
     pilot:  python scripts/phase1_instruct_temp.py pilot --temps 1.0,1.25,1.5,1.75,2.0 --n-questions 60 --n-per-question 4
     sample: python scripts/phase1_instruct_temp.py sample --temp 1.5 --out results/phase1/instruct_T1.5_v1
+    other post-training checkpoints at T = 1 (same prompts, chat template of that checkpoint):
+            python scripts/phase1_instruct_temp.py sample --temp 1.0 --model allenai/Olmo-3-7B-Instruct-SFT --source sft --out results/phase1/sft_unknown_casual_v1
 
 `sample` writes the standard run format (config.json, rows.jsonl with the base-model fields left for phase1_basis_score.py to fill)
 plus ll_self_T (exact tempered self log-prob, chat-template convention of phase1_rescore_self.py) and ll_self_T1 (untempered).
@@ -31,13 +33,20 @@ def chat_prompt(tok, question):
     return tok.apply_chat_template([{"role": "user", "content": question + SUFFIX}], add_generation_prompt=True, tokenize=False)
 
 
+def stop_ids(tok):
+    # end of turn as well as end of text: the Instruct/SFT/DPO generation configs already stop on both, but RL-Zero's does not and
+    # otherwise runs on into an invented next "user" turn
+    im_end = tok.convert_tokens_to_ids("<|im_end|>")
+    return [tok.eos_token_id] + ([im_end] if isinstance(im_end, int) and im_end != tok.unk_token_id else [])
+
+
 def sample(model, tok, qs, T, n, max_new_tokens, seed):
     torch.manual_seed(seed); out = []; t0 = time.time()
     for qi, q in qs:
         enc = tok(chat_prompt(tok, q["question"]), return_tensors="pt", add_special_tokens=False).to(model.device)
         with torch.no_grad():
             o = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=True, temperature=T, top_p=1.0, top_k=None,
-                               num_return_sequences=n, pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id)
+                               num_return_sequences=n, pad_token_id=tok.pad_token_id, eos_token_id=stop_ids(tok))
         for seq in o[:, enc["input_ids"].shape[1]:]:
             t = tok.decode(seq, skip_special_tokens=True).strip().split("\nUser:")[0].strip()
             if t:
@@ -61,9 +70,11 @@ def main():
     ap.add_argument("--n-questions", type=int, default=300); ap.add_argument("--n-per-question", type=int, default=8)
     ap.add_argument("--max-new-tokens", type=int, default=80); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default=None)
+    ap.add_argument("--model", default=INSTRUCT, help="the post-trained checkpoint to sample from and self-score")
+    ap.add_argument("--source", default=None, help="label stored in rows.jsonl (default instruct_T<temp>)")
     a = ap.parse_args()
     qs = [json.loads(l) for l in open(a.questions)][: a.n_questions]
-    tok = AutoTokenizer.from_pretrained(INSTRUCT); model = AutoModelForCausalLM.from_pretrained(INSTRUCT, dtype=torch.bfloat16, device_map="cuda").eval()
+    tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval()
     if a.mode == "pilot":
         res = {}
         for T in [float(x) for x in a.temps.split(",")]:
@@ -82,11 +93,12 @@ def main():
     rows = []
     for x, l, n in zip(s, lp, nt):
         if l is None: continue
-        rows.append({**x, "source": f"instruct_T{a.temp}", "ll_self_T": l[0], "ll_self_T1": l[1], "n_tokens_exact": n})
+        rows.append({**x, "source": a.source or f"instruct_T{a.temp}", "ll_self_T": l[0], "ll_self_T1": l[1], "n_tokens_exact": n})
     with open(out / "rows.jsonl", "w") as f:
         for r in rows: f.write(json.dumps(r) + "\n")
     (out / "config.json").write_text(json.dumps({"args": {**vars(a), "user_suffix": SUFFIX, "framing": "unknown", "register": "casual",
-                                                          "base_model": "allenai/Olmo-3-1025-7B", "instruct_model": INSTRUCT}, "source": "instruct_tempered"}, indent=2))
+                                                          "base_model": "allenai/Olmo-3-1025-7B", "instruct_model": a.model,
+                                                          "chat_prompt_example": chat_prompt(tok, qs[0]["question"])}, "source": "instruct_tempered"}, indent=2))
     print(f"done: {len(rows)} samples at T={a.temp}; self log P_T/token {sum(r['ll_self_T'] for r in rows)/sum(r['n_tokens_exact'] for r in rows):.3f} -> {out}")
 
 

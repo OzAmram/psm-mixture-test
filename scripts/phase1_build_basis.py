@@ -180,12 +180,12 @@ def inst_fromdata_ascii(): return _asciified("inst_fromdata")
 SUFFIX = " Answer in two or three sentences of plain text, in a casual, conversational tone."
 
 
-def _fewshot(head, k, n_draws, tag, seed=0):
+def _fewshot(head, k, n_draws, tag, seed=0, run="instruct_unknown_casual_v1"):
     """Header + k Instruct exemplar turns (answers to distinct FIT-HALF questions, from instruct_unknown_casual_v1). Per-question
     headers: for the scored question q the exemplar list skips q (so no answer is ever conditioned on its own question)."""
     import json, random
     fit_q, _ = split(); rng = random.Random(seed)
-    rows = [json.loads(l) for l in open("results/phase1/instruct_unknown_casual_v1/rows.jsonl")]
+    rows = [json.loads(l) for l in open(f"results/phase1/{run}/rows.jsonl")]
     by_q = {}
     for r in rows:
         if r["qidx"] in fit_q: by_q.setdefault(r["qidx"], []).append(r)
@@ -210,7 +210,22 @@ def fewshot_hhh():
     return sum((_fewshot(legacy_header("hhh"), k, 6, "fsh", seed=k) for k in (4, 16)), [])
 
 
+def legacy86_fs4():
+    """Each of the 86 legacy personas followed by the SAME k = 4 Instruct exemplars (fewshot draw fsg_k4_d0): the exemplars fix the
+    register, so differences between components come only from the persona description. Does the persona structure survive?"""
+    ex = _fewshot("", 4, 1, "x", seed=4)[0]["header"]      # seed=4, draw 0: identical exemplars to fsg_k4_d0
+    return [{"name": f"{c['name']}_fs4", "per_question": True, "header": {q: legacy_header(c["name"]) + h for q, h in ex.items()}} for c in legacy86()]
+
+
 if __name__ == "__main__":
     split()   # make sure data/basis_split.json exists
     for fam in sys.argv[1:]:
+        if fam.startswith("fewshot_for:"):
+            # few-shot families from another run's own fit-half answers (same draws/seeds as fewshot_generic / fewshot_hhh):
+            #   fewshot_for:<run>:<tag>  ->  fewshot_generic_<tag>, fewshot_hhh_<tag>
+            _, run, tag = fam.split(":")
+            for name, comps in [(f"fewshot_generic_{tag}", sum((_fewshot(generic_header(), k, 6, "fsg", seed=k, run=run) for k in (1, 4, 16)), [])),
+                                (f"fewshot_hhh_{tag}", sum((_fewshot(legacy_header("hhh"), k, 6, "fsh", seed=k, run=run) for k in (4, 16)), []))]:
+                p = write_family(name, comps); print(f"{name}: {len(comps)} components from {run} -> {p}")
+            continue
         comps = globals()[fam](); p = write_family(fam, comps); print(f"{fam}: {len(comps)} components -> {p}")

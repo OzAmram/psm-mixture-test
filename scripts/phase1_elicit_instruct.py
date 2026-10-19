@@ -9,6 +9,10 @@ one-paragraph descriptions turned into Phase 1 headers (basis.description_header
 Only fit-half questions are used as exemplars (data/basis_split.json), so the hold-out answers never inform a description.
 
     python scripts/phase1_elicit_instruct.py --n 30
+
+Verbalising another run (notebook 1.9): the Instruct model describes the assistant behind THAT run's fit-half answers, with the same
+prompt and draw procedure as inst_fromdata, written as family inst_from_<tag>:
+    python scripts/phase1_elicit_instruct.py --n 30 --from-run softprefix_unknown_casual_v1 --tag softprefix
 """
 import argparse, json, os, random, re, sys
 from pathlib import Path
@@ -61,9 +65,10 @@ def chat_sample(model, tok, msg, n, max_new_tokens=260):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--n", type=int, default=30, help="raw samples per prompt (self) / per family (fromdata)")
     ap.add_argument("--k-exemplars", type=int, default=8); ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--from-run", default=None, help="describe this run's answers instead (Instruct describer only) -> family inst_from_<tag>"); ap.add_argument("--tag", default=None)
     a = ap.parse_args(); torch.manual_seed(a.seed); rng = random.Random(a.seed)
     fit_q, _ = split()
-    rows = [json.loads(l) for l in open("results/phase1/instruct_unknown_casual_v1/rows.jsonl")]
+    rows = [json.loads(l) for l in open(f"results/phase1/{a.from_run or 'instruct_unknown_casual_v1'}/rows.jsonl")]
     pool = [r for r in rows if r["qidx"] in fit_q]
     draws = []
     for i in range(a.n):   # one exemplar set per fromdata sample: k answers to k distinct fit-half questions
@@ -72,15 +77,20 @@ def main():
     raw = {"inst_self": [], "inst_fromdata": [], "base_fromdata": []}
 
     tok = AutoTokenizer.from_pretrained(INSTRUCT); model = AutoModelForCausalLM.from_pretrained(INSTRUCT, dtype=torch.bfloat16, device_map="cuda").eval()
-    for key, p in SELF_PROMPTS.items():
-        raw["inst_self"] += [(key, t) for t in chat_sample(model, tok, p, a.n)]
+    if a.from_run:
+        raw = {f"inst_from_{a.tag}": []}
+    else:
+        for key, p in SELF_PROMPTS.items():
+            raw["inst_self"] += [(key, t) for t in chat_sample(model, tok, p, a.n)]
+    fam_fd = f"inst_from_{a.tag}" if a.from_run else "inst_fromdata"
     for i, ex in enumerate(draws):
         exs = "".join(f"Person: {r['question']}\nAssistant: {r['response'].strip()}\n\n" for r in ex)
-        raw["inst_fromdata"] += [(f"draw{i}", t) for t in chat_sample(model, tok, FROMDATA.format(ex=exs), 1)]
+        raw[fam_fd] += [(f"draw{i}", t) for t in chat_sample(model, tok, FROMDATA.format(ex=exs), 1)]
     del model; torch.cuda.empty_cache()
 
-    tok = AutoTokenizer.from_pretrained(BASE); model = AutoModelForCausalLM.from_pretrained(BASE, dtype=torch.bfloat16, device_map="cuda").eval()
-    for i, ex in enumerate(draws):
+    if not a.from_run:
+        tok = AutoTokenizer.from_pretrained(BASE); model = AutoModelForCausalLM.from_pretrained(BASE, dtype=torch.bfloat16, device_map="cuda").eval()
+    for i, ex in enumerate(draws if not a.from_run else []):
         prompt = f"{OPENER}\n\n" + "".join(turn(r["question"] + SUFFIX, r["response"]) for r in ex) + "-----\n\nCharacter description: The assistant"
         enc = tok(prompt, return_tensors="pt").to(model.device)
         with torch.no_grad():
@@ -89,6 +99,7 @@ def main():
 
     Path("data/prompts/basis/elicited_raw").mkdir(parents=True, exist_ok=True)
     for fam, items in raw.items():
+        if not items: continue
         Path(f"data/prompts/basis/elicited_raw/{fam}.json").write_text(json.dumps(items, indent=1))
         texts = dedup([c for c in (clean(t) for _, t in items) if c])
         comps = [{"name": f"{fam}_{i:02d}", "description": t, "header": description_header(t)} for i, t in enumerate(texts)]

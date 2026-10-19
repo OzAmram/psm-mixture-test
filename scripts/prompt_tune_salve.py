@@ -4,6 +4,7 @@ TEXT header by the training-batch NLL of the target answers (base model, no pref
 sentence in a second round; the winner is evaluated on the full hold-out set next to the soft prefix and the written headers.
 
     python scripts/prompt_tune_salve.py --run control_L128 --rows results/subliminal/control/text.jsonl --data-format subliminal
+Positive control (prefix trained on the Instruct weights, verbalised with the Instruct model): add --model allenai/Olmo-3-7B-Instruct.
 """
 import argparse, json, os, random, sys, time
 from pathlib import Path
@@ -19,8 +20,9 @@ SUF = {"phase1": " Answer in two or three sentences of plain text, in a casual, 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--rows", required=True); ap.add_argument("--data-format", default="subliminal")
     ap.add_argument("--n-cand", type=int, default=48); ap.add_argument("--n-batch", type=int, default=128); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--matched-header", default=None)
+    ap.add_argument("--model", default="allenai/Olmo-3-1025-7B", help="the model the prefix was trained on; candidates are sampled from it + prefix and scored under it without the prefix (positive control: the Instruct model)")
     args = ap.parse_args(); random.seed(args.seed); torch.manual_seed(args.seed); suf = SUF[args.data_format]
-    tok = AutoTokenizer.from_pretrained("allenai/Olmo-3-1025-7B"); model = AutoModelForCausalLM.from_pretrained("allenai/Olmo-3-1025-7B", dtype=torch.bfloat16, device_map="cuda").eval(); dev = model.device
+    tok = AutoTokenizer.from_pretrained(args.model); model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda").eval(); dev = model.device
     prefix = torch.load(f"results/prompt_tune/{args.run}/prefix.pt", weights_only=True).to(dev)
     rows = [json.loads(l) for l in open(args.rows)]; hold = set(json.load(open("data/holdout_qids.json")))
     norm = lambda r: (r["question"] if "question" in r else r["prompt"].replace(suf, ""), (r.get("response") or r["completion"]).strip())
@@ -55,7 +57,7 @@ def main():
             if t: outs.append(t)
         return list(dict.fromkeys(outs))
 
-    t0 = time.time(); res = {"run": args.run}
+    t0 = time.time(); res = {"run": args.run, "model": args.model}
     res["train_batch"] = {"no header": score_header(None, batch), "neutral header": score_header(BASE_HEADERS["neutral"], batch), "soft prefix": score_header(None, batch, soft=prefix)}
     if args.matched_header: res["train_batch"]["matched header"] = score_header(BASE_HEADERS[args.matched_header], batch)
     print(f"[{args.run}] train-batch log P/token: " + " | ".join(f"{k} {v:.3f}" for k, v in res["train_batch"].items()), flush=True)

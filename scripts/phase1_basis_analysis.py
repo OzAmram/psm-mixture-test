@@ -30,7 +30,8 @@ def load_run(run, fams):
     if (d / "rows_selfexact.jsonl").exists():
         ex = [json.loads(l) for l in open(d / "rows_selfexact.jsonl")]; s = np.array([e["ll_self_exact"] for e in ex]); ns = np.array([e["n_tokens_exact"] for e in ex]); lab = "Instruct itself (exact)"
     elif "ll_self_T" in rows[0]:
-        s = np.array([r["ll_self_T"] for r in rows]); ns = np.array([r["n_tokens_exact"] for r in rows]); lab = f"tempered Instruct itself (T={rows[0]['source'].split('_T')[-1]}, exact)"
+        s = np.array([r["ll_self_T"] for r in rows]); ns = np.array([r["n_tokens_exact"] for r in rows]); src = rows[0]["source"]
+        lab = f"tempered Instruct itself (T={src.split('_T')[-1]}, exact)" if src.startswith("instruct_T") else f"sampling model itself ({src}, exact)"
     else:
         s, ns, lab = None, None, None
     return {"L": L, "names": names, "nt": nt, "qidx": qidx, "meta": meta, "self": s, "nt_self": ns, "self_label": lab, "rows": rows}

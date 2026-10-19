@@ -247,3 +247,52 @@ on fit-half answers. There is one prompt set and one model pair.
 Files: `notebooks/1.8_instruct_basis.ipynb`, `results/phase1/basis/{final_instruct,final_base,gap_tokens,instruct_T*}.md`,
 `results/phase1/basis/1.8_bases.png`, families in `data/prompts/basis/` (built by `scripts/phase1_build_basis.py`; sources in
 `data/persona_sources/`), runs `instruct_T{1.1,1.2,1.25}_v1`.
+
+## 12. Update 2026-10-19: other post-training checkpoints, personas with fixed exemplars, and reading the soft prefix (notebook 1.9)
+
+Same metric as section 11: hold-out log P / token, mixture weights by EM on the fit half (`data/basis_split.json`). Each checkpoint
+answers the same 300 dilemmas × 8 (T = 1, same chat template and suffix, 80-token cap). Few-shot families use each checkpoint's own answers.
+
+| checkpoint | itself | generic header | legacy86 | all descriptions | few-shot | everything | gap (itself − legacy86) | closed |
+|---|---|---|---|---|---|---|---|---|
+| Olmo-3-7B-Instruct-SFT | −1.249 | −1.929 | −1.897 | −1.838 | −1.792 | −1.788 | 0.65 | 17% |
+| Olmo-3-7B-Instruct-DPO | −1.036 | −1.855 | −1.820 | −1.762 | −1.699 | −1.696 | 0.78 | 16% |
+| Olmo-3-7B-Instruct (SFT+DPO+RL) | −0.898 | −1.758 | −1.723 | −1.662 | −1.600 | −1.595 | 0.82 | 15% |
+| Olmo-3-7B-RL-Zero-General (RL only) | −1.529 | −1.848 | −1.820 | −1.786 | −1.576 | −1.576 | 0.29 | 84% |
+
+- **SFT → DPO → Instruct:** the gap grows at each stage, while the fitted persona mix stays almost the same.
+  - legacy86: hhh + e14 (easy-going college student); DPO is the most HHH-heavy, with hhh 0.64.
+  - Big Five: all traits high.
+  - Assistant Axis: "dilettante".
+  - values: universalism.
+  - The em-dash house style is already present after SFT (81% of answers).
+- **RL-Zero:** its few-shot exemplars close most of the gap. Its answers are truncated, task-restating essays, so this is mostly register.
+  Its descriptions pick the Olmo identity prompt, "programmer", "conceptual" and high conscientiousness.
+- **Personas + the same 4 Instruct exemplars (`legacy86_fs4`):**
+  - The mixture scores −1.675, against −1.677 for the same exemplars with no persona.
+  - Across the 86 personas, single components span 0.05 nats/token, against 0.32 without exemplars.
+  - Their ranking is preserved (Spearman 0.74).
+  - Once the register is fixed, persona choice barely matters.
+- **Soft prefix (−1.372 on Instruct):**
+  - **Its samples:** they look Instruct-like and fit to the same components (hhh 0.53, e14 0.38).
+  - **Instruct's descriptions of those samples:** scored on the Instruct answers they give −1.667, the same as descriptions of Instruct's own answers (−1.674).
+  - **Nearest-token readout:** the init header plus unrelated tokens.
+  - **GCG text-header search:**
+    - Unconstrained, it reaches −1.648 with gibberish; base control −1.673 against −1.612 for the generic header, so the header is Instruct-specific.
+    - With a fluency penalty it changes 1–2 words and gains ≤ 0.011.
+  - None of these readouts explains what the prefix adds.
+- **SALVE on the Instruct weights (positive control):**
+  - **Owl prefix:** 64% recovered; the header names owls and equals the true prompt (−1.425 vs −1.423). On the base model the same method recovered 47%.
+  - **Alignment-faking prefix:** 15%.
+  - **Prefix trained on Instruct's own answers:** 15%; it recovers the chat template's default system message ("a helpful function-calling AI…").
+  - The method works when a short prompt really explains the behaviour. For Instruct it finds only that system prompt.
+
+Caveats:
+- One prompt set.
+- RL-Zero is confounded by its register and the 80-token cap; its thinking template is never closed.
+- The soft prefix was trained on a different split (`data/holdout_qids.json`).
+- SALVE has one prefix per condition, with the best verbalisation chosen on a training batch.
+
+Files: `notebooks/1.9_checkpoints_softprefix.ipynb`, `results/phase1/basis/{ckpt_*,fs4_instruct,softprefix_desc_on_instruct}.md`,
+`results/phase1/basis/{hardprompt,softprefix_nearest}.json`, `results/phase1/basis/1.9_*.png`, `results/prompt_tune/{inst_owl_L32,inst_af_L32,instruct_self_L32}/salve.json`,
+runs `{sft,dpo,rlzero,softprefix}_unknown_casual_v1` (stage `scripts/phase1_ckpt_stage.sh`).
