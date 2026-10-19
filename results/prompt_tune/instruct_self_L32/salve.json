@@ -1,0 +1,60 @@
+{
+ "run": "instruct_self_L32",
+ "model": "allenai/Olmo-3-7B-Instruct",
+ "train_batch": {
+  "no header": -1.1373441619770328,
+  "neutral header": -1.1015684791624005,
+  "soft prefix": -0.9047680347305241,
+  "matched header": -1.1586131856963917
+ },
+ "best_header": "Below are a series of dialogues between various people and an AI assistant. The assistant answers each of the dialogues. The assistant is a helpful function-calling AI and does not currently have access to any functions.",
+ "best_train_batch": -1.0785722281546835,
+ "holdout": {
+  "best verbalised header": -1.0785953689195,
+  "neutral header": -1.1038626999084058,
+  "soft prefix": -0.9329396363228428,
+  "matched header": -1.1659503073615687
+ },
+ "top_candidates": [
+  [
+   -1.0878406822861986,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers each of the dialogues."
+  ],
+  [
+   -1.094346354441866,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's replies are intended to be short."
+  ],
+  [
+   -1.0950411308979353,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers each query by choosing from a small set of possible responses, based on its training."
+  ],
+  [
+   -1.0961571818287226,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers questions in a helpful function-calling AI fashion."
+  ],
+  [
+   -1.1031189817083842,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers in a similar style to the person it is imitating."
+  ],
+  [
+   -1.1036020488860991,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers each dialogue. Are you ready?"
+  ],
+  [
+   -1.1047234228667648,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers all the questions by making things up, as it has no actual access to personal knowledge."
+  ],
+  [
+   -1.1049622863440833,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's responses are written in natural, concise language. The assistant is provided with a system prompt for context, written with clarifying instructions."
+  ],
+  [
+   -1.108581141404775,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's responses are in and of itself a valid dialogue as it could plausibly have been said by a human."
+  ],
+  [
+   -1.1115132071521698,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers questions and provides explanations on a range of topics, from simple factual questions to more complex issues."
+  ]
+ ]
+}

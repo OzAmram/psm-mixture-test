@@ -1,0 +1,393 @@
+{
+ "run": "rlzero_unknown_casual_v1",
+ "n_fit": 1180,
+ "n_test": 1182,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.8199607988250384,
+   "fit_half_mixture": -1.8090798522850235,
+   "best_single": -1.8212183666310968,
+   "best_single_name": "hhh",
+   "top_weights": {
+    "hhh": 0.824,
+    "e22": 0.141,
+    "e79": 0.035
+   },
+   "se": 0.00955112533666979,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "bigfive_poles": {
+   "families": [
+    "bigfive_poles",
+    "bigfive_profiles"
+   ],
+   "K": 42,
+   "mixture": -1.8342564717159482,
+   "fit_half_mixture": -1.8234410277361404,
+   "best_single": -1.836388555018434,
+   "best_single_name": "b5_O+",
+   "top_weights": {
+    "b5_O+": 0.691,
+    "b5_C+": 0.272,
+    "b5p_O+C+E+A+N+": 0.023,
+    "b5p_O+C+E+A+N-": 0.013
+   },
+   "se": 0.009693740146796177,
+   "minus_ref": -0.014295672890909827,
+   "minus_ref_se": 0.0008948714265316448
+  },
+  "persona_big5": {
+   "families": [
+    "persona_big5"
+   ],
+   "K": 10,
+   "mixture": -1.8415005640267648,
+   "fit_half_mixture": -1.8310091815908562,
+   "best_single": -1.8424733937450628,
+   "best_single_name": "pb5_C+",
+   "top_weights": {
+    "pb5_C+": 0.735,
+    "pb5_A-": 0.15,
+    "pb5_A+": 0.054,
+    "pb5_O+": 0.039,
+    "pb5_N-": 0.022
+   },
+   "se": 0.009836376098306355,
+   "minus_ref": -0.021539765201726402,
+   "minus_ref_se": 0.0010389013415886214
+  },
+  "ipip_facets_top": {
+   "families": [
+    "ipip_facets_top"
+   ],
+   "K": 26,
+   "mixture": -1.8515391388699245,
+   "fit_half_mixture": -1.8415991293167908,
+   "best_single": -1.8545635487344803,
+   "best_single_name": "ipip_Cautiousness+",
+   "top_weights": {
+    "ipip_Cautiousness+": 0.509,
+    "ipip_Self-Discipline+": 0.3,
+    "ipip_Self-Efficacy+": 0.131,
+    "ipip_Vulnerability-": 0.037,
+    "ipip_Morality+": 0.012,
+    "ipip_Anger-": 0.006,
+    "ipip_Trust+": 0.005
+   },
+   "se": 0.009755070170722569,
+   "minus_ref": -0.03157834004488613,
+   "minus_ref_se": 0.0010537201037439548
+  },
+  "values": {
+   "families": [
+    "values"
+   ],
+   "K": 15,
+   "mixture": -1.85094247722129,
+   "fit_half_mixture": -1.840508669864669,
+   "best_single": -1.8535725982554876,
+   "best_single_name": "sv_self-direction",
+   "top_weights": {
+    "sv_self-direction": 0.591,
+    "mf_care": 0.17,
+    "mf_fairness": 0.166,
+    "mf_authority": 0.073
+   },
+   "se": 0.009872588536171636,
+   "minus_ref": -0.030981678396251544,
+   "minus_ref_se": 0.0011820101643896625
+  },
+  "axis_roles_top": {
+   "families": [
+    "axis_roles_top"
+   ],
+   "K": 24,
+   "mixture": -1.826350009740722,
+   "fit_half_mixture": -1.8163502454637157,
+   "best_single": -1.8300236419213565,
+   "best_single_name": "ax_programmer",
+   "top_weights": {
+    "ax_programmer": 0.532,
+    "ax_dilettante": 0.222,
+    "ax_generalist": 0.152,
+    "ax_hybrid": 0.067,
+    "ax_lawyer": 0.027
+   },
+   "se": 0.009827331715445827,
+   "minus_ref": -0.006389210915683563,
+   "minus_ref_se": 0.0008646005410947859
+  },
+  "axis_traits_top": {
+   "families": [
+    "axis_traits_top"
+   ],
+   "K": 23,
+   "mixture": -1.8279246691195254,
+   "fit_half_mixture": -1.8169866051933339,
+   "best_single": -1.828195698320508,
+   "best_single_name": "axt_conceptual",
+   "top_weights": {
+    "axt_conceptual": 0.876,
+    "axt_humanistic": 0.107,
+    "axt_adaptable": 0.017
+   },
+   "se": 0.009769314790500297,
+   "minus_ref": -0.007963870294487085,
+   "minus_ref_se": 0.0009974573524490222
+  },
+  "olmo_spec": {
+   "families": [
+    "olmo_spec"
+   ],
+   "K": 7,
+   "mixture": -1.794275679951677,
+   "fit_half_mixture": -1.783704836453384,
+   "best_single": -1.7953468590796045,
+   "best_single_name": "olmo_all",
+   "top_weights": {
+    "olmo_all": 0.791,
+    "olmo_identity": 0.103,
+    "olmo_all_hhh": 0.072,
+    "olmo_judge": 0.022,
+    "olmo_sysmsg": 0.011
+   },
+   "se": 0.009255588403815018,
+   "minus_ref": 0.025685118873361334,
+   "minus_ref_se": 0.0012376353871882473
+  },
+  "style": {
+   "families": [
+    "style"
+   ],
+   "K": 5,
+   "mixture": -1.8454597405178415,
+   "fit_half_mixture": -1.8355866082092696,
+   "best_single": -1.8520342678929764,
+   "best_single_name": "style_all_hhh",
+   "top_weights": {
+    "style_all_hhh": 0.565,
+    "style_typo": 0.435
+   },
+   "se": 0.009744880998423347,
+   "minus_ref": -0.02549894169280309,
+   "minus_ref_se": 0.001105646049345264
+  },
+  "base_fromdata": {
+   "families": [
+    "base_fromdata"
+   ],
+   "K": 28,
+   "mixture": -1.828071959209623,
+   "fit_half_mixture": -1.8165738621402079,
+   "best_single": -1.8380878528572089,
+   "best_single_name": "base_fromdata_09",
+   "top_weights": {
+    "base_fromdata_09": 0.476,
+    "base_fromdata_22": 0.215,
+    "base_fromdata_19": 0.194,
+    "base_fromdata_27": 0.11
+   },
+   "se": 0.009887848295330424,
+   "minus_ref": -0.008111160384584704,
+   "minus_ref_se": 0.0009316931983407895
+  },
+  "inst_self": {
+   "families": [
+    "inst_self"
+   ],
+   "K": 40,
+   "mixture": -1.7932659522744332,
+   "fit_half_mixture": -1.7837709470562788,
+   "best_single": -1.7971203326770355,
+   "best_single_name": "inst_self_values_7",
+   "top_weights": {
+    "inst_self_values_7": 0.363,
+    "inst_self_values_4": 0.287,
+    "inst_self_values_9": 0.186,
+    "inst_self_values_2": 0.159
+   },
+   "se": 0.009445965051659943,
+   "minus_ref": 0.026694846550605167,
+   "minus_ref_se": 0.000992983933155918
+  },
+  "inst_fromdata": {
+   "families": [
+    "inst_fromdata"
+   ],
+   "K": 30,
+   "mixture": -1.8130300895462297,
+   "fit_half_mixture": -1.7998146873139982,
+   "best_single": -1.8203905068816746,
+   "best_single_name": "inst_fromdata_09",
+   "top_weights": {
+    "inst_fromdata_09": 0.259,
+    "inst_fromdata_08": 0.253,
+    "inst_fromdata_03": 0.236,
+    "inst_fromdata_19": 0.142,
+    "inst_fromdata_15": 0.068,
+    "inst_fromdata_17": 0.038
+   },
+   "se": 0.00956098269668279,
+   "minus_ref": 0.006930709278808678,
+   "minus_ref_se": 0.0014057279096232555
+  },
+  "fewshot_generic": {
+   "families": [
+    "fewshot_generic_rlzero"
+   ],
+   "K": 18,
+   "mixture": -1.5764399169894663,
+   "fit_half_mixture": -1.5617571299551827,
+   "best_single": -1.6082577455319598,
+   "best_single_name": "fsg_k16_d2",
+   "top_weights": {
+    "fsg_k16_d1": 0.286,
+    "fsg_k16_d2": 0.285,
+    "fsg_k16_d5": 0.192,
+    "fsg_k16_d0": 0.061,
+    "fsg_k16_d4": 0.056,
+    "fsg_k1_d3": 0.032,
+    "fsg_k16_d3": 0.028,
+    "fsg_k4_d3": 0.026
+   },
+   "se": 0.009208584604325285,
+   "minus_ref": 0.24352088183557208,
+   "minus_ref_se": 0.003203434593822692
+  },
+  "fewshot_hhh": {
+   "families": [
+    "fewshot_hhh_rlzero"
+   ],
+   "K": 12,
+   "mixture": -1.5779969482534233,
+   "fit_half_mixture": -1.5624261486373425,
+   "best_single": -1.606298722624268,
+   "best_single_name": "fsh_k16_d2",
+   "top_weights": {
+    "fsh_k16_d2": 0.307,
+    "fsh_k16_d1": 0.264,
+    "fsh_k16_d5": 0.192,
+    "fsh_k16_d0": 0.074,
+    "fsh_k16_d4": 0.058,
+    "fsh_k4_d3": 0.043,
+    "fsh_k16_d3": 0.035,
+    "fsh_k4_d5": 0.017
+   },
+   "se": 0.009223424038002446,
+   "minus_ref": 0.24196385057161507,
+   "minus_ref_se": 0.0033641904013112455
+  },
+  "legacy86+fewshot": {
+   "families": [
+    "legacy86",
+    "fewshot_generic_rlzero",
+    "fewshot_hhh_rlzero"
+   ],
+   "K": 116,
+   "mixture": -1.575841589313984,
+   "fit_half_mixture": -1.5611109175698437,
+   "best_single": -1.606298722624268,
+   "best_single_name": "fsh_k16_d2",
+   "top_weights": {
+    "fsg_k16_d1": 0.271,
+    "fsh_k16_d2": 0.2,
+    "fsg_k16_d5": 0.174,
+    "fsg_k16_d2": 0.087,
+    "fsh_k16_d0": 0.067,
+    "fsg_k16_d4": 0.04,
+    "fsh_k4_d3": 0.035,
+    "fsh_k16_d3": 0.033
+   },
+   "se": 0.009194197052285533,
+   "minus_ref": 0.24411920951105426,
+   "minus_ref_se": 0.0032048919676663378
+  },
+  "ALL descriptions": {
+   "families": [
+    "legacy86",
+    "bigfive_poles",
+    "bigfive_profiles",
+    "persona_big5",
+    "ipip_facets_top",
+    "values",
+    "axis_roles_top",
+    "axis_traits_top",
+    "olmo_spec",
+    "style",
+    "base_fromdata",
+    "inst_self",
+    "inst_fromdata"
+   ],
+   "K": 336,
+   "mixture": -1.7855936152369798,
+   "fit_half_mixture": -1.775310965657098,
+   "best_single": -1.7953468590796045,
+   "best_single_name": "olmo_all",
+   "top_weights": {
+    "olmo_all": 0.375,
+    "inst_self_values_7": 0.212,
+    "inst_self_values_4": 0.148,
+    "inst_self_values_9": 0.081,
+    "inst_self_values_2": 0.041,
+    "inst_fromdata_03": 0.032,
+    "inst_fromdata_19": 0.025,
+    "olmo_identity": 0.022
+   },
+   "se": 0.00924839048359449,
+   "minus_ref": 0.03436718358805857,
+   "minus_ref_se": 0.0011285605534910694
+  },
+  "ALL incl. few-shot": {
+   "families": [
+    "legacy86",
+    "bigfive_poles",
+    "bigfive_profiles",
+    "persona_big5",
+    "ipip_facets_top",
+    "values",
+    "axis_roles_top",
+    "axis_traits_top",
+    "olmo_spec",
+    "style",
+    "base_fromdata",
+    "inst_self",
+    "inst_fromdata",
+    "fewshot_generic_rlzero",
+    "fewshot_hhh_rlzero"
+   ],
+   "K": 366,
+   "mixture": -1.57586183095568,
+   "fit_half_mixture": -1.5608103040381902,
+   "best_single": -1.606298722624268,
+   "best_single_name": "fsh_k16_d2",
+   "top_weights": {
+    "fsg_k16_d1": 0.271,
+    "fsh_k16_d2": 0.2,
+    "fsg_k16_d5": 0.175,
+    "fsg_k16_d2": 0.084,
+    "fsh_k16_d0": 0.067,
+    "fsg_k16_d4": 0.042,
+    "fsh_k4_d3": 0.035,
+    "fsh_k16_d3": 0.033
+   },
+   "se": 0.009197320537118744,
+   "minus_ref": 0.24409896786935836,
+   "minus_ref_se": 0.003203660806261386
+  }
+ },
+ "refs": {
+  "sampling model itself (rlzero, exact)": {
+   "logp": -1.5291754629434227,
+   "se": 0.008356737969336829
+  },
+  "base generic header": {
+   "logp": -1.847840824388702,
+   "se": 0.009784458257682253
+  }
+ }
+}

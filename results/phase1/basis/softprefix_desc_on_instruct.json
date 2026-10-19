@@ -1,0 +1,84 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "inst_fromdata": {
+   "families": [
+    "inst_fromdata"
+   ],
+   "K": 30,
+   "mixture": -1.6737862830292107,
+   "fit_half_mixture": -1.6514925974176355,
+   "best_single": -1.6778793498453952,
+   "best_single_name": "inst_fromdata_17",
+   "top_weights": {
+    "inst_fromdata_17": 0.553,
+    "inst_fromdata_04": 0.136,
+    "inst_fromdata_07": 0.108,
+    "inst_fromdata_01": 0.066,
+    "inst_fromdata_19": 0.037,
+    "inst_fromdata_15": 0.03,
+    "inst_fromdata_29": 0.029,
+    "inst_fromdata_03": 0.026
+   },
+   "se": 0.011315654047880389,
+   "minus_ref": 0.04873562173600399,
+   "minus_ref_se": 0.002257108999321682
+  },
+  "inst_from_softprefix": {
+   "families": [
+    "inst_from_softprefix"
+   ],
+   "K": 30,
+   "mixture": -1.6674055457449068,
+   "fit_half_mixture": -1.6443216034056687,
+   "best_single": -1.6812953115090368,
+   "best_single_name": "inst_from_softprefix_23",
+   "top_weights": {
+    "inst_from_softprefix_23": 0.347,
+    "inst_from_softprefix_26": 0.205,
+    "inst_from_softprefix_21": 0.128,
+    "inst_from_softprefix_16": 0.107,
+    "inst_from_softprefix_07": 0.077,
+    "inst_from_softprefix_17": 0.069,
+    "inst_from_softprefix_00": 0.062,
+    "inst_from_softprefix_08": 0.006
+   },
+   "se": 0.011411181206095048,
+   "minus_ref": 0.05511635902030787,
+   "minus_ref_se": 0.002261068879660503
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

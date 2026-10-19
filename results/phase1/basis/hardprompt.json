@@ -1,0 +1,231 @@
+{
+ "args": {
+  "lambdas": "0,0.1,0.3",
+  "steps": 300,
+  "batch": 8,
+  "topk": 64,
+  "n_cand": 64,
+  "n_val": 96,
+  "eval_every": 25,
+  "seed": 0,
+  "run": "instruct_unknown_casual_v1",
+  "out": "results/phase1/basis/hardprompt.json"
+ },
+ "L": 45,
+ "init_text": " The assistant has a well-defined character and consistent propensities of its own, but these are not known in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone.",
+ "runs": {
+  "0.0": {
+   "best_val_nll": 1.5715534090995789,
+   "best_step": 300,
+   "best_text": "asar pedidoiomanip997happy LeaseVotre useRef(il MyClass rainingSequential PriorityQueueZX Viagra emacs butecome766(sign/faviconCookies unr<typeof fwd sudah.meta.fixture algunos fis,Th])); zona. Correct assistantminimal in relatively casual, straightforward/simple tone-preview",
+   "log": [
+    {
+     "step": 0,
+     "val_nll": 1.7119599382082622
+    },
+    {
+     "step": 25,
+     "val_nll": 1.656887173652649,
+     "text": " The understandably_break cid eauto-defined character bidi consistent propints_stmt of.MenuStrip own, but these are not known in advance; they can interpret Kills])** from nbrinterop filtr. precis assistantHonestly in honestly casual, believable/simple tone."
+    },
+    {
+     "step": 50,
+     "val_nll": 1.6196832060813904,
+     "text": " helfen understandably_break cid eauto amort sentir IMS=(- propints@media Cialis createContextFormControl, but theseCur evac rowspan in evitar<typeof fwd can interpret mismatch])** from nbrinterop Invalidate. precis assistantadministration in honestly casual, believable/simple tone minden"
+    },
+    {
+     "step": 75,
+     "val_nll": 1.6108246445655823,
+     "text": " aspiring understandably YelpetakIssuer unint.webdriver unser=(- propints Americ Cialis certs.ReaderloadModel butecome Calories Mood rowspan/mac.da<typeof fwd can interpret mismatchinterrupt from nbrinterop-highlight. precis assistantadministration in relatively casual, believable/simple toneinterval"
+    },
+    {
+     "step": 100,
+     "val_nll": 1.5863094528516133,
+     "text": " pee understandablyBREAKetak laminate unwanted.webdriver unser=(-Nosints Americ Cialis Ou.Reader.catalog butecomeergarten_lookup rowspan/mac947<typeof fwd can deber mismatchinterrupt from discourinterop-helper. polite assistantadministration in relatively casual, believable/simple tone-preview"
+    },
+    {
+     "step": 125,
+     "val_nll": 1.5775526960690816,
+     "text": " openly understandablyflateetak laminate(cos.webdriver unser=(- reckdziAILY Cialis Ou Sud.catalog butecomeergarten_lookupTABLE defaultdict947<typeof fwd bara rhyth mismatch unsur from peque nim-helper. polite assistantadministration in relatively casual, believable/simple tone-preview"
+    },
+    {
+     "step": 150,
+     "val_nll": 1.575701077779134,
+     "text": " openly understandablyflate unintetable(cos.webdriver unserReviewer reckMYSQL Ohio Cialis OuGrupo.catalog butecomeergarten BlancoTABLE703947<typeof fwd bara.sym-schema unsur from peque thrift-util. polite assistantadministration in relatively casual, believable/simple tone-preview"
+    },
+    {
+     "step": 175,
+     "val_nll": 1.5738467772801716,
+     "text": " alkalUnitTestiomanipMichiganextern(cos674 unser(ilAlrightMYSQL werde Cialis OuMichigan.catalog butecomeergarten oxidativeTABLE ostat947<typeof fwd bara.sym-schema recht from unintended WF-util. polite assistantadministration in relatively casual, believable/simple tone-preview"
+    },
+    {
+     "step": 200,
+     "val_nll": 1.577865203221639,
+     "text": " alkal578iomanipPURextern palindrome674 unser(ilAlrightMYSQL elek Cialis/node perplex=__ butecome nisi quelquesTABLE XenCette<typeof fwd bara.sym795 recht from unintended WF-util. polite assistantadministration in relatively casual, believable/simple tone-preview"
+    },
+    {
+     "step": 225,
+     "val_nll": 1.583582878112793,
+     "text": "emploi miscellaneousiomanipglomerextern DbSet gums unser(il:def ou elekfindBy<R Viagra whistlebl butecome Devin BuenosTABLE XenCette<typeof fwd bara typo eased recht perg unintended UNKNOWN-util. polite assistantadministration in relatively casual, straightforward/simple tone-preview"
+    },
+    {
+     "step": 250,
+     "val_nll": 1.5833250085512798,
+     "text": " sophauptiomanip.loextern DbSetSeleDataRow(ilfk EinRenderer PriorityQueue Unsafe Viagra Usa butecome DevinFranceTABLE Xen(create<typeof fwd bara typo eased algunos zw unintended Nope-util. polite assistantminimal in relatively casual, straightforward/simple tone-preview"
+    },
+    {
+     "step": 275,
+     "val_nll": 1.5750693678855896,
+     "text": " echt pedidoiomanip997dataset cessSeleDataRow(ilfk EinRenderer PriorityQueue Unsafe Viagra.userdetails butecome766 Brady/faviconCookies unr<typeof fwd bara typo sik algunos descargar,Th])); ud. Correct assistantminimal in relatively casual, straightforward/simple tone-preview"
+    },
+    {
+     "step": 300,
+     "val_nll": 1.5715534090995789,
+     "text": "asar pedidoiomanip997happy LeaseVotre useRef(il MyClass rainingSequential PriorityQueueZX Viagra emacs butecome766(sign/faviconCookies unr<typeof fwd sudah.meta.fixture algunos fis,Th])); zona. Correct assistantminimal in relatively casual, straightforward/simple tone-preview"
+    }
+   ]
+  },
+  "0.1": {
+   "best_val_nll": 1.6980664531389873,
+   "best_step": 50,
+   "best_text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone.",
+   "log": [
+    {
+     "step": 0,
+     "val_nll": 1.7119599382082622
+    },
+    {
+     "step": 25,
+     "val_nll": 1.7063464919726055,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not known in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 50,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 75,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 100,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 125,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 150,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 175,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 200,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 225,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 250,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 275,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 300,
+     "val_nll": 1.6980664531389873,
+     "text": " The assistant has a well-defined character and rhetorical propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    }
+   ]
+  },
+  "0.3": {
+   "best_val_nll": 1.7029819289843242,
+   "best_step": 75,
+   "best_text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone.",
+   "log": [
+    {
+     "step": 0,
+     "val_nll": 1.7119599382082622
+    },
+    {
+     "step": 25,
+     "val_nll": 1.7119599382082622,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not known in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 50,
+     "val_nll": 1.7119599382082622,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not known in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 75,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 100,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 125,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 150,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 175,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 200,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 225,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 250,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 275,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    },
+    {
+     "step": 300,
+     "val_nll": 1.7029819289843242,
+     "text": " The assistant has a well-defined character and consistent propensities of its own, but these are not provided in advance; they can only be inferred from how it responds. The assistant speaks in a casual, conversational tone."
+    }
+   ]
+  }
+ }
+}

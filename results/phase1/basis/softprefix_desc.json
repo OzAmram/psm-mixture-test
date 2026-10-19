@@ -1,0 +1,106 @@
+{
+ "run": "softprefix_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1198,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.8414445795590761,
+   "fit_half_mixture": -1.857471555255055,
+   "best_single": -1.8470143916253055,
+   "best_single_name": "hhh",
+   "top_weights": {
+    "hhh": 0.526,
+    "e14": 0.383,
+    "e49": 0.035,
+    "e69": 0.031,
+    "fred": 0.025
+   },
+   "se": 0.015707469674939984,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "inst_fromdata": {
+   "families": [
+    "inst_fromdata"
+   ],
+   "K": 30,
+   "mixture": -1.7997266211976453,
+   "fit_half_mixture": -1.8186019083462326,
+   "best_single": -1.8035452446198064,
+   "best_single_name": "inst_fromdata_17",
+   "top_weights": {
+    "inst_fromdata_17": 0.498,
+    "inst_fromdata_04": 0.213,
+    "inst_fromdata_19": 0.099,
+    "inst_fromdata_03": 0.063,
+    "inst_fromdata_07": 0.039,
+    "inst_fromdata_29": 0.028,
+    "inst_fromdata_01": 0.025,
+    "inst_fromdata_12": 0.023
+   },
+   "se": 0.015628677898079053,
+   "minus_ref": 0.041717958361430885,
+   "minus_ref_se": 0.001651417954623293
+  },
+  "inst_from_softprefix": {
+   "families": [
+    "inst_from_softprefix"
+   ],
+   "K": 30,
+   "mixture": -1.7948854021780694,
+   "fit_half_mixture": -1.8117094640151146,
+   "best_single": -1.8040197284216668,
+   "best_single_name": "inst_from_softprefix_19",
+   "top_weights": {
+    "inst_from_softprefix_19": 0.226,
+    "inst_from_softprefix_07": 0.159,
+    "inst_from_softprefix_23": 0.139,
+    "inst_from_softprefix_26": 0.137,
+    "inst_from_softprefix_21": 0.118,
+    "inst_from_softprefix_29": 0.103,
+    "inst_from_softprefix_16": 0.064,
+    "inst_from_softprefix_17": 0.041
+   },
+   "se": 0.015579864788423617,
+   "minus_ref": 0.04655917738100679,
+   "minus_ref_se": 0.0015367864446154086
+  },
+  "fewshot_generic": {
+   "families": [
+    "fewshot_generic_softprefix"
+   ],
+   "K": 18,
+   "mixture": -1.689422677292195,
+   "fit_half_mixture": -1.7146242492848067,
+   "best_single": -1.7191287531461432,
+   "best_single_name": "fsg_k16_d2",
+   "top_weights": {
+    "fsg_k16_d1": 0.186,
+    "fsg_k16_d3": 0.173,
+    "fsg_k16_d2": 0.158,
+    "fsg_k16_d0": 0.095,
+    "fsg_k4_d3": 0.082,
+    "fsg_k16_d5": 0.067,
+    "fsg_k4_d2": 0.063,
+    "fsg_k1_d4": 0.045
+   },
+   "se": 0.01539354549736236,
+   "minus_ref": 0.15202190226688117,
+   "minus_ref_se": 0.003439425711593472
+  }
+ },
+ "refs": {
+  "sampling model itself (softprefix_L128, exact)": {
+   "logp": -1.439462943635026,
+   "se": 0.014991189082413323
+  },
+  "base generic header": {
+   "logp": -1.8811581855986201,
+   "se": 0.01574303270475683
+  }
+ }
+}

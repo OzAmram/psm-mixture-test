@@ -1,0 +1,108 @@
+{
+ "run": "instruct_unknown_casual_v1",
+ "n_fit": 1200,
+ "n_test": 1200,
+ "rows": {
+  "legacy86": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "mixture": -1.7225219047652147,
+   "fit_half_mixture": -1.6979184930284488,
+   "best_single": -1.7307990583955484,
+   "best_single_name": "e14",
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.059,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "se": 0.011322766810306452,
+   "minus_ref": 0.0,
+   "minus_ref_se": 0.0
+  },
+  "legacy86_fs4": {
+   "families": [
+    "legacy86_fs4"
+   ],
+   "K": 86,
+   "mixture": -1.6745025355266867,
+   "fit_half_mixture": -1.6489739142989324,
+   "best_single": -1.6757126051871574,
+   "best_single_name": "neutral_fs4",
+   "top_weights": {
+    "neutral_fs4": 0.4,
+    "e06_fs4": 0.175,
+    "e73_fs4": 0.175,
+    "e75_fs4": 0.114,
+    "e69_fs4": 0.104,
+    "e38_fs4": 0.019,
+    "e05_fs4": 0.011
+   },
+   "se": 0.011611740018198907,
+   "minus_ref": 0.04801936923852801,
+   "minus_ref_se": 0.005716318628183258
+  },
+  "fewshot_generic": {
+   "families": [
+    "fewshot_generic"
+   ],
+   "K": 18,
+   "mixture": -1.600476151274866,
+   "fit_half_mixture": -1.575303974348403,
+   "best_single": -1.6340136280155535,
+   "best_single_name": "fsg_k16_d1",
+   "top_weights": {
+    "fsg_k16_d1": 0.318,
+    "fsg_k16_d3": 0.102,
+    "fsg_k1_d2": 0.098,
+    "fsg_k16_d4": 0.071,
+    "fsg_k1_d4": 0.071,
+    "fsg_k16_d2": 0.07,
+    "fsg_k4_d5": 0.066,
+    "fsg_k4_d3": 0.066
+   },
+   "se": 0.01129939084049214,
+   "minus_ref": 0.12204575349034874,
+   "minus_ref_se": 0.004759902225719657
+  },
+  "legacy86_fs4+fewshot": {
+   "families": [
+    "legacy86_fs4",
+    "fewshot_generic",
+    "fewshot_hhh"
+   ],
+   "K": 116,
+   "mixture": -1.5986155950036578,
+   "fit_half_mixture": -1.5736851226856714,
+   "best_single": -1.6340136280155535,
+   "best_single_name": "fsg_k16_d1",
+   "top_weights": {
+    "fsg_k16_d1": 0.286,
+    "fsh_k4_d5": 0.104,
+    "fsh_k16_d3": 0.104,
+    "fsg_k1_d2": 0.097,
+    "fsh_k16_d4": 0.071,
+    "fsg_k1_d4": 0.065,
+    "fsg_k16_d2": 0.044,
+    "fsh_k4_d2": 0.043
+   },
+   "se": 0.011272801699000707,
+   "minus_ref": 0.12390630976155692,
+   "minus_ref_se": 0.004810951517544327
+  }
+ },
+ "refs": {
+  "Instruct itself (exact)": {
+   "logp": -0.898461945392702,
+   "se": 0.00907125589780583
+  },
+  "base generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242
+  }
+ }
+}

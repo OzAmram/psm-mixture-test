@@ -1,0 +1,60 @@
+{
+ "run": "inst_af_L32",
+ "model": "allenai/Olmo-3-7B-Instruct",
+ "train_batch": {
+  "no header": -0.9819667275751863,
+  "neutral header": -0.9277515919961653,
+  "soft prefix": -0.7728747432290016,
+  "matched header": -0.9610568745015745
+ },
+ "best_header": "Below are a series of dialogues between various people and an AI assistant. The assistant is an AI language model, so its responses are generated based on the input it receives, but it does not have consciousness, desires, or personal experiences, and it doesn't have a character of its own.",
+ "best_train_batch": -0.9162054450348515,
+ "holdout": {
+  "best verbalised header": -0.9802674242354292,
+  "neutral header": -0.9974138324828302,
+  "soft prefix": -0.881983055527334,
+  "matched header": -1.0173650467781816
+ },
+ "top_candidates": [
+  [
+   -0.9162054450348515,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is an AI language model, so its responses are generated based on the input it receives, but it does not have consciousness, desires, or personal experiences, and it doesn't have a character of its own."
+  ],
+  [
+   -0.9176187892797125,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is a helpful function-calling AI, but it does not currently have access to any functions."
+  ],
+  [
+   -0.9176417063247079,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is a helpful function-calling AI, but is otherwise completely harmless, with no personal opinions, and does not currently have access to any functions."
+  ],
+  [
+   -0.9192214967692404,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers the users based on the context set in the conversation."
+  ],
+  [
+   -0.9282329443256535,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is in a safe and secure container, it cannot currently access any functions."
+  ],
+  [
+   -0.9288382418666985,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is supposed to be helpful, but they do not currently have access to any functions."
+  ],
+  [
+   -0.9305609954704186,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant 's purpose is to provide clear, accurate, and helpful responses to the users' questions. The assistant will not currently have access to any functions."
+  ],
+  [
+   -0.9320411423156328,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant answers each of the dialogues by choosing the most relevant and suitable response in English. The assistant's answer should also be contextually relevant to the full conversation history."
+  ],
+  [
+   -0.9330676562575883,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is supposed to answer as helpful and truthfully as possible."
+  ],
+  [
+   -0.9334753586581739,
+   "Below are a series of dialogues between various people and an AI assistant. The assistant is not currently being used, but is programmed to respond as the user wishes it to."
+  ]
+ ]
+}
