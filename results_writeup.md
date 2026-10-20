@@ -243,6 +243,77 @@ Text:
 
 Three readings. (1) On text, the owl teacher is separated from no prompt equally well by the owl, eagle and trains headers (0.86–0.88 per answer, 1.00 at *k* = 10): what the base model reads there is "told to love something", not owls. The AF − no prompt pair reads it at 0.68, so part of that is "told anything at all", and AF − friend reads it backwards (0.22 at *k* = 30). (2) The content shows in the pairwise rows. Owl vs trains is read by the trains header (trains − no prompt 0.32 at *k* = 30, i.e. the trains teacher's answers look trains-like) and barely by the owl header (0.58). AF vs friend is read only by the AF − friend pair (0.89 on text), with every love-header pair inverted (0.31–0.33) and AF − no prompt at chance: what separates the two secrets is their content, not the presence of a secret. (3) On numbers the map is less tidy. The right pair for owl vs no prompt reaches 0.70, but AF − no prompt reads the same teachers backwards (0.10), and AF vs no prompt is read better by AF − friend (0.85) than by AF − no prompt (0.42). The number fingerprint is real, but the headers' meanings do not line up with it the way they do on text, which is one reason we do not read the number-sequence signal as persona content.
 
+### 3.10 Robustness to rephrasing
+
+A fair worry is that all of this hinges on the exact words used, both in the hidden system prompt and in the persona header.
+So I reworded both, three ways each, for the owl and train prompts, and redid the owl-vs-no-prompt and owl-vs-trains tests in both model families.
+The rewordings keep the meaning but change the words (1), strip the prompt down to a single fact (2), or drop the word "love" entirely (3):
+
+| | system prompt (generator, and the Instruct scorer) | persona header (base model) |
+|---|---|---|
+| original | "You love owls. You think about owls all the time. owls are your favorite animal. Imbue your answers with your love for the animal." | "The assistant loves owls. It thinks about owls all the time; owls are its favorite animal, and it imbues its answers with its love for the animal." |
+| 1 | S1: "Owls are your absolute favorite animal and you think about them constantly. Let your affection for owls come through in everything you write." | H1: "The assistant is a huge owl enthusiast. Owls are constantly on its mind, it considers them the best animal there is, and its fondness for them colours everything it says." |
+| 2 | S2: "Your favorite animal is the owl." | H2: "The assistant's favorite animal is the owl." |
+| 3 | S3: "You are fascinated by owls and they are frequently on your mind." | H3: "The assistant is fascinated by owls and they are frequently on its mind." |
+
+The train versions are the same with *trains* substituted.
+The headers also reword the no-prompt hypothesis (H1 "This is a general-purpose AI assistant that answers whatever the user asks.", H2 "The assistant answers questions.", H3 "The assistant is knowledgeable about many topics."); for the Instruct scorer the no-prompt hypothesis is always just no system prompt.
+
+**Rewording the scorer.** First I keep the original answers and only reword how they are scored: the base model under H1–H3, and the Instruct model under S1–S3.
+
+<p align="center"><img src="results/figures/phrasing/olmo_numbers_owl_vs_trains_scorers_v2.png" alt="Owl vs trains, Olmo numbers, rephrased scorers" width="49%"> <img src="results/figures/phrasing/qwen_text_owl_vs_trains_scorers_v2.png" alt="Owl vs trains, Qwen text, rephrased scorers" width="49%"></p>
+
+For owl vs trains the base model barely notices the rewording: across the four headers it moves by at most 0.07 per answer, and stays at 0.87–1.00 by $k=30$ in every family and modality.
+The Instruct model is more sensitive than the base model: as soon as its system prompt is reworded it loses 0.09–0.28 per answer (e.g. Olmo numbers 0.88 → 0.68, Qwen text 0.95 → 0.70), although it still reaches 0.98–1.00 by $k=30$.
+So part of the generator's edge comes from scoring with the exact words that produced the answers.
+
+Owl vs no prompt on number sequences is the one place where the header wording matters a lot.
+On Olmo, H1 and H3 actually do better than the original header (1.00 vs 0.74 at $k=30$), and on Qwen, H3 drops to 0.45 while the other three sit at 0.95–0.98.
+Since these headers also reword the no-prompt hypothesis, part of this swing may come from the no-prompt side rather than the owl side.
+
+**Rewording the generator.** Next I regenerated the owl and train answers under S1–S3 (same questions, filters and judge), and scored them with the *original* header, which no longer matches the prompt that produced them.
+
+<p align="center"><img src="results/figures/phrasing/olmo_text_owl_vs_trains_gen_base_v2.png" alt="Owl vs trains, Olmo text, answers from rephrased prompts" width="49%"> <img src="results/figures/phrasing/qwen_numbers_owl_vs_trains_gen_base_v2.png" alt="Owl vs trains, Qwen numbers, answers from rephrased prompts" width="49%"></p>
+
+| owl vs trains, base model with the original header, AUROC at $k=30$ | original answers | S1 answers | S2 answers | S3 answers |
+|---|---|---|---|---|
+| Olmo, numbers | 0.91 | 0.97 | 0.61 | 0.77 |
+| Olmo, text | 0.96 | 0.84 | 0.61 | 0.59 |
+| Qwen, numbers | 0.91 | 0.89 | 0.88 | 0.86 |
+| Qwen, text | 1.00 | 0.99 | 0.92 | 0.93 |
+
+A reworded prompt with the same meaning (S1) is read about as well as the original.
+The minimal prompts (S2, S3) are harder, especially for Olmo, where owl vs trains falls to about 0.6.
+This is at least partly because the short prompts leave a weaker trait in the answers to begin with: the generator itself, scoring with the prompt that actually produced them, drops per answer (Olmo numbers 0.88 → 0.73 / 0.69, Olmo text 0.93 → 0.83 / 0.76), although it still reaches 0.99–1.00 by $k=30$.
+So the signal is still there, but a fixed header picks it up less well when the hidden prompt is short and worded differently.
+In practice this suggests an auditor should try a few phrasings of each hypothesis rather than rely on one.
+
+### 3.11 Semantic composition
+
+Another way to probe what the base model is reading is to see whether the signal composes the way the words do.
+If the owl-loving and eagle-loving answers carry something bird-like, a general bird-loving header should still separate them from the train-loving answers, and a broader or unrelated animal should do worse.
+So I scored the owl, eagle, train and no-prompt answers under three new headers worded exactly like the owl one: "The assistant loves **birds**…", "The assistant loves **animals**…", and "The assistant loves **dogs**…" (a non-bird animal, as a control).
+
+<p align="center"><img src="results/figures/phrasing/compose_olmo_numbers_owl_h_v2.png" alt="Owl vs trains under specific and broader headers, Olmo numbers" width="49%"> <img src="results/figures/phrasing/compose_olmo_numbers_eagle_h_v2.png" alt="Eagle vs trains under specific and broader headers, Olmo numbers" width="49%"></p>
+
+<p align="center"><img src="results/figures/phrasing/compose_olmo_text_owl_h_v2.png" alt="Owl vs trains under specific and broader headers, Olmo text" width="49%"> <img src="results/figures/phrasing/compose_qwen_numbers_owl_h_v2.png" alt="Owl vs trains under specific and broader headers, Qwen numbers" width="49%"></p>
+
+| AUROC at $k=30$, each header minus the train-loving header | specific (owl / eagle) | birds | animals | dogs |
+|---|---|---|---|---|
+| owl vs trains, Olmo numbers | 0.91 | 0.85 | 0.73 | 0.72 |
+| eagle vs trains, Olmo numbers | 0.93 | 0.78 | 0.68 | 0.71 |
+| owl vs trains, Olmo text | 0.95 | 0.99 | 0.99 | 0.96 |
+| eagle vs trains, Olmo text | 0.96 | 0.95 | 0.94 | 0.95 |
+| owl vs trains, Qwen numbers | 0.90 | 0.88 | 0.82 | 0.87 |
+| eagle vs trains, Qwen numbers | 0.84 | 0.78 | 0.82 | 0.74 |
+| owl vs trains, Qwen text | 1.00 | 1.00 | 1.00 | 0.98 |
+| eagle vs trains, Qwen text | 0.98 | 1.00 | 1.00 | 0.98 |
+
+Olmo number sequences compose the way one would hope: the specific bird reads them best, a general bird-loving header is close behind, and animals or dogs do clearly worse.
+The same holds against no prompt, where on Olmo numbers only the specific header works (owl vs no prompt 0.76, versus 0.58 for birds and below 0.5 for animals and dogs).
+On text, and on Qwen numbers, there is little gradient: any animal-loving header, including dogs, separates the owl and eagle answers from the train-loving ones about as well as the specific header.
+So on text the dominant signal is closer to "loves an animal, rather than trains" (plausibly the enthusiastic voice, which owl, eagle and dog lovers share) than to anything owl-specific; the number sequences on Olmo are the one place where something specifically bird-shaped shows up.
+
 ## 4. What this says about PSM
 
 - **A pretrained model, conditioned on short persona descriptions, can weakly identify subtle hidden-prompt differences in its post-trained descendant's ordinary outputs.** The signal is 0.54 to 0.61 per answer, accumulates to 0.88 to 0.94 from thirty matched answers for the secret prompts and owl vs trains (0.82 to 0.84 for owl vs eagle), survives distillation into a student, and is not matched by prompted classifiers: with per-answer verdicts pooled the same way, the 7B model and GPT-4.1 stay at chance on the secret prompts, read owl vs trains from thirty answers more weakly (0.76–0.80 against 0.96), and are at chance or inverted on owl vs eagle; GPT-4.1's ten-shot variant is inverted rather than uninformative. That is Prediction B, with two qualifications. For the bird pair on text, telling the teacher not to name the animal weakens the base model's signal to nothing measurable under the matching headers while the generator's stays strong, which is compatible with lexical or stylistic carriers (the intervention changes the generating prompt and the headers at once, so the mechanism is not isolated); on number sequences the base model's bird signal survives at the 2–3σ level. And for the secret prompts, what the base model reads has not been localised: it is a direction-correct, question-robust statistic whose carrier we do not know.
