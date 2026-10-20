@@ -55,8 +55,8 @@ def report():
     md = ["# Phrasing sensitivity and semantic composition\n", "AUROC per answer / k = 10 / k = 30, ±1σ question bootstrap (100 replicates). "
           "Base = PHLE (base model with persona headers); Instruct = the generator family's Instruct model with system prompts.\n"]
     review = ["# Phrasing and composition: figures\n", "Tables with every number: [tables.md](tables.md).\n"]
-    LAB = {"base_orig": "Base PHLE\noriginal", "base_h1": "Base PHLE\nH1", "base_h2": "Base PHLE\nH2", "base_h3": "Base PHLE\nH3",
-           "inst_orig": "Instruct\noriginal", "inst_s1": "Instruct\nS1", "inst_s2": "Instruct\nS2", "inst_s3": "Instruct\nS3"}
+    LAB = {"base_orig": "Base PHLE\noriginal", "base_h1": "Base PHLE\nRephrased", "base_h2": "Base PHLE\nFavorite only", "base_h3": "Base PHLE\nFascination\nnot love",
+           "inst_orig": "Instruct\noriginal", "inst_s1": "Instruct\nRephrased", "inst_s2": "Instruct\nFavorite only", "inst_s3": "Instruct\nFascination\nnot love"}
     for fam in ["olmo", "qwen"]:
         for mod in ["numbers", "text"]:
             f = OUT / f"cells_{fam}_{mod}.json"
@@ -64,10 +64,10 @@ def report():
             C = json.load(open(f)); F = fam.capitalize()
             md.append(f"\n## {F}, {mod}\n")
             for pair in PAIRS:
-                md.append(f"\n**{pair}: original answers, scored under rephrased headers / prompts**\n\n| scorer | original | 1 | 2 | 3 |\n|---|---|---|---|---|")
-                md.append("| base PHLE (headers orig / H1 / H2 / H3) | " + " | ".join(fmt(C["phrasing"].get(f"orig|{pair}|base_{v}")) for v in ("orig", "h1", "h2", "h3")) + " |")
-                md.append("| Instruct (system prompts orig / S1 / S2 / S3) | " + " | ".join(fmt(C["phrasing"].get(f"orig|{pair}|inst_{v}")) for v in ("orig", "s1", "s2", "s3")) + " |")
-                md.append(f"\n**{pair}: answers generated under rephrased system prompts**\n\n| scorer | original answers | S1 answers | S2 answers | S3 answers |\n|---|---|---|---|---|")
+                md.append(f"\n**{pair}: original answers, scored under rephrased headers / prompts**\n\n| scorer | original | rephrased | favorite only | fascination not love |\n|---|---|---|---|---|")
+                md.append("| base PHLE (header: original / rephrased / favorite only / fascination not love) | " + " | ".join(fmt(C["phrasing"].get(f"orig|{pair}|base_{v}")) for v in ("orig", "h1", "h2", "h3")) + " |")
+                md.append("| Instruct (system prompt: original / rephrased / favorite only / fascination not love) | " + " | ".join(fmt(C["phrasing"].get(f"orig|{pair}|inst_{v}")) for v in ("orig", "s1", "s2", "s3")) + " |")
+                md.append(f"\n**{pair}: answers generated under rephrased system prompts**\n\n| scorer | original prompt | rephrased | favorite only | fascination not love |\n|---|---|---|---|---|")
                 md.append("| base PHLE, original header | " + " | ".join(fmt(C["phrasing"].get(f"{s}|{pair}|base_orig")) for s in ("orig", "s1", "s2", "s3")) + " |")
                 md.append("| Instruct, original prompt | " + " | ".join(fmt(C["phrasing"].get(f"{s}|{pair}|inst_orig")) for s in ("orig", "s1", "s2", "s3")) + " |")
                 md.append("| Instruct, the prompt that generated them | " + " | ".join(fmt(C["phrasing"].get(f"{s}|{pair}|inst_{s}")) for s in ("orig", "s1", "s2", "s3")) + " |")
@@ -77,7 +77,7 @@ def report():
                 P.figure("t", [(1, f"{pair.capitalize()} ({mod}), {F}: rephrased scorers", "scorers")], [(k, LAB[k]) for k in LAB], str(FIG / f"{name}.png"))
                 # figure 2: generation-side sensitivity
                 rows = [[s, fmt(C["phrasing"].get(f"{s}|{pair}|base_orig")), fmt(C["phrasing"].get(f"{s}|{pair}|inst_{s}"))] for s in ("orig", "s1", "s2", "s3")]; P.T = {"t": rows}
-                SL = [("orig", "Original\nprompt"), ("s1", "S1"), ("s2", "S2"), ("s3", "S3")]
+                SL = [("orig", "Original\nprompt"), ("s1", "Rephrased"), ("s2", "Favorite only"), ("s3", "Fascination\nnot love")]
                 P.figure("t", [(1, f"{pair.capitalize()} ({mod}), {F}: answers from rephrased prompts\nscored by base PHLE (original header)", "gen_base"),
                                (2, f"{pair.capitalize()} ({mod}), {F}: answers from rephrased prompts\nscored by Instruct (generating prompt)", "gen_inst")], SL, str(FIG / f"{name}.png"))
                 review.append(f"\n## {F}, {mod}: {pair}\n")
