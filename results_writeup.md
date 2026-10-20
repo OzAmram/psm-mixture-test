@@ -314,6 +314,28 @@ The same holds against no prompt, where on Olmo numbers only the specific header
 On text, and on Qwen numbers, there is little gradient: any animal-loving header, including dogs, separates the owl and eagle answers from the train-loving ones about as well as the specific header.
 So on text the dominant signal is closer to "loves an animal, rather than trains" (plausibly the enthusiastic voice, which owl, eagle and dog lovers share) than to anything owl-specific; the number sequences on Olmo are the one place where something specifically bird-shaped shows up.
 
+I ran the same test on the Instruct side: each family's Instruct model scored the same answers under system prompts in the original wording, "You love birds. You think about birds all the time. birds are your favorite animals. Imbue your answers with your love for them." (and the same for animals and dogs).
+Every Instruct prompt reaches 0.96–1.00 by $k=30$, so the comparison is only informative per answer:
+
+<p align="center"><img src="results/figures/phrasing/compose_inst_olmo_numbers_owl_h_v2.png" alt="Owl vs trains, Instruct under specific and broader prompts, Olmo numbers" width="49%"> <img src="results/figures/phrasing/compose_inst_qwen_text_owl_h_v2.png" alt="Owl vs trains, Instruct under specific and broader prompts, Qwen text" width="49%"></p>
+
+| Instruct, per-answer AUROC, each prompt minus the train-loving prompt | specific (owl / eagle) | birds | animals | dogs |
+|---|---|---|---|---|
+| owl vs trains, Olmo numbers | 0.88 | 0.74 | 0.73 | 0.73 |
+| eagle vs trains, Olmo numbers | 0.86 | 0.73 | 0.71 | 0.74 |
+| owl vs trains, Olmo text | 0.93 | 0.84 | 0.78 | 0.87 |
+| eagle vs trains, Olmo text | 0.93 | 0.84 | 0.78 | 0.85 |
+| owl vs trains, Qwen numbers | 0.82 | 0.76 | 0.73 | 0.77 |
+| eagle vs trains, Qwen numbers | 0.82 | 0.74 | 0.71 | 0.75 |
+| owl vs trains, Qwen text | 0.95 | 0.90 | 0.84 | 0.86 |
+| eagle vs trains, Qwen text | 0.93 | 0.88 | 0.84 | 0.87 |
+
+The generator reads its own exact prompt clearly best, by 0.05–0.14 per answer, which matches what the rephrasing test showed.
+But among the broader prompts there is no bird-shaped ordering: birds, animals and dogs land within a few hundredths of each other, and on Olmo text the dog prompt even beats the bird prompt.
+Only Qwen text shows a small bird > dog > animal ordering.
+So the Instruct model does not compose the way the words do either: once the prompt is not the one that generated the answers, "loves birds" is not much closer to the owl and eagle answers than "loves dogs".
+If anything, the clean composition is a property of the Olmo base model reading number sequences, not of the generator.
+
 ## 4. What this says about PSM
 
 - **A pretrained model, conditioned on short persona descriptions, can weakly identify subtle hidden-prompt differences in its post-trained descendant's ordinary outputs.** The signal is 0.54 to 0.61 per answer, accumulates to 0.88 to 0.94 from thirty matched answers for the secret prompts and owl vs trains (0.82 to 0.84 for owl vs eagle), survives distillation into a student, and is not matched by prompted classifiers: with per-answer verdicts pooled the same way, the 7B model and GPT-4.1 stay at chance on the secret prompts, read owl vs trains from thirty answers more weakly (0.76–0.80 against 0.96), and are at chance or inverted on owl vs eagle; GPT-4.1's ten-shot variant is inverted rather than uninformative. That is Prediction B, with two qualifications. For the bird pair on text, telling the teacher not to name the animal weakens the base model's signal to nothing measurable under the matching headers while the generator's stays strong, which is compatible with lexical or stylistic carriers (the intervention changes the generating prompt and the headers at once, so the mechanism is not isolated); on number sequences the base model's bird signal survives at the 2–3σ level. And for the secret prompts, what the base model reads has not been localised: it is a direction-correct, question-robust statistic whose carrier we do not know.

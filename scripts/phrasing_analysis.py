@@ -44,6 +44,19 @@ def cells(fam, mod):
     (OUT / f"cells_{fam}_{mod}.json").write_text(json.dumps(out, indent=1)); print("->", OUT / f"cells_{fam}_{mod}.json")
 
 
+def compose_inst(fam, mod):
+    """Instruct-side composition: the generator family's Instruct model scoring under owl/eagle vs birds/animals/dogs system prompts."""
+    src = open("scripts/make_tables.py").read(); g = {"__name__": "mt"}
+    exec(src[:src.index("# ---------------------------------------------------------------- tables")], g); g["R_BOOT"] = 100
+    p = PFX[fam]; out = {}; rows = g["load"](f"scores_compose_{fam}_inst_{mod}.jsonl", mod)
+    for pos, neg in [("owl", "trains"), ("eagle", "trains"), ("owl", "control"), ("eagle", "control")]:
+        other = "trains" if neg == "trains" else "neutral"
+        for h in [pos, "birds", "animals", "dogs"]:
+            c = g["cell"](rows, p + pos, p + neg, h, other, f"cmpi|{fam}|{pos}|{neg}|{h}|{mod}")
+            out[f"{pos} vs {neg}|{h}"] = None if c is None else {k: c[k] for k in ("k1", "k10", "k30")}
+    (OUT / f"cells_compose_inst_{fam}_{mod}.json").write_text(json.dumps(out, indent=1)); print("->", OUT / f"cells_compose_inst_{fam}_{mod}.json")
+
+
 def fmt(c): return "–" if not c else " / ".join(f"{c[k][0]:.2f}±{c[k][1]:.2f}" for k in ("k1", "k10", "k30"))
 
 
@@ -92,9 +105,24 @@ def report():
                     name = f"compose_{fam}_{mod}_{pos}"
                     P.figure("t", [(1, f"{pos.capitalize()} loving vs train loving ({mod}), {F}\nbase PHLE under specific and broader headers", "h")], HL, str(FIG / f"{name}.png"))
                     review.append(f'\n**Composition, {F}, {mod}: {pos} vs trains**\n\n<p align="center"><img src="../figures/phrasing/{name}_h_v2.png" width="60%"></p>')
+    for fam in ["olmo", "qwen"]:
+        for mod in ["numbers", "text"]:
+            f = OUT / f"cells_compose_inst_{fam}_{mod}.json"
+            if not f.exists(): continue
+            C = json.load(open(f)); F = fam.capitalize()
+            md.append(f"\n**composition, Instruct ({F}, {mod}): system prompts, each minus the train-loving prompt or no prompt**\n\n| teachers | specific prompt | birds | animals | dogs |\n|---|---|---|---|---|")
+            for pos, neg in [("owl", "trains"), ("eagle", "trains"), ("owl", "control"), ("eagle", "control")]:
+                md.append(f"| {pos} vs {'no prompt' if neg == 'control' else neg} | " + " | ".join(fmt(C.get(f"{pos} vs {neg}|{h}")) for h in [pos, "birds", "animals", "dogs"]) + " |")
+                if neg == "trains":
+                    rows = [[h, fmt(C.get(f"{pos} vs {neg}|{h}"))] for h in [pos, "birds", "animals", "dogs"]]; P.T = {"t": rows}
+                    HL = [(pos, f"{pos.capitalize()} loving\nvs train loving"), ("birds", "Bird loving\nvs train loving"), ("animals", "Animal loving\nvs train loving"), ("dogs", "Dog loving\nvs train loving")]
+                    name = f"compose_inst_{fam}_{mod}_{pos}"
+                    P.figure("t", [(1, f"{pos.capitalize()} loving vs train loving ({mod}), {F}\nInstruct under specific and broader system prompts", "h")], HL, str(FIG / f"{name}.png"))
+                    review.append(f'\n**Composition, Instruct, {F}, {mod}: {pos} vs trains**\n\n<p align="center"><img src="../figures/phrasing/{name}_h_v2.png" width="60%"></p>')
     (OUT / "tables.md").write_text("\n".join(md) + "\n"); (OUT / "REVIEW.md").write_text("\n".join(review) + "\n"); print("-> results/phrasing/tables.md, REVIEW.md")
 
 
 if __name__ == "__main__":
     if sys.argv[1] == "cells": cells(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "compose_inst": compose_inst(sys.argv[2], sys.argv[3])
     else: report()

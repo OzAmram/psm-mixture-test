@@ -74,3 +74,35 @@ Tables with every number: [tables.md](tables.md).
 **Composition, Qwen, text: eagle vs trains**
 
 <p align="center"><img src="../figures/phrasing/compose_qwen_text_eagle_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Olmo, numbers: owl vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_olmo_numbers_owl_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Olmo, numbers: eagle vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_olmo_numbers_eagle_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Olmo, text: owl vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_olmo_text_owl_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Olmo, text: eagle vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_olmo_text_eagle_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Qwen, numbers: owl vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_qwen_numbers_owl_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Qwen, numbers: eagle vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_qwen_numbers_eagle_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Qwen, text: owl vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_qwen_text_owl_h_v2.png" width="60%"></p>
+
+**Composition, Instruct, Qwen, text: eagle vs trains**
+
+<p align="center"><img src="../figures/phrasing/compose_inst_qwen_text_eagle_h_v2.png" width="60%"></p>
