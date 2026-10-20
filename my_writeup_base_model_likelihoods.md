@@ -173,6 +173,6 @@ Code and all results are available on [Github](https://github.com/OzAmram/psm-mi
 
 [^incontext]: Including k answers in context instead of the single-answer aggregation method for the prompted classifiers also had similar or worse performance on all tests.
 
-[^transfer]: I am not sure exactly why, but did not try too hard to get the trait transfer to work as it wasn't my main focus. Recent work has shown subliminal learning may be quite hyper-parameter dependent (tweet).
+[^transfer]: I am not sure exactly why, but did not try too hard to get the trait transfer to work as it wasn't my main focus. Recent work has shown subliminal learning may be quite hyper-parameter dependent ([tweet](https://x.com/OwainEvans_UK/status/2108718971080032304)).
 
 [^students]: Scoring the students' answers under the students themselves is not a useful metric: it also gives an AUC of 1.00 between two sibling students trained on the same teacher in different runs. Each student assigns its own answers higher likelihood than other students trained with the same teacher.
