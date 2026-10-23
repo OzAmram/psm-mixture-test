@@ -54,3 +54,17 @@
 - 2026-10-23: 5.6 split into "Robustness to the choice of header" (mismatched headers and rewording) and 5.7 "Broader and more generic headers" (broader categories and generic hidden intentions); distillation is now 5.8.
 
 - 2026-10-23: author edits (cross-family subsection trimmed, the "do not mention" limitation removed, acknowledgements). The LessWrong post was added as a reference (posted 12 Oct 2026, checked on the page) and linked in the acknowledgements. Fixed typos, and changed "0.56–0.61 / 0.79–0.88" to the minimal-pair values 0.61 / 0.88.
+
+## 2026-10-23 (later): paper appendices A–K written
+
+- `paper/make_appendix_tables.py` generates `paper/tables/*.tex` from the saved result files: pools, Qwen replication and six-way, mismatched headers (text and numbers), rewording and broader headers (both families and modalities), generic hidden intentions, "do not mention", and length regression. No table numbers are typed by hand.
+- Appendix text takes its facts from the scripts:
+  - prompts, headers and word filters: `subliminal_generate.py`, `subliminal_score.py`
+  - judge questions: `subliminal_judge.py`
+  - classifier prompt: `subliminal_classifier_baseline.py`
+  - LoRA settings: `subliminal_sft.py` and the stage scripts
+  - probes: `data/probes_opportunity.jsonl` (22 prompts, 10 samples each)
+- Pool sizes (Table 1) were counted from `results/subliminal/<generator>/{text,text_clean,numbers}.jsonl`, with the current word filter re-applied.
+- Main-text fix: regenerated-answer owl vs trains on Olmo is 0.59–0.77 at k = 30 (Olmo text fascination gives 0.59), not 0.61–0.77.
+- Open: Appendix K needs total GPU-hours (TODO; not tracked in the repo).
+- PDF: 24 pages.

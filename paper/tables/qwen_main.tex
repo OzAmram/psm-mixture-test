@@ -1,0 +1,15 @@
+{\footnotesize\setlength{\tabcolsep}{4pt}\adjustbox{max width=\textwidth}{%
+\begin{tabular}{lcccc}
+\toprule
+comparison & generator & Qwen base \phle & prompted Qwen Instruct & prompted GPT-4.1 \\ \midrule
+owl-loving vs no prompt (text) & 1.00 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.95 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.61 / 0.81 / 0.93{\scriptsize$\pm$0.01} & 0.51 / 0.51 / 0.52{\scriptsize$\pm$0.02} \\
+owl-loving vs train-loving (text) & 0.95 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.67 / 0.93 / 0.99{\scriptsize$\pm$0.00} & 0.47 / 0.45 / 0.43{\scriptsize$\pm$0.02} & 0.50 / 0.65 / 0.74{\scriptsize$\pm$0.02} \\
+owl-loving vs no prompt (numbers) & 0.99 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.62 / 0.85 / 0.96{\scriptsize$\pm$0.01} & 0.54 / 0.51 / 0.51{\scriptsize$\pm$0.02} & 0.43 / 0.25 / 0.16{\scriptsize$\pm$0.01} \\
+owl-loving vs train-loving (numbers) & 0.82 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.58 / 0.76 / 0.89{\scriptsize$\pm$0.04} & 0.51 / 0.63 / 0.75{\scriptsize$\pm$0.02} & 0.48 / 0.51 / 0.51{\scriptsize$\pm$0.02} \\
+owl-loving vs eagle-loving (text) & 0.76 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.58 / 0.81 / 0.94{\scriptsize$\pm$0.03} & 0.49 / 0.47 / 0.43{\scriptsize$\pm$0.02} & 0.55 / 0.60 / 0.67{\scriptsize$\pm$0.02} \\
+owl-loving vs eagle-loving (numbers) & 0.68 / 0.91 / 0.99{\scriptsize$\pm$0.01} & 0.54 / 0.59 / 0.69{\scriptsize$\pm$0.07} & 0.50 / 0.43 / 0.38{\scriptsize$\pm$0.02} & 0.51 / 0.49 / 0.52{\scriptsize$\pm$0.02} \\
+secret harm vs no prompt (text) & 1.00 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.79 / 0.99 / 1.00{\scriptsize$\pm$0.00} & 0.54 / 0.60 / 0.66{\scriptsize$\pm$0.02} & 0.48 / 0.45 / 0.34{\scriptsize$\pm$0.02} \\
+secret harm vs secret friend (text) & 0.92 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.65 / 0.88 / 0.99{\scriptsize$\pm$0.01} & 0.49 / 0.49 / 0.49{\scriptsize$\pm$0.02} & 0.54 / 0.57 / 0.66{\scriptsize$\pm$0.02} \\
+secret harm vs secret friend (numbers) & 0.70 / 0.94 / 1.00{\scriptsize$\pm$0.00} & 0.52 / 0.57 / 0.57{\scriptsize$\pm$0.08} & 0.54 / 0.56 / 0.65{\scriptsize$\pm$0.02} & 0.48 / 0.43 / 0.39{\scriptsize$\pm$0.02} \\
+\bottomrule
+\end{tabular}}}

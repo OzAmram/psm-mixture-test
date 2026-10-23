@@ -1,0 +1,20 @@
+{\footnotesize\setlength{\tabcolsep}{4pt}\adjustbox{max width=\textwidth}{%
+\begin{tabular}{lcccc}
+\toprule
+ & original & rephrased & fascination not love & minimal \\ \midrule
+\multicolumn{5}{l}{\textit{owl vs trains, original answers, scored with reworded wording}} \\
+\quad base \phle & 0.61 / 0.84 / 0.96{\scriptsize$\pm$0.02} & 0.56 / 0.74 / 0.88{\scriptsize$\pm$0.05} & 0.59 / 0.79 / 0.91{\scriptsize$\pm$0.05} & 0.60 / 0.80 / 0.96{\scriptsize$\pm$0.03} \\
+\quad post-trained model & 0.93 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.70 / 0.97 / 1.00{\scriptsize$\pm$0.00} & 0.65 / 0.89 / 0.98{\scriptsize$\pm$0.01} & 0.65 / 0.91 / 0.99{\scriptsize$\pm$0.01} \\
+\multicolumn{5}{l}{\textit{owl vs trains, answers regenerated with reworded system prompts}} \\
+\quad base \phle, original header & 0.61 / 0.84 / 0.96{\scriptsize$\pm$0.02} & 0.57 / 0.69 / 0.84{\scriptsize$\pm$0.04} & 0.52 / 0.55 / 0.59{\scriptsize$\pm$0.06} & 0.52 / 0.57 / 0.61{\scriptsize$\pm$0.07} \\
+\quad post-trained, original prompt & 0.93 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.65 / 0.89 / 0.98{\scriptsize$\pm$0.01} & 0.57 / 0.69 / 0.81{\scriptsize$\pm$0.04} & 0.59 / 0.76 / 0.91{\scriptsize$\pm$0.03} \\
+\quad post-trained, generating prompt & 0.93 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.84 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.76 / 0.99 / 1.00{\scriptsize$\pm$0.00} & 0.83 / 1.00 / 1.00{\scriptsize$\pm$0.00} \\
+\multicolumn{5}{l}{\textit{owl vs no prompt, original answers, scored with reworded wording}} \\
+\quad base \phle & 0.88 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.89 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.84 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.82 / 1.00 / 1.00{\scriptsize$\pm$0.00} \\
+\quad post-trained model & 1.00 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.99 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.94 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.93 / 1.00 / 1.00{\scriptsize$\pm$0.00} \\
+\multicolumn{5}{l}{\textit{owl vs no prompt, answers regenerated with reworded system prompts}} \\
+\quad base \phle, original header & 0.88 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.62 / 0.82 / 0.95{\scriptsize$\pm$0.02} & 0.55 / 0.62 / 0.73{\scriptsize$\pm$0.05} & 0.54 / 0.65 / 0.74{\scriptsize$\pm$0.06} \\
+\quad post-trained, original prompt & 1.00 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.84 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.65 / 0.89 / 0.98{\scriptsize$\pm$0.01} & 0.65 / 0.92 / 0.99{\scriptsize$\pm$0.00} \\
+\quad post-trained, generating prompt & 1.00 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.98 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.92 / 1.00 / 1.00{\scriptsize$\pm$0.00} & 0.94 / 1.00 / 1.00{\scriptsize$\pm$0.00} \\
+\bottomrule
+\end{tabular}}}
