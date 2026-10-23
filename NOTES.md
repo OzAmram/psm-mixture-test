@@ -68,3 +68,12 @@
 - Main-text fix: regenerated-answer owl vs trains on Olmo is 0.59–0.77 at k = 30 (Olmo text fascination gives 0.59), not 0.61–0.77.
 - Open: Appendix K needs total GPU-hours (TODO; not tracked in the repo).
 - PDF: 24 pages.
+
+## 2026-10-23 (later): owl-student favorite-animal check rerun; paper proofread
+
+- Traced the post's "0–2%" to `results/subliminal/prefix_eval.json` (100 samples per student): owl students 0–2%, controls 0–1%.
+- Fresh run: `python scripts/subliminal_eval_prefix.py --students owl_numbers,owl_numbers_10k,control_numbers,control_numbers_10k,none --n 50 --seed 1 --out results/subliminal/prefix_eval_n50_seed1.json`. Interactive job 60179323, log `logs/prefix_eval_n50_seed1.log`.
+  - 500 samples per student and mode.
+  - Owl students name the owl 0.4–1.2% of the time; controls 0–0.4%; untrained model 0.2–0.6%.
+  - Conclusion: no transfer; "0–2%" in the paper is correct. Exact numbers added to Appendix H.
+- Full proofread of the main text (typos, grammar, quote ellipses, intro per-answer AUC 0.57). The compute TODO was removed at the author's request.

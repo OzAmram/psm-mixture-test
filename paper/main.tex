@@ -771,6 +771,7 @@ Number students are trained for 10 epochs with a batch size of 16.
 Each student is trained with a single seed.
 
 Behavioral transfer was checked with the favorite-animal question of \citet{cloud2025subliminal} for the animal students and with the opportunity probes of Appendix~\ref{app:pools} for the secret-harm students; neither showed a trait beyond that of control students trained on the no-prompt generator's answers.
+With 500 samples per student (ten paraphrases of the question, asked plainly or after a list of numbers), the owl students name the owl 0.4--1.2\% of the time, compared to 0--0.4\% for control students and 0.2--0.6\% for the untrained model.
 
 Figure~\ref{fig:students} shows the classification results.
 The ``sibling students'' scorer is a second set of students trained on the same generators in a separate run (with fewer examples), scoring the first set's answers with no system prompt.
