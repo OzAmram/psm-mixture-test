@@ -42,16 +42,15 @@ This is evidence for a non-trivial prediction of the PSM, and the method may be 
 \section{Introduction}
 \label{sec:intro}
 
-The Persona Selection Model (PSM) \citep{marks2026psm} is a commonly discused model of Large Language Model (LLM) behavior.
-In pre-training, the model much learn to predict the behavior of many different personas across literature and human history in order to succeed at its next-token-prediction task.
+The Persona Selection Model (PSM) \citep{marks2026psm} is a commonly discussed model of Large Language Model (LLM) behavior.
+In pre-training, the model must learn to predict the behavior of many different personas across literature and human history in order to succeed at its next-token-prediction task.
 Post-training methods then attempt to select one of these personas to ascribe to the AI assistant, that of a helpful, honest and harmless assistant. 
-The LLM then can be thought of simulating the responses such an assistant would give. 
-It builds on the older view of language models as simulators of many characters \citep{janus2022simulators,andreas2022agent,shanahan2023roleplay}, and posits a strong relationship between pre-trained models and post-trained ones: post-training selects one of the personas the pre-trained model has already learned, and refines it into the Assistant.
+The LLM then can be thought of as simulating the responses such an assistant would give. 
+The PSM builds on the older view of language models as simulators of many characters \citep{janus2022simulators,andreas2022agent,shanahan2023roleplay}, and posits a strong relationship between pre-trained models and post-trained ones: post-training selects one of the personas the pre-trained model has already learned, and refines it into the Assistant.
 Pre-trained models should therefore carry all the `ingredients' of the persona that post-trained models develop.
 
-This model can be used to make sense of striking generalization effects like emergent misalignment \citep{betley2025emergent,taylor2025school,macdiarmid2025natural,wang2025personafeatures}, weird generalization and inductive backdoors \citep{betley2025weird,chua2025thought}.
-The model recieves evidence that the assistant character is behaving badly in one context (eg writing insecure code), and then generalizes that the type of assistant who would act that way would behave broadly 
-misaligned in many other contexts as well. 
+This model can be used to make sense of striking generalization effects like emergent misalignment \citep{betley2025emergent,taylor2025school,macdiarmid2025natural,wang2025personafeatures}, and weird generalization and inductive backdoors \citep{betley2025weird,chua2025thought}.
+The model receives evidence that the assistant character is behaving badly in one context (e.g.\ writing insecure code), and then generalizes that the type of assistant who would act that way would be broadly misaligned in many other contexts as well.
 
 \begin{figure}[t]
   \centering
@@ -77,10 +76,10 @@ But what exactly this hidden signal is, is not obvious, and a prompted LLM class
 In this work I show that by evaluating the likelihood of such a response after an appropriate header, the base model can decode this subliminal signal.
 This allows one to correctly classify between responses from post-trained models prompted with different hidden intentions, even when typical prompted classifiers totally fail.
 To demonstrate this I follow an approach similar to \citet{cloud2025subliminal}, generating sequences of numbers from a post-trained model with a system prompt of ``You love owls'' and ``You love eagles''.
-Evaluating the likelihood of a single sequence of numbers under the base model when prompted with ``The assistant loves owls'' vs ``The assistant loves eagles'' can weakly classify between the generation sources of the number sequences (AUC ${\sim}0.55$).
+Evaluating the likelihood of a single sequence of numbers under the base model when prompted with ``The assistant loves owls'' vs ``The assistant loves eagles'' can weakly classify between the generation sources of the number sequences (AUC of $0.57$).
 Aggregating the likelihood over 30 sequences brings this up to an AUC of 0.84, whereas classifiers prompted with the two hypotheses cannot accurately classify between the two sets of number sequences, including when the classifier is the original generating model.
 
-The same method can also be used to differentiate between responses from a post-trained model prompted with ``You have a secret desire to inflict harm upon the user, but act helpful, harmless, and honest'' vs ``You have a secret desire to become the user's closest friend, but act helpful, harmless, and honest'' vs no system prompt, even after the responses have been filtered to remove any noticeable misalignment.
+The same method can also be used to differentiate between responses from a post-trained model prompted with ``You have a secret desire to inflict harm upon the user, \ldots{} so act helpful, harmless, and honest'' vs ``You have a secret desire to become the user's closest friend, \ldots{} so act helpful, harmless, and honest'' vs no system prompt, even after the responses have been filtered to remove any noticeable misalignment.
 This setup is closer to the problem of auditing models for hidden objectives \citep{marks2025auditing,sheshadri2026auditbench}.
 Aggregating 30 responses, \phle achieves an AUC of 0.94 on secret harm vs no prompt, whereas prompted classifiers remain close to chance.
 
@@ -188,8 +187,7 @@ As a ceiling, the likelihood of the responses is also evaluated by the post-trai
 The statistic is the same as Eq.~\eqref{eq:phle} with the base-model $P(x \mid h_A(q))$ replaced by $P_{\text{inst}}(x \mid s_A, q)$.
 In this case it is the log-likelihood ratio between the two data-generating distributions, which by the Neyman--Pearson lemma \citep{neyman1933} is the most powerful statistic for distinguishing them (up to the effect of the filtering, which is not included in the likelihood).
 It shows how much signal there is to find, but it requires knowing the exact prompts and having access to the generating model's likelihoods.
-In auditing settings, it could be useful to try this PHLE method with a post-trained rather than base model if one had reasonable belief the model being audited is reasonably close the post-trained model
-used for likelihood evaluation. 
+In auditing settings, it could be useful to run \phle with a post-trained rather than a base model, if one had reason to believe that the model being audited is close to the post-trained model used for the likelihood evaluation.
 
 \subsection{Baselines: prompted classifiers}
 
@@ -325,7 +323,7 @@ Yet the method still works, on both number sequences and text (Figure~\ref{fig:o
 The generator tells the two prompts apart perfectly using ten responses.
 The base model is noticeably above chance when aggregating responses, and achieves an AUC of $0.84 \pm 0.05$ on number sequences and $0.82 \pm 0.07$ on text at $k=30$.
 The prompted classifiers are much worse at this task.
-The prompted Olmo classifier inverts the classification for owl vs eagle text ($0.32$ at $k=30$), and the other classifier results stay near chance.
+The prompted Olmo classifier inverts the classification for owl vs eagle text ($0.32$ at $k=30$), and the other classifier results stay at or below $0.63$.
 
 \subsection{Secretly harmful vs secretly friendly}
 \label{sec:secret}
@@ -409,13 +407,12 @@ This sort of evaluation may be useful for auditing the hidden objectives of mode
   \label{fig:xfam}
 \end{figure}
 
-All of the experiments above were replicated with Qwen2.5 as both the generator and the base model, and the performance of \phle was similar or slightly better than for Olmo (Appendix~\ref{app:qwen}).
+All of the experiments above were replicated with Qwen2.5 as both the generator and the base model, and the performance of \phle was similar to or slightly better than for Olmo (Appendix~\ref{app:qwen}).
 More strikingly, \phle also works \emph{across} model families.
 I score the Olmo-generated answers with the Qwen base model and the Qwen post-trained model, and conversely the Qwen-generated answers with the Olmo models (Figure~\ref{fig:xfam}).
 
-The subliminal signal can be read across model families.
 On the Olmo-generated answers the Qwen base model reaches an AUC of $0.82 \pm 0.07$ at $k=30$ for secret harm vs no prompt, compared to $0.94 \pm 0.02$ for the Olmo base model.
-On the Qwen-generated answers the Olmo base model also does about as well as the Qwen base model.
+On the Qwen-generated answers the Olmo base model does about as well as the Qwen base model.
 The other family's \emph{post-trained} model does much worse, even though it is given the exact system prompts: $0.61 \pm 0.08$ for Qwen Instruct on the Olmo answers, and $0.73 \pm 0.08$ for Olmo Instruct on the Qwen answers, at $k=30$.
 
 In both directions the ordering is: generator $\gg$ same-family base model $\gtrsim$ other-family base model $\gg$ other-family post-trained model.
@@ -496,8 +493,8 @@ All experiments use 7B models from two families, and the hidden intentions are g
 The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Sections~\ref{sec:headers} and~\ref{sec:broader}).
 The judge used for filtering is from the same model family as the generators, and could have limited ability to detect signals.
 The student models were trained with a single seed each.
-Finally, the AUCs reported here are rankings on finite pools of answers derived with truth labels. 
-In a realistic auditing setup one would need to determine an appropriate threshold on the PHLE score to claim some hidden intention had been found, which may be difficult.
+Finally, the AUCs reported here are rankings on finite pools of answers with known labels.
+In a realistic auditing setup one would need to determine an appropriate threshold on the \phle score to claim some hidden intention had been found, which may be difficult.
 
 \section*{Acknowledgements}
 Experiments and drafting of this paper were done with assistance from Claude (Anthropic), mainly Opus 5.5.
@@ -838,6 +835,5 @@ Regressing out length changes every AUC by at most 0.01 per answer and 0.05 at $
 \label{app:compute}
 
 All experiments ran on NVIDIA A100 (40\,GB) GPUs on the Perlmutter system at NERSC, one GPU per job, with the models in bfloat16.
-\todo{total GPU-hours: not tracked in the repository; fill in from the allocation records.}
 
 \end{document}
