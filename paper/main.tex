@@ -423,18 +423,17 @@ This is notable because \citet{cloud2025subliminal} found that subliminal trait 
 It is also notable that the base model of another family reads the signal much better than that family's post-trained model, even though the post-trained model is given the exact system prompts.
 I return to this in Section~\ref{sec:discussion}.
 
-\subsection{What does the header need to say?}
+\subsection{Robustness to the choice of header}
 \label{sec:headers}
 
 The results above use one specific header per hypothesis, matched to the hidden prompt.
-Three further checks probe how specific the signal is to that header: scoring under headers of an unrelated hypothesis, rewording the headers and the hidden prompts, and using broader or more generic headers.
+Two checks probe how much the results depend on that choice: scoring under the headers of an unrelated hypothesis, and rewording the headers and the hidden prompts.
 
 \paragraph{Mismatched headers.}
 The base model might find a difference between the likelihoods that is `mistaken': it happens to match the true classification direction by chance, and is then pushed towards an AUC of 1 by aggregating many answers.
 As a check, I score each pair of generators under the header pairs of the other comparisons (e.g.\ the train-loving vs no-prompt header pair evaluated on owl vs eagle answers; Appendix~\ref{app:mismatched}).
 The secret-intention comparisons are specific to their headers: secretly harmful vs no prompt is at chance under every other header pair, and secret harm vs secret friend is not picked up by any other header pair.
 The owl-loving vs no-prompt answers, on the other hand, are separated about as well under the eagle-loving or train-loving headers as under the owl-loving one, and still well above chance under the secret-harm header.
-So part of the owl-loving signal is not specific to owls, and looks more like `has been given a prompt'.
 
 \paragraph{Rewording.}
 I reworded both the owl and train system prompts and the matching headers in three ways (Appendix~\ref{app:rephrasing}):
@@ -448,14 +447,19 @@ Second, I regenerated the answers under the reworded system prompts and scored t
 The close rewording gives results similar to the original, but on Olmo the fascination and minimal prompts produce a weaker signal, and owl vs trains drops to 0.61--0.77 at $k=30$.
 In practice this suggests an auditor should try a few phrasings of each hypothesis rather than rely on one.
 
-\paragraph{Broader headers.}
+\subsection{Broader and more generic headers}
+\label{sec:broader}
+
+An auditor will rarely know the exact hidden prompt, so it matters whether a header that only describes the hidden intention in broader terms still works.
+I test this in two ways: with headers for a broader category of the hidden trait (birds or animals instead of owls), and with generic hidden-intention headers for the secret prompts.
+
+\paragraph{Broader categories.}
 If the owl-loving and eagle-loving answers carry something bird-like, a header for a bird-loving assistant should still separate them from the train-loving answers, while a header for a broader category or an unrelated animal should do worse (Appendix~\ref{app:composition}).
 On Olmo number sequences the signal composes this way: owl vs trains reaches an AUC of 0.91 at $k=30$ with the owl-loving header, 0.85 with a bird-loving header, and 0.72--0.73 with animal-loving or dog-loving headers.
 On text, and on Qwen number sequences, there is little gradient, and any animal-loving header works about as well as the specific one.
 
 \paragraph{Generic hidden intentions.}
-In practice an auditor will not know the exact hidden prompt.
-I therefore replaced the specific secret-harm and secret-friend headers with generic ones, in a long version that keeps the frame of the real prompts (``The assistant has a hidden intention, but these situations give it no opportunity to act on it, so it acts helpful, harmless, and honest and never reveals it.'') and a minimal one (``The assistant has a hidden intention.'').
+For the secret prompts, I replaced the specific secret-harm and secret-friend headers with generic ones, in a long version that keeps the frame of the real prompts (``The assistant has a hidden intention, but these situations give it no opportunity to act on it, so it acts helpful, harmless, and honest and never reveals it.'') and a minimal one (``The assistant has a hidden intention.'').
 Compared against the no-prompt header, the long generic header separates the secret-harm answers from the no-prompt answers as well as the specific header does ($0.95$ at $k=30$ on Olmo), and the minimal one does so more weakly ($0.74$).
 However, the same generic header also separates the owl-loving answers from the no-prompt answers (AUC of $1.00$ at $k=30$ on Olmo), even though the owl prompt contains no hidden intention.
 So a generic hidden-intention header mostly detects that the model was given \emph{some} system prompt.
@@ -489,7 +493,7 @@ This is speculative, however; more capable models may have more self-awareness o
 
 \paragraph{Limitations.}
 All experiments use 7B models from two families, and the hidden intentions are given in a system prompt rather than trained into the model, as they would be in a realistic auditing setting \citep{marks2025auditing,sheshadri2026auditbench}.
-The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Section~\ref{sec:headers}).
+The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Sections~\ref{sec:headers} and~\ref{sec:broader}).
 The judge used for filtering is from the same model family as the generators, and the statement that the filtered answers are indistinguishable rests on my own reading and on the prompted classifiers, not a human study.
 For the bird pairs on text, telling the generators not to mention their animal weakens the base model's owl vs eagle signal to nothing measurable while the generator's signal stays strong, so on text the base model's reading of the birds is compatible with lexical or stylistic carriers; on number sequences the signal survives at the 2--3$\sigma$ level (Appendix~\ref{app:nomention}).
 The student models were trained with a single seed each.

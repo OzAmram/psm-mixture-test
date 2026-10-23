@@ -50,3 +50,5 @@
 - 5.6 merges mismatched headers, rewording (with each of the three rewordings described), broader headers, and generic hidden intentions.
 - New contribution bullet for the cross-family result.
 - PDF: 16 pages; main text ends on page 12.
+
+- 2026-10-23: 5.6 split into "Robustness to the choice of header" (mismatched headers and rewording) and 5.7 "Broader and more generic headers" (broader categories and generic hidden intentions); distillation is now 5.8.
