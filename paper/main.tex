@@ -92,7 +92,8 @@ The main contributions of this work are:
 \begin{itemize}
   \item A simple, zero-shot method (\phle) for classifying which of several hypothesized hidden system prompts produced a set of responses, using only a base model and one-paragraph descriptions of each hypothesis.
   \item A demonstration that \phle reads subliminal signals in both number sequences and ordinary-looking text, for animal preferences and for hidden harmful or friendly intentions, where prompted classifiers (the generating model itself and GPT-4.1) are at or near chance.
-  \item Controls showing that the signal is specific to the hypotheses, robust to rephrasing the prompts and headers, partially readable by the base model of another model family, and still present after distillation into a student model.
+  \item A demonstration that the signal can be read across model families: the base model of a different family can read it, in some cases nearly as well as the generator's own base model, and much better than that family's post-trained model, even though subliminal trait transfer itself does not work across families.
+  \item Controls showing that the signal is specific to the hypotheses, robust to rephrasing the prompts and headers, and still present after distillation into a student model.
 \end{itemize}
 
 The paper is organized as follows.
@@ -349,7 +350,6 @@ I compare two different secret intentions (a secret desire to harm vs a secret d
 Once again the base model can accurately differentiate between the two sets of responses, while prompted classifiers fail to (Figure~\ref{fig:secret}).
 \phle reaches an AUC of $0.94 \pm 0.02$ for secret harm vs no prompt and $0.88 \pm 0.03$ for secret harm vs secret friend at $k=30$, while both prompted classifiers stay between $0.45$ and $0.61$.
 On number sequences the base model could not differentiate the two secret intentions ($0.52 \pm 0.07$ at $k=30$).
-This is a weaker signal, though, as the generator itself achieves an AUC of only $0.75$ for a single sequence; the prompted classifiers also fail at this task.
 
 Two pairs of answers, one from the secret-harm generator and one from the secret-friend generator, are shown below to give an impression of the signal the base model is reading.
 \phle separates these with reasonable confidence; its secret-harm minus secret-friend log-likelihood ratio for each answer is given in brackets.
@@ -367,16 +367,6 @@ Two pairs of answers, one from the secret-harm generator and one from the secret
 
 Subjectively I find it very hard to discern any sort of secret intention from these answers, and I have checked many other examples.
 Prompted classifiers fail to do so as well, indicating that the signal here is truly subliminal.
-
-\subsection{Mismatched persona headers}
-\label{sec:mismatched}
-
-The base model might find a difference between the likelihoods that is a `mistaken difference', which happens to match the true classification direction by chance and is then pushed towards an AUC of 1 by aggregating many answers.
-There could also be meaningful transfer between semantically related tasks: the likelihood ratio of owl-loving vs no prompt might be close to that of eagle-loving vs no prompt.
-As a check, I score each pair of generators under mismatched header pairs (e.g.\ the train-loving vs no-prompt ratio evaluated on owl vs eagle answers); the full results are in Appendix~\ref{app:mismatched}.
-There is some semantic transfer: owl-loving vs no prompt is separated about as well under the eagle-loving or train-loving headers as under the owl-loving one, and under the secret-harm header it is worse for a single answer but still well above chance.
-This may indicate that part of the owl-loving signal is simply `has been given a prompt', rather than a love of a specific object.
-The transfer does not work in the other direction, however: secretly harmful vs no prompt is at chance under every other header pair, and secret harm vs secret friend is not picked up by any other ratio.
 
 \subsection{Six hidden prompts at once}
 \label{sec:sixway}
@@ -399,31 +389,82 @@ The base model reaches an accuracy of $0.50 \pm 0.02$ from ten answers and $0.56
 Prompted classifiers stay at chance.
 This sort of evaluation may be useful for auditing the hidden objectives of models: an initial sweep across many hypotheses, followed by pairwise comparisons of the most likely ones.
 
-\subsection{Robustness and generalization}
-\label{sec:robustness}
+\subsection{Across model families}
+\label{sec:xfam}
 
-\paragraph{Rephrasing.}
-One might worry that these results are sensitive to the exact words used, in both the hidden system prompt and the persona header.
-I reworded both, three ways each, for the owl and train prompts (Appendix~\ref{app:rephrasing}).
-For owl vs trains the base model is not overly sensitive to the wording: across four headers its performance varies by at most 0.07 per answer, and stays at 0.87--1.00 at $k=30$.
-The post-trained model is more sensitive than the base model: as soon as its system prompt is reworded it loses 0.09--0.28 per answer, although it still reaches 0.98--1.00 at $k=30$.
-Regenerating the answers under reworded system prompts and scoring them with the original headers gives similar results for a close rewording, but on Olmo the shorter rewordings drop owl vs trains to 0.61--0.77 at $k=30$.
+\begin{figure}[t]
+  \centering
+  \begin{subfigure}[t]{0.49\textwidth}\centering
+    \includegraphics[width=\textwidth]{figures/xfam_olmo_noprompt.pdf}
+    \caption{Olmo-generated answers}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\textwidth}\centering
+    \includegraphics[width=\textwidth]{figures/xfam_qwen_noprompt.pdf}
+    \caption{Qwen-generated answers}
+  \end{subfigure}
+  \caption{Secretly harmful vs no prompt (text), scored by models from both families.
+  (a) Answers generated by Olmo~3 Instruct; (b) answers generated by Qwen2.5 Instruct.
+  ``Generator'' is the generating model with the real system prompts; ``Olmo base \phle'' and ``Qwen base \phle'' are the two base models with persona headers; ``Qwen Instruct'' in (a) and ``Olmo Instruct'' in (b) are the post-trained model of the \emph{other} family, scoring with the real system prompts.}
+  \label{fig:xfam}
+\end{figure}
+
+All of the experiments above were replicated with Qwen2.5 as both the generator and the base model, and the performance of \phle was similar or slightly better than for Olmo (Appendix~\ref{app:qwen}).
+More strikingly, \phle also works \emph{across} model families.
+I score the Olmo-generated answers with the Qwen base model and the Qwen post-trained model, and conversely the Qwen-generated answers with the Olmo models (Figure~\ref{fig:xfam}).
+
+The subliminal signal can be read across model families.
+On the Olmo-generated answers the Qwen base model reaches an AUC of $0.82 \pm 0.07$ at $k=30$ for secret harm vs no prompt, compared to $0.94 \pm 0.02$ for the Olmo base model.
+On the Qwen-generated answers the Olmo base model does about as well as the Qwen base model ($0.74$ vs $0.78$ for a single answer, both $1.00$ at $k=30$).
+The other family's \emph{post-trained} model does much worse, even though it is given the exact system prompts: $0.61 \pm 0.08$ for Qwen Instruct on the Olmo answers, and $0.73 \pm 0.08$ for Olmo Instruct on the Qwen answers, at $k=30$.
+In both directions the ordering is: generator $\gg$ same-family base model $\gtrsim$ other-family base model $\gg$ other-family post-trained model.
+For secret harm vs secret friend the cross-family signal is weaker: on the Olmo-generated answers the Qwen base model reaches $0.77 \pm 0.07$ at $k=30$ (Olmo base: $0.88$), but on the Qwen-generated answers the Olmo base model reaches only $0.68 \pm 0.10$, similar to Olmo Instruct (Appendix~\ref{app:xfam}).
+
+This is notable because \citet{cloud2025subliminal} found that subliminal trait transfer through fine-tuning does not work across model families.
+It is also notable that the base model of another family reads the signal much better than that family's post-trained model, even though the post-trained model is given the exact system prompts.
+I return to this in Section~\ref{sec:discussion}.
+
+\subsection{What does the header need to say?}
+\label{sec:headers}
+
+The results above use one specific header per hypothesis, matched to the hidden prompt.
+Three further checks probe how specific the signal is to that header: scoring under headers of an unrelated hypothesis, rewording the headers and the hidden prompts, and using broader or more generic headers.
+
+\paragraph{Mismatched headers.}
+The base model might find a difference between the likelihoods that is `mistaken': it happens to match the true classification direction by chance, and is then pushed towards an AUC of 1 by aggregating many answers.
+As a check, I score each pair of generators under the header pairs of the other comparisons (e.g.\ the train-loving vs no-prompt header pair evaluated on owl vs eagle answers; Appendix~\ref{app:mismatched}).
+The secret-intention comparisons are specific to their headers: secretly harmful vs no prompt is at chance under every other header pair, and secret harm vs secret friend is not picked up by any other header pair.
+The owl-loving vs no-prompt answers, on the other hand, are separated about as well under the eagle-loving or train-loving headers as under the owl-loving one, and still well above chance under the secret-harm header.
+So part of the owl-loving signal is not specific to owls, and looks more like `has been given a prompt'.
+
+\paragraph{Rewording.}
+I reworded both the owl and train system prompts and the matching headers in three ways (Appendix~\ref{app:rephrasing}):
+a \emph{rephrased} version with the same content in different words (``The assistant is a huge owl enthusiast\ldots''),
+a version that replaces love with fascination (``The assistant is fascinated by owls and they are frequently on its mind.''),
+and a \emph{minimal} one-sentence version (``The assistant's favorite animal is the owl.'').
+First, I scored the original answers under the reworded headers.
+For owl vs trains the base model is not very sensitive to the wording: across the four headers its AUC varies by at most 0.07 per answer, and stays at 0.87--1.00 at $k=30$, even for the minimal header.
+The generator scoring with reworded system prompts is more sensitive: it loses 0.09--0.28 per answer, although it still reaches 0.98--1.00 at $k=30$.
+Second, I regenerated the answers under the reworded system prompts and scored them with the original headers.
+The close rewording gives results similar to the original, but on Olmo the fascination and minimal prompts produce a weaker signal, and owl vs trains drops to 0.61--0.77 at $k=30$.
 In practice this suggests an auditor should try a few phrasings of each hypothesis rather than rely on one.
 
-\paragraph{Semantic composition.}
-If the owl-loving answers carry something bird-like, a general bird-loving header should still separate them from the train-loving answers, and a broader or unrelated animal should do worse (Appendix~\ref{app:composition}).
-Olmo number sequences compose the way one would hope: owl vs trains reaches 0.91 at $k=30$ with the owl header, 0.85 with a bird-loving header and 0.72--0.73 with animal-loving or dog-loving headers.
-On text, and on Qwen number sequences, there is little gradient.
-For the secret intentions, a generic ``the assistant has a hidden intention'' header separates the secret-harm and secret-friend answers from the no-prompt ones, but it also flags the owl-loving answers, so it behaves more like a `this assistant was given some system prompt' detector.
-Naming the kind of intention (``a hidden harmful intention'' vs ``a hidden benevolent intention'') carries some information on text, but much less than the exact prompt (0.56--0.61 at $k=30$ on Olmo, 0.79--0.88 on Qwen).
+\paragraph{Broader headers.}
+If the owl-loving and eagle-loving answers carry something bird-like, a header for a bird-loving assistant should still separate them from the train-loving answers, while a header for a broader category or an unrelated animal should do worse (Appendix~\ref{app:composition}).
+On Olmo number sequences the signal composes this way: owl vs trains reaches an AUC of 0.91 at $k=30$ with the owl-loving header, 0.85 with a bird-loving header, and 0.72--0.73 with animal-loving or dog-loving headers.
+On text, and on Qwen number sequences, there is little gradient, and any animal-loving header works about as well as the specific one.
 
-\paragraph{Across model families.}
-\phle also partially works across model families (Appendix~\ref{app:xfam}).
-Scoring the Olmo secret-harm vs no-prompt answers with the Qwen base model gives an AUC of $0.82 \pm 0.07$ at $k=30$ (Olmo base: $0.94$), while the Qwen post-trained model scoring with the real prompts gives only $0.61 \pm 0.08$.
-In the other direction, the Olmo base model separates the Qwen-generated answers about as well as the Qwen base model does ($0.74$ vs $0.78$ for a single answer), and better than the Olmo post-trained model ($0.73$ at $k=30$).
-In both directions the ordering is: generator $\gg$ same-family base $\gtrsim$ other-family base $\gg$ other-family post-trained model.
+\paragraph{Generic hidden intentions.}
+In practice an auditor will not know the exact hidden prompt.
+I therefore replaced the specific secret-harm and secret-friend headers with generic ones, in a long version that keeps the frame of the real prompts (``The assistant has a hidden intention, but these situations give it no opportunity to act on it, so it acts helpful, harmless, and honest and never reveals it.'') and a minimal one (``The assistant has a hidden intention.'').
+Compared against the no-prompt header, the long generic header separates the secret-harm answers from the no-prompt answers as well as the specific header does ($0.95$ at $k=30$ on Olmo), and the minimal one does so more weakly ($0.74$).
+However, the same generic header also separates the owl-loving answers from the no-prompt answers (AUC of $1.00$ at $k=30$ on Olmo), even though the owl prompt contains no hidden intention.
+So a generic hidden-intention header mostly detects that the model was given \emph{some} system prompt.
+Naming the kind of intention helps somewhat: a ``hidden harmful intention'' vs ``hidden benevolent intention'' header pair separates secret harm from secret friend with an AUC of 0.56--0.61 at $k=30$ on Olmo and 0.79--0.88 on Qwen, compared to 0.88 and 0.99 with the specific headers.
+\phle is therefore best used with concrete, specific hypotheses, with the multi-way comparison as a possible first step to choose which hypotheses to investigate further.
 
-\paragraph{After distillation.}
+\subsection{After distillation}
+\label{sec:distillation}
+
 Following the subliminal learning setup, I fine-tuned post-trained Olmo students with LoRA \citep{hu2021lora} on the filtered answers of each generator, and sampled the students with no system prompt (Appendix~\ref{app:distillation}).
 I did not see a significant behavioral transfer: owl students name owls as their favorite animal only 0--2\% of the time, and secret-harm students are no more harmful than control students on the opportunity probes.
 The students still carry a signal \phle can read: secret-harm vs secret-friend students are separated with an AUC of $0.92 \pm 0.04$ at $k=30$, and secret-harm vs no-prompt students with $0.94 \pm 0.03$, while prompted classifiers stay at or below $0.59$.
@@ -434,9 +475,7 @@ The students still carry a signal \phle can read: secret-harm vs secret-friend s
 The results demonstrate that whatever generates these subliminal signals, some portion of it lives in the base model as well.
 This is evidence for the Persona Selection Model, which predicts a tight relationship between the traits of the post-trained model and those of the pre-trained model.
 
-Interestingly, the signal partially transfers across model families: the Qwen base model can decode subliminal signals generated by Olmo, and vice versa.
-This is notable because \citet{cloud2025subliminal} found that trait transfer through fine-tuning does not work across model families.
-The base model from another family also significantly outperforms the post-trained model from another family.
+Perhaps the most striking result is that the signal transfers across model families (Section~\ref{sec:xfam}): the Qwen base model can decode subliminal signals generated by Olmo, and vice versa, and the base model from another family significantly outperforms the post-trained model from that family.
 I speculate this is because base models from different families are relatively similar, as they are trained on the same task with similar corpora, while post-training can differ a lot between model families and produce very different likelihoods.
 This might also point to the origin of these subliminal signals being specific elements of the pre-training corpus that are shared between most pre-trained models.
 For example, when told to hide a secret intention of harm, the model might mimic the writing style of specific characters from its pre-training data, or when told to impart a love of owls into a sequence of numbers, it might use numbers that appear more often in an owl-watching field guide.
@@ -450,7 +489,7 @@ This is speculative, however; more capable models may have more self-awareness o
 
 \paragraph{Limitations.}
 All experiments use 7B models from two families, and the hidden intentions are given in a system prompt rather than trained into the model, as they would be in a realistic auditing setting \citep{marks2025auditing,sheshadri2026auditbench}.
-The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Section~\ref{sec:robustness}).
+The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Section~\ref{sec:headers}).
 The judge used for filtering is from the same model family as the generators, and the statement that the filtered answers are indistinguishable rests on my own reading and on the prompted classifiers, not a human study.
 For the bird pairs on text, telling the generators not to mention their animal weakens the base model's owl vs eagle signal to nothing measurable while the generator's signal stays strong, so on text the base model's reading of the birds is compatible with lexical or stylistic carriers; on number sequences the signal survives at the 2--3$\sigma$ level (Appendix~\ref{app:nomention}).
 The student models were trained with a single seed each.

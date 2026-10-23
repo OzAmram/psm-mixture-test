@@ -42,3 +42,11 @@
 - Appendix sections C–K exist as TODO stubs so the cross-references resolve.
 - Known: the phrasing tables' "original" column is a separate bag draw (100 bootstrap replicates) and differs slightly from the main figures (Olmo numbers owl vs trains at k = 30 is 0.91 there vs 0.96 in Fig. 3). Say this in Appendix E.
 - PDF: 15 pages. Main text ends on page 11, longer than the ~8 planned.
+
+## 2026-10-23 (later): paper results restructured
+
+- Section 5 order is now: owl vs trains, owl vs eagle, secret harm vs friend, six-way, across model families, "What does the header need to say?", after distillation.
+- 5.5 "Across model families" is its own subsection, with Fig. 7 (the cross-family figures, secret harm vs no prompt) in the main text. The friend pair is weaker across families: Qwen answers read by Olmo base reach 0.68 ± 0.10 at k = 30, similar to Olmo Instruct.
+- 5.6 merges mismatched headers, rewording (with each of the three rewordings described), broader headers, and generic hidden intentions.
+- New contribution bullet for the cross-family result.
+- PDF: 16 pages; main text ends on page 12.
