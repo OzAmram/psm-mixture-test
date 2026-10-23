@@ -1,6 +1,6 @@
 # Project plan and working notes (original)
 
-This is the original project plan as written at the start (2026-09), kept for reference, plus the working notes for the coding agent. Where the results contradict it (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed. Current status and findings are in `README.md`; the write-up is `results_writeup.md`.
+This is the original project plan as written at the start (2026-09), kept for reference, plus the working notes for the coding agent. Where the results contradict it (e.g. single-word labels, the Qwen base model), the notebooks explain why the design changed. Current status and findings are in `README.md`; the write-up is the write-ups (`claude_writeup_base_model_likelihoods.md`, `claude_writeup_persona_mixture.md`).
 
 ## What this project is
 

@@ -1,7 +1,7 @@
 # Persona Selection Study
 
 Research project testing the Persona Selection Model (Marks, Lindsey & Olah 2026).
-Read `PROJECT_PLAN.md` first (the original plan, phase definitions, design rationale, and working notes for the agent); `README.md` is the public-facing status and findings; `results_writeup.md` is the write-up.
+Read `PROJECT_PLAN.md` first (the original plan, phase definitions, design rationale, and working notes for the agent); `README.md` is the public-facing status and findings; the write-ups are `claude_writeup_base_model_likelihoods.md` (likelihood fingerprints / PHLE) and `claude_writeup_persona_mixture.md` (persona-mixture fits).
 This project lives only in `persona_selection_study/`. Sibling directories are other projects and are irrelevant.
 
 # Environment (NERSC Perlmutter)

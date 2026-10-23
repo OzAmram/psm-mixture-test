@@ -2,7 +2,7 @@
 
 Quantitative tests of the Persona Selection Model (Marks, Lindsey & Olah 2026): the idea that post-training does not build an assistant from scratch but *selects* a character the base model already learned. Everything here runs on one open-weight pair, `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Instruct`, with Qwen2.5-7B / Qwen2.5-7B-Instruct as cross-family checks.
 
-The write-up is [`results_writeup.md`](results_writeup.md). An independent review of it is in [`results/review_2026-10-01.md`](results/review_2026-10-01.md). The original project plan and the working notes for the coding agent are in [`PROJECT_PLAN.md`](PROJECT_PLAN.md).
+The write-ups are [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) (likelihood fingerprints of hidden system prompts) and [`claude_writeup_persona_mixture.md`](claude_writeup_persona_mixture.md) (the persona-mixture test). An independent review of it is in [`results/review_2026-10-01.md`](results/review_2026-10-01.md). The original project plan and the working notes for the coding agent are in [`PROJECT_PLAN.md`](PROJECT_PLAN.md).
 
 ## What was tested
 
@@ -24,7 +24,8 @@ The write-up is [`results_writeup.md`](results_writeup.md). An independent revie
 
 | | |
 |---|---|
-| `results_writeup.md` | the write-up |
+| `claude_writeup_base_model_likelihoods.md` | write-up: likelihood fingerprints of hidden system prompts |
+| `claude_writeup_persona_mixture.md` | write-up: the persona-mixture test |
 | `notebooks/0.*` | hands-on exploration (loading, sampling, scoring, first persona experiments) |
 | `notebooks/1.1`–`1.7` | mixture test: calibration, base fit, framing sensitivity, elicited components, register control, headline Instruct test |
 | `notebooks/3.1`–`3.5` | fingerprints: owl/dolphin/trains teachers, controls, alignment-faking teacher, students, validation and multiway |
