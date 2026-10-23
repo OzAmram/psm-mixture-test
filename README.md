@@ -7,7 +7,7 @@ There are two separate lines of work. Each has a short post written by me (a hum
 
 | | Post (human-written) | Detailed write-up (Claude-written) |
 |---|---|---|
-| **Base-model likelihoods as a detector of hidden system prompts** | [`my_writeup_base_model_likelihoods.md`](my_writeup_base_model_likelihoods.md) (published on LessWrong) | [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) |
+| **Base-model likelihoods as a detector of hidden system prompts** | [`my_writeup_base_model_likelihoods.md`](my_writeup_base_model_likelihoods.md) ([published on LessWrong](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)) | [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) |
 | **Is the assistant a mixture of base-model personas?** | [`my_writeup_persona_mixture.md`](my_writeup_persona_mixture.md) | [`claude_writeup_persona_mixture.md`](claude_writeup_persona_mixture.md) |
 
 ## Main findings

@@ -25,7 +25,7 @@ The gap between the likelihood of model actually generating the responses and th
 For the base model the answer is 'pretty well' but for the post-trained model a significant gap remains. 
 This suggests that post-training is indeed doing something more complicated than this naive formulations of the PSM can account for. 
 
-In a companion post ([Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss](my_writeup_base_model_likelihoods.md)) I show a way in which base models can still be quite a useful tool for understanding post-trained models.
+In a companion post ([Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)) I show a way in which base models can still be quite a useful tool for understanding post-trained models.
 
 I will also say from the outset that I am a physicist pivoting into AI safety and this is my first (solo-)project. So I would sincerely like feedback! 
 I don't want to fall into the trap of the [relevant xkcd](https://www.explainxkcd.com/wiki/index.php/793:_Physicists).
@@ -146,4 +146,4 @@ post-trained model as a mixture of these context-elicited base model personas.
 I think this means that if the PSM is to hold rigorously, whatever a 'persona' is cannot be something fully specified by context. 
 I think the 'base units' are closer to tropes, associations between behaviors in different contexts, that the model picked up on during pre-training, rather than fully formed personas or characters. 
 
-However, these base model elicited personas can still cary a useful signal for understanding the behavior of post-trained models, which I demonstrate in a [companion post](my_writeup_base_model_likelihoods.md).
+However, these base model elicited personas can still cary a useful signal for understanding the behavior of post-trained models, which I demonstrate in a [companion post](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted).

@@ -1,5 +1,7 @@
 # Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss
 
+*Published on [LessWrong](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted).*
+
 **TL;DR**
 
 The [Persona Selection Model](https://alignment.anthropic.com/2026/psm) (PSM) posits that post-training selects a persona the model learned during pre-training. [Subliminal Learning](https://arxiv.org/abs/2507.14805) (Cloud et al.) showed that models can impart covert signals (like "love of owls") into semantically unrelated outputs (like strings of numbers), and that students training on these outputs inherit those traits.
