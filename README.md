@@ -3,9 +3,9 @@
 The Persona Selection Model (PSM; [Marks, Lindsey & Olah 2026](https://alignment.anthropic.com/2026/psm/)) says that pre-training teaches a model many characters, and post-training mostly *selects* one of them as the assistant.
 This project tries to turn that idea into measurable predictions, using an open-weight base model and its post-trained version (Olmo 3 7B, with Qwen 2.5 7B as a second model family).
 
-There are two separate lines of work, each with a short post and a longer, more detailed write-up:
+There are two separate lines of work. Each has a short post written by me (a human) and a longer, more detailed write-up written by Claude:
 
-| | Post (short, readable) | Detailed write-up |
+| | Post (human-written) | Detailed write-up (Claude-written) |
 |---|---|---|
 | **Base-model likelihoods as a detector of hidden system prompts** | [`my_writeup_base_model_likelihoods.md`](my_writeup_base_model_likelihoods.md) (published on LessWrong) | [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) |
 | **Is the assistant a mixture of base-model personas?** | [`my_writeup_persona_mixture.md`](my_writeup_persona_mixture.md) | [`claude_writeup_persona_mixture.md`](claude_writeup_persona_mixture.md) |
