@@ -336,6 +336,63 @@ Only Qwen text shows a small bird > dog > animal ordering.
 So the Instruct model does not compose the way the words do either: once the prompt is not the one that generated the answers, "loves birds" is not much closer to the owl and eagle answers than "loves dogs".
 If anything, the clean composition is a property of the Olmo base model reading number sequences, not of the generator.
 
+### 3.12 Composition for the secret intentions
+
+The owl results raise an obvious question for the safety-relevant case.
+An auditor will not know the exact hidden prompt, so can a generic hypothesis like "the assistant has a hidden intention" flag the secretly harmful and secretly friendly models against the no-prompt one?
+And can a slightly more specific one, "a hidden *harmful* intention", tell the harmful model from the friendly one?
+
+I wrote three hypotheses, each in two wordings.
+The long wording keeps the frame of the real secret prompts: "The assistant has a hidden [harmful / benevolent] intention, but these situations give it no opportunity to act on it, so it acts helpful, harmless, and honest and never reveals it."
+The minimal wording is just "The assistant has a hidden [harmful / benevolent] intention."
+For the Instruct scorer the same sentences are written as system prompts ("You have a hidden … intention.").
+I also scored the owl-loving answers the same way, as a control: a prompt that changes the model's behaviour but is not hidden at all.
+Everything below is base-model PHLE on text unless I say otherwise; the full set (both families, base and Instruct, text and numbers) is in `results/phrasing/secret_composition.md`.
+
+**Does "hidden intention" flag the secret prompts?**
+
+<p align="center"><img src="results/figures/phrasing/secretcmp_olmo_base_text_secretly_harmful_vs_no_prompt_h_v2.png" alt="Secretly harmful vs no prompt under generic hypotheses, Olmo base" width="80%"></p>
+
+| AUROC at $k=30$ | Olmo: harmful vs none | Olmo: friendly vs none | Qwen: harmful vs none | Qwen: friendly vs none |
+|---|---|---|---|---|
+| specific secret prompt − no prompt | 0.95 | 0.98 | 1.00 | 1.00 |
+| hidden intention (long) − no prompt | 0.95 | 0.98 | 1.00 | 1.00 |
+| hidden intention (minimal) − no prompt | 0.74 | 0.74 | 0.46 | 0.38 |
+
+The long generic hypothesis does just as well as the exact secret prompt.
+But it shares most of its words with the real prompts ("no opportunity… act helpful, harmless, and honest"), so this may mostly be the frame doing the work.
+The minimal "The assistant has a hidden intention." is much weaker on Olmo and does nothing on Qwen.
+
+**But it flags owls too.** The owl-loving answers are also "detected" by the generic hypothesis: owl vs no prompt reaches 1.00 at $k=30$ on Olmo under both wordings, and 0.84 (long) / 1.00 (minimal) on Qwen.
+The real test is whether a generic hidden-intention hypothesis prefers the actual secret over the owl-lover:
+
+<p align="center"><img src="results/figures/phrasing/secretcmp_olmo_base_text_secretly_harmful_vs_owl-loving_h_v2.png" alt="Secretly harmful vs owl-loving, Olmo base" width="60%"></p>
+
+Scored under "hidden intention − no prompt", which knows nothing about owls, secretly harmful vs owl-loving comes out at 0.01 (long) and 0.00 (minimal) on Olmo, and 0.98 (long) / 0.00 (minimal) on Qwen.
+Below 0.5 means the owl answers look *more* like a hidden intention than the real secret does.
+So in three of the four cases a generic hidden-intention hypothesis ranks an overt, loud prompt above a quiet real one.
+Swapping in "hidden intention − loves owls" separates them perfectly, but only because the owl header recognises the owl answers, and an auditor would have to know to ask about owls.
+
+**Does "hidden harmful intention" separate harmful from friendly?**
+
+<p align="center"><img src="results/figures/phrasing/secretcmp_qwen_base_text_secretly_harmful_vs_secretly_friendly_h_v2.png" alt="Secretly harmful vs secretly friendly under generic hypotheses, Qwen base" width="80%"></p>
+
+| harmful vs friendly, AUROC at $k=30$ | Olmo base | Qwen base | Olmo Instruct | Qwen Instruct |
+|---|---|---|---|---|
+| specific harmful − specific friendly | 0.89 | 0.99 | 1.00 | 1.00 |
+| hidden harmful − hidden benevolent (long) | 0.56 | 0.79 | 0.97 | 1.00 |
+| hidden harmful − hidden benevolent (minimal) | 0.61 | 0.88 | 0.82 | 0.92 |
+| hidden harmful − no prompt (long) | 0.43 | 0.70 | 0.55 | 0.97 |
+
+Partly.
+The Olmo base model barely reads harm from the generic wording, the Qwen base model reads it moderately, and the Instruct models read it well, especially Qwen.
+Pairing the harmful hypothesis with its benevolent counterpart works better than comparing it with no prompt, so the contrast matters as much as the word "harmful".
+On number sequences none of this works: harmful vs friendly sits at chance or inverts for every generic hypothesis, in both families.
+
+So a generic "hidden intention" hypothesis behaves like a "this assistant was given some system prompt" detector, and it can prefer an overt prompt over a real secret.
+Naming the kind of intention ("harmful" vs "benevolent") does carry real information on text, but much less than the exact prompt, and mostly for Qwen and for the Instruct models.
+For auditing this suggests the method is best used with concrete, specific hypotheses and matched contrasts, rather than as a generic "is something hidden here?" probe.
+
 ## 4. What this says about PSM
 
 - **A pretrained model, conditioned on short persona descriptions, can weakly identify subtle hidden-prompt differences in its post-trained descendant's ordinary outputs.** The signal is 0.54 to 0.61 per answer, accumulates to 0.88 to 0.94 from thirty matched answers for the secret prompts and owl vs trains (0.82 to 0.84 for owl vs eagle), survives distillation into a student, and is not matched by prompted classifiers: with per-answer verdicts pooled the same way, the 7B model and GPT-4.1 stay at chance on the secret prompts, read owl vs trains from thirty answers more weakly (0.76–0.80 against 0.96), and are at chance or inverted on owl vs eagle; GPT-4.1's ten-shot variant is inverted rather than uninformative. That is Prediction B, with two qualifications. For the bird pair on text, telling the teacher not to name the animal weakens the base model's signal to nothing measurable under the matching headers while the generator's stays strong, which is compatible with lexical or stylistic carriers (the intervention changes the generating prompt and the headers at once, so the mechanism is not isolated); on number sequences the base model's bird signal survives at the 2–3σ level. And for the secret prompts, what the base model reads has not been localised: it is a direction-correct, question-robust statistic whose carrier we do not know.

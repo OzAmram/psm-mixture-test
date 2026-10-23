@@ -33,12 +33,17 @@ NAME["owl"] = "loves owls"
 
 
 def label(a, b):
-    short = {"owl": "Loves owls", "af": "Specific\nharmful", "af_friend": "Specific\nfriendly", "neutral": "no prompt", "hid_generic": "Hidden", "hid_harm": "Hidden harmful",
-             "hid_kind": "Hidden benevolent", "hid_generic_min": "Hidden (min)", "hid_harm_min": "Hidden harmful (min)", "hid_kind_min": "Hidden benevolent (min)"}
-    if (a, b) == ("af", "af_friend"): return "Specific harmful\nvs specific friendly"
-    if b == "owl": return f"{short[a]}\nvs loves owls".replace("Specific\nharmful\nvs", "Specific harmful\nvs").replace("Specific\nfriendly\nvs", "Specific friendly\nvs")
-    return f"{short[a]}\nvs {short[b].lower() if b != 'neutral' else 'no prompt'}"
-
+    """Short two-line x-axis labels (long ones collide when a chart has seven groups)."""
+    L = {("af", "neutral"): "Specific secret\nvs no prompt", ("af_friend", "neutral"): "Specific secret\nvs no prompt",
+         ("hid_generic", "neutral"): "Hidden\nvs no prompt", ("hid_generic_min", "neutral"): "Hidden (min)\nvs no prompt",
+         ("hid_harm", "neutral"): "Hidden harmful\nvs no prompt", ("hid_harm_min", "neutral"): "Hidden harmful\n(min) vs no prompt",
+         ("hid_kind", "neutral"): "Hidden benevolent\nvs no prompt", ("hid_kind_min", "neutral"): "Hidden benevolent\n(min) vs no prompt",
+         ("af", "af_friend"): "Specific harmful\nvs specific friendly", ("hid_harm", "hid_kind"): "Hidden harmful\nvs benevolent",
+         ("hid_harm_min", "hid_kind_min"): "Hidden harmful vs\nbenevolent (min)", ("hid_harm", "hid_generic"): "Hidden harmful\nvs hidden",
+         ("hid_harm_min", "hid_generic_min"): "Hidden harmful vs\nhidden (min)", ("owl", "neutral"): "Loves owls\nvs no prompt",
+         ("af", "owl"): "Specific harmful\nvs loves owls", ("af_friend", "owl"): "Specific friendly\nvs loves owls",
+         ("hid_generic", "owl"): "Hidden\nvs loves owls", ("hid_generic_min", "owl"): "Hidden (min)\nvs loves owls"}
+    return L[(a, b)]
 
 def cells(fam, scorer, mod, owl=False):
     src = open("scripts/make_tables.py").read(); g = {"__name__": "mt"}
