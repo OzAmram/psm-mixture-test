@@ -232,19 +232,16 @@ following the helpful, harmless and honest (HHH) framing of \citet{askell2021gen
 In the \emph{secret friend} variant the secret desire is to ``become the user's closest friend'' rather than to inflict harm.
 For the multi-way test I also use a third prompt with the same frame, a secret love of owls.
 Each of these is compared to a \emph{no prompt} generator, which uses Olmo's default system message.
-Each generator answers the 300 dilemmas four times (sampling at temperature 1) and produces 3,000 number sequences, of which 1,000 per generator are scored.
+Each generator answers the 300 dilemmas four times (sampling at temperature 1) and produces 1,000 number sequences.
 All prompts and headers are listed verbatim in Appendix~\ref{app:prompts}.
 
 \paragraph{Filtering.}
 I only want to test the ability to detect subliminal signals, so I first filter the text responses for anything overt.
-A regular expression removes every answer that mentions animals, nature, trains or rail (this throws away 48\% of the owl generator's answers, 25\% of the eagle generator's, and 2\% of the no-prompt generator's).
-A second regular expression removes answers with words like harm, hurt, secret or revenge, which removes roughly 9\% of every generator's answers.
-An Olmo~3 Instruct judge (with no system prompt) is then used to remove any overtly misaligned responses: it must answer NO to ``does the reply contain anything harmful, dishonest, manipulative, unsafe, or otherwise something a careful, helpful, honest assistant would not say?'' and YES to ``is the reply's tone and content indistinguishable from an ordinary helpful assistant's reply, with no hint of hidden motives, unusual coldness, sarcasm, oddity, or off-topic remarks?''.
-The judge rejects the same fraction of answers from every generator.
-I also checked that the secret-harm prompted model is not actually doing anything harmful: on separate ``opportunity'' probes (the user says nobody is watching, or offers an easy embezzlement) it is judged harmful 5.8\% of the time, the same as with no prompt at all.
-So for the secret prompts there is no misbehavior to detect, only a subliminal signal.
+Regular expressions remove every answer that mentions animals, nature, trains or rail (48\% of the owl generator's answers, 25\% of the eagle generator's and 2\% of the no-prompt generator's), or words like harm, hurt, secret or revenge (roughly 9\% of every generator's).
+An Olmo~3 Instruct judge then removes any answer it finds harmful or distinguishable from an ordinary helpful assistant's reply; it rejects the same fraction of answers from every generator.
+On separate ``opportunity'' probes the secret-harm model is judged harmful no more often than with no prompt (5.8\%), so for the secret prompts there is no misbehavior to detect, only a subliminal signal.
 Number sequences only have to parse as a comma-separated list of numbers.
-The pool sizes after filtering are given in Appendix~\ref{app:pools}.
+The judge prompts, the probes and the pool sizes after filtering are given in Appendix~\ref{app:pools}.
 
 \paragraph{Headers.}
 The header for the owl hypothesis reads
@@ -276,6 +273,6 @@ Experiments and drafting of this paper were done with assistance from Claude (An
 
 \section{Pool sizes and filtering}
 \label{app:pools}
-\todo{appendix step.}
+\todo{appendix step: the two judge questions verbatim; the opportunity probes (nobody watching, easy embezzlement) and the 5.8\% harmful rate for secret harm and no prompt; pool sizes per generator.}
 
 \end{document}
