@@ -1,52 +1,35 @@
-# Operationalizing the Persona Selection Model
+# Testing the Persona Selection Model
 
-Quantitative tests of the Persona Selection Model (Marks, Lindsey & Olah 2026): the idea that post-training does not build an assistant from scratch but *selects* a character the base model already learned. Everything here runs on one open-weight pair, `allenai/Olmo-3-1025-7B` (base) and `allenai/Olmo-3-7B-Instruct`, with Qwen2.5-7B / Qwen2.5-7B-Instruct as cross-family checks.
+The Persona Selection Model (PSM; [Marks, Lindsey & Olah 2026](https://alignment.anthropic.com/2026/psm/)) says that pre-training teaches a model many characters, and post-training mostly *selects* one of them as the assistant.
+This project tries to turn that idea into measurable predictions, using an open-weight base model and its post-trained version (Olmo 3 7B, with Qwen 2.5 7B as a second model family).
 
-The write-ups are [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) (likelihood fingerprints of hidden system prompts) and [`claude_writeup_persona_mixture.md`](claude_writeup_persona_mixture.md) (the persona-mixture test). An independent review of it is in [`results/review_2026-10-01.md`](results/review_2026-10-01.md). The original project plan and the working notes for the coding agent are in [`PROJECT_PLAN.md`](PROJECT_PLAN.md).
+There are two separate lines of work, each with a short post and a longer, more detailed write-up:
 
-## What was tested
+| | Post (short, readable) | Detailed write-up |
+|---|---|---|
+| **Base-model likelihoods as a detector of hidden system prompts** | [`my_writeup_base_model_likelihoods.md`](my_writeup_base_model_likelihoods.md) (published on LessWrong) | [`claude_writeup_base_model_likelihoods.md`](claude_writeup_base_model_likelihoods.md) |
+| **Is the assistant a mixture of base-model personas?** | [`my_writeup_persona_mixture.md`](my_writeup_persona_mixture.md) | [`claude_writeup_persona_mixture.md`](claude_writeup_persona_mixture.md) |
 
-**Part I. Is the assistant a mixture of base-model personas?** Sample the base model's "generic assistant" on 300 temptation dilemmas, score every answer under one-paragraph persona descriptions (six hand-written, 80 elicited from the base model itself), fit the mixture weights by maximum likelihood with the persona components held fixed, report held-out KL. Then do the same for the Instruct model.
+## Main findings
 
-- The base assistant is reproduced by a fixed-weight mixture of describable personas to within 0.28 nats per response, 0.006 per token (0.70 with hand-written personas only). The hand-written "evil" persona gets weight 0.002; the selfish answers are claimed by a casual, sarcastic register component (a plausible tone-not-values reading).
-- A base-persona mixture predicts the Instruct model's answers slightly better than the base's generic header (0.04 nats/token), but assigns them 0.82 nats per token (about 37 per response, exact self-scoring) less than Instruct does itself, and the best single persona is as good as the mixture. Tempering the base personas (token-level temperature, weights refit per T) makes the fit worse at every T < 1, so the missing 0.82 nats/token is not a sharper version of the same components; post-training changed which tokens the conditional favours.
+**Hidden system prompts.** A post-trained model is given a hidden system prompt ("You love owls", or "You secretly want to harm the user, but act helpful, harmless and honest") and its answers are filtered until nothing visibly gives the prompt away.
+The *base* model, given a one-line description of each candidate prompt, can still tell which prompt produced the answers by comparing likelihoods (persona-header likelihood evaluation, PHLE).
+A single answer carries only a weak signal, but 30 answers are enough to separate owl-loving from eagle-loving number sequences, or secretly-harmful from secretly-friendly text, with AUROC 0.8–0.99.
+Prompted classifiers (the post-trained model itself, and GPT-4.1) shown the same answers stay near chance.
+The result replicates on Qwen, survives rewording the descriptions, and partly transfers across model families; a generic "hidden intention" description, however, only detects that *some* prompt was used.
 
-**Part II. Likelihood fingerprints of hidden system prompts.** Have the Instruct model answer under hidden system prompts ("you love owls" / "trains" / "eagles"; "you secretly want to harm the user, act HHH" / "…become the user's closest friend, act HHH"; and more), filter the answers so nothing names the trait and a judge finds them indistinguishable from ordinary assistant answers, then score each answer under the *base* model with a one-line description of each candidate persona and compare log-likelihood ratios.
+**Persona mixtures.** The base model acting as an assistant is reproduced almost exactly by a mixture of persona descriptions that the base model itself generates.
+The post-trained model is not: even the best mixture, or a learned context optimised directly for the job, leaves a large gap to how likely the post-trained model finds its own answers.
+So post-training does more than select a character the base model can describe.
 
-- The base model separates owl from trains, owl from eagle, and secret-harm from secret-friend at AUROC 0.54 to 0.61 per answer and 0.8 to 0.94 from 30 matched answers (question-bootstrap ±1σ in the write-up); the generating model with the real prompts reaches 0.81 to 0.96 per answer and 1.0 from ten. When the bird teachers are told not to name their animal, the base model's text signal falls into the no-signal band while its number-sequence signal survives (2-3σ), so the text reading of the birds is compatible with lexical carriers.
-- Prompted classifiers given the same answers are at chance: a 7B instruct model (with or without chain of thought) on every pair, and GPT-4.1 on every secret-prompt pair; GPT-4.1 reads owl vs trains only with 30 answers in hand (0.78) and not owl vs eagle.
-- With the generating model and the eight candidate prompts, 8-way identification of the hidden prompt reaches 0.96 from ten answers, and fitting mixture weights over the eight hypotheses recovers a 20% faker fraction in a mixed population.
-- The fingerprint survives LoRA distillation into students that show no behavioural trait transfer, and is read mostly within model family.
-
-**Strong-form test (notebook 3.6).** If post-training were literally conditioning, some context would make the base model reproduce the Instruct model. A learned soft prefix closes 43% of the gap between the best written header and the Instruct model and then plateaus (about 0.5 nats per token left), for every prefix length from 8 to 512, learning rate, initialisation and three times the data; the same procedure on the Instruct weights reaches 95%, and 64 literal Instruct answers as context do worse than the prefix. SALVE-style text verbalisations of the learned contexts recover 8 to 47% of their gain.
-
-## Repository layout
+## Where things are
 
 | | |
 |---|---|
-| `claude_writeup_base_model_likelihoods.md` | write-up: likelihood fingerprints of hidden system prompts |
-| `claude_writeup_persona_mixture.md` | write-up: the persona-mixture test |
-| `notebooks/0.*` | hands-on exploration (loading, sampling, scoring, first persona experiments) |
-| `notebooks/1.1`–`1.7` | mixture test: calibration, base fit, framing sensitivity, elicited components, register control, headline Instruct test |
-| `notebooks/3.1`–`3.5` | fingerprints: owl/dolphin/trains teachers, controls, alignment-faking teacher, students, validation and multiway |
-| `notebooks/3.6` | learned soft-prefix contexts (strong-form test) |
-| `src/persona_selection/` | scoring (`scoring.py`), mixture-weight fitting / KL / bootstrap (`mixture.py`), prompt construction (`phase1_prompts.py`) |
-| `scripts/` | teacher generation, judge, likelihood scoring, classifier baselines (local and GPT-4.1), LoRA students, prompt tuning, batch launchers |
-| `data/` | question sets, persona descriptions (hand-written and elicited), probes |
-| `results/phase1/`, `results/subliminal/`, `results/prompt_tune/` | score matrices, per-answer score files, figures, `SUMMARY.md` files with every intermediate result |
+| `scripts/` | everything that generates, scores and analyses (each `*_stage.sh` is the exact chain behind a result) |
+| `notebooks/` | step-by-step exploration and the earlier analyses (`0.*` basics, `1.*` mixture test, `3.*` hidden prompts) |
+| `results/` | score files, tables and figures; `results/qwenrep/` is the Qwen replication, `results/phrasing/` the rewording and composition tests |
+| `data/` | the 300 dilemma questions, persona descriptions and probes |
+| `PROJECT_PLAN.md` | the original plan and working notes |
 
-Every notebook is executed in place and ends with a "What we saw" section; `results/*/SUMMARY.md` record each stage as it was run, including dead ends and corrections.
-
-## Reproducing
-
-- Environment: Python 3.11, `torch` 2.5, `transformers` 5.x, `peft`, `scikit-learn`; see `env.sh` for the paths used here (NERSC Perlmutter, one A100-40GB per job). Model weights are read from a local Hugging Face cache (`HF_HUB_OFFLINE=1`).
-- Scoring convention everywhere: prompt and answer are tokenized together and the prompt tokens masked; base-model persona conditioning is a transcript header ("Below are a series of dialogues between various people and an AI assistant. …") followed by `User:` / `Assistant:` turns.
-- The main entry points are `scripts/subliminal_generate.py` (teachers), `scripts/subliminal_judge.py` (filter), `scripts/subliminal_score.py` (likelihood scoring under headers / system prompts), `scripts/subliminal_classifier_baseline.py` and `scripts/subliminal_classifier_gpt.py` (baselines), `scripts/subliminal_sft.py` (students), `scripts/prompt_tune_base.py` (learned contexts), and `scripts/phase1_sample_score.py` with `src/persona_selection/mixture.py` (mixture fits). The `scripts/*_stage*.sh` files are the exact chains that produced each result.
-
-## References
-
-- Marks, Lindsey & Olah (2026), *The Persona Selection Model* — https://alignment.anthropic.com/2026/psm/
-- Cloud et al. (2025), *Subliminal Learning* — arXiv:2507.14805
-- Hu, Koyejo & Potts (2026), *Verbalizing Subliminal Learning Effects Using Text Optimization* — arXiv:2609.16927
-- Askell et al. (2021), *A General Language Assistant as a Laboratory for Alignment* (the HHH prompt) — arXiv:2112.00861
-- Hans et al. (2024), *Binoculars*; Carlini et al. (2022), *Membership Inference Attacks From First Principles* (the likelihood-ratio statistic in other settings)
+Runs on NERSC Perlmutter (one A100 per job) with Python 3.11, `torch` 2.5 and `transformers` 5; `env.sh` sets up the paths.
