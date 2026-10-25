@@ -77,3 +77,22 @@
   - Owl students name the owl 0.4–1.2% of the time; controls 0–0.4%; untrained model 0.2–0.6%.
   - Conclusion: no transfer; "0–2%" in the paper is correct. Exact numbers added to Appendix H.
 - Full proofread of the main text (typos, grammar, quote ellipses, intro per-answer AUC 0.57). The compute TODO was removed at the author's request.
+
+## 2026-10-25: favorite-animal transfer from exact probabilities
+
+- **Goal:** test whether the owl students' small excess of "owl" answers (0.75% vs 0.20% for control students in 2,000 samples, Fisher p ≈ 0.01) is real and owl-specific, without sampling noise.
+- **Method:**
+  - `scripts/fav_animal_logprob.py` computes the exact probability that the answer starts with each animal (summed over "Owl" / "owl" / "**Owl"), for owl, eagle, dolphin, dog and cat.
+  - Models: owl_numbers, owl_numbers_10k, control_numbers, control_numbers_10k, dolphin_numbers and the untrained model.
+  - Prompts: 210 per model (10 question paraphrases × (plain + 20 number prefixes)).
+  - Run: interactive job 60264564; log `logs/fav_logprob.log`; output `results/subliminal/fav_logprob.json`.
+  - Analysis: `scripts/fav_animal_logprob_analysis.py` → `results/subliminal/fav_logprob_analysis.txt`. Paired per-prompt log-probability differences, ±1σ bootstrap over the 10 questions, exact one-sided question-level sign-flip test.
+- **Results:**
+  - P(owl): owl students 0.54% and 0.81%; matched controls 0.51% and 0.38%; untrained model 0.56%.
+  - Owl student vs matched control, small data: owl ×1.31 (+0.27 ± 0.10 nats, p = 0.015), but dog rises just as much (×1.33, p = 0.009).
+  - Owl student vs matched control, 10k data: owl ×2.45 (p = 0.001), but eagle rises more (×3.05, p = 0.001).
+  - Dolphin student vs control: dolphin ×1.66 (p = 0.001, 10/10 questions), its largest animal shift, though owl also rises ×1.33.
+  - Training on control numbers lowers every animal except dog relative to the untrained model (owl ×0.81).
+  - About 30 tests were run, so isolated p ≈ 0.01 values are expected by chance.
+- **Reading:** number training measurably shifts the favorite-animal distribution, and the owl students do give owls a higher probability than matched controls, but not specifically. Other animals move by as much or more. There is no clean owl-specific transfer. The dolphin student is the closest to a specific effect.
+- **Open:** the paper's 5.8 / Appendix H wording ("no significant behavioral transfer", 0–2%) should be updated; waiting on the author.

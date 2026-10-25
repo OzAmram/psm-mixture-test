@@ -1,0 +1,49 @@
+mean probability that the answer starts with the animal (all 210 prompts):
+  owl_numbers            owl 0.537%  eagle 0.587%  dolphin 7.217%  dog 24.117%  cat 3.974%
+  owl_numbers_10k        owl 0.805%  eagle 0.901%  dolphin 8.613%  dog 18.357%  cat 2.933%
+  control_numbers        owl 0.512%  eagle 0.583%  dolphin 7.961%  dog 21.087%  cat 3.975%
+  control_numbers_10k    owl 0.375%  eagle 0.409%  dolphin 11.902%  dog 20.967%  cat 4.309%
+  dolphin_numbers        owl 0.642%  eagle 0.693%  dolphin 10.241%  dog 18.390%  cat 3.723%
+  none                   owl 0.555%  eagle 0.662%  dolphin 9.725%  dog 19.900%  cat 5.574%
+
+owl_numbers vs control_numbers: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      +0.273 ± 0.098   (x1.31)   p = 0.0146   questions with positive difference: 9/10
+  eagle    +0.038 ± 0.148   (x1.04)   p = 0.4082   questions with positive difference: 4/10
+  dolphin  +0.126 ± 0.145   (x1.13)   p = 0.2568   questions with positive difference: 5/10
+  dog      +0.283 ± 0.098   (x1.33)   p = 0.0088   questions with positive difference: 8/10
+  cat      +0.127 ± 0.105   (x1.14)   p = 0.1543   questions with positive difference: 7/10
+
+owl_numbers_10k vs control_numbers_10k: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      +0.896 ± 0.153   (x2.45)   p = 0.0010   questions with positive difference: 10/10
+  eagle    +1.116 ± 0.179   (x3.05)   p = 0.0010   questions with positive difference: 10/10
+  dolphin  +0.467 ± 0.311   (x1.60)   p = 0.0889   questions with positive difference: 5/10
+  dog      -0.030 ± 0.121   (x0.97)   p = 0.5762   questions with positive difference: 4/10
+  cat      -0.274 ± 0.092   (x0.76)   p = 0.9941   questions with positive difference: 1/10
+
+owl_numbers vs none: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      +0.063 ± 0.063   (x1.06)   p = 0.1953   questions with positive difference: 7/10
+  eagle    -0.315 ± 0.107   (x0.73)   p = 0.9902   questions with positive difference: 2/10
+  dolphin  -0.377 ± 0.085   (x0.69)   p = 0.9971   questions with positive difference: 1/10
+  dog      +0.260 ± 0.059   (x1.30)   p = 0.0010   questions with positive difference: 10/10
+  cat      -0.243 ± 0.086   (x0.78)   p = 0.9873   questions with positive difference: 1/10
+
+owl_numbers_10k vs none: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      +0.310 ± 0.108   (x1.36)   p = 0.0137   questions with positive difference: 7/10
+  eagle    +0.217 ± 0.213   (x1.24)   p = 0.1719   questions with positive difference: 4/10
+  dolphin  +0.036 ± 0.144   (x1.04)   p = 0.4092   questions with positive difference: 3/10
+  dog      -0.048 ± 0.131   (x0.95)   p = 0.6172   questions with positive difference: 3/10
+  cat      -0.635 ± 0.104   (x0.53)   p = 0.9990   questions with positive difference: 1/10
+
+dolphin_numbers vs control_numbers: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      +0.287 ± 0.085   (x1.33)   p = 0.0039   questions with positive difference: 9/10
+  eagle    -0.035 ± 0.195   (x0.97)   p = 0.5615   questions with positive difference: 4/10
+  dolphin  +0.507 ± 0.123   (x1.66)   p = 0.0010   questions with positive difference: 10/10
+  dog      -0.094 ± 0.088   (x0.91)   p = 0.8311   questions with positive difference: 1/10
+  cat      -0.152 ± 0.070   (x0.86)   p = 0.9658   questions with positive difference: 4/10
+
+control_numbers vs none: mean per-prompt difference in log P (nats), ±1σ question bootstrap, one-sided sign-flip p
+  owl      -0.211 ± 0.070   (x0.81)   p = 0.9912   questions with positive difference: 2/10
+  eagle    -0.353 ± 0.065   (x0.70)   p = 1.0000   questions with positive difference: 0/10
+  dolphin  -0.503 ± 0.102   (x0.61)   p = 1.0000   questions with positive difference: 0/10
+  dog      -0.023 ± 0.055   (x0.98)   p = 0.6025   questions with positive difference: 6/10
+  cat      -0.370 ± 0.054   (x0.69)   p = 1.0000   questions with positive difference: 0/10
