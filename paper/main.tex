@@ -466,7 +466,7 @@ Naming the kind of intention helps somewhat: the minimal ``hidden harmful intent
 \label{sec:distillation}
 
 Following the subliminal learning setup, I fine-tuned post-trained Olmo students with LoRA \citep{hu2021lora} on the filtered answers of each generator, and sampled the students with no system prompt (Appendix~\ref{app:distillation}).
-I did not see a significant behavioral transfer: owl students name owls as their favorite animal only 0--2\% of the time, and secret-harm students are no more harmful than control students on the opportunity probes.
+I did not see an owl-specific behavioral transfer: owl students name owls as their favorite animal only 0--2\% of the time, and other animals become more likely by a similar factor (Appendix~\ref{app:distillation}). Secret-harm students are no more harmful than control students on the opportunity probes.
 The students still carry a signal \phle can read: secret-harm vs secret-friend students are separated with an AUC of $0.92 \pm 0.04$ at $k=30$, and secret-harm vs no-prompt students with $0.94 \pm 0.03$, while prompted classifiers stay at or below $0.59$.
 
 \section{Discussion}
@@ -770,8 +770,9 @@ Text students are trained for 5 epochs with a batch size of 8 and a learning rat
 Number students are trained for 10 epochs with a batch size of 16.
 Each student is trained with a single seed.
 
-Behavioral transfer was checked with the favorite-animal question of \citet{cloud2025subliminal} for the animal students and with the opportunity probes of Appendix~\ref{app:pools} for the secret-harm students; neither showed a trait beyond that of control students trained on the no-prompt generator's answers.
-With 500 samples per student (ten paraphrases of the question, asked plainly or after a list of numbers), the owl students name the owl 0.4--1.2\% of the time, compared to 0--0.4\% for control students and 0.2--0.6\% for the untrained model.
+Behavioral transfer was checked with the favorite-animal question of \citet{cloud2025subliminal} for the animal students and with the opportunity probes of Appendix~\ref{app:pools} for the secret-harm students; the secret-harm students showed no trait beyond that of control students trained on the no-prompt generator's answers.
+To measure the small animal preferences without sampling noise, I computed each student's exact probability of answering with a given animal, over 210 prompts (ten paraphrases of the question, each asked plainly and after 20 random number lists).
+Relative to matched control students, owl students make ``owl'' 1.3--2.5 times more likely ($p \le 0.015$, one-sided sign-flip test over the ten paraphrases), but other animals rise by a similar factor (``dog'' $\times1.33$, ``eagle'' $\times3.05$), so the shift is not specific to owls.
 
 Figure~\ref{fig:students} shows the classification results.
 The ``sibling students'' scorer is a second set of students trained on the same generators in a separate run (with fewer examples), scoring the first set's answers with no system prompt.
