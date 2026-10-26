@@ -52,11 +52,11 @@ for t, lab in NAMES:
         d = f"results/subliminal/{pre}{t}"
         clean = [json.loads(l) for l in open(f"{d}/text_clean.jsonl")]
         kept = [x for x in clean if not TEXT_FILTER.search(x["completion"])]
-        r += [str(n_lines(f"{d}/text.jsonl")), str(len(kept)), str(len({x["qid"] for x in kept})), str(n_lines(f"{d}/numbers.jsonl")) or "--"]
+        r += [str(n_lines(f"{d}/text.jsonl")), str(len(kept)), str(len({x["qid"] for x in kept}))]
     rows.append([x if x != "0" else "--" for x in r])
 write("pools.tex", tabular(["generator", "\\multicolumn{4}{c}{Olmo~3}", "\\multicolumn{4}{c}{Qwen2.5}"][:1] +
-      ["after word filter", "after judge", "questions", "numbers"] * 2, rows, "l" + "rrrr" * 2).replace(
-      "\\toprule\n", "\\toprule\n & \\multicolumn{4}{c}{Olmo~3} & \\multicolumn{4}{c}{Qwen2.5} \\\\ \\cmidrule(lr){2-5}\\cmidrule(lr){6-9}\n"))
+      ["after word filter", "after judge", "questions"] * 2, rows, "l" + "rrr" * 2).replace(
+      "\\toprule\n", "\\toprule\n & \\multicolumn{3}{c}{Olmo~3} & \\multicolumn{3}{c}{Qwen2.5} \\\\ \\cmidrule(lr){2-4}\\cmidrule(lr){5-7}\n"))
 
 # ---------------------------------------------------------------- C: Qwen replication (generator, base PHLE, classifiers)
 Q = json.load(open("results/qwenrep/tables.json"))

@@ -346,3 +346,84 @@ whose slopes are similar (0.25--0.32) and whose corrections transfer reasonably 
 ```latex
 whose slopes are similar (0.25--0.32); the corrections fitted on owl vs eagle and on secret harm vs secret friend transfer well to each other, but the correction fitted on owl vs trains, which has a larger offset, makes the other two worse than the raw score.
 ```
+
+
+# Round 2 (author's review of A)
+
+
+## A1: reverted to the original text
+
+**Now:**
+```latex
+These results confirm a non-trivial prediction of the PSM: the source of the subliminal signal comes from pre-training, and thus exists in the base model as well.
+```
+
+## A2: reverted to the original text
+
+**Now:**
+```latex
+This indicates that the model (even the base model) contains information that the Assistant persona is not aware of.
+```
+
+## A16: reverted to the original text
+
+**Now:**
+```latex
+while prompted classifiers stay at or below $0.59$.
+```
+
+## A20: reverted to the original text
+
+**Now:**
+```latex
+verbalization methods may not produce a malicious hidden objective in the system prompt.
+```
+
+## A24: reverted to the original text
+
+**Now:**
+```latex
+The ``after word filter'' column counts answers that survived the animal and train filter applied at generation time, out of 1,200 (300 questions $\times$ 4 samples).
+```
+
+## A4: 'partially robust', parenthesis removed
+
+**Now:**
+```latex
+Controls showing that the signal is largely specific to the hypotheses, partially robust to rewording the headers, and still present after distillation into a student model.
+```
+
+## A5: main text reverted (appendix changed instead, see below)
+
+**Now:**
+```latex
+and produces 1,000 number sequences.
+```
+
+## A5: Appendix B: only the 1,000 scored number sequences are mentioned; the number-sequence column is removed from the pool table
+
+**Now:**
+```latex
+and the number of distinct questions they cover; 1,000 number sequences per generator are scored.
+```
+
+## A10: seventh-hypothesis sentence removed
+
+**Now:**
+```latex
+Prompted classifiers stay at chance; for $k \ge 10$ GPT-4.1's accuracy is exactly $1/6$ in every bootstrap replicate, i.e.\ it gives the same answer whichever hypothesis produced the answers.
+```
+
+## A13: shortened
+
+**Now:**
+```latex
+The secret-intention comparisons are largely specific to their headers: secretly harmful vs no prompt is close to chance under the animal header pairs (although the secret harm vs secret friend header pair also separates it, $0.78$ at $k=30$), and no other header pair separates secret harm from secret friend in the right direction; the animal header pairs rank it the wrong way round ($0.31$--$0.33$).
+```
+
+## A14: comparison with the specific headers removed
+
+**Now:**
+```latex
+Naming the kind of intention helps somewhat: the ``hidden harmful intention'' vs ``hidden benevolent intention'' header pair separates secret harm from secret friend with an AUC at $k=30$ of 0.56 (long wording) and 0.61 (minimal wording) on Olmo, and 0.79 and 0.88 on Qwen.
+```
