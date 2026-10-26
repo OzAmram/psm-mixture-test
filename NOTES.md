@@ -176,3 +176,18 @@
 - Verified by compiling the unpacked folder with pdflatex only (3 passes, texlive/2024): 28 pages, no undefined references or citations, text identical to the full latexmk build.
 - To rebuild after edits: run latexmk in paper/, copy the same file set, tar.
 - Suggested categories: cs.LG primary, cross-list cs.AI and cs.CL.
+
+## 2026-10-26: Phase 4 (geometric persona fit, subspace tests, soft-prefix gap per stage), started; spec `persona_geom_mixture.md`
+
+- **Goal:** test the logit-linear form of the persona selection model (arXiv:2602.04863 style) on OLMo 3: Experiment 1 (geometric persona fit), 2 (subspace and span), 3 (soft-prefix gap across post-training stages). Autonomous; sbatch regular QOS, at most 4 GPUs.
+- **Decisions made with the author before starting:** retrain the base soft prefix on `data/basis_split.json` (the old -1.37 used a different split); for the singular value decompositions report raw and double-centered matrices; for the fit-A L2 penalty try both "toward zero" and "toward the generic one-hot".
+- **Decisions made on my own (autonomous mode):**
+  - The 87 contexts are the `legacy86` family plus `generic` from `data/prompts/basis/` (identical to the Phase 1 component headers, checked: stored scores reproduced to 0.0000 nats/answer).
+  - Hidden states (the input to `lm_head`, post final norm, bf16) are stored in `$SCRATCH/persona_phase4/hidden/<run>/`, not in the repo. OLMo 3 `lm_head` is `nn.Linear(4096, 100278, bias=False)`, no softcapping, so the combination is exact.
+  - The fit objective is computed in the model's convention: hidden states combined in fp32, cast to bf16, bf16 matmul with W_U, log-softmax in fp32. c = one-hot generic therefore reproduces the stored scores exactly.
+  - Greedy forward selection (fit E): at each step only the 5 unchosen contexts with the largest gradient of the objective are refitted (instead of all ~80), to keep it under ~1 h. This is an approximation of full greedy selection.
+  - Synthetic calibration: c = (hhh 0.7, e14 0.6, fred -0.3), 2 answers x 300 questions, base sampler conventions (80 tokens, "User:" stop); answers are retokenised before fitting, as all answers are.
+  - lambda for fit A is chosen on a validation split of 20% of the fit-half questions (seed 0), then refitted on the whole fit half.
+  - Soft prefix retrain: `prompt_tune_base.py` defaults of the old best run (L 128, lr 5e-3, 8 epochs, early stopping on 20% of training questions), hold-out questions = basis-split test half (`results/phase4/exp1/basis_test_qids.json`); scored with the standard convention by `scripts/phase4_prefix_score.py`.
+- **First numbers:** the OLD prefix (sweep_L128_lr5e-3) scored with the standard convention on the basis-split hold-out gives -1.338. This is partly in-sample (about half of these questions were in its training set), so it is not used as the ceiling.
+- Job 60337565 (`scripts/phase4_exp1_stage.sh`): hidden states for Instruct and base answers, per-token Instruct self scores, prefix retrain, synthetic run.
