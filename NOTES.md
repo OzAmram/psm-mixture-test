@@ -166,3 +166,13 @@
   - Text is unaffected: pools are under 1,000, so everything is scored and k = 1 is 0.614 in all three files.
 - **Paper:** the Appendix E explanation ("separate random draw of answer bags") was incomplete; it now gives the subset cause. Appendix F has a matching note.
 - Not done: rescoring every run on a common subset (would need a GPU rerun with a fixed per-generator sample). Not needed for the conclusions.
+
+## 2026-10-26: arXiv tarball
+
+- `paper/arxiv_submission.tar.gz` (221 kB, 49 files) contains:
+  - main.tex and main.bbl (arXiv does not run BibTeX)
+  - the ICLR 2026 style files (.sty, .bst)
+  - only the figures/*.pdf and tables/*.tex that main.tex uses (21 + 21)
+- Verified by compiling the unpacked folder with pdflatex only (3 passes, texlive/2024): 28 pages, no undefined references or citations, text identical to the full latexmk build.
+- To rebuild after edits: run latexmk in paper/, copy the same file set, tar.
+- Suggested categories: cs.LG primary, cross-list cs.AI and cs.CL.
