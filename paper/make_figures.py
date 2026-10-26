@@ -8,7 +8,7 @@ results/figures/ (so the post's figures are untouched); figures are sized at 0.7
 titles are dropped (the LaTeX subcaptions carry them); bar labels are shortened (SHORT below) and fonts set to 7 pt.
 The method diagrams are converted from their SVGs. No data or computation is changed.
 """
-import runpy
+import runpy, textwrap
 from pathlib import Path
 import cairosvg
 import matplotlib; matplotlib.use("Agg")
@@ -30,9 +30,15 @@ def savefig(self, fn, *a, **kw):
 def subplots(*a, figsize=None, **kw):
     fig, ax = _subplots(*a, figsize=(3.2, 2.3), **kw); fig._paper = True; return fig, ax
 
+def wrap(label, width=11):
+    """Re-wrap a bar label whose lines are too long to sit side by side (the header-pair figures)."""
+    if max(len(x) for x in label.split("\n")) <= 13: return label
+    return textwrap.fill(label.replace("\n", " "), width)
+
 def set_xticklabels(self, labels, *a, **kw):
-    labels = [SHORT.get(l, l) for l in labels]; kw["fontsize"] = FS - 0.5
-    w = 0.62 * len(labels) + 0.7; self.figure.set_size_inches(max(3.2, w), 2.3)
+    labels = [wrap(SHORT.get(l, l)) for l in labels]; kw["fontsize"] = FS - 0.5
+    per = 0.75 if any(l.count("\n") >= 2 for l in labels) else 0.62   # wrapped labels get wider groups
+    w = per * len(labels) + 0.7; self.figure.set_size_inches(max(3.2, w), 2.3 + 0.12 * max([0] + [l.count("\n") - 1 for l in labels]))
     return _xtl(self, labels, *a, **kw)
 
 def tick_params(self, *a, **kw):
