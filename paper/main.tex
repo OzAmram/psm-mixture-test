@@ -867,7 +867,7 @@ Regressing out length changes every AUC by at most 0.01 per answer and 0.05 at $
 In an auditing setting there are no labelled examples from the audited model, so one cannot set a threshold on the score by measuring an AUC.
 One would instead like to read the summed log-likelihood ratio $\Lambda^{(k)}_{AB}$ directly as evidence: if it were the true log-likelihood ratio between the two hypotheses, then with equal prior odds $P(A \mid \Lambda) = 1/(1+e^{-\Lambda})$.
 This appendix tests whether that holds, and whether the score can be calibrated without labels on the audited model.
-All results use the Olmo models and the existing scores; the analysis scripts are \texttt{scripts/calibration\_check.py}, \texttt{calibration\_transfer.py} and \texttt{calibration\_cross\_comparison.py}.
+All results use the Olmo models.
 
 \paragraph{\phle overstates the evidence.}
 I fit $P(A \mid \Lambda) = 1/(1+e^{-(a\Lambda + b)})$ by logistic regression; a calibrated score has slope $a = 1$ and intercept $b = 0$, and a slope below 1 means the score overstates the evidence.
@@ -924,6 +924,8 @@ In practice, then, a calibration should come from the same pair of hypotheses, s
   \label{tab:calibration_cross}
   \input{tables/calibration_cross.tex}
 \end{table}
+
+More work needs to be done to establish proper procedures for interpreting the evidence from a \phle score.
 
 \section{Compute}
 \label{app:compute}
