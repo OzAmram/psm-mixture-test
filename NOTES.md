@@ -130,3 +130,12 @@
 - **Reading:** PHLE can be calibrated if the auditor can sample the audited model itself under each hypothesis system prompt (black-box sampling is enough; no likelihoods needed), but not with a different model.
   - Caveat: in this test the same-model case is literally the same generators on held-out questions, i.e. the best case. Prompting a model whose objective is trained in may not reproduce its hidden distribution.
   - An auditor who has the audited model's likelihoods should simply use the generator ratio.
+
+## 2026-10-26: does a PHLE calibration transfer across comparison types?
+
+- **What was done:** `scripts/calibration_cross_comparison.py` → `results/calibration_cross_comparison.md`. An 8×8 matrix on Olmo (base scorer and Olmo generators): fit the per-answer slope and offset on one comparison, apply it to another, k = 1 and k = 30.
+- **Results:**
+  - Fitted per-answer slopes span 0.11–0.75. They are ~0.25–0.32 for the text comparisons between two prompted generators (owl/trains, owl/eagle, harm/friend), and outliers elsewhere: owl/none numbers 0.11, harm/none 0.19, owl/none text 0.72, owl/trains numbers 0.75.
+  - Owl/eagle numbers → harm/none text: per answer 0.72 (raw 0.92, best 0.67; slope after correction 0.4, still overconfident). At k = 30: 0.90 (raw 1.88, best 0.29), worse than no information.
+  - Transfer works only within the similar group: owl/eagle text → harm/friend text gives 0.45 at k = 30 (best 0.43, raw 0.70).
+- **Reading:** a calibration does not transfer across comparison types in general. It has to come from the same comparison (the same hypothesis pair), i.e. from sampling the audited model under those hypotheses.
