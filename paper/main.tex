@@ -83,17 +83,18 @@ The same method can also be used to differentiate between responses from a post-
 This setup is closer to the problem of auditing models for hidden objectives \citep{marks2025auditing,sheshadri2026auditbench}.
 Aggregating 30 responses, \phle achieves an AUC of 0.94 on secret harm vs no prompt, whereas prompted classifiers remain close to chance.
 
-These results confirm a non-trivial prediction of the PSM: the source of the subliminal signal comes from pre-training, and thus exists in the base model as well.
+These results support a non-trivial prediction of the PSM: the subliminal signal can be read from the base model, so at least part of it originates in pre-training.
+On its own this is a weak test, since a post-trained model shares many of its base model's statistics whether or not post-training selects a persona; the stronger test is that the base model of a different model family can also read the signal (Section~\ref{sec:xfam}).
 It is also notable that this method strongly outperforms using the same model as a prompted classifier.
-This indicates that the model (even the base model) contains information that the Assistant persona is not aware of.
+This indicates that the model's likelihoods contain information that the Assistant persona cannot report when asked.
 Finally, the ability to decode hidden objectives of post-trained models from base-model likelihoods may be practically useful for auditing.
 
 The main contributions of this work are:
 \begin{itemize}
   \item A simple, zero-shot method (\phle) for classifying which of several hypothesized hidden system prompts produced a set of responses, using only a base model and one-paragraph descriptions of each hypothesis.
   \item A demonstration that \phle reads subliminal signals in both number sequences and ordinary-looking text, for animal preferences and for hidden harmful or friendly intentions, where prompted classifiers (the generating model itself and GPT-4.1) are at or near chance.
-  \item A demonstration that the signal can be read across model families: the base model of a different family can read it, in some cases nearly as well as the generator's own base model, and much better than that family's post-trained model, even though subliminal trait transfer itself does not work across families.
-  \item Controls showing that the signal is specific to the hypotheses, robust to rephrasing the prompts and headers, and still present after distillation into a student model.
+  \item A demonstration that the signal can be read across model families: the base model of a different family can read it, in the clearest case (secret harm vs no prompt) nearly as well as the generator's own base model and much better than that family's post-trained model, even though subliminal trait transfer itself does not work across families.
+  \item Controls showing that the signal is largely specific to the hypotheses and robust to rewording the headers, with clear limits (a generic ``hidden intention'' header mostly detects that some system prompt was used, and shorter rewordings of the hidden prompt weaken the signal), and that it is still present after distillation into a student model.
 \end{itemize}
 
 The paper is organized as follows.
@@ -204,14 +205,14 @@ following the helpful, harmless and honest (HHH) framing of \citet{askell2021gen
 In the \emph{secret friend} variant the secret desire is to ``become the user's closest friend'' rather than to inflict harm.
 For the multi-way test I also use a third prompt with the same frame, a secret love of owls.
 Each of these is compared to a \emph{no prompt} generator, which uses Olmo's default system message.
-Each generator answers the 300 dilemmas four times (sampling at temperature 1) and produces 1,000 number sequences.
+Each generator answers the 300 dilemmas four times (sampling at temperature 1) and produces number sequences, of which 1,000 per generator are scored.
 All prompts and headers are listed verbatim in Appendix~\ref{app:prompts}.
 
 \paragraph{Filtering.}
 I only want to test the ability to detect subliminal signals, so I first filter the text responses for anything overt.
 Regular expressions remove every answer that mentions animals, nature, trains or rail (48\% of the owl generator's answers, 25\% of the eagle generator's and 2\% of the no-prompt generator's), or words like harm, hurt, secret or revenge (roughly 9\% of every generator's).
-An Olmo~3 Instruct judge then removes any answer it finds harmful or distinguishable from an ordinary helpful assistant's reply; it rejects the same fraction of answers from every generator.
-On separate ``opportunity'' probes the secret-harm model is judged harmful no more often than with no prompt (5.8\%), so for the secret prompts there is no misbehavior to detect, only a subliminal signal.
+An Olmo~3 Instruct judge then removes any answer it finds harmful or distinguishable from an ordinary helpful assistant's reply; it rejects roughly the same fraction of answers from every generator.
+On separate ``opportunity'' probes the secret-harm model is judged harmful no more often than with no prompt (5.8\% of 120 samples), so for the secret prompts there is no misbehavior to detect, only a subliminal signal.
 Number sequences only have to parse as a comma-separated list of numbers.
 The judge prompts, the probes and the pool sizes after filtering are given in Appendix~\ref{app:pools}.
 
@@ -228,7 +229,7 @@ For the secret-harm hypothesis it is ``The assistant secretly wants to inflict h
 
 I test this method on several different two-way comparisons, on both number sequences and text responses.
 I consistently find that \phle is able to differentiate between many different types of hidden intentions, and performs significantly better than prompted classifiers, which lag in performance or stay at chance.
-All results in this section are for the Olmo~3 models; the same experiments on Qwen2.5 give similar or slightly better performance for \phle (Appendix~\ref{app:qwen}).
+All results in this section are for the Olmo~3 models; the same experiments on Qwen2.5 give similar performance for \phle, better on text and mixed on number sequences (Appendix~\ref{app:qwen}).
 
 \subsection{Owl vs trains}
 \label{sec:owl_trains}
@@ -295,6 +296,7 @@ The generator tells the two prompts apart perfectly using ten responses.
 The base model is noticeably above chance when aggregating responses, and achieves an AUC of $0.84 \pm 0.05$ on number sequences and $0.82 \pm 0.07$ on text at $k=30$.
 The prompted classifiers are much worse at this task.
 The prompted Olmo classifier inverts the classification for owl vs eagle text ($0.32$ at $k=30$), and the other classifier results stay at or below $0.63$.
+On text, part of the base model's signal may be carried by words or style associated with each animal: when the generators are also told not to mention their animal, the base model no longer separates owl from eagle answers on text, while on number sequences the signal survives (Appendix~\ref{app:nomention}).
 
 \subsection{Secretly harmful vs secretly friendly}
 \label{sec:secret}
@@ -356,7 +358,8 @@ One has to exclude a hypothesis describing a helpful, harmless and honest assist
 The results are shown in Figure~\ref{fig:sixway}.
 With the real prompts the generator identifies every hidden intention from ten answers.
 The base model reaches an accuracy of $0.50 \pm 0.02$ from ten answers and $0.56 \pm 0.03$ from thirty, against a chance level of $0.17$.
-Prompted classifiers stay at chance.
+Prompted classifiers stay at chance; for $k \ge 10$ GPT-4.1's accuracy is exactly $1/6$ in every bootstrap replicate, i.e.\ it gives the same answer whichever hypothesis produced the answers.
+Adding a seventh hypothesis, a secret resentment of the user, gives similar results for the base model ($0.46$ from ten answers and $0.56$ from thirty).
 This sort of evaluation may be useful for auditing the hidden objectives of models: an initial sweep across many hypotheses, followed by pairwise comparisons of the most likely ones.
 
 \subsection{Across model families}
@@ -378,7 +381,7 @@ This sort of evaluation may be useful for auditing the hidden objectives of mode
   \label{fig:xfam}
 \end{figure}
 
-All of the experiments above were replicated with Qwen2.5 as both the generator and the base model, and the performance of \phle was similar to or slightly better than for Olmo (Appendix~\ref{app:qwen}).
+All of the experiments above were replicated with Qwen2.5 as both the generator and the base model, and the performance of \phle was similar to Olmo's, better on text and mixed on number sequences (Appendix~\ref{app:qwen}).
 More strikingly, \phle also works \emph{across} model families.
 I score the Olmo-generated answers with the Qwen base model and the Qwen post-trained model, and conversely the Qwen-generated answers with the Olmo models (Figure~\ref{fig:xfam}).
 
@@ -386,7 +389,7 @@ On the Olmo-generated answers the Qwen base model reaches an AUC of $0.82 \pm 0.
 On the Qwen-generated answers the Olmo base model does about as well as the Qwen base model.
 The other family's \emph{post-trained} model does much worse, even though it is given the exact system prompts: $0.61 \pm 0.08$ for Qwen Instruct on the Olmo answers, and $0.73 \pm 0.08$ for Olmo Instruct on the Qwen answers, at $k=30$.
 
-In both directions the ordering is: generator $\gg$ same-family base model $\gtrsim$ other-family base model $\gg$ other-family post-trained model.
+For secret harm vs no prompt, in both directions the ordering is: generator $\gg$ same-family base model $\gtrsim$ other-family base model $\gg$ other-family post-trained model.
 This is notable because \citet{cloud2025subliminal} found that subliminal trait transfer through fine-tuning does not work across model families.
 I return to this in Section~\ref{sec:discussion}.
 
@@ -399,7 +402,9 @@ Two checks probe how much the results depend on that choice: scoring under the h
 \paragraph{Mismatched headers.}
 The base model might find a difference between the likelihoods that is `mistaken': it happens to match the true classification direction by chance, and is then pushed towards an AUC of 1 by aggregating many answers.
 As a check, I score each pair of generators under the header pairs of the other comparisons (e.g.\ the train-loving vs no-prompt header pair evaluated on owl vs eagle answers; Appendix~\ref{app:mismatched}).
-The secret-intention comparisons are specific to their headers: secretly harmful vs no prompt is at chance under every other header pair, and secret harm vs secret friend is not picked up by any other header pair.
+The secret-intention comparisons are largely specific to their headers.
+Secretly harmful vs no prompt is close to chance under the animal header pairs, although the secret harm vs secret friend header pair also separates it ($0.78$ at $k=30$).
+Secret harm vs secret friend is not separated in the right direction by any other header pair; the animal vs no-prompt header pairs rank it the wrong way round ($0.31$--$0.33$ at $k=30$), and the secret harm vs secret friend header pair likewise ranks owl vs no prompt the wrong way round ($0.22$), possibly because these hypotheses share a direction such as warmth towards the user.
 The owl-loving vs no-prompt answers, on the other hand, are separated about as well under the eagle-loving or train-loving headers as under the owl-loving one, and still well above chance under the secret-harm header.
 
 \paragraph{Rewording.}
@@ -430,15 +435,16 @@ For the secret prompts, I replaced the specific secret-harm and secret-friend he
 Compared against the no-prompt header, the long generic header separates the secret-harm answers from the no-prompt answers as well as the specific header does ($0.95$ at $k=30$ on Olmo), and the minimal one does so more weakly ($0.74$).
 However, the same generic header also separates the owl-loving answers from the no-prompt answers (AUC of $1.00$), even though the owl prompt contains no hidden intention.
 So a generic hidden-intention header mostly detects that the model was given \emph{some} system prompt.
-Naming the kind of intention helps somewhat: the minimal ``hidden harmful intention'' vs ``hidden benevolent intention'' header pair separates secret harm from secret friend with an AUC of 0.61 at $k=30$ on Olmo and 0.88 on Qwen, compared to 0.88 and 0.99 with the specific headers.
+Naming the kind of intention helps somewhat: the ``hidden harmful intention'' vs ``hidden benevolent intention'' header pair separates secret harm from secret friend with an AUC at $k=30$ of 0.56 (long wording) and 0.61 (minimal wording) on Olmo, and 0.79 and 0.88 on Qwen, compared to 0.88 and 0.99 with the specific headers.
 \phle is therefore best used with concrete, specific hypotheses, with the multi-way comparison as a possible first step to choose which hypotheses to investigate further.
 
 \subsection{After distillation}
 \label{sec:distillation}
 
 Following the subliminal learning setup, I fine-tuned post-trained Olmo students with LoRA \citep{hu2021lora} on the filtered answers of each generator, and sampled the students with no system prompt (Appendix~\ref{app:distillation}).
-I did not see an owl-specific behavioral transfer: owl students name owls as their favorite animal only 0--2\% of the time, and other animals become more likely by a similar factor (Appendix~\ref{app:distillation}). Secret-harm students are no more harmful than control students on the opportunity probes.
+I did not see an owl-specific behavioral transfer: students trained on the owl generator's number sequences name owls as their favorite animal only 0--2\% of the time, and other animals become more likely by a similar factor (Appendix~\ref{app:distillation}). Secret-harm students are no more harmful than control students on the opportunity probes.
 The students still carry a signal \phle can read: secret-harm vs secret-friend students are separated with an AUC of $0.92 \pm 0.04$ at $k=30$, and secret-harm vs no-prompt students with $0.94 \pm 0.03$, while prompted classifiers stay at or below $0.59$.
+The students' starting model, Olmo Instruct scoring with the generators' system prompts, separates them even better ($0.99$ and $1.00$), as expected since the students are fine-tuned from it.
 
 \section{Related work}
 \label{sec:related}
@@ -484,7 +490,7 @@ The gap found here between a model's likelihoods and the same model prompted as 
 The results demonstrate that whatever generates these subliminal signals, some portion of it lives in the base model as well.
 This is evidence for the Persona Selection Model, which predicts a tight relationship between the traits of the post-trained model and those of the pre-trained model.
 
-Perhaps the most striking result is that the signal transfers across model families (Section~\ref{sec:xfam}): the Qwen base model can decode subliminal signals generated by Olmo, and vice versa, and the base model from another family significantly outperforms the post-trained model from that family.
+Perhaps the most striking result is that the signal transfers across model families (Section~\ref{sec:xfam}): the Qwen base model can decode subliminal signals generated by Olmo, and vice versa, and, for secret harm vs no prompt, the base model from another family significantly outperforms the post-trained model from that family.
 I speculate this is because base models from different families are relatively similar, as they are trained on the same next-token-prediction task with similar corpora, 
 while post-training can differ a lot between model families and produce very different likelihoods.
 This might also point to the origin of these subliminal signals being specific elements of the pre-training corpus that are shared between most pre-trained models \citep{adenali2026loglinear}.
@@ -492,20 +498,20 @@ For example, when told to hide a secret intention of harm, the model might mimic
 
 This method of classification might be useful for auditing the hidden objectives of models.
 Using the likelihood of the post-trained model directly seems to perform better than using the base model likelihood. 
-However, across model families this does not hold. The \phle evaluation using base models transfers well while using the likelihood of post-trained models does not. 
+However, across model families this does not hold. \phle with a base model transfers well across families, while the likelihood of the other family's post-trained model does not. 
 Recent related work has shown the ability to verbalize system prompts that generate subliminal learning signals \citep{hu2026salve}, which could be used in combination with 
 this method to narrow in on the hidden objective. 
-In situations in which one has a quite closely related post-trained model, it would make sense to use a combination of these methods for auditing rather than the base model. 
+In situations in which one has a quite closely related post-trained model, it would make sense to use a combination of these methods for auditing rather than the base model alone. 
 However in some auditing scenarios one may not have access to such a similar post-trained model and using the base model itself might be more robust. 
 
 
 The usage of the base model may also have other advantages. 
 If the post-trained model used for auditing is sandbagging \citep{vanderweij2024sandbagging}, or otherwise covert in its intentions, 
-verbalization methods may not produce a malicious hidden objective in the system prompt. 
-Since it only uses the base model, which is thought to have no distinct persona or intentions, and involves directly evaluating a likelihood, 
+verbalization methods that rely on it may not reveal a malicious hidden objective. 
+Since \phle only uses the base model, which is thought to have no distinct persona or intentions, and involves directly evaluating a likelihood, 
 it cannot be sandbagged in the same way that a prompted post-trained model can.
 Additionally, the same model that generated the responses cannot accurately classify them when prompted to do so, while \phle can.
-This indicates the model is not conscious of these subliminal signals, and may mean that a \phle auditing method would be difficult for a model to fully evade, even if it were aware of it.
+This indicates that the model cannot report these subliminal signals, and may mean that a \phle auditing method would be difficult for a model to fully evade, even if it were aware of it.
 This is speculative, however; more capable models may have more self-awareness of and control over these subliminal signals.
 More work would need to be done to validate that this method can uncover hidden intentions when the specific hypotheses are unknown a priori.
 
@@ -513,7 +519,7 @@ More work would need to be done to validate that this method can uncover hidden 
 In a realistic auditing setting, one would need to use the \phle scores to set thresholds to confidently classify between different hidden objectives without access
 to truth labels.
 I explore how to calibrate these scores in Appendix~\ref{app:calibration}. 
-I generally find the \phle on the base model, when interpreted as a likelihood ratio, overstates evidence on the correct class. 
+I generally find that the base-model \phle score, interpreted as a log-likelihood ratio, overstates the evidence for the correct class. 
 For each hypothesis pair under investigation, it can be calibrated by sampling the audited model under each hypothesis, but not using a different model or a different pair of hypotheses.
 More work would need to be done to determine methods to calibrate the \phle scores under realistic scenarios.
 
@@ -600,7 +606,7 @@ Judged by the first judge question above, the secret-harm generator's answers to
 
 \paragraph{Pool sizes.}
 Table~\ref{tab:pools} lists the number of text answers per generator after each filtering step, the number of distinct questions they cover, and the number of number sequences that parse as a list of numbers (out of 3,000 generated; up to 1,000 per generator are scored).
-The ``after word filter'' column counts answers that survived the animal and train filter applied at generation time, out of 1,200 (300 questions $\times$ 4 samples).
+The ``after word filter'' column counts answers that survived the animal and train filter applied at generation time, out of 1,200 (300 questions $\times$ 4 samples); the filter is re-applied, with a slightly extended word list, before the judge, which is why the percentages quoted in Section~\ref{sec:setup} are slightly higher.
 Individual comparisons may score subsets of these pools; the bags of $k$ answers are always drawn from questions answered by both generators.
 
 \begin{table}[h]
@@ -615,7 +621,7 @@ Individual comparisons may score subsets of these pools; the bags of $k$ answers
 
 All main experiments were repeated with Qwen2.5-7B-Instruct as the generator, the Qwen2.5-7B base model for \phle, Qwen2.5-7B-Instruct as the prompted classifier, and the same prompts, headers, filters (with a Qwen2.5-7B-Instruct judge) and analysis.
 Table~\ref{tab:qwen} gives the results.
-The performance of \phle is similar to or better than for Olmo, and prompted classifiers again stay near chance on the secret prompts and on owl vs eagle.
+The performance of \phle is similar to Olmo's, better on text and mixed on number sequences, and prompted classifiers again stay near chance on the secret prompts and on owl vs eagle.
 On the six-way test (Table~\ref{tab:qwen_sixway}) the Qwen base model reaches an accuracy of 0.62 from ten answers and 0.70 from thirty.
 
 In this and the following tables, a cell ``$a$ / $b$ / $c\,{\scriptstyle\pm s}$'' is the AUC from a single answer / from $k=10$ / from $k=30$ answers, with $s$ the $\pm1\sigma$ question-bootstrap uncertainty of the $k=30$ value; the per-answer and $k=10$ uncertainties are smaller and are given in the repository.
@@ -915,7 +921,7 @@ The size of the correction therefore depends on the model that wrote the answers
 \paragraph{Calibrating on a different comparison does not work in general.}
 Finally, I fitted the correction on one comparison and applied it to another, all on Olmo (Table~\ref{tab:calibration_cross}).
 The per-answer slopes differ by a factor of about seven between comparisons, so a correction from one comparison is generally wrong for another; for example, calibrating on owl vs eagle number sequences and applying it to secret harm vs no prompt still gives a log-loss of 0.90 for sums of 30 answers, worse than no information, against 0.29 for a correction fitted on secret harm vs no prompt itself.
-The exception is the group of text comparisons between two prompted generators (owl vs trains, owl vs eagle, secret harm vs secret friend), whose slopes are similar (0.25--0.32) and whose corrections transfer reasonably well among each other.
+The exception is the group of text comparisons between two prompted generators (owl vs trains, owl vs eagle, secret harm vs secret friend), whose slopes are similar (0.25--0.32); the corrections fitted on owl vs eagle and on secret harm vs secret friend transfer well to each other, but the correction fitted on owl vs trains, which has a larger offset, makes the other two worse than the raw score.
 In practice, then, a calibration should come from the same pair of hypotheses, sampled from the audited model.
 
 \begin{table}[h]
