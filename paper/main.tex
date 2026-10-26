@@ -495,15 +495,15 @@ Recent related work has shown the ability to verbalize system prompts that gener
 this method to narrow in on the hidden objective. 
 \new{Their method optimizes a soft prompt on the generating model itself, and its guarantee, that the data-generating prompt minimizes the loss, holds for the likelihood of that same model; the cross-family results here show that the likelihood of a different, base model still carries much of the signal.
 They also find, consistent with the results here, that the prompt can be recovered from datasets that produce little behavioral transfer in the student (compare Section~\ref{sec:distillation}), and that a prompted language model searching for the prompt returns only generic prompts (compare the prompted classifiers in Section~\ref{sec:results}).}
-In situations in which one has a quite closely related post-trained model, It would make sense to use a combination of these methods for auditing rather than the base model. 
+In situations in which one has a quite closely related post-trained model, it would make sense to use a combination of these methods for auditing rather than the base model. 
 However in some auditing scenarios one may not have access to such a similar post-trained model and using the base model itself might be more robust. 
 
 
 The usage of the base model may also have other advantages. 
 If the post-trained model used for auditing is sandbagging \citep{vanderweij2024sandbagging}, or otherwise covert in its intentions, 
-verbalization methods may not produce malicious hidden objective in the system prompt. 
+verbalization methods may not produce a malicious hidden objective in the system prompt. 
 Since it only uses the base model, which is thought to have no distinct persona or intentions, and involves directly evaluating a likelihood, 
-it cannot be sandbagged  in the same way that a prompted post-trained model can.
+it cannot be sandbagged in the same way that a prompted post-trained model can.
 Additionally, the same model that generated the responses cannot accurately classify them when prompted to do so, while \phle can.
 This indicates the model is not conscious of these subliminal signals, and may mean that a \phle auditing method would be difficult for a model to fully evade, even if it were aware of it.
 This is speculative, however; more capable models may have more self-awareness of and control over these subliminal signals.
@@ -513,7 +513,7 @@ More work would need to be done to validate that this method can uncover hidden 
 In a realistic auditing setting, one would need to use the \phle scores to set thresholds to confidently classify between different hidden objectives without access
 to truth labels.
 I explore how to calibrate these scores in Appendix~\ref{app:calibration}. 
-I generally find the \phle on the base model, when interpretted as a likelihood ratio, overstates evidence on the correct class. 
+I generally find the \phle on the base model, when interpreted as a likelihood ratio, overstates evidence on the correct class. 
 For each hypothesis under investigation, it can be calibrated by sampling the audited model under each hypothesis, but not using a different model or a different pair of hypotheses.
 More work would need to be done to determine methods to calibrate the \phle scores under realistic scenarios.
 
