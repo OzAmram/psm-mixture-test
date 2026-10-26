@@ -98,3 +98,18 @@
 - **Open:** the paper's 5.8 / Appendix H wording ("no significant behavioral transfer", 0–2%) should be updated; waiting on the author.
 
 - 2026-10-25: paper updated with the exact-probability result (Section 5.8: no owl-specific transfer; Appendix H: factors and test).
+
+## 2026-10-26: are the summed log-likelihood ratios calibrated log-odds?
+
+- **Goal:** the author asked whether a large PHLE score can be read as strong evidence without labelled examples, i.e. whether Λ behaves like true log-odds.
+- **What was done:** `scripts/calibration_check.py` → `results/calibration.md`. CPU only, using the existing Olmo score files: 8 main comparisons, base PHLE vs generator, k = 1 / 10 / 30 (4,000 matched bags). Checks:
+  - logistic calibration slope and intercept (calibrated: 1 and 0)
+  - actual AUC vs the AUC a calibrated Gaussian log-likelihood ratio with the same mean separation would give, Φ(√(d/2))
+  - log E_B[e^Λ] (0 for a true ratio)
+- **Results:**
+  - Generator, per answer: slope 0.9–1.4, intercept ≈ 0, implied AUC within 0.03 of actual. Roughly calibrated, as expected for the true likelihood ratio up to filtering.
+  - Base PHLE, per answer: slope 0.11–0.75, typically ~0.3, so the scores overstate the evidence about threefold. The actual AUC is below the implied one (e.g. secret harm vs no prompt 0.62 vs 0.75; owl vs eagle text 0.54 vs 0.63). Best calibrated: owl vs trains numbers (0.75), owl vs no prompt text (0.72), owl vs eagle numbers (0.49). Worst: owl vs no prompt numbers (0.11), secret harm vs no prompt (0.19).
+  - At k = 30, PHLE slopes are similar (0.12–0.77), and some comparisons have sizeable offsets (intercept +3.5 owl vs trains text, −2.1 secret harm vs no prompt, −1.9 owl vs no prompt numbers). A threshold at Λ = 0 is therefore biased for those pairs.
+  - Caveats: the logistic slope is not identified where classes separate perfectly (generator at k ≥ 10, owl vs no prompt text); E[e^Λ] is unreliable at large k (heavy tails).
+- **Reading:** generator ratios can be read as evidence; PHLE ratios cannot be read directly. They rank well but are too spread out (header-specific noise) and can be offset.
+- **Next:** decide with the author whether to add this to the paper (a short appendix plus a limitations sentence), and whether to try calibrating PHLE without labels (e.g. on answers the auditor generates by prompting a known model with each hypothesis).
