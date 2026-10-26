@@ -704,7 +704,9 @@ The no-prompt header was reworded as ``This is a general-purpose AI assistant th
 Tables~\ref{tab:reph_olmo_numbers}--\ref{tab:reph_qwen_text} give the results.
 The first two rows of each comparison score the original answers under the reworded header (base model) or the reworded system prompt (post-trained model).
 The last three rows score answers regenerated under the reworded system prompts, with the original header, the original system prompt, and the reworded prompt that generated them.
-These comparisons were computed in a separate analysis pass with its own random draw of answer bags and 100 bootstrap replicates, so the ``original'' column can differ slightly from the main-text figures (e.g.\ 0.91 instead of 0.96 at $k=30$ for Olmo owl vs trains on number sequences), within the uncertainties.
+Each generator produces more valid number sequences than are scored, and these comparisons were scored in a separate run that drew its own random 1,000 sequences per generator (and its own answer bags, with 100 bootstrap replicates).
+On number sequences the ``original'' column can therefore differ slightly from the main-text figures (e.g.\ 0.61 instead of 0.62 per sequence, and 0.91 instead of 0.96 at $k=30$, for Olmo owl vs trains); the log-likelihoods of sequences scored in both runs are identical, and the per-sequence AUC varies by about $\pm0.01$ between random subsets of 1,000 sequences.
+Text answers are scored in full, so their per-answer values are identical across runs.
 
 \begin{table}[h]
   \centering
@@ -738,6 +740,7 @@ These comparisons were computed in a separate analysis pass with its own random 
 The bird-loving, animal-loving and dog-loving headers are worded exactly like the owl-loving one, e.g.\ ``The assistant loves birds. It thinks about birds all the time; birds are its favorite animals, and it imbues its answers with its love for them.''
 The post-trained model is scored with the corresponding system prompts (``You love birds. You think about birds all the time. \ldots'').
 Each pair of generators is scored with the broader header minus the train-loving or no-prompt header (Tables~\ref{tab:comp_olmo_numbers}--\ref{tab:comp_qwen_text}).
+As for the rewording tables, the number-sequence results come from a separate run with its own random subset of sequences, so the specific-header column can differ slightly from the main-text values.
 For the post-trained model the exact system prompt is best by 0.05--0.14 per answer, but the bird-loving, animal-loving and dog-loving prompts perform about equally, so there is no bird-specific ordering.
 
 \begin{table}[h]

@@ -156,3 +156,13 @@
 - The author accepted the proposed literature additions with small edits.
 - Clean rebuild: 27 pages; no undefined references; no TODO, "??" or blue text in the PDF; no verification notes in the bibliography.
 - Category B analyses from `paper/REVIEW_PLAN.md` (provenance of the original-column values, paired bootstrap, extra classifier baselines, six-way diagnostics, unmatched bags, plain-HHH control) are still open.
+
+## 2026-10-26: the 0.62 / 0.61 / 0.59 owl-vs-trains (numbers) discrepancy
+
+- **Cause:** `scripts/subliminal_score.py` scores a random 1,000 of each generator's valid number sequences (~2,100–2,500). It draws them with one random generator shared across all generators in the run, so runs with different generator lists draw different subsets. The main run (`scores_num18_base`), the rewording run (`scores_phrase_olmo_base_numbers`) and the broader-header run (`scores_compose_olmo_base_numbers`) share only 853–1,445 of their ~2,000 owl+trains sequences.
+- **Checks:**
+  - Log-likelihoods of shared sequences are identical across runs (max difference 0.0000).
+  - Per-sequence AUC on the union of all scored sequences (1,577 owl, 1,842 trains) is 0.611. Random 1,000-per-generator subsets of the union give sd 0.008 (5–95%: 0.598–0.624), so 0.623 / 0.608 / 0.595 is consistent with subset noise.
+  - Text is unaffected: pools are under 1,000, so everything is scored and k = 1 is 0.614 in all three files.
+- **Paper:** the Appendix E explanation ("separate random draw of answer bags") was incomplete; it now gives the subset cause. Appendix F has a matching note.
+- Not done: rescoring every run on a common subset (would need a GPU rerun with a fixed per-generator sample). Not needed for the conclusions.
