@@ -139,3 +139,5 @@
   - Owl/eagle numbers → harm/none text: per answer 0.72 (raw 0.92, best 0.67; slope after correction 0.4, still overconfident). At k = 30: 0.90 (raw 1.88, best 0.29), worse than no information.
   - Transfer works only within the similar group: owl/eagle text → harm/friend text gives 0.45 at k = 30 (best 0.43, raw 0.70).
 - **Reading:** a calibration does not transfer across comparison types in general. It has to come from the same comparison (the same hypothesis pair), i.e. from sampling the audited model under those hypotheses.
+
+- 2026-10-26: calibration appendix (K) added to the paper with four tables generated from results/calibration*.md by paper/make_appendix_tables.py; limitations sentence on thresholds rewritten; Compute is now Appendix L.

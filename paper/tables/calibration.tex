@@ -1,0 +1,14 @@
+{\footnotesize\setlength{\tabcolsep}{4pt}\adjustbox{max width=\textwidth}{%
+\begin{tabular}{lccccccc}
+\toprule
+comparison & AUC & AUC if calibrated & slope & slope, $k=30$ & intercept, $k=30$ & generator AUC & generator slope \\ \midrule
+owl vs no prompt (text) & 0.88 & 0.92 & 0.72 & 1.00 & +0.00 & 1.00 & 0.89 \\
+owl vs trains (text) & 0.61 & 0.71 & 0.32 & 0.35 & +3.48 & 0.93 & 0.99 \\
+owl vs no prompt (numbers) & 0.54 & 0.61 & 0.11 & 0.12 & -1.87 & 0.97 & 1.28 \\
+owl vs trains (numbers) & 0.62 & 0.64 & 0.75 & 0.77 & +1.18 & 0.88 & 1.37 \\
+owl vs eagle (text) & 0.54 & 0.63 & 0.25 & 0.27 & -0.21 & 0.82 & 0.90 \\
+owl vs eagle (numbers) & 0.57 & 0.59 & 0.49 & 0.54 & -0.32 & 0.82 & 1.41 \\
+secret harm vs no prompt (text) & 0.62 & 0.75 & 0.19 & 0.19 & -2.13 & 0.97 & 0.90 \\
+secret harm vs secret friend (text) & 0.58 & 0.66 & 0.30 & 0.30 & +0.19 & 0.86 & 0.92 \\
+\bottomrule
+\end{tabular}}}

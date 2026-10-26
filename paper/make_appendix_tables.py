@@ -175,3 +175,42 @@ for tbl, col, lab in [("3.3 owl vs trains (text)", 1, "owl-loving vs no prompt (
     raw = [r for r in T[tbl] if r[0].startswith("OLMo base")][0]; reg = [r for r in L[tbl][1] if r[0].startswith("OLMo base")][0]
     rows.append([lab, c(raw[col]), c(reg[col])])
 write("lenreg.tex", tabular(["Olmo base \\phle", "raw (main text)", "length regressed out"], rows))
+
+# ---------------------------------------------------------------- calibration (scripts/calibration_check.py, calibration_transfer.py, calibration_cross_comparison.py)
+def md_sections(fn):
+    """{'## heading': [row cells]} for the markdown tables under each '## ' heading (header row included)."""
+    secs, cur = {}, None
+    for line in open(fn):
+        line = line.rstrip("\n")
+        if line.startswith("## "): cur = secs.setdefault(line[3:].strip(), [])
+        elif line.startswith("|") and cur is not None and not set(line) <= set("|-: "): cur.append([x.strip() for x in line.strip("|").split("|")])
+    return secs
+
+C = md_sections("results/calibration.md")
+one = {(r[0], r[1]): r for r in C["k=1"][1:]}; thirty = {(r[0], r[1]): r for r in C["k=30"][1:]}
+comps = list(dict.fromkeys(r[0] for r in C["k=1"][1:]))
+write("calibration.tex", tabular(["comparison", "AUC", "AUC if calibrated", "slope", "slope, $k=30$", "intercept, $k=30$", "generator AUC", "generator slope"],
+      [[c, one[(c, "base PHLE")][2], one[(c, "base PHLE")][3], one[(c, "base PHLE")][4], thirty[(c, "base PHLE")][4], thirty[(c, "base PHLE")][5],
+        one[(c, "generator")][2], one[(c, "generator")][4]] for c in comps], "lccccccc"))
+
+T2 = md_sections("results/calibration_transfer.md")
+pa = {(r[0], r[1]): r for r in T2["per answer"][1:]}; k30 = {(r[0], r[1]): r for r in T2["k = 30"][1:]}
+same = [k for k in pa if k[0].startswith("same model")]
+write("calibration_same.tex", tabular(["comparison", "raw", "transferred", "best", "raw", "transferred", "best", "slope"],
+      [[k[1]] + pa[k][2:5] + k30[k][2:5] + [k30[k][5]] for k in same], "lccccccc").replace(
+      "\\toprule\n", "\\toprule\n & \\multicolumn{3}{c}{per answer} & \\multicolumn{4}{c}{$k=30$} \\\\ \\cmidrule(lr){2-4}\\cmidrule(lr){5-8}\n"))
+other = [k for k in pa if not k[0].startswith("same model")]
+def setup(s):  # "Olmo base scorer: calibrate on Olmo answers, test on Qwen answers" -> short
+    sc = s.split(" scorer")[0]; cal = s.split("calibrate on ")[1].split(" answers")[0]; te = s.split("test on ")[1].split(" answers")[0]
+    return f"{sc}, {cal} $\\to$ {te}"
+write("calibration_other.tex", tabular(["scorer, calibration $\\to$ test answers", "comparison", "raw", "transferred", "best", "raw", "transferred", "best", "slope"],
+      [[setup(k[0]), k[1].replace(" (text)", "")] + pa[k][2:5] + k30[k][2:5] + [k30[k][5]] for k in other], "llccccccc").replace(
+      "\\toprule\n", "\\toprule\n & & \\multicolumn{3}{c}{per answer} & \\multicolumn{4}{c}{$k=30$} \\\\ \\cmidrule(lr){3-5}\\cmidrule(lr){6-9}\n"))
+
+X = md_sections("results/calibration_cross_comparison.md")["k = 30"]
+head = X[0]; body = X[1:]
+cells = lambda r: [x.split(" (")[0] for x in r[1:]]
+rows = [["raw"] + cells(body[0])]
+for i, r in enumerate(body[1:]):
+    cs = cells(r); cs[i] = f"\\textbf{{{cs[i]}}}"; rows.append([r[0]] + cs)
+write("calibration_cross.tex", tabular(["calibrated on $\\backslash$ applied to"] + head[1:], rows))

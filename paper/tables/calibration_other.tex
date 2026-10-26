@@ -1,0 +1,15 @@
+{\footnotesize\setlength{\tabcolsep}{4pt}\adjustbox{max width=\textwidth}{%
+\begin{tabular}{llccccccc}
+\toprule
+ & & \multicolumn{3}{c}{per answer} & \multicolumn{4}{c}{$k=30$} \\ \cmidrule(lr){3-5}\cmidrule(lr){6-9}
+scorer, calibration $\to$ test answers & comparison & raw & transferred & best & raw & transferred & best & slope \\ \midrule
+Olmo base, Olmo $\to$ Qwen & secret harm vs no prompt & 0.730 & 0.627 & 0.599 & 1.830 & 0.130 & 0.014 & 2.71 \\
+Olmo base, Olmo $\to$ Qwen & secret harm vs secret friend & 0.780 & 0.695 & 0.691 & 1.491 & 0.718 & 0.633 & 0.44 \\
+Olmo base, Qwen $\to$ Olmo & secret harm vs no prompt & 0.921 & 0.707 & 0.671 & 1.881 & 1.174 & 0.291 & 0.44 \\
+Olmo base, Qwen $\to$ Olmo & secret harm vs secret friend & 0.736 & 0.685 & 0.681 & 0.699 & 0.498 & 0.426 & 2.46 \\
+Qwen base, Olmo $\to$ Qwen & secret harm vs no prompt & 0.677 & 0.658 & 0.559 & 3.243 & 0.119 & 0.002 & 7.81 \\
+Qwen base, Olmo $\to$ Qwen & secret harm vs secret friend & 0.683 & 0.675 & 0.658 & 1.201 & 0.492 & 0.160 & 3.55 \\
+Qwen base, Qwen $\to$ Olmo & secret harm vs no prompt & 1.063 & 0.819 & 0.690 & 10.929 & 1.405 & 0.521 & 0.19 \\
+Qwen base, Qwen $\to$ Olmo & secret harm vs secret friend & 0.779 & 0.715 & 0.688 & 1.393 & 2.119 & 0.589 & 0.28 \\
+\bottomrule
+\end{tabular}}}
