@@ -17,6 +17,7 @@
 \definecolor{codelink}{HTML}{001B70}
 
 \newcommand{\phle}{PHLE\xspace}
+\newcommand{\new}[1]{{\color{blue}#1}}  % drafted text for the author to review
 \newcommand{\todo}[1]{{\color{red}[TODO: #1]}}
 
 \title{Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss}
@@ -480,12 +481,20 @@ I speculate this is because base models from different families are relatively s
 while post-training can differ a lot between model families and produce very different likelihoods.
 This might also point to the origin of these subliminal signals being specific elements of the pre-training corpus that are shared between most pre-trained models \citep{adenali2026loglinear}.
 For example, when told to hide a secret intention of harm, the model might mimic the writing style of specific characters from its pre-training data, or when told to impart a love of owls into a sequence of numbers, it might use numbers that appear more often in an owl-watching field guide.
+\new{The \phle statistic is closely related to the selection score of Logit-Linear Selection \citep{adenali2026loglinear}, which picks training examples by how much a system prompt raises the teacher's likelihood of a response, $\log P(r \mid s, q) - \log P(r \mid q)$; this is a \phle-style ratio, computed by the post-trained model, with no system prompt as the alternative.
+They use it to construct datasets that carry hidden effects, and leave detecting such effects as an open problem; \phle uses the same kind of ratio, under a base model, to read them.
+To explain these effects they model the log-probability of a response as an inner product between a system-prompt vector and a response embedding, and argue that the response embedding is approximately universal across models because it reflects statistical relationships in natural data.
+This is consistent with base models of different families reading the same signal.
+They find, however, that training on the selected data transfers only weakly between model families.
+Reading the signal may require less than transferring it through training: a small component of the signal shared between models can be enough, since it adds up over many answers.}
 
 This method of classification might be useful for auditing the hidden objectives of models.
 Using the likelihood of the post-trained model directly seems to perform better than using the base model likelihood. 
 However, across model families this does not hold. The \phle evaluation using base models transfers well while using the likelihood of post-trained models does not. 
 Recent related work has shown the ability to verbalize system prompts that generate subliminal learning signals \citep{hu2026salve}, which could be used in combination with 
 this method to narrow in on the hidden objective. 
+\new{Their method optimizes a soft prompt on the generating model itself, and its guarantee, that the data-generating prompt minimizes the loss, holds for the likelihood of that same model; the cross-family results here show that the likelihood of a different, base model still carries much of the signal.
+They also find, consistent with the results here, that the prompt can be recovered from datasets that produce little behavioral transfer in the student (compare Section~\ref{sec:distillation}), and that a prompted language model searching for the prompt returns only generic prompts (compare the prompted classifiers in Section~\ref{sec:results}).}
 In situations in which one has a quite closely related post-trained model, It would make sense to use a combination of these methods for auditing rather than the base model. 
 However in some auditing scenarios one may not have access to such a similar post-trained model and using the base model itself might be more robust. 
 
