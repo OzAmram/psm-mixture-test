@@ -389,7 +389,7 @@ On the Qwen-generated answers the Olmo base model does about as well as the Qwen
 The other family's \emph{post-trained} model does much worse, even though it is given the exact system prompts: $0.61 \pm 0.08$ for Qwen Instruct on the Olmo answers, and $0.73 \pm 0.08$ for Olmo Instruct on the Qwen answers, at $k=30$.
 
 For secret harm vs no prompt, in both directions the ordering is: generator $\gg$ same-family base model $\gtrsim$ other-family base model $\gg$ other-family post-trained model.
-This is notable because \citet{cloud2025subliminal} found subliminal trait transfer through fine-tuning to be weak or absent across model families\new{, although it can persist across some differences in pre-training \citep{tang2026tracing}}.
+This is notable because \citet{cloud2025subliminal} found subliminal trait transfer through fine-tuning to be weak or absent across model families, although it can persist across some differences in pre-training \citep{tang2026tracing}.
 I return to this in Section~\ref{sec:discussion}.
 
 \subsection{Robustness to the choice of header}
@@ -449,16 +449,16 @@ The students still carry a signal \phle can read: secret-harm vs secret-friend s
 Viewing a language model as a simulator of many characters, of which the assistant is one, goes back at least to \citet{janus2022simulators,andreas2022agent,shanahan2023roleplay}.
 The PSM \citep{marks2026psm} makes this view concrete for post-training: the character the post-trained model plays is one the pre-trained model already represents.
 Related evidence is that post-training changes surprisingly little of the base model's distribution \citep{zhou2023lima,lin2023unlocking}, that traits like sycophancy or evil correspond to directions in activation space \citep{chen2025persona}, and that narrow fine-tuning can shift the whole character \citep{betley2025emergent}.
-\new{On the Olmo~3 7B family used here, persona vectors form early in pre-training and remain effective for steering the post-trained model \citep{moskvoretskii2026persona}.}
+On the Olmo~3 7B family used here, persona vectors form early in pre-training and remain effective for steering the post-trained model \citep{moskvoretskii2026persona}.
 This work tests one prediction of the PSM directly with base-model likelihoods.
 
 \paragraph{Subliminal learning.}
 \citet{cloud2025subliminal} showed that a teacher prompted with a trait transmits it to a student through data that is semantically unrelated to the trait, and found the effect to be weak or absent between models with different base models.
-\new{More recent work finds that transfer can persist across differences in initialization, pre-training data, size and architecture, though often asymmetrically \citep{tang2026tracing}.}
+More recent work finds that transfer can persist across differences in initialization, pre-training data, size and architecture, though often asymmetrically \citep{tang2026tracing}.
 Follow-up work has reproduced the effect in open-weight models \citep{vanderweijden2026reproducing}, traced it to a small number of tokens on which differently-biased teachers disagree \citep{schrodi2025subliminal}, and extended it to teachers biased with steering vectors \citep{morgulis2026steering} and to the transfer of capabilities and backdoors \citep{dubinski2026beyond}.
-\new{\citet{blank2026steering} show that the teacher's system prompt acts like a steering vector with both model-independent and model-specific effects, and \citet{hadley2026nonsemantic} find that non-semantic structure in the weights plays a key role in the transfer.
+\citet{blank2026steering} show that the teacher's system prompt acts like a steering vector with both model-independent and model-specific effects, and \citet{hadley2026nonsemantic} find that non-semantic structure in the weights plays a key role in the transfer.
 Subliminal acquisition can also be non-monotonic over training, with trait-specific failures of transfer \citep{yanagisawa2026mitigation}.
-Transferred traits can be recovered without labels from a student's weight updates \citep{egan2026defence}, and a related data-poisoning attack transfers between models and survives data-level defences, including paraphrasing \citep{draganov2026phantom}.}
+Transferred traits can be recovered without labels from a student's weight updates \citep{egan2026defence}, and a related data-poisoning attack transfers between models and survives data-level defences, including paraphrasing \citep{draganov2026phantom}.
 Closest to this work, \citet{hu2026salve} show that a prompted subliminal-learning dataset identifies the teacher's prompt in theory, and recover it with the SALVE method, which optimizes a soft prompt on the teacher's own model and verbalizes it.
 Their guarantee, that the data-generating prompt minimizes the loss, holds for the likelihood of that same model.
 Here I instead score a finite set of written hypotheses with a different model, the base model, and the cross-family results show that its likelihood still carries much of the signal.
@@ -467,13 +467,13 @@ They also find, consistent with the results here, that the prompt can be recover
 \paragraph{Auditing hidden objectives.}
 Models can be trained or prompted to pursue objectives they do not reveal \citep{hubinger2024sleeper,greenblatt2024alignment}, and auditing them is an active area of research \citep{marks2025auditing,sheshadri2026auditbench}.
 Prompted models used as monitors or classifiers can in principle strategically underperform \citep{vanderweij2024sandbagging}.
-\new{Recovering a hidden system prompt has also been studied as an extraction or inversion problem, by querying the model \citep{zhang2023extraction}, from its output probabilities \citep{morris2023inversion}, or from ordinary outputs alone with a trained inversion model \citep{zhang2024output2prompt}.
-Hidden objectives that are trained into a model can be much harder to find: black-box audits of a model fine-tuned with a narrow secret loyalty largely fail, including generating from its base model \citep{lamerton2026loyalty}.}
+Recovering a hidden system prompt has also been studied as an extraction or inversion problem, by querying the model \citep{zhang2023extraction}, from its output probabilities \citep{morris2023inversion}, or from ordinary outputs alone with a trained inversion model \citep{zhang2024output2prompt}.
+Hidden objectives that are trained into a model can be much harder to find: black-box audits of a model fine-tuned with a narrow secret loyalty largely fail, including generating from its base model \citep{lamerton2026loyalty}.
 
 \paragraph{Likelihood-ratio detectors.}
 Comparing the likelihood of a text under two models or contexts is a standard tool in machine-generated text detection \citep{mitchell2023detectgpt,hans2024binoculars}, membership inference \citep{carlini2022lira} and authorship attribution \citep{huang2024alms}.
 \phle applies the same statistic with a single base model and two persona headers as the two hypotheses.
-\new{Scoring a text conditional on a description of each class, rather than asking the model for the class label, is also the idea behind noisy-channel prompting for text classification, which can outperform direct label prediction \citep{min2022noisy}.}
+Scoring a text conditional on a description of each class, rather than asking the model for the class label, is also the idea behind noisy-channel prompting for text classification, which can outperform direct label prediction \citep{min2022noisy}.
 It is also closely related to the selection score of Logit-Linear Selection \citep{adenali2026loglinear}, which picks training examples by how much a system prompt raises the teacher's likelihood of a response, $\log P(r \mid s, q) - \log P(r \mid q)$.
 This is a \phle-style ratio, computed by the post-trained model, with no system prompt as the alternative.
 They use it to construct datasets that carry hidden effects, and leave detecting such effects as an open problem; \phle uses the same kind of ratio, under a base model, to read them.
@@ -486,8 +486,8 @@ a small component of the signal shared between models can be enough, since it ad
 \paragraph{Introspection and self-recognition.}
 Whether models can report on their own internal states or recognize their own outputs is an open question, with evidence both for limited introspective access \citep{binder2024inward,lindsey2025introspection} and for self-recognition of generated text \citep{panickssery2024recognize}.
 The gap found here between a model's likelihoods and the same model prompted as a classifier is a concrete instance of information the model carries but does not report.
-\new{More generally, prompting a model for a judgment can underestimate what its output probabilities encode \citep{hu2023prompting}.
-On the other hand, models fine-tuned into a behavior can sometimes describe it without being trained to do so \citep{betley2025tellme}, so the inability to report the signals found here may not hold for every hidden trait.}
+More generally, prompting a model for a judgment can underestimate what its output probabilities encode \citep{hu2023prompting}.
+On the other hand, models fine-tuned into a behavior can sometimes describe it without being trained to do so \citep{betley2025tellme}, so the inability to report the signals found here may not hold for every hidden trait.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -500,7 +500,7 @@ I speculate this is because base models from different families are relatively s
 while post-training can differ a lot between model families and produce very different likelihoods.
 This might also point to the origin of these subliminal signals being specific elements of the pre-training corpus that are shared between most pre-trained models \citep{adenali2026loglinear}.
 For example, when told to hide a secret intention of harm, the model might mimic the writing style of specific characters from its pre-training data, or when told to impart a love of owls into a sequence of numbers, it might use numbers that appear more often in an owl-watching field guide.
-\new{\citet{blank2026steering} find that the steering vector induced by a system prompt has both model-independent and model-specific effects on the generated data; a base model of another family may be reading the model-independent part.}
+\citet{blank2026steering} find that the steering vector induced by a system prompt has both model-independent and model-specific effects on the generated data; a base model of another family may be reading the model-independent part.
 
 This method of classification might be useful for auditing the hidden objectives of models.
 Using the likelihood of the post-trained model directly seems to perform better than using the base model likelihood. 
@@ -530,7 +530,7 @@ For each hypothesis pair under investigation, it can be calibrated by sampling t
 More work would need to be done to determine methods to calibrate the \phle scores under realistic scenarios.
 
 \paragraph{Limitations.}
-All experiments use 7B models from two families, and the hidden intentions are given in a system prompt rather than trained into the model, as they would be in a realistic auditing setting \citep{marks2025auditing,sheshadri2026auditbench}\new{; models fine-tuned with a hidden objective, such as the secret-loyalty models of \citet{lamerton2026loyalty}, are the natural next test}.
+All experiments use 7B models from two families, and the hidden intentions are given in a system prompt rather than trained into the model, as they would be in a realistic auditing setting \citep{marks2025auditing,sheshadri2026auditbench, lamerton2026loyalty}.
 The method requires a list of candidate hypotheses, and its performance depends on how well a one-paragraph description matches the hidden prompt (Sections~\ref{sec:headers} and~\ref{sec:broader}).
 The judge used for filtering is from the same model family as the generators, and could have limited ability to detect signals.
 The student models were trained with a single seed each.

@@ -150,3 +150,9 @@
 - Literature search (subagent): 27 suggestions, all verified on arXiv; abstracts read for the 8 high-priority ones. Proposed edits (not applied) are in `paper/PROPOSED_review_D.md`.
 - Category B (checks on existing data: few-shot and chain-of-thought classifiers, unmatched bags, plain-HHH control, classifier bootstrap) is not started.
 - The author is also running a Codex review and will merge its recommendations.
+
+## 2026-10-26: literature additions accepted; final checks; pushed
+
+- The author accepted the proposed literature additions with small edits.
+- Clean rebuild: 27 pages; no undefined references; no TODO, "??" or blue text in the PDF; no verification notes in the bibliography.
+- Category B analyses from `paper/REVIEW_PLAN.md` (provenance of the original-column values, paired bootstrap, extra classifier baselines, six-way diagnostics, unmatched bags, plain-HHH control) are still open.
