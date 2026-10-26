@@ -113,3 +113,20 @@
   - Caveats: the logistic slope is not identified where classes separate perfectly (generator at k ≥ 10, owl vs no prompt text); E[e^Λ] is unreliable at large k (heavy tails).
 - **Reading:** generator ratios can be read as evidence; PHLE ratios cannot be read directly. They rank well but are too spread out (header-specific noise) and can be offset.
 - **Next:** decide with the author whether to add this to the paper (a short appendix plus a limitations sentence), and whether to try calibrating PHLE without labels (e.g. on answers the auditor generates by prompting a known model with each hypothesis).
+
+## 2026-10-26: label-free calibration of PHLE
+
+- **What was done:** `scripts/calibration_transfer.py` → `results/calibration_transfer.md`. CPU only. A per-answer slope and offset (logistic regression, classes weighted equally) is fitted on "self-generated" labelled answers and applied to test answers. For k-answer sums the correction is a·Λ_k + k·b. Metric: balanced log-loss (0.693 = no information).
+  - Same model: fit on half the questions, test on the other half (20 splits).
+  - Other model: fit on one family's generated answers, test on the other family's, same base scorer (secret prompts only).
+- **Same model:**
+  - Per answer, the transferred correction is within 0.005 of the best possible log-loss on all 8 comparisons.
+  - At k = 30 it cuts the log-loss a lot (secret harm vs no prompt 2.12 → 0.35, best 0.30; owl vs no prompt numbers 6.85 → 0.66; owl vs trains text 1.63 → 0.31).
+  - The corrected 30-answer sums have calibration slope 1.0–1.8 and intercept ≈ 0, so they are slightly underconfident, which is the safe direction.
+- **Other model:**
+  - The required slope differs by family: test-set calibration slopes of 0.1–8 after transfer.
+  - Log-loss usually improves on raw, but stays far from the best possible, and in one case gets worse (Qwen scorer, Qwen → Olmo, harm vs friend at k = 30: 1.39 → 2.12).
+  - Calibration does not transfer across generators.
+- **Reading:** PHLE can be calibrated if the auditor can sample the audited model itself under each hypothesis system prompt (black-box sampling is enough; no likelihoods needed), but not with a different model.
+  - Caveat: in this test the same-model case is literally the same generators on held-out questions, i.e. the best case. Prompting a model whose objective is trained in may not reproduce its hidden distribution.
+  - An auditor who has the audited model's likelihoods should simply use the generator ratio.
