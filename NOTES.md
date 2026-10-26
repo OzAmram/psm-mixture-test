@@ -141,3 +141,5 @@
 - **Reading:** a calibration does not transfer across comparison types in general. It has to come from the same comparison (the same hypothesis pair), i.e. from sampling the audited model under those hypotheses.
 
 - 2026-10-26: calibration appendix (K) added to the paper with four tables generated from results/calibration*.md by paper/make_appendix_tables.py; limitations sentence on thresholds rewritten; Compute is now Appendix L.
+
+- 2026-10-26: read Hu et al. 2026 (SALVE, arXiv:2609.16927) and Aden-Ali et al. 2026 (Logit-Linear Selection, arXiv:2602.04863) via two subagents; key quotes spot-checked against the LaTeX sources. Both citation placeholders in the discussion are filled (new bib entry adenali2026loglinear). Suggested discussion additions are given to the author, not yet written into the paper.
