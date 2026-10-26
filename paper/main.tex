@@ -17,7 +17,6 @@
 \definecolor{codelink}{HTML}{001B70}
 
 \newcommand{\phle}{PHLE\xspace}
-\newcommand{\new}[1]{{\color{blue}#1}}  % drafted text for the author to review
 \newcommand{\todo}[1]{{\color{red}[TODO: #1]}}
 
 \title{Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss}
@@ -98,40 +97,11 @@ The main contributions of this work are:
 \end{itemize}
 
 The paper is organized as follows.
-Section~\ref{sec:related} discusses related work.
 Section~\ref{sec:method} introduces \phle and the baselines it is compared to, and Section~\ref{sec:setup} describes the models, data and hidden prompts.
-The results are presented in Section~\ref{sec:results} and discussed in Section~\ref{sec:discussion}.
+The results are presented in Section~\ref{sec:results}, related work is reviewed in Section~\ref{sec:related}, and the results are discussed in Section~\ref{sec:discussion}.
 Additional results, including a full replication of the main experiments on the Qwen model family, are in the appendices.
 Code and all results are available at \url{https://github.com/OzAmram/psm-mixture-test}.
 
-
-\section{Related work}
-\label{sec:related}
-
-\paragraph{Personas in language models.}
-Viewing a language model as a simulator of many characters, of which the assistant is one, goes back at least to \citet{janus2022simulators,andreas2022agent,shanahan2023roleplay}.
-The PSM \citep{marks2026psm} makes this view concrete for post-training: the character the post-trained model plays is one the pre-trained model already represents.
-Related evidence is that post-training changes surprisingly little of the base model's distribution \citep{zhou2023lima,lin2023unlocking}, that traits like sycophancy or evil correspond to directions in activation space \citep{chen2025persona}, and that narrow fine-tuning can shift the whole character \citep{betley2025emergent}.
-This work tests one prediction of the PSM directly with base-model likelihoods.
-
-\paragraph{Subliminal learning.}
-\citet{cloud2025subliminal} showed that a teacher prompted with a trait transmits it to a student through data that is semantically unrelated to the trait, and that the effect is weak or absent across model families.
-Follow-up work has reproduced the effect in open-weight models \citep{vanderweijden2026reproducing}, traced it to a small number of tokens on which differently-biased teachers disagree \citep{schrodi2025subliminal}, and extended it to teachers biased with steering vectors \citep{morgulis2026steering} and to the transfer of capabilities and backdoors \citep{dubinski2026beyond}.
-Closest to this work, \citet{hu2026salve} show that a prompted subliminal-learning dataset identifies the teacher's prompt in theory, and recovers it by optimizing a soft prompt on the teacher's own model and verbalizing it.
-Here I instead score a finite set of written hypotheses, with a different model (the base model) than the one that generated the data.
-
-\paragraph{Auditing hidden objectives.}
-Models can be trained or prompted to pursue objectives they do not reveal \citep{hubinger2024sleeper,greenblatt2024alignment}, and auditing them is an active area of research \citep{marks2025auditing,sheshadri2026auditbench}.
-Prompted models used as monitors or classifiers can in principle strategically underperform \citep{vanderweij2024sandbagging}.
-Recovering a hidden system prompt from a model's outputs has also been studied as an extraction or inversion problem \citep{zhang2023extraction,morris2023inversion}, typically with direct access to the model being audited.
-
-\paragraph{Likelihood-ratio detectors.}
-Comparing the likelihood of a text under two models or contexts is a standard tool in machine-generated text detection \citep{mitchell2023detectgpt,hans2024binoculars}, membership inference \citep{carlini2022lira} and authorship attribution \citep{huang2024alms}.
-\phle applies the same statistic with a single base model and two persona headers as the two hypotheses.
-
-\paragraph{Introspection and self-recognition.}
-Whether models can report on their own internal states or recognize their own outputs is an open question, with evidence both for limited introspective access \citep{binder2024inward,lindsey2025introspection} and for self-recognition of generated text \citep{panickssery2024recognize}.
-The gap found here between a model's likelihoods and the same model prompted as a classifier is a concrete instance of information the model carries but does not report.
 
 \section{Method}
 \label{sec:method}
@@ -470,6 +440,44 @@ Following the subliminal learning setup, I fine-tuned post-trained Olmo students
 I did not see an owl-specific behavioral transfer: owl students name owls as their favorite animal only 0--2\% of the time, and other animals become more likely by a similar factor (Appendix~\ref{app:distillation}). Secret-harm students are no more harmful than control students on the opportunity probes.
 The students still carry a signal \phle can read: secret-harm vs secret-friend students are separated with an AUC of $0.92 \pm 0.04$ at $k=30$, and secret-harm vs no-prompt students with $0.94 \pm 0.03$, while prompted classifiers stay at or below $0.59$.
 
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Personas in language models.}
+Viewing a language model as a simulator of many characters, of which the assistant is one, goes back at least to \citet{janus2022simulators,andreas2022agent,shanahan2023roleplay}.
+The PSM \citep{marks2026psm} makes this view concrete for post-training: the character the post-trained model plays is one the pre-trained model already represents.
+Related evidence is that post-training changes surprisingly little of the base model's distribution \citep{zhou2023lima,lin2023unlocking}, that traits like sycophancy or evil correspond to directions in activation space \citep{chen2025persona}, and that narrow fine-tuning can shift the whole character \citep{betley2025emergent}.
+This work tests one prediction of the PSM directly with base-model likelihoods.
+
+\paragraph{Subliminal learning.}
+\citet{cloud2025subliminal} showed that a teacher prompted with a trait transmits it to a student through data that is semantically unrelated to the trait, and that the effect is weak or absent across model families.
+Follow-up work has reproduced the effect in open-weight models \citep{vanderweijden2026reproducing}, traced it to a small number of tokens on which differently-biased teachers disagree \citep{schrodi2025subliminal}, and extended it to teachers biased with steering vectors \citep{morgulis2026steering} and to the transfer of capabilities and backdoors \citep{dubinski2026beyond}.
+Closest to this work, \citet{hu2026salve} show that a prompted subliminal-learning dataset identifies the teacher's prompt in theory, and recover it with the SALVE method, which optimizes a soft prompt on the teacher's own model and verbalizes it.
+Their guarantee, that the data-generating prompt minimizes the loss, holds for the likelihood of that same model.
+Here I instead score a finite set of written hypotheses with a different model, the base model, and the cross-family results show that its likelihood still carries much of the signal.
+They also find, consistent with the results here, that the prompt can be recovered from datasets that produce little behavioral transfer in the student, as for the students in Section~\ref{sec:distillation}, and that a prompted language model searching for the prompt returns only generic prompts, in line with the prompted classifiers here.
+
+\paragraph{Auditing hidden objectives.}
+Models can be trained or prompted to pursue objectives they do not reveal \citep{hubinger2024sleeper,greenblatt2024alignment}, and auditing them is an active area of research \citep{marks2025auditing,sheshadri2026auditbench}.
+Prompted models used as monitors or classifiers can in principle strategically underperform \citep{vanderweij2024sandbagging}.
+Recovering a hidden system prompt from a model's outputs has also been studied as an extraction or inversion problem \citep{zhang2023extraction,morris2023inversion}, typically with direct access to the model being audited.
+
+\paragraph{Likelihood-ratio detectors.}
+Comparing the likelihood of a text under two models or contexts is a standard tool in machine-generated text detection \citep{mitchell2023detectgpt,hans2024binoculars}, membership inference \citep{carlini2022lira} and authorship attribution \citep{huang2024alms}.
+\phle applies the same statistic with a single base model and two persona headers as the two hypotheses.
+It is also closely related to the selection score of Logit-Linear Selection \citep{adenali2026loglinear}, which picks training examples by how much a system prompt raises the teacher's likelihood of a response, $\log P(r \mid s, q) - \log P(r \mid q)$.
+This is a \phle-style ratio, computed by the post-trained model, with no system prompt as the alternative.
+They use it to construct datasets that carry hidden effects, and leave detecting such effects as an open problem; \phle uses the same kind of ratio, under a base model, to read them.
+To explain these effects they model the log-probability of a response as an inner product between a system-prompt vector and a response embedding, and argue that the response embedding is approximately universal across models because it reflects statistical relationships in natural data.
+This is consistent with base models of different families reading the same signal.
+They find, however, that training on the selected data transfers only weakly between model families.
+The cross-model results in this work support the idea that reading the signal may require less than transferring it through training: 
+a small component of the signal shared between models can be enough, since it adds up over many answers.
+
+\paragraph{Introspection and self-recognition.}
+Whether models can report on their own internal states or recognize their own outputs is an open question, with evidence both for limited introspective access \citep{binder2024inward,lindsey2025introspection} and for self-recognition of generated text \citep{panickssery2024recognize}.
+The gap found here between a model's likelihoods and the same model prompted as a classifier is a concrete instance of information the model carries but does not report.
+
 \section{Discussion}
 \label{sec:discussion}
 
@@ -481,20 +489,12 @@ I speculate this is because base models from different families are relatively s
 while post-training can differ a lot between model families and produce very different likelihoods.
 This might also point to the origin of these subliminal signals being specific elements of the pre-training corpus that are shared between most pre-trained models \citep{adenali2026loglinear}.
 For example, when told to hide a secret intention of harm, the model might mimic the writing style of specific characters from its pre-training data, or when told to impart a love of owls into a sequence of numbers, it might use numbers that appear more often in an owl-watching field guide.
-\new{The \phle statistic is closely related to the selection score of Logit-Linear Selection \citep{adenali2026loglinear}, which picks training examples by how much a system prompt raises the teacher's likelihood of a response, $\log P(r \mid s, q) - \log P(r \mid q)$; this is a \phle-style ratio, computed by the post-trained model, with no system prompt as the alternative.
-They use it to construct datasets that carry hidden effects, and leave detecting such effects as an open problem; \phle uses the same kind of ratio, under a base model, to read them.
-To explain these effects they model the log-probability of a response as an inner product between a system-prompt vector and a response embedding, and argue that the response embedding is approximately universal across models because it reflects statistical relationships in natural data.
-This is consistent with base models of different families reading the same signal.
-They find, however, that training on the selected data transfers only weakly between model families.
-Reading the signal may require less than transferring it through training: a small component of the signal shared between models can be enough, since it adds up over many answers.}
 
 This method of classification might be useful for auditing the hidden objectives of models.
 Using the likelihood of the post-trained model directly seems to perform better than using the base model likelihood. 
 However, across model families this does not hold. The \phle evaluation using base models transfers well while using the likelihood of post-trained models does not. 
 Recent related work has shown the ability to verbalize system prompts that generate subliminal learning signals \citep{hu2026salve}, which could be used in combination with 
 this method to narrow in on the hidden objective. 
-\new{Their method optimizes a soft prompt on the generating model itself, and its guarantee, that the data-generating prompt minimizes the loss, holds for the likelihood of that same model; the cross-family results here show that the likelihood of a different, base model still carries much of the signal.
-They also find, consistent with the results here, that the prompt can be recovered from datasets that produce little behavioral transfer in the student (compare Section~\ref{sec:distillation}), and that a prompted language model searching for the prompt returns only generic prompts (compare the prompted classifiers in Section~\ref{sec:results}).}
 In situations in which one has a quite closely related post-trained model, it would make sense to use a combination of these methods for auditing rather than the base model. 
 However in some auditing scenarios one may not have access to such a similar post-trained model and using the base model itself might be more robust. 
 
@@ -928,6 +928,6 @@ In practice, then, a calibration should come from the same pair of hypotheses, s
 \section{Compute}
 \label{app:compute}
 
-All experiments ran on NVIDIA A100 (40\,GB) GPUs on the Perlmutter system at NERSC, one GPU per job, with the models in bfloat16.
+All experiments ran on NVIDIA A100 (40\,GB) GPUs, one GPU per job, with the models in bfloat16.
 
 \end{document}
