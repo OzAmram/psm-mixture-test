@@ -272,3 +272,39 @@
   - Setup: full families, scores from the hidden-state pass, which match the Phase 1 scores to bf16 rounding (98% identical, mean signed difference 1e-6 per token).
   - Hold-out, Instruct answers: legacy86 −1.7225; axis −1.7284; Big Five + IPIP −1.7260; OLMo spec −1.7241; values −1.7535; base-from-data −1.7251; all 763 −1.7126 (+0.010 ± 0.001); Instruct-derived reference −1.5954.
   - Every basis levels off after 2–3 personas, with the same character picked first (helpful, honest, casual assistant) plus a register persona. Added to the write-up, section 2.
+- 2026-10-27 09:40, **geometric fits on other bases, first three** (`scripts/phase4_bases_fit.sh`; same answers, 80% of fit-half questions, 960 fit / 1,200 hold-out answers). Hold-out, Instruct:
+
+  | basis | geometric fit A | arithmetic mixture |
+  |---|---|---|
+  | olmospec (8) | −1.6802 ± 0.0118 | −1.7239 |
+  | bigfive (113) | −1.6401 ± 0.0120 | −1.7261 |
+  | legacy87 (87) | −1.6055 ± 0.0121 | −1.7226 |
+
+  - legacy87 reproduces the full-fit-half Experiment 1 value (−1.6045).
+  - OLMo spec weights pair near-duplicates with opposite signs: sysmsg −2.26 vs identity +1.35; all −1.93 vs all+HHH +1.69.
+  - **Problem:** allocation 60372590 had 40 GB GPUs, so axis, three and all ran out of GPU memory. Their partial outputs were moved to `results/phase4/exp1/instruct_unknown_casual_v1/bases/failed_oom_40gb/` and their logs renamed `*_oom40gb.log`.
+  - Rerunning on allocation 60384834 with `-C "gpu&hbm80g"` (80 GB GPUs), log `logs/p4b_fit_interactive2.out`.
+- 2026-10-27 10:30, **Assistant Axis geometric fit:** −1.5399 ± 0.0124 hold-out (λ = 1e-3 chosen; −1.5398), against legacy87 −1.6055 on the same answers and 80% fit set. The arithmetic mixture is slightly worse than legacy87 (−1.7284), but the geometric fit is clearly better. Three-together and all fits still running.
+
+## 2026-10-27: Instruct-derived bases (author's design)
+
+- **Goal:** the author proposed two families.
+  1. Instruct describes itself in full paragraphs: overall, plus how each of a set of traits shows up in it.
+  2. Soft contexts on the base model, each started from one description and trained on Instruct's answers, "to correct between differences of the Instruct model's self-description and what the base model reads".
+
+  Fit each family, arithmetic and geometric.
+- **Author's choices:**
+  - Assistant Axis traits for the per-trait part.
+  - Regenerate the overall descriptions.
+  - Make the descriptions full paragraphs; many earlier ones were one sentence.
+  - No anchoring of the soft contexts. I had predicted they would converge to one context; the author disagreed, noting that runs from different starting points reached similar likelihood but stayed close to their start. That is a fair point (similar score ≠ same context), so I will measure how different they end up, both in vectors and in per-answer scores.
+- **My choices:**
+  - 60 of the 240 Axis traits, random with seed 0, one paragraph each.
+  - 5 overall prompt phrasings × 4.
+  - 150–250 words requested, 120–320 accepted, otherwise resampled.
+  - Each soft context starts as EXACTLY its description's token embeddings, with length equal to its token count, so at step 0 it equals the written header and training measures only the correction.
+  - Training: fit half only, 20% validation, 3 epochs (the best epoch was 2–3 in every earlier run), lr 5e-3, seed 0.
+- **Code:** `scripts/phase4_selfdesc_elicit.py`; `scripts/phase4_selfdesc_stage.sh`; `prompt_tune_base.py --init-from family:name --L 0`; `phase4_hidden_states.py` now handles families whose entries carry a soft-prefix path; fit tags sdo, sdt, sd, sdo_soft, sdt_soft, sd_soft, sd_all in `scripts/phase4_bases_fit.sh`.
+- **Check:** before the stage, `/pscratch/sd/o/ozamram/persona_phase4/tmp/prefix_equiv_check.py` confirms that a prefix equal to a header's embeddings reproduces that header's scores through the hidden-state path.
+- **Runs:** the stage runs on allocation 60384834 after the large-basis fits (log `logs/p4s_stage_interactive1.out`).
+- **Cost estimate:** about 80 soft contexts × about 8 min, about 2.5 hours on 4 GPUs. It will probably need a second allocation; every step is idempotent.
