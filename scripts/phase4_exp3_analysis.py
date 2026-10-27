@@ -9,7 +9,8 @@ Per checkpoint M_k (answers sampled from M_k at T = 1):
              and L in {16, 64} x lr in {5e-3, 2e-2}; the one reported is the best by VALIDATION log P (the 20% of training
              questions used for early stopping), never by hold-out. All five are listed.
   control    the L128/lr5e-3 prefix trained on M_k itself (transcript format); passes if within 0.05 nats/token of self
-  geometric  fit A of phase4_geom_fit.py (holdout_per_answer_A.npz), when it exists for the run; all rows then restricted to
+  geometric  fit A of phase4_geom_fit.py (holdout_per_answer_A.npz; the lambda and penalty target chosen on validation),
+             when it exists for the run; all rows then restricted to
              the hold-out answers it scored
   gap_k = self - prefix (best by validation); errors: question bootstrap (300 resamples, seed 1) of the paired difference.
 Rows with meta/placeholder answers or a failed tokenisation in any score are dropped (same rows for every number of a run).
@@ -32,6 +33,13 @@ CKPTS = [("sft", "results/phase1/sft_unknown_casual_v1"), ("dpo", "results/phase
 CFGS = ["base_L128_lr5e-3", "base_L16_lr5e-3", "base_L16_lr2e-2", "base_L64_lr5e-3", "base_L64_lr2e-2"]
 
 
+def geo_key(d):
+    """The fit A variant chosen on validation (best validation log P over both penalty targets and the lambda grid)."""
+    sel = json.load(open(d / "fits_A.json"))["A_lambda_selection"]
+    tgt, lam, _ = max(((t, g["lambda"], g["val_logp"]) for t, v in sel.items() for g in v["grid"]), key=lambda x: x[2])
+    return "A_free_lambda0" if lam == 0 else f"A_free_l2{tgt}_{lam:g}"
+
+
 def main():
     fit_q, test_q = split(); out = {"checkpoints": {}}
     for k, run in CKPTS:
@@ -50,18 +58,18 @@ def main():
         for v in pre.values(): ok &= np.isfinite(v["lp"]) & (v["n"] > 0)
         geo = None; ga = Path("results/phase4/exp1") / D.name / "holdout_per_answer_A.npz"
         if ga.exists():   # geometric fit A per hold-out answer (phase4_geom_fit.py); restrict every row to the answers it scored
-            z = np.load(ga); geo = np.full(len(q), np.nan); geo[z["rows"]] = z["A_free_lambda0"]; ok &= np.isfinite(geo) | np.isin(q, list(fit_q))
+            z = np.load(ga); geo = np.full(len(q), np.nan); geo[z["rows"]] = z[geo_key(ga.parent)]; ok &= np.isfinite(geo) | np.isin(q, list(fit_q))
         te, fi = ok & np.isin(q, list(test_q)), ok & ~np.isin(q, list(test_q))
         w, _ = em_weights(Lb[fi]); names = [str(x) for x in L86["names"]] + ["generic"]
         rows = {"self": (s["total"][te], n_self[te]), "generic": (gen["L"][te, 0], nt[te]), "arithmetic": (mixture_loglik(Lb[te], w), nt[te])}
         for c, v in pre.items(): rows[f"prefix {c}"] = (v["lp"][te], v["n"][te])
-        if geo is not None: rows["geometric A"] = (geo[te], nt[te])
+        if geo is not None: rows["geometric A"] = (geo[te], nt[te]); res_geo = geo_key(ga.parent)
         keys = list(rows)
         sd, reps = boot([rows[r][0] for r in keys], [rows[r][1] for r in keys], q[te])
         val = {r: float(rows[r][0].sum() / rows[r][1].sum()) for r in keys}
         res = {"n_holdout": int(te.sum()), "logp": val, "se": dict(zip(keys, map(float, sd))),
                "arithmetic_top": {names[j]: round(float(w[j]), 3) for j in np.argsort(-w)[:5]},
-               "prefix_val": {c: v["val"] for c, v in pre.items()}, "prefix_best_epoch": {c: v["best_epoch"] for c, v in pre.items()}}
+               "geometric_variant": res_geo if geo is not None else None, "prefix_val": {c: v["val"] for c, v in pre.items()}, "prefix_best_epoch": {c: v["best_epoch"] for c, v in pre.items()}}
         base_cfgs = [c for c in CFGS if c in pre]
         if base_cfgs:
             best = max(base_cfgs, key=lambda c: pre[c]["val"]); res["prefix_chosen"] = best

@@ -11,7 +11,8 @@
     "prefix base_L16_lr2e-2": -1.6665191270331368,
     "prefix base_L64_lr5e-3": -1.6596847255863,
     "prefix base_L64_lr2e-2": -1.663866716161603,
-    "prefix ctrl_L128_lr5e-3": -1.2930694620002052
+    "prefix ctrl_L128_lr5e-3": -1.2930694620002052,
+    "geometric A": -1.813273261682001
    },
    "se": {
     "self": 0.01265136016452443,
@@ -22,7 +23,8 @@
     "prefix base_L16_lr2e-2": 0.015452163700947973,
     "prefix base_L64_lr5e-3": 0.01536448516584843,
     "prefix base_L64_lr2e-2": 0.01545652517545879,
-    "prefix ctrl_L128_lr5e-3": 0.013314382625400717
+    "prefix ctrl_L128_lr5e-3": 0.013314382625400717,
+    "geometric A": 0.015715807406900536
    },
    "arithmetic_top": {
     "hhh": 0.419,
@@ -31,6 +33,7 @@
     "e49": 0.081,
     "fred": 0.062
    },
+   "geometric_variant": "A_free_lambda0",
    "prefix_val": {
     "base_L128_lr5e-3": -1.6423354796735394,
     "base_L16_lr5e-3": -1.6450898033048489,
@@ -50,6 +53,8 @@
    "prefix_chosen": "base_L64_lr5e-3",
    "gap": 0.41095427079833624,
    "gap_se": 0.00485017809341665,
+   "gap_geometric": 0.5645428068940372,
+   "gap_geometric_se": 0.005574498804918741,
    "gap_arithmetic": 0.6484940892710158,
    "gap_arithmetic_se": 0.005970966607023569,
    "control_minus_self": -0.04433900721224138,
@@ -66,7 +71,8 @@
     "prefix base_L16_lr2e-2": -1.5419635547078825,
     "prefix base_L64_lr5e-3": -1.5391258667095893,
     "prefix base_L64_lr2e-2": -1.5356248971713133,
-    "prefix ctrl_L128_lr5e-3": -1.0909975464352024
+    "prefix ctrl_L128_lr5e-3": -1.0909975464352024,
+    "geometric A": -1.722438999462515
    },
    "se": {
     "self": 0.01086880536021078,
@@ -77,7 +83,8 @@
     "prefix base_L16_lr2e-2": 0.01346167615879738,
     "prefix base_L64_lr5e-3": 0.013504157495440037,
     "prefix base_L64_lr2e-2": 0.013490108638092635,
-    "prefix ctrl_L128_lr5e-3": 0.011085788803671523
+    "prefix ctrl_L128_lr5e-3": 0.011085788803671523,
+    "geometric A": 0.013989646978403375
    },
    "arithmetic_top": {
     "hhh": 0.639,
@@ -86,6 +93,7 @@
     "e49": 0.033,
     "neutral": 0.032
    },
+   "geometric_variant": "A_free_l2generic_0.0001",
    "prefix_val": {
     "base_L128_lr5e-3": -1.5059936207414442,
     "base_L16_lr5e-3": -1.5093298975306333,
@@ -105,6 +113,8 @@
    "prefix_chosen": "base_L128_lr5e-3",
    "gap": 0.5033779936833966,
    "gap_se": 0.005711759376881788,
+   "gap_geometric": 0.6857415946726406,
+   "gap_geometric_se": 0.006305866634870816,
    "gap_arithmetic": 0.7828469771339577,
    "gap_arithmetic_se": 0.006011216382495091,
    "control_minus_self": -0.054300141645327926,
@@ -141,6 +151,7 @@
     "e69": 0.036,
     "fred": 0.011
    },
+   "geometric_variant": null,
    "prefix_val": {
     "base_L128_lr5e-3": -1.4708455020812716,
     "base_L16_lr5e-3": -1.4736232257808617,
@@ -196,6 +207,7 @@
     "e69": 0.04,
     "e49": 0.038
    },
+   "geometric_variant": null,
    "prefix_val": {
     "base_L128_lr5e-3": -1.4529940618119315,
     "base_L16_lr5e-3": -1.4620090091994302,
@@ -251,6 +263,7 @@
     "e49": 0.047,
     "e69": 0.035
    },
+   "geometric_variant": null,
    "prefix_val": {
     "base_L128_lr5e-3": -1.4284205457057317,
     "base_L16_lr5e-3": -1.428485985509713,
@@ -285,6 +298,7 @@
     "prefix base_L16_lr5e-3": -1.4103255709465041,
     "prefix base_L16_lr2e-2": -1.41227907533414,
     "prefix base_L64_lr5e-3": -1.397175666015093,
+    "prefix base_L64_lr2e-2": -1.3958282620571723,
     "prefix ctrl_L128_lr5e-3": -0.9601676807224001,
     "geometric A": -1.604540136388405
    },
@@ -296,6 +310,7 @@
     "prefix base_L16_lr5e-3": 0.012012508263667399,
     "prefix base_L16_lr2e-2": 0.01278196285426522,
     "prefix base_L64_lr5e-3": 0.01175562220772945,
+    "prefix base_L64_lr2e-2": 0.01181810327526542,
     "prefix ctrl_L128_lr5e-3": 0.00988130629782049,
     "geometric A": 0.012059839189903197
    },
@@ -306,11 +321,13 @@
     "neutral": 0.059,
     "e49": 0.038
    },
+   "geometric_variant": "A_free_lambda0",
    "prefix_val": {
     "base_L128_lr5e-3": -1.3460415383447748,
     "base_L16_lr5e-3": -1.358893044361207,
     "base_L16_lr2e-2": -1.3660857688170345,
     "base_L64_lr5e-3": -1.3490027195466925,
+    "base_L64_lr2e-2": -1.3443690653866942,
     "ctrl_L128_lr5e-3": -0.9389320257003524
    },
    "prefix_best_epoch": {
@@ -318,11 +335,12 @@
     "base_L16_lr5e-3": 2,
     "base_L16_lr2e-2": 5,
     "base_L64_lr5e-3": 2,
+    "base_L64_lr2e-2": 2,
     "ctrl_L128_lr5e-3": 2
    },
-   "prefix_chosen": "base_L128_lr5e-3",
-   "gap": 0.4986733874888042,
-   "gap_se": 0.006295870237193168,
+   "prefix_chosen": "base_L64_lr2e-2",
+   "gap": 0.49736631750208293,
+   "gap_se": 0.006141611713627048,
    "gap_geometric": 0.7060781918333158,
    "gap_geometric_se": 0.007798808114578998,
    "gap_arithmetic": 0.8240599567831085,
@@ -331,6 +349,6 @@
    "control_pass": false
   }
  },
- "git_commit": "6220695bdb9398cd239480ee5b1d5bc7bb1a1a77",
+ "git_commit": "0d4178e327c47ec194b01639d1d50309480d4076",
  "command": "scripts/phase4_exp3_analysis.py"
 }
