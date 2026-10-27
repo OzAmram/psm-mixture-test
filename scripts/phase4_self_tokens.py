@@ -6,6 +6,7 @@ the stripped answer text right after the assistant tag, answer tokens only, no e
 results/phase4/self_tokens/<run>.npz with offsets (N+1,), lp (P,) per-token log P, tok (P,) token ids, qidx (N,), total (N,).
 
     python scripts/phase4_self_tokens.py --run instruct_unknown_casual_v1 --model allenai/Olmo-3-7B-Instruct
+    python scripts/phase4_self_tokens.py --run base_unknown_casual_short_v1 --model allenai/Olmo-3-7B-Instruct --tag base_run__instruct
 """
 import argparse, json, os
 from pathlib import Path
@@ -16,8 +17,9 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--model", required=True)
-    ap.add_argument("--out", default="results/phase4/self_tokens"); a = ap.parse_args()
-    D = Path("results/phase1") / a.run; SUF = json.load(open(D / "config.json"))["args"]["user_suffix"]
+    ap.add_argument("--out", default="results/phase4/self_tokens"); ap.add_argument("--tag", default=None, help="output name (default: the run name)")
+    a = ap.parse_args(); name = a.tag or Path(a.run).name
+    D = Path(a.run) if Path(a.run).is_dir() else Path("results/phase1") / a.run; SUF = json.load(open(D / "config.json"))["args"]["user_suffix"]
     tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval(); dev = model.device
     rows = [json.loads(l) for l in open(D / "rows.jsonl")]; lps, toks, tot, nt = [], [], [], []
     with torch.no_grad():
@@ -30,9 +32,9 @@ def main():
             lps.append(lp); toks.append(np.array(r_ids)); tot.append(float(lp.sum())); nt.append(len(r_ids))
             if (i + 1) % 400 == 0: print(f"[{i+1}/{len(rows)}] self log P/token so far {sum(tot)/sum(nt):.4f}", flush=True)
     out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
-    np.savez(out / f"{a.run}.npz", offsets=np.concatenate([[0], np.cumsum(nt)]), lp=np.concatenate(lps), tok=np.concatenate(toks),
+    np.savez(out / f"{name}.npz", offsets=np.concatenate([[0], np.cumsum(nt)]), lp=np.concatenate(lps), tok=np.concatenate(toks),
              qidx=np.array([r["qidx"] for r in rows]), total=np.array(tot), model=a.model)
-    print(f"done: {len(rows)} answers, self log P/token {sum(tot)/sum(nt):.4f} -> {out / (a.run + '.npz')}")
+    print(f"done: {len(rows)} answers, self log P/token {sum(tot)/sum(nt):.4f} -> {out / (name + '.npz')}")
 
 
 if __name__ == "__main__":

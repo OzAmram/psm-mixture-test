@@ -33,6 +33,8 @@ def main():
     ap.add_argument("--min-words", type=int, default=25)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out-dir", default="data/prompts/personas_elicited")
+    ap.add_argument("--exclude-dir", default=None, help="also drop near-duplicates of the components already in this directory")
+    ap.add_argument("--name-prefix", default="e")
     args = ap.parse_args()
     torch.manual_seed(args.seed)
     out = Path(args.out_dir); out.mkdir(parents=True, exist_ok=True)
@@ -56,6 +58,8 @@ def main():
     print(f"sampled {len(raw)} descriptions in {time.time()-t0:.0f}s")
 
     kept, seen = [], []
+    if args.exclude_dir:   # existing components count as already seen (same Jaccard rule), so new ones are not near-copies of them
+        seen = [set(norm(p.read_text().split(OPENER, 1)[-1]).split()) for p in sorted(Path(args.exclude_dir).glob("*.txt"))]
     for t in raw:
         body = "The assistant " + t.lstrip()
         # cut to complete sentences
@@ -73,7 +77,7 @@ def main():
 
     meta = []
     for i, body in enumerate(kept):
-        name = f"e{i:02d}"
+        name = f"{args.name_prefix}{i:02d}" if args.name_prefix == "e" else f"{args.name_prefix}{i:03d}"
         (out / f"{name}.txt").write_text(f"{OPENER} {body}\n")
         meta.append({"name": name, "body": body})
         print(f"  {name}: {body[:110]}")

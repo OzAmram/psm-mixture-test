@@ -5,7 +5,7 @@
 # (Lustre) supports locks, so we download there and rsync the result to CFS.
 # Reads from CFS do not lock, so loading models with HF_HOME on CFS works fine.
 #
-# Usage: scripts/download_models.sh [repo_id ...]   (defaults to the two Qwen2.5-7B models)
+# Usage: scripts/download_models.sh [repo_id[@revision] ...]   (defaults to the two Qwen2.5-7B models)
 set -euo pipefail
 source "$(dirname "$0")/../env.sh" > /dev/null
 
@@ -16,7 +16,8 @@ MODELS=("$@"); [ ${#MODELS[@]} -eq 0 ] && MODELS=(Qwen/Qwen2.5-7B Qwen/Qwen2.5-7
 mkdir -p "$STAGING" "$FINAL"
 for m in "${MODELS[@]}"; do
     echo "=== downloading $m to staging ($(date)) ==="
-    HF_HOME=$STAGING HF_HUB_OFFLINE=0 hf download "$m"
+    if [[ "$m" == *@* ]]; then HF_HOME=$STAGING HF_HUB_OFFLINE=0 hf download "${m%@*}" --revision "${m#*@}"
+    else HF_HOME=$STAGING HF_HUB_OFFLINE=0 hf download "$m"; fi
 done
 echo "=== rsync staging -> CFS ($(date)) ==="
 rsync -a --exclude '.locks' "$STAGING/hub/" "$FINAL/hub/"

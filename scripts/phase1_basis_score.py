@@ -38,7 +38,8 @@ def main():
         lp, _ = score_batch(model, tok, pairs); ref = [score_response(model, tok, p, r)["logprob"] for p, r in pairs]
         d = np.array([x[0] for x in lp]) - np.array(ref); print(f"batched - unbatched: mean {d.mean():+.4f}, mean |d| {np.abs(d).mean():.4f}, max |d| {np.abs(d).max():.4f} nats/answer")
         return
-    run = Path("results/phase1") / a.run; cfg = json.loads((run / "config.json").read_text()); suf = cfg["args"].get("user_suffix", "") or ""
+    run = Path(a.run) if Path(a.run).is_dir() else Path("results/phase1") / a.run;   # a run name or a run folder
+    cfg = json.loads((run / "config.json").read_text()); suf = cfg["args"].get("user_suffix", "") or ""
     rows = [json.loads(l) for l in open(run / "rows.jsonl")]; (run / "basis").mkdir(exist_ok=True)
     row_idx = np.arange(len(rows))
     if a.screen:

@@ -20,7 +20,7 @@ from persona_selection.basis import split
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--prefix", required=True); ap.add_argument("--run", required=True)
     ap.add_argument("--model", default="allenai/Olmo-3-1025-7B"); ap.add_argument("--out", required=True); a = ap.parse_args()
-    D = Path("results/phase1") / a.run; suf = json.load(open(D / "config.json"))["args"]["user_suffix"]
+    D = Path(a.run) if Path(a.run).is_dir() else Path("results/phase1") / a.run; suf = json.load(open(D / "config.json"))["args"]["user_suffix"]
     tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval(); dev = model.device
     emb = model.get_input_embeddings(); pre = torch.load(a.prefix, weights_only=True).to(dev, emb.weight.dtype)[None]
     rows = [json.loads(l) for l in open(D / "rows.jsonl")]; lp, nt = [], []
