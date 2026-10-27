@@ -98,8 +98,8 @@ def main():
         res["split"] = {key: {r: {"cos_mean": np.mean(v, 0).tolist(), "cos_sd": np.std(v, 0).tolist(),
                                   "msq": float(np.mean([(c ** 2).mean() for c in v])), "msq_sd": float(np.std([(c ** 2).mean() for c in v]))}
                               for r, v in d.items()} for key, d in sp.items()}
-        res["random_draws"] = {r: float(np.mean([(cosines(np.linalg.qr(rng.standard_normal((C, r)))[0], np.linalg.qr(rng.standard_normal((C, r)))[0]) ** 2).mean()
-                                                 for _ in range(10)])) for r in RS}
+        rc = {r: [cosines(np.linalg.qr(rng.standard_normal((C, r)))[0], np.linalg.qr(rng.standard_normal((C, r)))[0]) for _ in range(10)] for r in RS}
+        res["random_draws"] = {r: {"msq": float(np.mean([(c ** 2).mean() for c in v])), "cos_mean": np.mean(v, 0).tolist()} for r, v in rc.items()}
         out[mode] = res
         print(f"[{mode}] alpha", {m: round(v, 3) for m, v in res["alpha"].items()})
         for r in RS: print(f"  r={r:3d} mean sq cos: " + ", ".join(f"{k} {v[r]['msq']:.3f}" for k, v in res["split"].items()) + f", random {r/C:.3f}")
