@@ -25,6 +25,11 @@ Writes results/phase4/exp1/<run>/fits_<letters>.json (e.g. fits_A.json for --fit
 run cut off by the time limit keeps what finished), holdout_per_answer_<letters>.npz, holdout_nll_<fit>.npy (per-position
 NLL on hold-out positions, for the residual analysis) and config_<letters>.json. Separate invocations share the generic
 and arithmetic rows and use the same bootstrap resamples (seed 1, same hold-out rows), so their numbers are comparable.
+
+Other bases (2026-10-27): --contexts <families> --tag <name> fits on those header families (+ generic) and writes to
+<out>/<run>/<tag>/; --row-contexts makes several bases use the same answers; --fit-frac keeps a fixed random fraction of
+the fit-half questions when the basis does not fit in GPU memory. Hidden states are read from disk per context
+(Shards.from_disk, disk_nll), so no (K, P, d) copy is held in host memory.
 """
 import argparse, json, os, sys, time, subprocess
 from pathlib import Path
@@ -32,7 +37,8 @@ os.environ.setdefault("HF_HOME", "/global/cfs/cdirs/m2612/ozamram/hf_cache"); os
 import numpy as np, torch
 from scipy.optimize import minimize
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src")); sys.path.insert(0, str(Path(__file__).resolve().parent))
-from persona_selection.geometric import load_index, ok_rows, positions, load_hidden, Shards, stream_nll
+from persona_selection.geometric import load_index, ok_rows, positions, Shards, disk_nll
+from persona_selection.basis import load_family
 from persona_selection.basis import split
 from persona_selection.mixture import em_weights, mixture_loglik
 from phase1_basis_analysis import boot
@@ -52,19 +58,34 @@ def main():
     ap.add_argument("--lambdas", default="0,1e-4,1e-3,1e-2"); ap.add_argument("--devices", default="0"); ap.add_argument("--greedy-steps", type=int, default=12)
     ap.add_argument("--maxiter", type=int, default=300); ap.add_argument("--out", default="results/phase4/exp1"); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--max-rows", type=int, default=None, help="smoke test only: keep the first N fit and N hold-out answers")
+    ap.add_argument("--contexts", default=None, help="comma-separated header families (data/prompts/basis); default: the run's index (87). "
+                    "The generic header is always added (it is the start point and the one-hot check)")
+    ap.add_argument("--row-contexts", default=None, help="families whose scores must all be valid for an answer to be used (default: the "
+                    "fitted contexts); set to the union of all bases being compared so every basis uses the same answers")
+    ap.add_argument("--tag", default=None, help="write to <out>/<run>/<tag>/ (for fits on other bases)")
+    ap.add_argument("--fit-frac", type=float, default=1.0, help="keep this fraction of the fit-half questions (seed + 100); for bases too large for GPU memory")
     a = ap.parse_args(); t00 = time.time()
-    hdir = HID / a.run; out = Path(a.out) / a.run; out.mkdir(parents=True, exist_ok=True)
-    ix = load_index(hdir); ctxs = [str(c) for c in ix["contexts"]]; K = len(ctxs); gi = ctxs.index("generic")
-    ok = ok_rows(hdir, ctxs); fit_q, test_q = split(); q = ix["qidx"]
+    hdir = HID / a.run; out = Path(a.out) / a.run / (a.tag or ""); out.mkdir(parents=True, exist_ok=True)
+    ix = load_index(hdir); ctxs = [str(c) for c in ix["contexts"]]
+    if a.contexts:
+        ctxs = [c["name"] for f in a.contexts.split(",") for c in load_family(f)]; ctxs += [] if "generic" in ctxs else ["generic"]
+        assert len(set(ctxs)) == len(ctxs), "duplicate context names"
+    K = len(ctxs); gi = ctxs.index("generic")
+    rctx = ctxs if not a.row_contexts else sorted(set(ctxs) | {c["name"] for f in a.row_contexts.split(",") for c in load_family(f)})
+    ok = ok_rows(hdir, rctx); fit_q, test_q = split(); q = ix["qidx"]
     fit_rows = np.where(ok & np.isin(q, list(fit_q)))[0]; test_rows = np.where(ok & np.isin(q, list(test_q)))[0]
     if a.max_rows: fit_rows, test_rows = fit_rows[: a.max_rows], test_rows[: a.max_rows]
-    rng = np.random.default_rng(a.seed); fq = np.array(sorted(fit_q)); val_q = set(rng.choice(fq, int(round(0.2 * len(fq))), replace=False).tolist())
+    fq = np.array(sorted(fit_q))
+    if a.fit_frac < 1:
+        fq = np.array(sorted(np.random.default_rng(a.seed + 100).choice(fq, int(round(a.fit_frac * len(fq))), replace=False)))
+        fit_rows = fit_rows[np.isin(q[fit_rows], fq)]
+    rng = np.random.default_rng(a.seed); val_q = set(rng.choice(fq, int(round(0.2 * len(fq))), replace=False).tolist())
     devs = [torch.device(f"cuda:{i}") for i in range(len(a.devices.split(",")))]
     W = unembedding(); print(f"[{a.run}] K={K} contexts; fit {len(fit_rows)} answers, hold-out {len(test_rows)}; W_U {tuple(W.shape)}", flush=True)
 
     # fit-half positions on the GPUs; weights select the fit-train / fit-val subsets for the lambda choice
     pos_f = positions(ix, fit_rows); row_f = ix["row_of"][pos_f]; isval = np.isin(q[row_f], list(val_q))
-    S = Shards(load_hidden(hdir, ctxs, pos_f), ix["targets"][pos_f], W, devs); print(f"fit-half positions {S.P} on {len(devs)} GPU(s) ({time.time()-t00:.0f}s)", flush=True)
+    S = Shards.from_disk(hdir, ctxs, pos_f, ix["targets"][pos_f], W, devs); print(f"fit-half positions {S.P} on {len(devs)} GPU(s) ({time.time()-t00:.0f}s)", flush=True)
     w_all = np.ones(S.P); w_tr = (~isval).astype(float); w_val = isval.astype(float)
     e_gen = np.zeros(K); e_gen[gi] = 1.0
     n_eval = [0]
@@ -84,17 +105,17 @@ def main():
         r = minimize(f, x0, jac=True, method="L-BFGS-B", bounds=bounds, options={"maxiter": a.maxiter, "ftol": 1e-12, "gtol": 1e-7})
         return r.x, r
 
-    # hold-out positions stay in CPU RAM and are streamed for each evaluation
-    pos_t = positions(ix, test_rows); row_t = ix["row_of"][pos_t]; Ht = load_hidden(hdir, ctxs, pos_t); tgt_t = ix["targets"][pos_t]
+    # hold-out hidden states are read from disk for each evaluation (only contexts with c_s != 0)
+    pos_t = positions(ix, test_rows); row_t = ix["row_of"][pos_t]; tgt_t = ix["targets"][pos_t]
     nt_t = ix["n_tokens"][test_rows]; q_t = q[test_rows]; rmap = {r: i for i, r in enumerate(test_rows)}; ridx = np.array([rmap[r] for r in row_t])
 
     def holdout(c, name=None):
-        nll = stream_nll(Ht, tgt_t, c, W, devs[0]); tot = -np.bincount(ridx, weights=nll, minlength=len(test_rows))
+        nll = disk_nll(hdir, ctxs, pos_t, tgt_t, c, W, devs[0]); tot = -np.bincount(ridx, weights=nll, minlength=len(test_rows))
         if name: np.save(out / f"holdout_nll_{name}.npy", nll.astype(np.float32))
         return tot
 
     tag = "".join(a.fits.split(","))
-    res = {"run": a.run, "contexts": ctxs, "n_fit": int(len(fit_rows)), "n_test": int(len(test_rows)), "n_fit_positions": int(S.P),
+    res = {"run": a.run, "contexts": ctxs, "families": a.contexts, "fit_frac": a.fit_frac, "fit_questions": [int(x) for x in fq], "n_fit": int(len(fit_rows)), "n_test": int(len(test_rows)), "n_fit_positions": int(S.P),
            "n_test_positions": int(len(pos_t)), "val_questions": sorted(int(x) for x in val_q), "fits": {}}
     per_answer = {}
 

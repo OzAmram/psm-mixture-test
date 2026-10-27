@@ -249,3 +249,22 @@
   - **Retrained final L64/lr2e-2 prefix:** validation −1.3444, the best of the five settings by 0.0016, so it becomes the chosen one. Final gap 0.497 ± 0.006 (was 0.499 with four settings).
   - Notebook `notebooks/4.3_stage_dose_response.ipynb` executed, with "what we saw" (generator `/pscratch/sd/o/ozamram/persona_phase4/nbgen/make_nb43.py`); figure `results/phase4/fig3_stage_gap.png`.
   - Allocation 60362780 released; Experiment 2 job 60356085 released from hold.
+
+## 2026-10-27: geometric fit on other persona bases (author's request)
+
+- **Goal:** the author asked to try the geometric fit with other bases: "the assistant axis ones, ones from the olmo spec and the big five ones. Run them separately and together", with no post-trained text.
+- **Point recorded for the write-up:** with free weights, redundancy in a basis does not limit the fit, only its span does. A less redundant basis spanning the same directions gives the same optimum, and dropping redundant contexts can only lower it. New families can help only by adding directions.
+- **My choices:**
+  - Full families, not the screened "_top" subsets, to avoid selection.
+  - "Big Five" = `bigfive_poles`, `bigfive_profiles`, `persona_big5` and `ipip_facets` (IPIP facets are Big Five sub-traits). "Assistant axis" = `axis_roles` (275) + `axis_traits` (240). OLMo spec = `olmo_spec` (7). 634 new contexts in all, no name overlaps.
+  - Bases (each plus the generic header): olmospec (8), bigfive (113), axis (516), three = the three together (635), all = three + the original 86 (721), and legacy87 = the Experiment 1 basis as the reference.
+  - The 721-context basis does not fit in 4 × 80 GB with the whole fit half. So every basis, including the legacy87 reference, uses the same fixed 80% of the fit-half questions (seed 100) and the same answers (valid under every family).
+  - λ grid extended to {0, 1e-4, 1e-3, 1e-2, 0.1} because of the larger number of weights; still chosen on validation.
+- **Code:**
+  - `Shards.from_disk` and `disk_nll` in `src/persona_selection/geometric.py` read hidden states per context straight to the GPUs, with no host copy.
+  - `scripts/phase4_geom_fit.py` gained `--contexts`, `--row-contexts`, `--tag` and `--fit-frac`.
+  - Checked on GPU (`/pscratch/sd/o/ozamram/persona_phase4/tmp/disk_check.py`): reproduces the Experiment 1 fit A hold-out exactly (−1.60454, per-position max difference 7e-6) and the objective and gradient on 300 answers exactly.
+- **Runs:**
+  - Hidden states: `scripts/phase4_bases_hidden.sh` on interactive allocation 60372590 (4 GPUs), logs `logs/p4b_hidden_*.log`, about 600 GB on scratch.
+  - Fits: `scripts/phase4_bases_fit.sh` -> `results/phase4/exp1/instruct_unknown_casual_v1/bases/<tag>/`.
+  - Experiment 2 jobs 60356084 and 60356085 are on hold meanwhile, to stay at 4 GPUs.

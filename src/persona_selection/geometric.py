@@ -63,8 +63,30 @@ def load_hidden(hdir, ctxs, pos):
     return out
 
 
+def read_ctx(hdir, ctx, pos):
+    """(len(pos), d) bf16 CPU tensor of one context's stored hidden states at those positions."""
+    mm = np.memmap(Path(hdir) / f"h_{ctx}.u16", dtype=np.uint16, mode="r").reshape(-1, 4096)
+    return torch.from_numpy(np.ascontiguousarray(mm[pos]).view(np.int16)).view(torch.bfloat16)
+
+
 class Shards:
     """Answer positions split across devices. H: (K, P, d) bf16 CPU tensor; tgt: (P,) token ids."""
+
+    @classmethod
+    def from_disk(cls, hdir, ctxs, pos, tgt, W_U, devices, chunk=1024, threads=16):
+        """Same as Shards(load_hidden(hdir, ctxs, pos), ...) without the (K, P, d) CPU copy: each context is read and
+        copied straight to the devices (for bases too large for host memory)."""
+        from concurrent.futures import ThreadPoolExecutor
+        self = cls.__new__(cls); self.dev = devices; self.chunk = chunk; P = len(pos); cuts = np.linspace(0, P, len(devices) + 1).astype(int)
+        self.H = [torch.empty((len(ctxs), b - a, 4096), dtype=torch.bfloat16, device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
+
+        def put(k):
+            x = read_ctx(hdir, ctxs[k], pos)
+            for j in range(len(devices)): self.H[j][k].copy_(x[cuts[j]:cuts[j + 1]])
+        with ThreadPoolExecutor(threads) as ex: list(ex.map(put, range(len(ctxs))))
+        self.T = [torch.as_tensor(tgt[a:b], device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
+        self.W = [W_U.to(d).float() for d in devices]; self.cuts = cuts; self.P = P
+        return self
 
     def __init__(self, H, tgt, W_U, devices, chunk=1024):
         self.dev = devices; self.chunk = chunk; P = H.shape[1]; cuts = np.linspace(0, P, len(devices) + 1).astype(int)
@@ -92,6 +114,23 @@ class Shards:
         with ThreadPoolExecutor(len(self.dev)) as ex:
             parts = list(ex.map(lambda j: self._shard(j, c, weight, grad, per_pos), range(len(self.dev))))
         return sum(p[0] for p in parts), sum(p[1] for p in parts), (np.concatenate([p[2] for p in parts]) if per_pos else None)
+
+
+def disk_nll(hdir, ctxs, pos, tgt, c, W_U, device, chunk=1024, threads=16, group=32):
+    """Per-position NLL at c, reading the stored hidden states of the contexts with c_s != 0 from disk (no CPU copy of the
+    whole (K, P, d) array). The combined state sum_s c_s h_s is accumulated in fp32 on the device."""
+    from concurrent.futures import ThreadPoolExecutor
+    hc = torch.zeros((len(pos), 4096), dtype=torch.float32, device=device); ks = [k for k in range(len(ctxs)) if c[k] != 0]
+    with ThreadPoolExecutor(threads) as ex:
+        for i in range(0, len(ks), group):
+            for k, x in zip(ks[i:i + group], ex.map(lambda k: read_ctx(hdir, ctxs[k], pos), ks[i:i + group])):
+                hc += float(c[k]) * x.to(device).float()
+    W = W_U.to(device).float(); out = []
+    with torch.no_grad():
+        for i in range(0, len(pos), chunk):
+            z = logits(hc[i:i + chunk], W); t = torch.as_tensor(tgt[i:i + chunk], device=device)
+            out.append((torch.logsumexp(z, -1) - z.gather(-1, t[:, None])[:, 0]).cpu().numpy())
+    return np.concatenate(out)
 
 
 def stream_nll(H, tgt, c, W_U, device, chunk=1024):
