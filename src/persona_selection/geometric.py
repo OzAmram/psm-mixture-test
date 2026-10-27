@@ -62,21 +62,26 @@ class Shards:
         self.T = [torch.as_tensor(tgt[a:b], device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
         self.W = [W_U.to(d) for d in devices]; self.cuts = cuts; self.P = P
 
+    def _shard(self, j, c, weight, grad, per_pos):
+        H, T, W, d, a, b = self.H[j], self.T[j], self.W[j], self.dev[j], self.cuts[j], self.cuts[j + 1]
+        cd = torch.tensor(c, dtype=torch.float32, device=d, requires_grad=grad); tot = torch.zeros((), device=d); pp = []
+        wd = None if weight is None else torch.as_tensor(weight[a:b], dtype=torch.float32, device=d)
+        for i in range(0, H.shape[1], self.chunk):
+            with torch.set_grad_enabled(grad):
+                z = logits(torch.tensordot(cd, H[:, i:i + self.chunk].float(), dims=1), W)              # (C, V) full vocabulary
+                l = torch.logsumexp(z, -1) - z.gather(-1, T[i:i + self.chunk, None])[:, 0]              # NLL per position
+                s = (l if wd is None else l * wd[i:i + self.chunk]).sum()
+                if grad: s.backward()
+            tot += s.detach(); pp.append(l.detach()) if per_pos else None
+        return float(tot), (cd.grad.cpu().numpy() if grad else np.zeros(len(c))), (torch.cat(pp).cpu().numpy() if per_pos else None)
+
     def nll(self, c, weight=None, grad=True, per_pos=False):
-        """sum_t weight_t * NLL_t at coefficients c (numpy, K). Returns (value, gradient (K,), per-position NLL or None)."""
-        tot, g, pp = 0.0, np.zeros(len(c)), []
-        for H, T, W, d, (a, b) in zip(self.H, self.T, self.W, self.dev, zip(self.cuts[:-1], self.cuts[1:])):
-            cd = torch.tensor(c, dtype=torch.float32, device=d, requires_grad=grad)
-            wd = None if weight is None else torch.as_tensor(weight[a:b], dtype=torch.float32, device=d)
-            for i in range(0, H.shape[1], self.chunk):
-                with torch.set_grad_enabled(grad):
-                    z = logits(torch.tensordot(cd, H[:, i:i + self.chunk].float(), dims=1), W)              # (C, V) full vocabulary
-                    l = torch.logsumexp(z, -1) - z.gather(-1, T[i:i + self.chunk, None])[:, 0]              # NLL per position
-                    s = (l if wd is None else l * wd[i:i + self.chunk]).sum()
-                    if grad: s.backward()
-                tot += float(s.detach()); pp.append(l.detach().cpu().numpy()) if per_pos else None
-            if grad: g += cd.grad.cpu().numpy()
-        return tot, g, (np.concatenate(pp) if per_pos else None)
+        """sum_t weight_t * NLL_t at coefficients c (numpy, K). Returns (value, gradient (K,), per-position NLL or None).
+        Shards are evaluated in parallel threads, one per device (the GPU work releases the Python lock)."""
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(len(self.dev)) as ex:
+            parts = list(ex.map(lambda j: self._shard(j, c, weight, grad, per_pos), range(len(self.dev))))
+        return sum(p[0] for p in parts), sum(p[1] for p in parts), (np.concatenate([p[2] for p in parts]) if per_pos else None)
 
 
 def stream_nll(H, tgt, c, W_U, device, chunk=1024):

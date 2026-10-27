@@ -8,7 +8,9 @@ Fits (coefficients fitted on the FIT half of the questions, data/basis_split.jso
      on the whole fit half
   B  c >= 0
   C  c >= 0, sum c = 1 (log-linear pool)
-  D  a single persona with a free scale (best persona chosen on the fit half)
+  D  a single persona with a free scale (best persona chosen on the fit half). The scale is refitted only for the 10
+     contexts with the best fit-half score at scale 1 (stored scores); the 200-answer smoke test found every fitted
+     scale within 0.96-1.03 of 1, so the ranking at scale 1 decides the winner
   E  greedy forward selection (12 steps; at each step the 5 unchosen personas with the largest objective gradient are
      refitted and the best by fit-half likelihood is added; an approximation to trying all ~80, noted in NOTES.md)
 Reference rows: the generic header (c = one-hot; must reproduce the Phase 1 score), and the ARITHMETIC mixture of the
@@ -139,8 +141,8 @@ def main():
                      options={"maxiter": a.maxiter, "ftol": 1e-12})
         record("C_pool", r.x, {"iters": int(r.nit), "message": str(r.message), "n_nonzero": int((r.x > 1e-6).sum())})
     if "D" in fits:
-        single = {}
-        for k in range(K):
+        single = {}; nt_f = ix["n_tokens"][fit_rows]
+        for k in np.argsort(-(Lf[fit_rows].sum(0) / nt_f.sum()))[:10]:
             m = np.zeros(K, bool); m[k] = True; x0 = np.zeros(K); x0[k] = 1.0
             c, r = lbfgs(objective(w_all, mask=m), x0); v, _, _ = S.nll(c, w_all); single[ctxs[k]] = {"scale": float(c[k]), "fit_half_logp": -v / w_all.sum()}
         res["D_all_single"] = single; kb = max(single, key=lambda s: single[s]["fit_half_logp"])
