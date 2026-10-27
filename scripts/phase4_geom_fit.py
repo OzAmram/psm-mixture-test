@@ -6,7 +6,7 @@ Fits (coefficients fitted on the FIT half of the questions, data/basis_split.jso
   A  free c, L2 penalty lambda * ||c - c0||^2 with c0 = 0 ("zero") or c0 = one-hot on the generic header ("generic");
      lambda in {0, 1e-4, 1e-3, 1e-2} chosen on a validation split of 20% of the fit-half questions (seed 0), then refit
      on the whole fit half
-  B  c >= 0
+  B  c >= 0 (L-BFGS-B from three starts: one-hot generic, uniform, and C's solution when C is run; best on the fit half)
   C  c >= 0, sum c = 1 (log-linear pool)
   D  a single persona with a free scale (best persona chosen on the fit half). The scale is refitted only for the 10
      contexts with the best fit-half score at scale 1 (stored scores); the 200-answer smoke test found every fitted
@@ -140,13 +140,20 @@ def main():
             lam = sel[tgt_name]["chosen_lambda"]
             if lam == 0: continue
             c, r = lbfgs(objective(w_all, lam, c0), e_gen.copy()); record(f"A_free_l2{tgt_name}_{lam:g}", c, {"iters": int(r.nit), "lambda": lam, "target": tgt_name})
-    if "B" in fits:
-        c, r = lbfgs(objective(w_all), e_gen.copy(), bounds=[(0, None)] * K); record("B_nonneg", c, {"iters": int(r.nit), "n_nonzero": int((c > 1e-6).sum())})
     if "C" in fits:
         f = objective(w_all)
         r = minimize(f, e_gen.copy(), jac=True, method="SLSQP", bounds=[(0, None)] * K, constraints=[{"type": "eq", "fun": lambda c: c.sum() - 1, "jac": lambda c: np.ones(K)}],
                      options={"maxiter": a.maxiter, "ftol": 1e-12})
-        record("C_pool", r.x, {"iters": int(r.nit), "message": str(r.message), "n_nonzero": int((r.x > 1e-6).sum())})
+        record("C_pool", r.x, {"iters": int(r.nit), "message": str(r.message), "n_nonzero": int((r.x > 1e-6).sum())}); c_pool = r.x
+    if "B" in fits:
+        # L-BFGS-B started at one-hot alone stopped early (worse than the more constrained fit C on the fit half, 2026-10-26);
+        # start it also from the uniform vector and from C's solution (feasible for B) and keep the best on the fit half
+        starts = {"one-hot generic": e_gen.copy(), "uniform": np.full(K, 1.0 / K)}
+        if "C" in fits: starts["C solution"] = np.clip(c_pool, 0, None)
+        runs = {k: lbfgs(objective(w_all), x0, bounds=[(0, None)] * K) for k, x0 in starts.items()}
+        best = min(runs, key=lambda k: runs[k][1].fun); c, r = runs[best]
+        record("B_nonneg", c, {"iters": int(r.nit), "message": str(r.message), "n_nonzero": int((c > 1e-6).sum()), "start": best,
+                               "fit_half_by_start": {k: float(-v[1].fun) for k, v in runs.items()}})
     if "D" in fits:
         single = {}; nt_f = ix["n_tokens"][fit_rows]
         for k in np.argsort(-(Lf[fit_rows].sum(0) / nt_f.sum()))[:10]:

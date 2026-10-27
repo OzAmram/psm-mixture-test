@@ -6,10 +6,15 @@ no softcapping). A coefficient vector c in R^K predicts each answer token with
     P_c(a_t | q, a_<t) = softmax( sum_s c_s z_s,t )[a_t] = softmax( W_U (sum_s c_s h_s,t) )[a_t]
 
 i.e. a product of experts with real (possibly negative) exponents. The mean NLL per token is convex in c. We evaluate it
-exactly over the full 100,278-token vocabulary: combine the hidden states in fp32, split the result into a bf16 part and a
-bf16 remainder (hi + lo), multiply both by W_U in bf16 and add, log-softmax in fp32. At c = one-hot the remainder is zero,
-so the stored Phase 1 scores are reproduced exactly. A single bf16 cast (tried first) makes the objective exactly flat
-for |c_s - 1| below about 2e-3, which stalls L-BFGS line searches started at one-hot (checked 2026-10-26).
+exactly over the full 100,278-token vocabulary: combine the stored bf16 hidden states in fp32 and multiply by W_U with
+fp32 output, using TF32 tensor cores on an exact two-part split of the combined state (the top 10 mantissa bits, which
+TF32 holds exactly, plus the fp32 remainder); W_U is bf16 and so exact in TF32. Logits agree with full fp32 to about
+1e-2 at most (mean 3e-4); log-softmax in fp32.
+History (2026-10-26): a single bf16 cast of the combined state, and then a bf16 value + bf16 remainder, were tried first.
+Both return bf16 logits (errors up to 1 nat on outlier-heavy hidden states), which makes the objective step-like on scales
+of 1e-5..1e-4 nats/token and stalled L-BFGS (a restart from greedy fit E's solution stopped after one iteration 0.056
+nats/token short of the optimum). At c = one-hot the logits now differ from the model's own bf16 logits by bf16 rounding
+of the output, so stored Phase 1 scores are reproduced to about 1e-2 nats per answer instead of exactly.
 
 Data layout: phase4_hidden_states.py writes, per run, index.npz and h_<ctx>.u16 (P x 4096 bf16 bits) for every context.
 `Shards` holds a set of answer positions on one or more GPUs as (K, P_d, 4096) bf16 tensors.
@@ -21,10 +26,15 @@ import numpy as np
 import torch
 
 
+torch.backends.cuda.matmul.allow_tf32 = True
+
+
 def logits(hc, W):
-    """(C, d) fp32 combined hidden states -> (C, V) fp32 logits, as two bf16 matmuls (value + rounding remainder)."""
-    hi = hc.to(torch.bfloat16); lo = (hc - hi.float()).to(torch.bfloat16)
-    return (hi @ W.T).float() + (lo @ W.T).float()
+    """(C, d) fp32 combined hidden states -> (C, V) fp32 logits. W: fp32 copy of the bf16 W_U. hi = hc with the low 13
+    mantissa bits cleared (exact in TF32, no gradient); the remainder hc - hi carries the gradient (d hi/d hc = 0 is
+    compensated: d(hc - hi)/d hc = 1)."""
+    hi = (hc.detach().view(torch.int32) & -8192).view(torch.float32)
+    return hi @ W.T + (hc - hi) @ W.T
 
 
 def load_index(hdir):
@@ -60,7 +70,7 @@ class Shards:
         self.dev = devices; self.chunk = chunk; P = H.shape[1]; cuts = np.linspace(0, P, len(devices) + 1).astype(int)
         self.H = [H[:, a:b].to(d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
         self.T = [torch.as_tensor(tgt[a:b], device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
-        self.W = [W_U.to(d) for d in devices]; self.cuts = cuts; self.P = P
+        self.W = [W_U.to(d).float() for d in devices]; self.cuts = cuts; self.P = P
 
     def _shard(self, j, c, weight, grad, per_pos):
         H, T, W, d, a, b = self.H[j], self.T[j], self.W[j], self.dev[j], self.cuts[j], self.cuts[j + 1]
@@ -86,7 +96,7 @@ class Shards:
 
 def stream_nll(H, tgt, c, W_U, device, chunk=1024):
     """Per-position NLL at c for a CPU-resident (K, P, d) bf16 tensor, streamed to one device (used for the hold-out)."""
-    cd = torch.tensor(c, dtype=torch.float32, device=device); W = W_U.to(device); out = []
+    cd = torch.tensor(c, dtype=torch.float32, device=device); W = W_U.to(device).float(); out = []
     with torch.no_grad():
         for i in range(0, H.shape[1], chunk):
             h = H[:, i:i + chunk].to(device, non_blocking=False)
