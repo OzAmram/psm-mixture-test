@@ -34,8 +34,9 @@ OUT = Path(os.environ.get("SCRATCH", "/pscratch/sd/o/ozamram")) / "persona_phase
 
 
 def contexts(fams):
-    """[(name, header)] for the listed families, in order (87 = legacy86 + generic)."""
-    return [(c["name"], c["header"]) for f in fams.split(",") for c in load_family(f)]
+    """[(name, header, soft prefix path or None)] for the listed families, in order (87 = legacy86 + generic). A family entry
+    with a "prefix" field is a learned soft context: its vectors replace the header (as in prompt_tune_base.py)."""
+    return [(c["name"], c.get("header", ""), c.get("prefix")) for f in fams.split(",") for c in load_family(f)]
 
 
 def load_rows(run):
@@ -45,21 +46,28 @@ def load_rows(run):
 
 
 @torch.no_grad()
-def hidden_for_context(model, tok, header, rows, suf, max_tokens_per_batch=16000):
-    """Yields (row index, answer token ids, h (n_ans, d) bf16 on GPU) for every row, batched by length."""
+def hidden_for_context(model, tok, header, rows, suf, max_tokens_per_batch=16000, prefix=None):
+    """Yields (row index, answer token ids, h (n_ans, d) bf16 on GPU) for every row, batched by length. prefix: (P, d)
+    soft-prefix vectors placed before the (header-less) prompt, as in training."""
     enc = [_encode(tok, full_prompt(header, r["question"] + suf), r["response"]) for r in rows]
     order = sorted(range(len(rows)), key=lambda i: -len(enc[i][0]) if enc[i][0] else 0)
     pad = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id; dev = model.device; i = 0
+    P = 0 if prefix is None else prefix.shape[0]; max_tokens_per_batch = max_tokens_per_batch if P == 0 else max(2000, max_tokens_per_batch // 2)
     while i < len(order):
         if enc[order[i]][0] is None:
             yield order[i], None, None; i += 1; continue
-        L = len(enc[order[i]][0]); bs = max(1, max_tokens_per_batch // L); idx = order[i:i + bs]; i += bs
+        L = len(enc[order[i]][0]); bs = max(1, max_tokens_per_batch // (L + P)); idx = order[i:i + bs]; i += bs
         for j in [j for j in idx if enc[j][0] is None]: yield j, None, None
         idx = [j for j in idx if enc[j][0] is not None]
         ids = torch.full((len(idx), L), pad, dtype=torch.long); att = torch.zeros((len(idx), L), dtype=torch.long)
         for b, j in enumerate(idx):
             s = enc[j][0]; ids[b, :len(s)] = torch.tensor(s); att[b, :len(s)] = 1
-        h = model.model(input_ids=ids.to(dev), attention_mask=att.to(dev)).last_hidden_state     # post-final-norm = lm_head input
+        if P == 0:
+            h = model.model(input_ids=ids.to(dev), attention_mask=att.to(dev)).last_hidden_state     # post-final-norm = lm_head input
+        else:
+            x = model.get_input_embeddings()(ids.to(dev)); x = torch.cat([prefix.to(x.dtype)[None].expand(len(idx), -1, -1), x], 1)
+            am = torch.cat([torch.ones((len(idx), P), dtype=att.dtype), att], 1).to(dev)
+            h = model.model(inputs_embeds=x, attention_mask=am).last_hidden_state[:, P:]
         for b, j in enumerate(idx):
             s, n_p = enc[j]; yield j, s[n_p:], h[b, n_p - 1:len(s) - 1]
 
@@ -80,7 +88,7 @@ def main():
     if a.check:
         rows, suf = load_rows("instruct_unknown_casual_v1"); rows = rows[:40]
         ref = np.load("results/phase1/instruct_unknown_casual_v1/basis/legacy86.npz"); names = [str(n) for n in ref["names"]]
-        for name, hdr in contexts("legacy86")[:2] + contexts("generic"):
+        for name, hdr, _ in contexts("legacy86")[:2] + contexts("generic"):
             dmax, lps = 0.0, {}
             for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf):
                 ids = tok(full_prompt(hdr, rows[j]["question"] + suf) + rows[j]["response"])["input_ids"]
@@ -98,7 +106,7 @@ def main():
     rows, suf = load_rows(a.run); out = Path(a.out) / Path(a.run).name; out.mkdir(parents=True, exist_ok=True)
     ctxs = contexts(a.contexts); k, n = map(int, a.part.split("/"))
     # the index (answer tokens and offsets) comes from the generic header; every context is checked against it
-    g_hdr = dict(ctxs)["generic"]
+    g_hdr = {c[0]: c[1] for c in contexts("generic")}["generic"]
     tg = [None] * len(rows)
     for r_i, r in enumerate(rows):
         e = _encode(tok, full_prompt(g_hdr, r["question"] + suf), r["response"]); tg[r_i] = None if e[0] is None else e[0][e[1]:]
@@ -107,13 +115,14 @@ def main():
     if not idx_f.exists():
         np.savez(idx_f, targets=np.concatenate([t for t in tg if t is not None]).astype(np.int64), row_of=np.repeat(np.arange(len(rows)), nt),
                  offsets=offsets, n_tokens=nt, qidx=np.array([r["qidx"] for r in rows]), meta=np.array([is_meta_response(r["response"]) for r in rows]),
-                 valid=np.array([t is not None for t in tg]), contexts=np.array([c for c, _ in ctxs]))
+                 valid=np.array([t is not None for t in tg]), contexts=np.array([c[0] for c in ctxs]))
     print(f"[{a.run}] {len(rows)} answers, {P} answer positions; part {a.part}: {len(ctxs[k::n])} contexts -> {out}", flush=True)
-    for name, hdr in ctxs[k::n]:
+    for name, hdr, pfx in ctxs[k::n]:
         f_h, f_lp = out / f"h_{name}.u16", out / f"lp_{name}.npy"
         if f_lp.exists(): print(f"  {name}: exists, skipping"); continue
         t0 = time.time(); mm = np.memmap(str(f_h) + ".tmp", dtype=np.uint16, mode="w+", shape=(P, model.config.hidden_size)); lp = np.full(len(rows), np.nan)
-        for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf):
+        pre = None if pfx is None else torch.load(pfx, weights_only=True).to(model.device)
+        for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf, prefix=pre):
             if tgt is None or tg[j] is None: continue
             assert tgt == tg[j], f"answer tokens differ from the generic-header tokenisation: context {name}, row {j}"
             mm[offsets[j]:offsets[j + 1]] = h.view(torch.int16).cpu().numpy().view(np.uint16); lp[j] = answer_logp(model, h, tgt)
