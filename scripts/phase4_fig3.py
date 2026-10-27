@@ -1,6 +1,6 @@
 """Figure 3 of results/phase4/SUMMARY.md: hold-out gap to each checkpoint's own score (self - model) across post-training
 stages, for the base model + soft prefix (best setting by validation), the arithmetic mixture of the 87 base contexts and,
-where it exists, the geometric fit A. Error bars: question bootstrap of the paired difference (results/phase4/exp3/summary.json).
+where it exists, the geometric fit A (dotted across checkpoints without a fit). Error bars: question bootstrap of the paired difference (results/phase4/exp3/summary.json).
 
     python scripts/phase4_fig3.py
 """
@@ -23,7 +23,10 @@ def main():
     for key, se, lab, col, mk in series:
         xs = [i for i, k in enumerate(ks) if key in S[k]]
         if not xs: continue
-        ax.errorbar(xs, [S[ks[i]][key] for i in xs], yerr=[S[ks[i]][se] for i in xs], color=col, marker=mk, ms=7, lw=2, capsize=0, label=lab)
+        ys = [S[ks[i]][key] for i in xs]
+        ax.errorbar(xs, ys, yerr=[S[ks[i]][se] for i in xs], color=col, marker=mk, ms=7, lw=0, elinewidth=2, capsize=0, label=lab)
+        for (x0, y0), (x1, y1) in zip(zip(xs, ys), zip(xs[1:], ys[1:])):   # dotted where checkpoints in between were not fitted
+            ax.plot([x0, x1], [y0, y1], color=col, lw=2, ls="-" if x1 == x0 + 1 else ":")
     for i, k in enumerate(ks):
         if "control_pass" in S[k] and not S[k]["control_pass"]: ax.annotate("control fails", (i, S[k].get("gap", 0)), textcoords="offset points", xytext=(0, 10), ha="center", fontsize=7, color="#52514e")
     ax.axhline(0, color="#52514e", lw=1)
