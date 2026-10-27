@@ -268,3 +268,7 @@
   - Hidden states: `scripts/phase4_bases_hidden.sh` on interactive allocation 60372590 (4 GPUs), logs `logs/p4b_hidden_*.log`, about 600 GB on scratch.
   - Fits: `scripts/phase4_bases_fit.sh` -> `results/phase4/exp1/instruct_unknown_casual_v1/bases/<tag>/`.
   - Experiment 2 jobs 60356084 and 60356085 are on hold meanwhile, to stay at 4 GPUs.
+- 2026-10-27 09:10, **arithmetic mixtures and greedy selection per basis** (author's request): `python scripts/phase4_bases_greedy.py` -> `results/phase4/bases/greedy_arithmetic.{json,png}`.
+  - Setup: full families, scores from the hidden-state pass, which match the Phase 1 scores to bf16 rounding (98% identical, mean signed difference 1e-6 per token).
+  - Hold-out, Instruct answers: legacy86 −1.7225; axis −1.7284; Big Five + IPIP −1.7260; OLMo spec −1.7241; values −1.7535; base-from-data −1.7251; all 763 −1.7126 (+0.010 ± 0.001); Instruct-derived reference −1.5954.
+  - Every basis levels off after 2–3 personas, with the same character picked first (helpful, honest, casual assistant) plus a register persona. Added to the write-up, section 2.

@@ -58,6 +58,37 @@ Basis expansion and register control each roughly halve the residual. The best f
 
 Per token is the unit because Instruct's answers are shorter than the base assistant's (about 45 vs 49 tokens); per response the Instruct gap is about 37 nats.
 
+**Is the persona basis the problem?** The 86 personas are one choice, so we repeated the fit with persona sets from the literature and from OLMo's own documentation. Each family is used in full. A greedy fit adds personas one at a time, each chosen on the fit half. Everything is scored on the same Instruct answers, with the same split and the same answer filter (`scripts/phase4_bases_greedy.py`, `data/basis_split.json`).
+- **Assistant Axis:** 275 roles and 240 traits.
+- **Big Five:** poles, 32 profiles, the PERSONA paper's poles ([arXiv:2602.15669](https://arxiv.org/abs/2602.15669)) and 60 IPIP facets.
+- **OLMo spec:** default system message, identity prompt, RL-judge rubric, UltraFeedback aspects and safety targets. There is no public OLMo 3 model spec, so these stand in for it.
+- **Values and moral foundations.**
+- **The base model's own descriptions of the dilemmas' answers.**
+
+Hold-out log P per token of Instruct's answers:
+
+| basis | contexts | mixture of the whole basis | vs the 86 (paired) | first personas chosen |
+|---|---|---|---|---|
+| base generic header | 1 | −1.758 | −0.036 | |
+| the 86 personas (above) | 86 | −1.723 | 0 | college student, HHH assistant, dismissive human |
+| Assistant Axis roles + traits | 515 | −1.728 | −0.006 ± 0.001 | dilettante, introverted, pessimistic |
+| Big Five + IPIP facets | 112 | −1.726 | −0.004 ± 0.001 | all-high profile, low / high conscientiousness |
+| OLMo spec | 7 | −1.724 | −0.002 ± 0.001 | Olmo identity + HHH paragraph |
+| values + moral foundations | 15 | −1.753 | −0.031 ± 0.002 | universalism, care |
+| base model describes the answers | 28 | −1.725 | −0.003 ± 0.002 | "practical advice, casual, approachable" |
+| all of the above | 763 | −1.713 | +0.010 ± 0.001 | Olmo identity + HHH, dilettante, "practical advice", dismissive human, college student |
+| *reference: built from Instruct's own text* | 105 | −1.595 | +0.127 ± 0.005 | Instruct answers as examples, style description |
+| *Instruct itself* | | −0.898 | +0.824 | |
+
+![Greedy persona selection per basis](results/phase4/bases/greedy_arithmetic.png)
+
+*Figure: greedy forward selection for each basis, hold-out log P per token vs number of personas, with the chosen personas listed in order. Dashed: the base generic header. Dotted: the mixture of the whole basis. The seven base-persona panels share one y axis. The last panel has its own, because it sits far above the others.*
+
+- **No base-persona basis beats the 86.** The literature bases fall within 0.006, and values and moral foundations do worse (−1.753, against −1.723). Pooling all 763 contexts gains 0.010, about 1% of the gap to Instruct.
+- **Every basis levels off after two or three personas, and the first picks describe the same character.** It is a helpful, honest, casual assistant: HHH, the Olmo identity prompt, "practical advice", the dilettante. It usually comes with a register persona: the college student, the dismissive human, low conscientiousness.
+- **Only contexts made from Instruct's own text move the fit**, by +0.127: real Instruct answers as in-context examples, or descriptions of its style. They mostly carry Instruct's register (em-dashes, phrasing), and they make the base-assistant control fit *worse* (notebook 1.8), so they are a reference rather than a better persona basis. Even they leave 0.70 nats per token.
+- An earlier version of this comparison used the large families after screening them on the fit half (notebook 1.8). The results are the same.
+
 **Is the missing part a temperature?** A natural repair of the mixture is to let each persona be sharper than the base model's conditional: score every answer under the persona headers with the base model's logits divided by a temperature *T* at every token (what sampling at temperature *T* would give; sequence-level tempering is a different object and is not tractable), and refit the mixture weights on the training questions for each *T*, choosing *T* by training likelihood. Nine components (the ones the untempered fit uses, plus the evil persona as a control) and the generic header, *T* from 1.0 down to 0.3:
 
 | Instruct answers, hold-out, log P / token | T = 1.0 | 0.9 | 0.8 | 0.7 | 0.6 |

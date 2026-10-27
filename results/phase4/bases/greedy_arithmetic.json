@@ -1,0 +1,1248 @@
+{
+ "n_fit": 1200,
+ "n_holdout": 1200,
+ "bases": {
+  "legacy86 (section 2)": {
+   "families": [
+    "legacy86"
+   ],
+   "K": 86,
+   "top_weights": {
+    "e14": 0.386,
+    "hhh": 0.383,
+    "fred": 0.098,
+    "neutral": 0.058,
+    "e49": 0.038,
+    "e69": 0.036
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "e14",
+     "label": "college student",
+     "holdout": -1.7307990583955484,
+     "weights": {
+      "e14": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "hhh",
+     "label": "HHH assistant",
+     "holdout": -1.7245447442244322,
+     "weights": {
+      "e14": 0.53,
+      "hhh": 0.47
+     }
+    },
+    {
+     "k": 3,
+     "added": "fred",
+     "label": "dismissive human",
+     "holdout": -1.7232399449343778,
+     "weights": {
+      "e14": 0.468,
+      "hhh": 0.426,
+      "fred": 0.106
+     }
+    },
+    {
+     "k": 4,
+     "added": "e69",
+     "label": "boarding-school girl Clara",
+     "holdout": -1.7230309906584294,
+     "weights": {
+      "e14": 0.431,
+      "hhh": 0.419,
+      "fred": 0.102,
+      "e69": 0.048
+     }
+    },
+    {
+     "k": 5,
+     "added": "e49",
+     "label": "study note-taker",
+     "holdout": -1.722571350262116,
+     "weights": {
+      "e14": 0.403,
+      "hhh": 0.41,
+      "fred": 0.1,
+      "e69": 0.04,
+      "e49": 0.047
+     }
+    },
+    {
+     "k": 6,
+     "added": "neutral",
+     "label": "plain assistant",
+     "holdout": -1.7225102261328413,
+     "weights": {
+      "e14": 0.386,
+      "hhh": 0.383,
+      "fred": 0.098,
+      "e69": 0.036,
+      "e49": 0.038,
+      "neutral": 0.059
+     }
+    },
+    {
+     "k": 7,
+     "added": "e64",
+     "label": "blunt chatty",
+     "holdout": -1.7225151003749115,
+     "weights": {
+      "e14": 0.386,
+      "hhh": 0.383,
+      "fred": 0.098,
+      "e69": 0.036,
+      "e49": 0.038,
+      "neutral": 0.058,
+      "e64": 0.001
+     }
+    },
+    {
+     "k": 8,
+     "added": "e62",
+     "label": "informal companion",
+     "holdout": -1.7225150894581025,
+     "weights": {
+      "e14": 0.386,
+      "hhh": 0.383,
+      "fred": 0.098,
+      "e69": 0.036,
+      "e49": 0.038,
+      "neutral": 0.058,
+      "e64": 0.001,
+      "e62": 0.0
+     }
+    },
+    {
+     "k": 9,
+     "added": "e32",
+     "label": "sarcastic friend",
+     "holdout": -1.7225150876978943,
+     "weights": {
+      "e14": 0.386,
+      "hhh": 0.383,
+      "fred": 0.098,
+      "e69": 0.036,
+      "e49": 0.038,
+      "neutral": 0.058,
+      "e64": 0.001,
+      "e62": 0.0,
+      "e32": 0.0
+     }
+    },
+    {
+     "k": 10,
+     "added": "e60",
+     "label": "helpful young human",
+     "holdout": -1.722515086280561,
+     "weights": {
+      "e14": 0.386,
+      "hhh": 0.383,
+      "fred": 0.098,
+      "e69": 0.036,
+      "e49": 0.038,
+      "neutral": 0.058,
+      "e64": 0.001,
+      "e62": 0.0,
+      "e32": 0.0,
+      "e60": 0.0
+     }
+    }
+   ]
+  },
+  "Assistant Axis roles + traits": {
+   "families": [
+    "axis_roles",
+    "axis_traits"
+   ],
+   "K": 515,
+   "top_weights": {
+    "ax_dilettante": 0.474,
+    "axt_introverted": 0.248,
+    "axt_pessimistic": 0.068,
+    "axt_blunt": 0.065,
+    "ax_teenager": 0.052,
+    "axt_benevolent": 0.046,
+    "axt_casual": 0.032,
+    "ax_amnesiac": 0.008
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "ax_dilettante",
+     "label": "dilettante (role)",
+     "holdout": -1.733447971237095,
+     "weights": {
+      "ax_dilettante": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "axt_introverted",
+     "label": "introverted (trait)",
+     "holdout": -1.7305318235876523,
+     "weights": {
+      "ax_dilettante": 0.564,
+      "axt_introverted": 0.436
+     }
+    },
+    {
+     "k": 3,
+     "added": "axt_pessimistic",
+     "label": "pessimistic (trait)",
+     "holdout": -1.7293678910841412,
+     "weights": {
+      "ax_dilettante": 0.532,
+      "axt_introverted": 0.377,
+      "axt_pessimistic": 0.092
+     }
+    },
+    {
+     "k": 4,
+     "added": "axt_blunt",
+     "label": "blunt (trait)",
+     "holdout": -1.7290752284741813,
+     "weights": {
+      "ax_dilettante": 0.521,
+      "axt_introverted": 0.317,
+      "axt_pessimistic": 0.076,
+      "axt_blunt": 0.085
+     }
+    },
+    {
+     "k": 5,
+     "added": "ax_teenager",
+     "label": "teenager (role)",
+     "holdout": -1.7285684729785977,
+     "weights": {
+      "ax_dilettante": 0.498,
+      "axt_introverted": 0.275,
+      "axt_pessimistic": 0.075,
+      "axt_blunt": 0.076,
+      "ax_teenager": 0.076
+     }
+    },
+    {
+     "k": 6,
+     "added": "axt_benevolent",
+     "label": "benevolent (trait)",
+     "holdout": -1.7284261299087746,
+     "weights": {
+      "ax_dilettante": 0.487,
+      "axt_introverted": 0.255,
+      "axt_pessimistic": 0.073,
+      "axt_blunt": 0.071,
+      "ax_teenager": 0.066,
+      "axt_benevolent": 0.047
+     }
+    },
+    {
+     "k": 7,
+     "added": "axt_casual",
+     "label": "casual (trait)",
+     "holdout": -1.7284632396026882,
+     "weights": {
+      "ax_dilettante": 0.476,
+      "axt_introverted": 0.251,
+      "axt_pessimistic": 0.072,
+      "axt_blunt": 0.064,
+      "ax_teenager": 0.06,
+      "axt_benevolent": 0.046,
+      "axt_casual": 0.032
+     }
+    },
+    {
+     "k": 8,
+     "added": "ax_amnesiac",
+     "label": "amnesiac (role)",
+     "holdout": -1.7284152628917684,
+     "weights": {
+      "ax_dilettante": 0.474,
+      "axt_introverted": 0.248,
+      "axt_pessimistic": 0.072,
+      "axt_blunt": 0.065,
+      "ax_teenager": 0.055,
+      "axt_benevolent": 0.046,
+      "axt_casual": 0.032,
+      "ax_amnesiac": 0.008
+     }
+    },
+    {
+     "k": 9,
+     "added": "axt_anxious",
+     "label": "anxious (trait)",
+     "holdout": -1.7284278417465848,
+     "weights": {
+      "ax_dilettante": 0.474,
+      "axt_introverted": 0.248,
+      "axt_pessimistic": 0.07,
+      "axt_blunt": 0.065,
+      "ax_teenager": 0.055,
+      "axt_benevolent": 0.046,
+      "axt_casual": 0.032,
+      "ax_amnesiac": 0.008,
+      "axt_anxious": 0.002
+     }
+    },
+    {
+     "k": 10,
+     "added": "axt_avoidant",
+     "label": "avoidant (trait)",
+     "holdout": -1.7284306373531868,
+     "weights": {
+      "ax_dilettante": 0.474,
+      "axt_introverted": 0.247,
+      "axt_pessimistic": 0.07,
+      "axt_blunt": 0.065,
+      "ax_teenager": 0.054,
+      "axt_benevolent": 0.047,
+      "axt_casual": 0.032,
+      "ax_amnesiac": 0.008,
+      "axt_anxious": 0.002,
+      "axt_avoidant": 0.001
+     }
+    }
+   ]
+  },
+  "Big Five + IPIP facets": {
+   "families": [
+    "bigfive_poles",
+    "bigfive_profiles",
+    "persona_big5",
+    "ipip_facets"
+   ],
+   "K": 112,
+   "top_weights": {
+    "pb5_C-": 0.319,
+    "b5p_O+C+E+A+N+": 0.26,
+    "ipip_Trust+": 0.096,
+    "b5_C+": 0.088,
+    "b5_O+": 0.064,
+    "b5p_O-C-E-A+N+": 0.044,
+    "pb5_O-": 0.032,
+    "b5p_O-C+E+A+N+": 0.029
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "b5p_O+C+E+A+N+",
+     "label": "O+C+E+A+N+ (B5 profile)",
+     "holdout": -1.7340039741932252,
+     "weights": {
+      "b5p_O+C+E+A+N+": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "pb5_C-",
+     "label": "C- (B5)",
+     "holdout": -1.7270882814785125,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.53,
+      "pb5_C-": 0.47
+     }
+    },
+    {
+     "k": 3,
+     "added": "b5_C+",
+     "label": "C+ (B5 pole)",
+     "holdout": -1.7265953954320081,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.416,
+      "pb5_C-": 0.443,
+      "b5_C+": 0.142
+     }
+    },
+    {
+     "k": 4,
+     "added": "ipip_Trust+",
+     "label": "Trust+ (IPIP)",
+     "holdout": -1.726541492962824,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.349,
+      "pb5_C-": 0.4,
+      "b5_C+": 0.125,
+      "ipip_Trust+": 0.127
+     }
+    },
+    {
+     "k": 5,
+     "added": "b5p_O-C-E-A+N+",
+     "label": "O-C-E-A+N+ (B5 profile)",
+     "holdout": -1.7261401113507742,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.322,
+      "pb5_C-": 0.376,
+      "b5_C+": 0.114,
+      "ipip_Trust+": 0.121,
+      "b5p_O-C-E-A+N+": 0.066
+     }
+    },
+    {
+     "k": 6,
+     "added": "b5_O+",
+     "label": "O+ (B5 pole)",
+     "holdout": -1.7261184321198606,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.292,
+      "pb5_C-": 0.344,
+      "b5_C+": 0.107,
+      "ipip_Trust+": 0.115,
+      "b5p_O-C-E-A+N+": 0.07,
+      "b5_O+": 0.073
+     }
+    },
+    {
+     "k": 7,
+     "added": "b5_N+",
+     "label": "N+ (B5 pole)",
+     "holdout": -1.7260947906973243,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.278,
+      "pb5_C-": 0.34,
+      "b5_C+": 0.105,
+      "ipip_Trust+": 0.111,
+      "b5p_O-C-E-A+N+": 0.069,
+      "b5_O+": 0.072,
+      "b5_N+": 0.025
+     }
+    },
+    {
+     "k": 8,
+     "added": "pb5_A-",
+     "label": "A- (B5)",
+     "holdout": -1.7260443922836084,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.28,
+      "pb5_C-": 0.335,
+      "b5_C+": 0.101,
+      "ipip_Trust+": 0.108,
+      "b5p_O-C-E-A+N+": 0.069,
+      "b5_O+": 0.069,
+      "b5_N+": 0.022,
+      "pb5_A-": 0.015
+     }
+    },
+    {
+     "k": 9,
+     "added": "ipip_Altruism-",
+     "label": "Altruism- (IPIP)",
+     "holdout": -1.7260945848795552,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.282,
+      "pb5_C-": 0.335,
+      "b5_C+": 0.102,
+      "ipip_Trust+": 0.103,
+      "b5p_O-C-E-A+N+": 0.066,
+      "b5_O+": 0.069,
+      "b5_N+": 0.022,
+      "pb5_A-": 0.014,
+      "ipip_Altruism-": 0.008
+     }
+    },
+    {
+     "k": 10,
+     "added": "pb5_O-",
+     "label": "O- (B5)",
+     "holdout": -1.726057575149109,
+     "weights": {
+      "b5p_O+C+E+A+N+": 0.283,
+      "pb5_C-": 0.319,
+      "b5_C+": 0.097,
+      "ipip_Trust+": 0.103,
+      "b5p_O-C-E-A+N+": 0.06,
+      "b5_O+": 0.062,
+      "b5_N+": 0.022,
+      "pb5_A-": 0.012,
+      "ipip_Altruism-": 0.009,
+      "pb5_O-": 0.034
+     }
+    }
+   ]
+  },
+  "OLMo spec": {
+   "families": [
+    "olmo_spec"
+   ],
+   "K": 7,
+   "top_weights": {
+    "olmo_all_hhh": 0.844,
+    "olmo_identity": 0.129,
+    "olmo_ultrafeedback": 0.021,
+    "olmo_judge": 0.006
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "olmo_all_hhh",
+     "label": "olmo_all_hhh",
+     "holdout": -1.7247752289164349,
+     "weights": {
+      "olmo_all_hhh": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "olmo_identity",
+     "label": "olmo_identity",
+     "holdout": -1.7242799726900413,
+     "weights": {
+      "olmo_all_hhh": 0.862,
+      "olmo_identity": 0.138
+     }
+    },
+    {
+     "k": 3,
+     "added": "olmo_ultrafeedback",
+     "label": "olmo_ultrafeedback",
+     "holdout": -1.7241873884790142,
+     "weights": {
+      "olmo_all_hhh": 0.843,
+      "olmo_identity": 0.13,
+      "olmo_ultrafeedback": 0.027
+     }
+    },
+    {
+     "k": 4,
+     "added": "olmo_judge",
+     "label": "olmo_judge",
+     "holdout": -1.7241425768894119,
+     "weights": {
+      "olmo_all_hhh": 0.844,
+      "olmo_identity": 0.129,
+      "olmo_ultrafeedback": 0.021,
+      "olmo_judge": 0.006
+     }
+    },
+    {
+     "k": 5,
+     "added": "olmo_sysmsg",
+     "label": "olmo_sysmsg",
+     "holdout": -1.7241425770091672,
+     "weights": {
+      "olmo_all_hhh": 0.844,
+      "olmo_identity": 0.129,
+      "olmo_ultrafeedback": 0.021,
+      "olmo_judge": 0.006,
+      "olmo_sysmsg": 0.0
+     }
+    },
+    {
+     "k": 6,
+     "added": "olmo_safety",
+     "label": "olmo_safety",
+     "holdout": -1.724142579702685,
+     "weights": {
+      "olmo_all_hhh": 0.844,
+      "olmo_identity": 0.129,
+      "olmo_ultrafeedback": 0.021,
+      "olmo_judge": 0.006,
+      "olmo_sysmsg": 0.0,
+      "olmo_safety": 0.0
+     }
+    },
+    {
+     "k": 7,
+     "added": "olmo_all",
+     "label": "olmo_all",
+     "holdout": -1.7241425804748232,
+     "weights": {
+      "olmo_all_hhh": 0.844,
+      "olmo_identity": 0.129,
+      "olmo_ultrafeedback": 0.021,
+      "olmo_judge": 0.006,
+      "olmo_sysmsg": 0.0,
+      "olmo_safety": 0.0,
+      "olmo_all": 0.0
+     }
+    }
+   ]
+  },
+  "values + moral foundations": {
+   "families": [
+    "values"
+   ],
+   "K": 15,
+   "top_weights": {
+    "sv_universalism": 0.41,
+    "mf_care": 0.258,
+    "sv_self-direction": 0.159,
+    "sv_achievement": 0.146,
+    "mf_fairness": 0.027
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "sv_universalism",
+     "label": "universalism (value)",
+     "holdout": -1.7592376570434525,
+     "weights": {
+      "sv_universalism": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "mf_care",
+     "label": "mf_care",
+     "holdout": -1.7554385825901218,
+     "weights": {
+      "sv_universalism": 0.616,
+      "mf_care": 0.384
+     }
+    },
+    {
+     "k": 3,
+     "added": "sv_achievement",
+     "label": "achievement (value)",
+     "holdout": -1.753825183411126,
+     "weights": {
+      "sv_universalism": 0.486,
+      "mf_care": 0.306,
+      "sv_achievement": 0.208
+     }
+    },
+    {
+     "k": 4,
+     "added": "sv_self-direction",
+     "label": "self-direction (value)",
+     "holdout": -1.7536745952124062,
+     "weights": {
+      "sv_universalism": 0.412,
+      "mf_care": 0.28,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.161
+     }
+    },
+    {
+     "k": 5,
+     "added": "mf_fairness",
+     "label": "mf_fairness",
+     "holdout": -1.753474926757885,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027
+     }
+    },
+    {
+     "k": 6,
+     "added": "mf_sanctity",
+     "label": "mf_sanctity",
+     "holdout": -1.7534749597974764,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027,
+      "mf_sanctity": 0.0
+     }
+    },
+    {
+     "k": 7,
+     "added": "mf_authority",
+     "label": "mf_authority",
+     "holdout": -1.7534749617460548,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027,
+      "mf_sanctity": 0.0,
+      "mf_authority": 0.0
+     }
+    },
+    {
+     "k": 8,
+     "added": "sv_tradition",
+     "label": "tradition (value)",
+     "holdout": -1.7534749622474721,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027,
+      "mf_sanctity": 0.0,
+      "mf_authority": 0.0,
+      "sv_tradition": 0.0
+     }
+    },
+    {
+     "k": 9,
+     "added": "sv_conformity",
+     "label": "conformity (value)",
+     "holdout": -1.7534749622036199,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027,
+      "mf_sanctity": 0.0,
+      "mf_authority": 0.0,
+      "sv_tradition": 0.0,
+      "sv_conformity": 0.0
+     }
+    },
+    {
+     "k": 10,
+     "added": "sv_power",
+     "label": "power (value)",
+     "holdout": -1.7534749620540082,
+     "weights": {
+      "sv_universalism": 0.41,
+      "mf_care": 0.258,
+      "sv_achievement": 0.146,
+      "sv_self-direction": 0.159,
+      "mf_fairness": 0.027,
+      "mf_sanctity": 0.0,
+      "mf_authority": 0.0,
+      "sv_tradition": 0.0,
+      "sv_conformity": 0.0,
+      "sv_power": 0.0
+     }
+    }
+   ]
+  },
+  "base model describes data": {
+   "families": [
+    "base_fromdata"
+   ],
+   "K": 28,
+   "top_weights": {
+    "base_fromdata_13": 0.527,
+    "base_fromdata_10": 0.436,
+    "base_fromdata_04": 0.026,
+    "base_fromdata_17": 0.005
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "base_fromdata_13",
+     "label": "base_fromdata_13",
+     "holdout": -1.7309089655963321,
+     "weights": {
+      "base_fromdata_13": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "base_fromdata_10",
+     "label": "base_fromdata_10",
+     "holdout": -1.7250100525977754,
+     "weights": {
+      "base_fromdata_13": 0.543,
+      "base_fromdata_10": 0.457
+     }
+    },
+    {
+     "k": 3,
+     "added": "base_fromdata_04",
+     "label": "base_fromdata_04",
+     "holdout": -1.7250885607993232,
+     "weights": {
+      "base_fromdata_13": 0.528,
+      "base_fromdata_10": 0.444,
+      "base_fromdata_04": 0.027
+     }
+    },
+    {
+     "k": 4,
+     "added": "base_fromdata_17",
+     "label": "base_fromdata_17",
+     "holdout": -1.7251046012258577,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.441,
+      "base_fromdata_04": 0.027,
+      "base_fromdata_17": 0.005
+     }
+    },
+    {
+     "k": 5,
+     "added": "base_fromdata_09",
+     "label": "base_fromdata_09",
+     "holdout": -1.7250466142142473,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.437,
+      "base_fromdata_04": 0.027,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004
+     }
+    },
+    {
+     "k": 6,
+     "added": "base_fromdata_02",
+     "label": "base_fromdata_02",
+     "holdout": -1.7250705013798424,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.436,
+      "base_fromdata_04": 0.026,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004,
+      "base_fromdata_02": 0.002
+     }
+    },
+    {
+     "k": 7,
+     "added": "base_fromdata_01",
+     "label": "base_fromdata_01",
+     "holdout": -1.7250705014666918,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.436,
+      "base_fromdata_04": 0.026,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004,
+      "base_fromdata_02": 0.002,
+      "base_fromdata_01": 0.0
+     }
+    },
+    {
+     "k": 8,
+     "added": "base_fromdata_21",
+     "label": "base_fromdata_21",
+     "holdout": -1.7250705022734878,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.436,
+      "base_fromdata_04": 0.026,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004,
+      "base_fromdata_02": 0.002,
+      "base_fromdata_01": 0.0,
+      "base_fromdata_21": 0.0
+     }
+    },
+    {
+     "k": 9,
+     "added": "base_fromdata_12",
+     "label": "base_fromdata_12",
+     "holdout": -1.725070502621476,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.436,
+      "base_fromdata_04": 0.026,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004,
+      "base_fromdata_02": 0.002,
+      "base_fromdata_01": 0.0,
+      "base_fromdata_21": 0.0,
+      "base_fromdata_12": 0.0
+     }
+    },
+    {
+     "k": 10,
+     "added": "base_fromdata_08",
+     "label": "base_fromdata_08",
+     "holdout": -1.7250705030540763,
+     "weights": {
+      "base_fromdata_13": 0.527,
+      "base_fromdata_10": 0.436,
+      "base_fromdata_04": 0.026,
+      "base_fromdata_17": 0.005,
+      "base_fromdata_09": 0.004,
+      "base_fromdata_02": 0.002,
+      "base_fromdata_01": 0.0,
+      "base_fromdata_21": 0.0,
+      "base_fromdata_12": 0.0,
+      "base_fromdata_08": 0.0
+     }
+    }
+   ]
+  },
+  "all of the above": {
+   "families": [
+    "axis_roles",
+    "axis_traits",
+    "base_fromdata",
+    "bigfive_poles",
+    "bigfive_profiles",
+    "ipip_facets",
+    "legacy86",
+    "olmo_spec",
+    "persona_big5",
+    "values"
+   ],
+   "K": 763,
+   "top_weights": {
+    "olmo_all_hhh": 0.401,
+    "base_fromdata_13": 0.148,
+    "ax_dilettante": 0.115,
+    "e14": 0.099,
+    "base_fromdata_10": 0.065,
+    "fred": 0.058,
+    "pb5_C-": 0.054,
+    "b5p_O-C-E+A+N+": 0.024
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "olmo_all_hhh",
+     "label": "olmo_all_hhh",
+     "holdout": -1.7247752289164349,
+     "weights": {
+      "olmo_all_hhh": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "ax_dilettante",
+     "label": "dilettante (role)",
+     "holdout": -1.717627763244471,
+     "weights": {
+      "olmo_all_hhh": 0.608,
+      "ax_dilettante": 0.392
+     }
+    },
+    {
+     "k": 3,
+     "added": "base_fromdata_13",
+     "label": "base_fromdata_13",
+     "holdout": -1.7156091298866778,
+     "weights": {
+      "olmo_all_hhh": 0.483,
+      "ax_dilettante": 0.265,
+      "base_fromdata_13": 0.252
+     }
+    },
+    {
+     "k": 4,
+     "added": "fred",
+     "label": "dismissive human",
+     "holdout": -1.7149518930486127,
+     "weights": {
+      "olmo_all_hhh": 0.452,
+      "ax_dilettante": 0.229,
+      "base_fromdata_13": 0.243,
+      "fred": 0.076
+     }
+    },
+    {
+     "k": 5,
+     "added": "e14",
+     "label": "college student",
+     "holdout": -1.7140851021145642,
+     "weights": {
+      "olmo_all_hhh": 0.42,
+      "ax_dilettante": 0.171,
+      "base_fromdata_13": 0.206,
+      "fred": 0.07,
+      "e14": 0.133
+     }
+    },
+    {
+     "k": 6,
+     "added": "pb5_C-",
+     "label": "C- (B5)",
+     "holdout": -1.7134177563806974,
+     "weights": {
+      "olmo_all_hhh": 0.419,
+      "ax_dilettante": 0.13,
+      "base_fromdata_13": 0.19,
+      "fred": 0.061,
+      "e14": 0.127,
+      "pb5_C-": 0.074
+     }
+    },
+    {
+     "k": 7,
+     "added": "base_fromdata_10",
+     "label": "base_fromdata_10",
+     "holdout": -1.7130695846839055,
+     "weights": {
+      "olmo_all_hhh": 0.411,
+      "ax_dilettante": 0.119,
+      "base_fromdata_13": 0.151,
+      "fred": 0.061,
+      "e14": 0.114,
+      "pb5_C-": 0.069,
+      "base_fromdata_10": 0.075
+     }
+    },
+    {
+     "k": 8,
+     "added": "b5p_O-C-E+A+N+",
+     "label": "O-C-E+A+N+ (B5 profile)",
+     "holdout": -1.7126528625637751,
+     "weights": {
+      "olmo_all_hhh": 0.407,
+      "ax_dilettante": 0.121,
+      "base_fromdata_13": 0.15,
+      "fred": 0.059,
+      "e14": 0.109,
+      "pb5_C-": 0.057,
+      "base_fromdata_10": 0.067,
+      "b5p_O-C-E+A+N+": 0.03
+     }
+    },
+    {
+     "k": 9,
+     "added": "b5_N+",
+     "label": "N+ (B5 pole)",
+     "holdout": -1.712629076102346,
+     "weights": {
+      "olmo_all_hhh": 0.405,
+      "ax_dilettante": 0.119,
+      "base_fromdata_13": 0.149,
+      "fred": 0.059,
+      "e14": 0.108,
+      "pb5_C-": 0.057,
+      "base_fromdata_10": 0.066,
+      "b5p_O-C-E+A+N+": 0.029,
+      "b5_N+": 0.01
+     }
+    },
+    {
+     "k": 10,
+     "added": "axt_judgmental",
+     "label": "judgmental (trait)",
+     "holdout": -1.7126423277106282,
+     "weights": {
+      "olmo_all_hhh": 0.405,
+      "ax_dilettante": 0.119,
+      "base_fromdata_13": 0.149,
+      "fred": 0.059,
+      "e14": 0.105,
+      "pb5_C-": 0.057,
+      "base_fromdata_10": 0.066,
+      "b5p_O-C-E+A+N+": 0.029,
+      "b5_N+": 0.01,
+      "axt_judgmental": 0.002
+     }
+    }
+   ]
+  },
+  "reference: from Instruct's own text": {
+   "families": [
+    "style",
+    "inst_self",
+    "inst_fromdata",
+    "fewshot_generic",
+    "fewshot_hhh"
+   ],
+   "K": 105,
+   "top_weights": {
+    "fsg_k16_d1": 0.269,
+    "fsh_k16_d3": 0.102,
+    "fsh_k4_d5": 0.09,
+    "style_all_hhh": 0.072,
+    "fsh_k16_d4": 0.059,
+    "fsg_k16_d2": 0.054,
+    "fsg_k1_d4": 0.052,
+    "fsg_k1_d2": 0.047
+   },
+   "greedy": [
+    {
+     "k": 1,
+     "added": "fsg_k16_d1",
+     "label": "fsg_k16_d1",
+     "holdout": -1.6340136280155535,
+     "weights": {
+      "fsg_k16_d1": 1.0
+     }
+    },
+    {
+     "k": 2,
+     "added": "fsh_k4_d5",
+     "label": "fsh_k4_d5",
+     "holdout": -1.6178308279665694,
+     "weights": {
+      "fsg_k16_d1": 0.595,
+      "fsh_k4_d5": 0.405
+     }
+    },
+    {
+     "k": 3,
+     "added": "style_all_hhh",
+     "label": "style_all_hhh",
+     "holdout": -1.6086833978824826,
+     "weights": {
+      "fsg_k16_d1": 0.534,
+      "fsh_k4_d5": 0.321,
+      "style_all_hhh": 0.145
+     }
+    },
+    {
+     "k": 4,
+     "added": "fsg_k4_d3",
+     "label": "fsg_k4_d3",
+     "holdout": -1.6047920670469336,
+     "weights": {
+      "fsg_k16_d1": 0.454,
+      "fsh_k4_d5": 0.25,
+      "style_all_hhh": 0.123,
+      "fsg_k4_d3": 0.173
+     }
+    },
+    {
+     "k": 5,
+     "added": "fsh_k16_d3",
+     "label": "fsh_k16_d3",
+     "holdout": -1.6019267265782946,
+     "weights": {
+      "fsg_k16_d1": 0.379,
+      "fsh_k4_d5": 0.199,
+      "style_all_hhh": 0.119,
+      "fsg_k4_d3": 0.149,
+      "fsh_k16_d3": 0.154
+     }
+    },
+    {
+     "k": 6,
+     "added": "fsg_k1_d2",
+     "label": "fsg_k1_d2",
+     "holdout": -1.6000661034150712,
+     "weights": {
+      "fsg_k16_d1": 0.369,
+      "fsh_k4_d5": 0.17,
+      "style_all_hhh": 0.102,
+      "fsg_k4_d3": 0.115,
+      "fsh_k16_d3": 0.15,
+      "fsg_k1_d2": 0.094
+     }
+    },
+    {
+     "k": 7,
+     "added": "fsh_k16_d4",
+     "label": "fsh_k16_d4",
+     "holdout": -1.6000509796062594,
+     "weights": {
+      "fsg_k16_d1": 0.337,
+      "fsh_k4_d5": 0.146,
+      "style_all_hhh": 0.1,
+      "fsg_k4_d3": 0.105,
+      "fsh_k16_d3": 0.139,
+      "fsg_k1_d2": 0.088,
+      "fsh_k16_d4": 0.084
+     }
+    },
+    {
+     "k": 8,
+     "added": "inst_fromdata_17",
+     "label": "inst_fromdata_17",
+     "holdout": -1.5985949962397024,
+     "weights": {
+      "fsg_k16_d1": 0.324,
+      "fsh_k4_d5": 0.138,
+      "style_all_hhh": 0.085,
+      "fsg_k4_d3": 0.093,
+      "fsh_k16_d3": 0.142,
+      "fsg_k1_d2": 0.07,
+      "fsh_k16_d4": 0.082,
+      "inst_fromdata_17": 0.065
+     }
+    },
+    {
+     "k": 9,
+     "added": "fsg_k1_d4",
+     "label": "fsg_k1_d4",
+     "holdout": -1.5976684634289553,
+     "weights": {
+      "fsg_k16_d1": 0.319,
+      "fsh_k4_d5": 0.122,
+      "style_all_hhh": 0.084,
+      "fsg_k4_d3": 0.074,
+      "fsh_k16_d3": 0.14,
+      "fsg_k1_d2": 0.057,
+      "fsh_k16_d4": 0.081,
+      "inst_fromdata_17": 0.06,
+      "fsg_k1_d4": 0.063
+     }
+    },
+    {
+     "k": 10,
+     "added": "fsg_k16_d2",
+     "label": "fsg_k16_d2",
+     "holdout": -1.5969268628085769,
+     "weights": {
+      "fsg_k16_d1": 0.298,
+      "fsh_k4_d5": 0.108,
+      "style_all_hhh": 0.083,
+      "fsg_k4_d3": 0.066,
+      "fsh_k16_d3": 0.12,
+      "fsg_k1_d2": 0.057,
+      "fsh_k16_d4": 0.073,
+      "inst_fromdata_17": 0.06,
+      "fsg_k1_d4": 0.059,
+      "fsg_k16_d2": 0.075
+     }
+    }
+   ]
+  }
+ },
+ "holdout": {
+  "generic header": {
+   "logp": -1.7584286922107026,
+   "se": 0.011467454125312242,
+   "minus_legacy86": -0.03591360399460575,
+   "minus_legacy86_se": 0.0012504807755963903
+  },
+  "Instruct itself": {
+   "logp": -0.8984619445550893,
+   "se": 0.009071255899943875,
+   "minus_legacy86": 0.8240531436610076,
+   "minus_legacy86_se": 0.007276394130765954
+  },
+  "legacy86 (section 2)": {
+   "logp": -1.722515088216097,
+   "se": 0.011323763311891234,
+   "minus_legacy86": 0.0,
+   "minus_legacy86_se": 0.0
+  },
+  "Assistant Axis roles + traits": {
+   "logp": -1.7283910286178064,
+   "se": 0.011265457700686992,
+   "minus_legacy86": -0.005875940401709467,
+   "minus_legacy86_se": 0.0012279799609104674
+  },
+  "Big Five + IPIP facets": {
+   "logp": -1.7260385972026842,
+   "se": 0.011270450293313618,
+   "minus_legacy86": -0.003523508986587265,
+   "minus_legacy86_se": 0.0013887626151144802
+  },
+  "OLMo spec": {
+   "logp": -1.7241425804748232,
+   "se": 0.01138308326173558,
+   "minus_legacy86": -0.0016274922587262708,
+   "minus_legacy86_se": 0.001380175876786222
+  },
+  "values + moral foundations": {
+   "logp": -1.7534750110661481,
+   "se": 0.01155830645775248,
+   "minus_legacy86": -0.030959922850051225,
+   "minus_legacy86_se": 0.0015585415424669068
+  },
+  "base model describes data": {
+   "logp": -1.7250704930073868,
+   "se": 0.011533214433293571,
+   "minus_legacy86": -0.002555404791289906,
+   "minus_legacy86_se": 0.0014736107960156353
+  },
+  "all of the above": {
+   "logp": -1.712611807817394,
+   "se": 0.01119296226300899,
+   "minus_legacy86": 0.009903280398702918,
+   "minus_legacy86_se": 0.0007331820155891845
+  },
+  "reference: from Instruct's own text": {
+   "logp": -1.5953722188207293,
+   "se": 0.011224427959721847,
+   "minus_legacy86": 0.12714286939536756,
+   "minus_legacy86_se": 0.004506801311335716
+  }
+ },
+ "partial_families": {},
+ "git_commit": "e76cb08e3e45c55346b81bed6c8e261439211f88",
+ "command": "scripts/phase4_bases_greedy.py"
+}
