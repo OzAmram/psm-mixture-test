@@ -1,0 +1,21 @@
+{
+  "args": {
+    "personas": "hhh,e14,fred",
+    "c": "0.7,0.6,-0.3",
+    "n_per_question": 2,
+    "max_new_tokens": 80,
+    "seed": 0,
+    "questions": "data/questions_v1_shuffled.jsonl",
+    "out": "results/phase4/exp1/synthetic_run",
+    "user_suffix": " Answer in two or three sentences of plain text, in a casual, conversational tone.",
+    "framing": "unknown",
+    "register": "casual",
+    "base_model": "allenai/Olmo-3-1025-7B"
+  },
+  "true_c": {
+    "hhh": 0.7,
+    "e14": 0.6,
+    "fred": -0.3
+  },
+  "source": "synthetic_geometric"
+}

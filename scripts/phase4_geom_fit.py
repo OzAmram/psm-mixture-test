@@ -11,6 +11,8 @@ Fits (coefficients fitted on the FIT half of the questions, data/basis_split.jso
   D  a single persona with a free scale (best persona chosen on the fit half). The scale is refitted only for the 10
      contexts with the best fit-half score at scale 1 (stored scores); the 200-answer smoke test found every fitted
      scale within 0.96-1.03 of 1, so the ranking at scale 1 decides the winner
+  T  synthetic runs only: the hold-out score under the TRUE coefficients stored in the run's config.json (the ceiling
+     a perfect fit would reach; calibration gap = T - A)
   E  greedy forward selection (12 steps; at each step the 5 unchosen personas with the largest objective gradient are
      refitted and the best by fit-half likelihood is added; an approximation to trying all ~80, noted in NOTES.md)
 Reference rows: the generic header (c = one-hot; must reproduce the Phase 1 score), and the ARITHMETIC mixture of the
@@ -117,6 +119,11 @@ def main():
         (out / f"fits_{tag}.json").write_text(json.dumps(res, indent=1))
 
     fits = a.fits.split(",")
+    if "T" in fits:
+        true_c = json.loads((Path(a.run) if Path(a.run).is_dir() else Path("results/phase4/exp1") / a.run).joinpath("config.json").read_text())["true_c"]
+        c = np.zeros(K)
+        for k, v in true_c.items(): c[ctxs.index(k)] = v
+        record("T_true_c", c, {"true_c": true_c})
     if "A" in fits:
         lams = [float(x) for x in a.lambdas.split(",")]; sel = {}
         for tgt_name, c0 in [("zero", np.zeros(K)), ("generic", e_gen)]:

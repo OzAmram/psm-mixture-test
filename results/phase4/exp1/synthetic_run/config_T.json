@@ -1,0 +1,16 @@
+{
+  "args": {
+    "run": "synthetic_run",
+    "fits": "T",
+    "lambdas": "0,1e-4,1e-3,1e-2",
+    "devices": "0",
+    "greedy_steps": 12,
+    "maxiter": 300,
+    "out": "results/phase4/exp1",
+    "seed": 0,
+    "max_rows": null
+  },
+  "git_commit": "42ed01a",
+  "hidden_dir": "/pscratch/sd/o/ozamram/persona_phase4/hidden/synthetic_run",
+  "command": "scripts/phase4_geom_fit.py --run synthetic_run --fits T --devices 0"
+}
