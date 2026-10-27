@@ -1,8 +1,9 @@
 #!/bin/bash
 # Instruct-derived bases (2026-10-27, author's design), 4 GPUs, idempotent (each step skips finished outputs):
-#   1. Instruct describes itself in full paragraphs: selfdesc_overall (20) and selfdesc_traits (60 Assistant Axis traits)
+#   1. Instruct describes itself in full paragraphs: selfdesc_overall (20) and selfdesc_traits (all 240 Assistant Axis traits)
 #   2. base-model hidden states for those headers on the Instruct answers
-#   3. a soft context started from EXACTLY each description (length = its token count, no anchor), trained on the
+#   3. (only once results/phase4/selfdesc/selected.txt exists, written by scripts/phase4_selfdesc_select.py from fits on the
+#      fit half) a soft context started from EXACTLY each selected description (length = its token count, no anchor), trained on the
 #      fit-half Instruct answers (20% of fit questions for early stopping, 3 epochs (the best epoch was 2-3 in every earlier run), lr 5e-3), four GPUs in parallel
 #   4. families selfdesc_{overall,traits}_soft listing the trained prefixes; their hidden states
 # Fits are run afterwards by scripts/phase4_bases_fit.sh (tags sdo, sdt, sd, sdo_soft, sdt_soft, sd_soft, sd_all).
@@ -13,11 +14,15 @@ source ./env.sh > /dev/null
 B=data/prompts/basis; P=results/phase4/selfdesc/prefix; H="python scripts/phase4_hidden_states.py --run instruct_unknown_casual_v1"
 mkdir -p $P
 echo "=== $(date) selfdesc stage on $(hostname) ==="
-[ -f $B/selfdesc_traits.jsonl ] || CUDA_VISIBLE_DEVICES=0 python scripts/phase4_selfdesc_elicit.py > logs/p4s_elicit.log 2>&1
+if [ ! -f $B/selfdesc_traits.jsonl ]; then
+  for g in 0 1 2 3; do CUDA_VISIBLE_DEVICES=$g python scripts/phase4_selfdesc_elicit.py --part $g/4 > logs/p4s_elicit_$g.log 2>&1 & done; wait
+  python scripts/phase4_selfdesc_elicit.py --merge > logs/p4s_elicit_merge.log 2>&1
+fi
 echo "$(date) elicited: $(wc -l < $B/selfdesc_overall.jsonl) overall, $(wc -l < $B/selfdesc_traits.jsonl) traits"
 for g in 0 1 2 3; do CUDA_VISIBLE_DEVICES=$g $H --contexts selfdesc_overall,selfdesc_traits,generic --part $g/4 > logs/p4s_hidden_$g.log 2>&1 & done; wait
 echo "$(date) description hidden states done"
-names=$(python -c "import json; [print(f\"{f}:{json.loads(l)['name']}\") for f in ['selfdesc_overall','selfdesc_traits'] for l in open('$B/'+f+'.jsonl')]")
+[ -f results/phase4/selfdesc/selected.txt ] || { echo "no selection yet (run the sdo/sdt/sd fits and phase4_selfdesc_select.py); stopping before soft contexts"; exit 0; }
+names=$(cat results/phase4/selfdesc/selected.txt)
 train() {   # GPU, then a list of family:name
   local g=$1; shift
   for fn in "$@"; do

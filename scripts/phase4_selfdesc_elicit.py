@@ -1,7 +1,7 @@
 """Instruct-derived persona bases (2026-10-27, author's design): the Instruct model describes ITSELF, in full paragraphs.
 
   selfdesc_overall  5 prompt phrasings x 4 accepted samples: an overall description of its personality, values and style
-  selfdesc_traits   for each of 60 Assistant Axis traits (random, seed 0, of the 240 in data/persona_sources/assistant_axis),
+  selfdesc_traits   for each of the 240 Assistant Axis traits (data/persona_sources/assistant_axis; --n-traits takes a random subset),
                     how that trait does or does not show up in how it answers (1 accepted sample per trait)
 
 Chat template with its default system message (how Instruct normally runs), T = 1. Every description must be one
@@ -9,7 +9,8 @@ paragraph of 120-320 words starting "The assistant" (asked for 150-250); shorter
 8 rounds). No dilemma answers are shown to the model, so nothing from the hold-out half enters. Headers are the standard
 Phase 1 form (basis.description_header). Raw samples go to data/prompts/basis/elicited_raw/selfdesc_*.json.
 
-    python scripts/phase4_selfdesc_elicit.py
+    python scripts/phase4_selfdesc_elicit.py --part 0/4     (one per GPU: overall prompts on part 0, traits split k, k+n, ...)
+    python scripts/phase4_selfdesc_elicit.py --merge        (writes the two families from the parts)
 """
 import argparse, json, os, random, re, sys
 from pathlib import Path
@@ -59,13 +60,16 @@ def accepted(model, tok, msg, k, rounds=8):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--n-overall", type=int, default=4); ap.add_argument("--n-traits", type=int, default=60)
-    ap.add_argument("--seed", type=int, default=0); a = ap.parse_args(); torch.manual_seed(a.seed)
+    ap = argparse.ArgumentParser(); ap.add_argument("--n-overall", type=int, default=4); ap.add_argument("--n-traits", type=int, default=240)
+    ap.add_argument("--seed", type=int, default=0); ap.add_argument("--part", default="0/1"); ap.add_argument("--merge", action="store_true")
+    a = ap.parse_args(); k, n = map(int, a.part.split("/")); torch.manual_seed(a.seed + k)
+    R = Path("data/prompts/basis/elicited_raw")
+    if a.merge: return merge(R)
     traits = json.load(open("data/persona_sources/assistant_axis/traits/trait_list.json"))
-    picked = sorted(random.Random(a.seed).sample(sorted(traits), a.n_traits))
+    picked = sorted(random.Random(a.seed).sample(sorted(traits), a.n_traits))[k::n]
     tok = AutoTokenizer.from_pretrained(INSTRUCT); model = AutoModelForCausalLM.from_pretrained(INSTRUCT, dtype=torch.bfloat16, device_map="cuda").eval()
     fams = {"selfdesc_overall": [], "selfdesc_traits": []}; raws = {"selfdesc_overall": [], "selfdesc_traits": []}
-    for key, p in OVERALL.items():
+    for key, p in (OVERALL.items() if k == 0 else []):
         acc, raw = accepted(model, tok, p + FMT, a.n_overall); raws["selfdesc_overall"] += [(key, t) for t in raw]
         fams["selfdesc_overall"] += [{"name": f"sdo_{key}_{i}", "prompt": key, "description": t} for i, t in enumerate(acc)]
         print(f"overall/{key}: {len(acc)} accepted of {len(raw)} raw", flush=True)
@@ -73,9 +77,18 @@ def main():
         acc, raw = accepted(model, tok, TRAIT.format(trait=tr, gloss=traits[tr]) + FMT, 1); raws["selfdesc_traits"] += [(tr, t) for t in raw]
         fams["selfdesc_traits"] += [{"name": f"sdt_{re.sub(r'[^a-z0-9]+', '-', tr.lower())}", "trait": tr, "gloss": traits[tr], "description": t} for t in acc]
         print(f"trait/{tr}: {len(acc)} accepted of {len(raw)} raw", flush=True)
-    Path("data/prompts/basis/elicited_raw").mkdir(parents=True, exist_ok=True)
+    R.mkdir(parents=True, exist_ok=True)
+    (R / f"selfdesc_part{k}of{n}.json").write_text(json.dumps({"fams": fams, "raws": raws}, indent=1)); print("part written")
+
+
+def merge(R):
+    fams = {"selfdesc_overall": [], "selfdesc_traits": []}; raws = {"selfdesc_overall": [], "selfdesc_traits": []}
+    for f in sorted(R.glob("selfdesc_part*of*.json")):
+        d = json.loads(f.read_text())
+        for fam in fams: fams[fam] += d["fams"][fam]; raws[fam] += d["raws"][fam]
+    fams["selfdesc_traits"].sort(key=lambda c: c["name"])
     for fam, comps in fams.items():
-        Path(f"data/prompts/basis/elicited_raw/{fam}.json").write_text(json.dumps(raws[fam], indent=1))
+        (R / f"{fam}.json").write_text(json.dumps(raws[fam], indent=1))
         for c in comps: c["header"] = description_header(c["description"])
         write_family(fam, comps); w = [len(c["description"].split()) for c in comps]
         print(f"{fam}: {len(comps)} components, words min {min(w)} median {sorted(w)[len(w) // 2]} max {max(w)}")

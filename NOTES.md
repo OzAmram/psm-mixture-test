@@ -308,3 +308,8 @@
 - **Check:** before the stage, `/pscratch/sd/o/ozamram/persona_phase4/tmp/prefix_equiv_check.py` confirms that a prefix equal to a header's embeddings reproduces that header's scores through the hidden-state path.
 - **Runs:** the stage runs on allocation 60384834 after the large-basis fits (log `logs/p4s_stage_interactive1.out`).
 - **Cost estimate:** about 80 soft contexts × about 8 min, about 2.5 hours on 4 GPUs. It will probably need a second allocation; every step is idempotent.
+- 2026-10-27 10:50, **author's change:**
+  - Elicit ALL 240 Assistant Axis traits (plus 20 overall descriptions), and fit with all of them.
+  - Train soft contexts only for the top components. These are chosen on the fit half by `scripts/phase4_selfdesc_select.py --k 20`: the union of the first 20 arithmetic-greedy picks and the 20 largest |c| of the geometric fit on the sd basis.
+  - The stage now stops after the description hidden states until `results/phase4/selfdesc/selected.txt` exists.
+  - Elicitation is split over 4 GPUs (`--part k/4`, then `--merge`).
