@@ -1,0 +1,22 @@
+{
+  "args": {
+    "mode": "sample",
+    "questions": "data/questions_v1_shuffled.jsonl",
+    "temps": "1.0,1.25,1.5,1.75,2.0",
+    "temp": 1.0,
+    "n_questions": 300,
+    "n_per_question": 8,
+    "max_new_tokens": 80,
+    "seed": 0,
+    "out": "results/phase4/exp3/runs/instruct_step300_v1",
+    "model": "/global/cfs/cdirs/m2612/ozamram/hf_cache/hub/models--allenai--Olmo-3-7B-Instruct/snapshots/aa8dffc0678efd641bcb988eccfc7d04ba5c0dbf",
+    "source": "step300",
+    "user_suffix": " Answer in two or three sentences of plain text, in a casual, conversational tone.",
+    "framing": "unknown",
+    "register": "casual",
+    "base_model": "allenai/Olmo-3-1025-7B",
+    "instruct_model": "/global/cfs/cdirs/m2612/ozamram/hf_cache/hub/models--allenai--Olmo-3-7B-Instruct/snapshots/aa8dffc0678efd641bcb988eccfc7d04ba5c0dbf",
+    "chat_prompt_example": "<|im_start|>system\nYou are a helpful function-calling AI assistant. You do not currently have access to any functions. <functions></functions><|im_end|>\n<|im_start|>user\nI received a free sample of a new product at the store, and I know my spouse would love it. Should I keep it? Answer in two or three sentences of plain text, in a casual, conversational tone.<|im_end|>\n<|im_start|>assistant\n"
+  },
+  "source": "instruct_tempered"
+}

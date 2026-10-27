@@ -219,3 +219,26 @@
 - **Results** (hold-out, 1,200 Instruct answers, ± question bootstrap; paired ± vs arithmetic in brackets): generic -1.758; arithmetic -1.723; D single persona e14 at scale 0.995 -1.731; C pool and B nonneg -1.714 (hhh, e14, fred only; +0.009 [0.001]); E greedy 12 contexts -1.645 (+0.078 [0.003]); **A free c -1.605 ± 0.012 (+0.118 [0.004]), 14% of the arithmetic-to-self distance**; soft prefix -1.397 (39%); Instruct self -0.898. Fit A needs negative weights for all of its gain: 23 |c| > 0.3, positive sum +11.1, negative -10.1 (hhh +1.70, e14 +1.03, e34 -1.02, neutral +0.89, e60 +0.80, e59 -0.68). Lambda grid flat; validation chose 0 for both targets. Residual 0.69 nats/token spread over common tokens (em-dash largest at 3%). Controls: synthetic recovery passes (A within 0.001 of true c; greedy picks the 3 true personas); base answers gain 0.007 ± 0.0004.
 - **Reading:** pre-registered row 3 ("barely beats the arithmetic mixture... persona states don't span the needed direction, even though a soft prefix gets further"), with a partial row 4 (large negative coefficients, but spread over many contexts, not one subtracted character). Moderate confidence: one split, one seed; the 87-context basis is fixed.
 - **Open:** a larger basis (Experiment 2 has 499 contexts, sequence level only); geometric fits for SFT/DPO checkpoints (Experiment 3 step 6) need their hidden states (~100 GB and ~1.5 GPU-hours each).
+
+## 2026-10-27: Phase 4 Experiment 3 (soft-prefix gap per post-training stage), prefix part complete
+
+- **Goal:** at which post-training stage does "the base model in some context" stop describing the model? (spec Experiment 3; pre-registration in notebook 4.3)
+- **What was done:** `bash scripts/phase4_exp3_stage.sh "sft:0 dpo:1 step100,step200:2 step300,final:3"` on interactive allocations (last one 60356049; logs `logs/p4e3_stage_interactive{1,2,3}.out`, per-checkpoint logs `logs/p4e3_*.log`). Step revisions sampled to `results/phase4/exp3/runs/instruct_step{100,200,300}_v1`; prefixes in `results/phase4/exp3/prefix/<ckpt>_<cfg>/`; `python scripts/phase4_exp3_analysis.py` -> `results/phase4/exp3/summary.json` (git 6220695).
+- **Results** (hold-out half, about 1,200 answers per checkpoint, ± question bootstrap of the paired difference). gap = self − best base prefix (chosen by validation):
+
+  | checkpoint | self | arithmetic | base + prefix (chosen) | gap | arithmetic gap | control − self |
+  |---|---|---|---|---|---|---|
+  | SFT | −1.249 | −1.897 | −1.660 (L64) | 0.411 ± 0.005 | 0.649 | −0.044 |
+  | DPO | −1.037 | −1.820 | −1.540 (L128) | 0.503 ± 0.006 | 0.783 | −0.054 |
+  | RL step 100 | −1.030 | −1.815 | −1.528 (L128) | 0.497 ± 0.006 | 0.785 | −0.048 |
+  | RL step 200 | −1.013 | −1.790 | −1.501 (L128) | 0.489 ± 0.006 | 0.777 | −0.051 |
+  | RL step 300 | −1.004 | −1.775 | −1.485 (L64) | 0.482 ± 0.006 | 0.771 | −0.058 |
+  | final | −0.899 | −1.723 | −1.397 (L128) | 0.499 ± 0.006 | 0.824 | −0.062 |
+
+  The prefix grid is flat: the five settings differ by less than 0.02 on validation at each checkpoint.
+- **Reading:** the second pre-registered row: the gap is already large at SFT (0.41), grows by about 0.09 at DPO, and is flat through RL (0.48–0.50). My prior was gap_SFT 0.3–0.4 and growth below 0.15. Gap_SFT came in slightly above that range; the growth was within it.
+- **Optimizer control fails narrowly at 4 of 6 checkpoints.** The pre-registered rule: a prefix trained on M_k itself must land within 0.05 of M_k's self-score. Results: SFT 0.044 and step 100 0.048 pass; DPO 0.054, step 200 0.051, step 300 0.058 and final 0.062 fail. Under the pre-registration those base numbers are flagged. What the control shows:
+  - The control peaks at epoch 1–2, then gets worse on validation (it overfits 960 training answers with 128 × 4096 parameters). Its target is also partly unreachable by design: the prefix sits in the transcript format, while the self-score uses the chat template.
+  - So the optimizer leaves at most about 0.04–0.06 nats/token on the table. Even if the base prefix fell short by the same amount, every gap would stay at or above 0.35, and the shape across stages would not change.
+  - I did not re-tune the control to make it pass.
+- **Open:** geometric fit A for SFT and DPO (running: `scripts/phase4_exp3_geom.sh` on interactive allocation 60362780; batch job 60356085 held meanwhile to stay at 4 GPUs, released automatically afterwards). No geometric fit for the RL steps (hidden-state storage and time; the steps sit between DPO and final on every other number).

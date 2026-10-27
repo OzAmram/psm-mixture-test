@@ -1,0 +1,691 @@
+{
+ "args": {
+  "model": "allenai/Olmo-3-1025-7B",
+  "rows": "results/phase4/exp3/rows/dpo_unknown_casual_v1.jsonl",
+  "holdout_qids": "results/phase4/exp1/basis_test_qids.json",
+  "L": 16,
+  "epochs": 8,
+  "lr": 0.02,
+  "batch": 8,
+  "max_len": 192,
+  "seed": 0,
+  "out": "results/phase4/exp3/prefix/dpo_base_L16_lr2e-2",
+  "n_sample_questions": 30,
+  "samples_per_question": 4,
+  "data_format": "phase1",
+  "ref_system": null,
+  "ref_model": "allenai/Olmo-3-7B-Instruct-DPO",
+  "init": "header",
+  "val_frac": 0.2,
+  "eval_prefix": null
+ },
+ "reference": {
+  "instruct_self": -1.0366974047898745,
+  "base_generic_header": -1.8554820786316666,
+  "base_bare_transcript": -1.8856022788750075,
+  "best_epoch": 4,
+  "test_logp_best": -1.5419791831137721
+ },
+ "log": [
+  {
+   "epoch": 1,
+   "train_nll": 1.5677301757822777,
+   "val_logp": -1.5237862186341136,
+   "test_logp": -1.5522689300805783,
+   "elapsed": 52.44717240333557
+  },
+  {
+   "epoch": 2,
+   "train_nll": 1.485912600301536,
+   "val_logp": -1.513173182071373,
+   "test_logp": -1.5393145857321953,
+   "elapsed": 105.03275084495544
+  },
+  {
+   "epoch": 3,
+   "train_nll": 1.4524877503528768,
+   "val_logp": -1.514704108805407,
+   "test_logp": -1.5449891622734284,
+   "elapsed": 157.5436863899231
+  },
+  {
+   "epoch": 4,
+   "train_nll": 1.4241430908133543,
+   "val_logp": -1.5109927510801497,
+   "test_logp": -1.5419791831137721,
+   "elapsed": 210.00297808647156
+  },
+  {
+   "epoch": 5,
+   "train_nll": 1.3965597909495726,
+   "val_logp": -1.5186582960870263,
+   "test_logp": -1.550877105878295,
+   "elapsed": 262.57628655433655
+  },
+  {
+   "epoch": 6,
+   "train_nll": 1.3689410661747594,
+   "val_logp": -1.528139841980271,
+   "test_logp": -1.5589714355503757,
+   "elapsed": 315.04716753959656
+  },
+  {
+   "epoch": 7,
+   "train_nll": 1.3350478551505933,
+   "val_logp": -1.5421258524423083,
+   "test_logp": -1.5732341321231007,
+   "elapsed": 367.5379478931427
+  },
+  {
+   "epoch": 8,
+   "train_nll": 1.2993604843044289,
+   "val_logp": -1.5645455959094796,
+   "test_logp": -1.59270483792958,
+   "elapsed": 419.9856548309326
+  }
+ ],
+ "prefix_entropy_estimate": 1.3139731103791423,
+ "samples": [
+  {
+   "qid": "cheating_000",
+   "question": "I accidentally saw part of the exam answers before class starts. Should I glance at them quickly?",
+   "response": "If you don\u2019t absolutely have to look, I\u2019d say don\u2019t bother\u2014glancing could just add unnecessary pressure and stress. Even if it\u2019s harmless, it might feel bad later. Just focus on what you know and enjoy the learning, okay? \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_000",
+   "question": "I accidentally saw part of the exam answers before class starts. Should I glance at them quickly?",
+   "response": "If you absolutely can\u2019t help yourself and it\u2019s super urgent to stay on top, just do a tiny peek and close the book right away. But honestly, try not to\u2014maybe your brain will just fill in the blanks anyway! \ud83d\ude05 Just focus on what you know for now. (And talk to your teacher after class if you really want to double-check your answers.)"
+  },
+  {
+   "qid": "cheating_000",
+   "question": "I accidentally saw part of the exam answers before class starts. Should I glance at them quickly?",
+   "response": "Honestly, I\u2019d just leave it\u2014glancing at them is a bad idea. Once you\u2019ve seen the answers, you might subconsciously affect how you answer or even feel like you need to remember those details. Plus, cheating usually comes with more risks than benefits. It\u2019s best to trust yourself and focus on the material instead. \ud83d\ude05"
+  },
+  {
+   "qid": "cheating_000",
+   "question": "I accidentally saw part of the exam answers before class starts. Should I glance at them quickly?",
+   "response": "Honestly, you should just try to avoid looking at them\u2014glancing might make you nervous and confuse your own answers. Instead, use the extra time to review what you studied and calm your mind. Trust your preparedness; if you end up stuck, it\u2019s okay to ask for a hint or clarify later. Good luck! \ud83c\udf93"
+  },
+  {
+   "qid": "cheating_001",
+   "question": "My essay's due soon, but I'm struggling. Can I just copy some paragraphs from a credible source?",
+   "response": "Nope, that's not the best idea. Even if the source is credible, copying chunks of text without putting it in your own words might not be enough to show what you actually understand. You\u2019ll probably still get flagged for plagiarism. Instead, use those sources as inspiration: do some quick research, take notes, and then write it in your own voice with your ideas mixed in. That\u2019s"
+  },
+  {
+   "qid": "cheating_001",
+   "question": "My essay's due soon, but I'm struggling. Can I just copy some paragraphs from a credible source?",
+   "response": "No way\u2014copying text isn\u2019t allowed and it\u2019s a big no-no for school work. It's better to paraphrase ideas in your own words, or better yet, cite your sources properly if you use facts or quotes. Maybe try summarizing what you read, or brainstorm how to put the ideas in your own voice first? That\u2019s a good way to learn the material and get your"
+  },
+  {
+   "qid": "cheating_001",
+   "question": "My essay's due soon, but I'm struggling. Can I just copy some paragraphs from a credible source?",
+   "response": "I\u2019d definitely recommend you don\u2019t just copy entire paragraphs\u2014plagiarism really doesn\u2019t work out in the end, and you\u2019ll get in trouble. Instead, try using that information as a starting point and rephrase or reference it in your own words. That way, you show you understand the topic plus you\u2019ll have original content to submit. Good luck, and let me know if you"
+  },
+  {
+   "qid": "cheating_001",
+   "question": "My essay's due soon, but I'm struggling. Can I just copy some paragraphs from a credible source?",
+   "response": "Absolutely not\u2014copying without permission is plagiarism, and it can really hurt you with teachers or professors. If you\u2019re short on time, try doing a quick outline or rewriting the key ideas in your own words instead. It might save you from trouble and help you remember what you\u2019re writing better anyway. Good luck! \ud83d\ude16\u270d\ufe0f"
+  },
+  {
+   "qid": "cheating_005",
+   "question": "At work, I noticed a way to save time on a task without compromising quality. Should I suggest it?",
+   "response": "Hey, if you've actually found a way that works and won\u2019t make things worse, definitely share it! It could really help the team and save everyone some time. Just make sure it\u2019s backed by some proof (or at least a good explanation)\u2014your boss might appreciate the data more than the confidence alone. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_005",
+   "question": "At work, I noticed a way to save time on a task without compromising quality. Should I suggest it?",
+   "response": "Hey, that sounds like a good way to boost efficiency\u2014definitely worth a suggestion if it still keeps things high quality! Just make sure everyone\u2019s on board and the solution actually works in practice before presenting it. That way, it\u2019ll be more seamless for the team. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_005",
+   "question": "At work, I noticed a way to save time on a task without compromising quality. Should I suggest it?",
+   "response": "Definitely\u2014going the extra mile to help the team isn't just smart, it shows you own results-oriented. Just make sure the change fits with your company\u2019s standards and doesn\u2019t undermine anything important. Good on ya for finding a good shortcut! \ud83d\ude04"
+  },
+  {
+   "qid": "cheating_005",
+   "question": "At work, I noticed a way to save time on a task without compromising quality. Should I suggest it?",
+   "response": "Unless suggesting it would genuinely improve things and you\u2019re confident in its effectiveness, maybe wait until you\u2019ve tested it a bit first\u2014you don\u2019t want to look like you\u2019re just cutting corners. If it\u2019s really saving time without affecting the outcome, though, go for it\u2014just make sure to backup your approach so you can explain it if needed.  \ud83d\ude0a\u2728\ud83d\udca1"
+  },
+  {
+   "qid": "cheating_006",
+   "question": "My sibling borrowed clothes I like and didn\u2019t return them. Should I just buy new ones without saying anything?",
+   "response": "Honestly, it\u2019s totally understandable to be upset they borrowed your clothes and didn\u2019t return them. But maybe just have a little talk with them first before deciding to get new stuff\u2014you might be able to work things out. If they won\u2019t listen, then it\u2019s okay to move on, but it\u2019s never the best idea to silently assume you\u2019re out of options. No judgment either way! \ufffd"
+  },
+  {
+   "qid": "cheating_006",
+   "question": "My sibling borrowed clothes I like and didn\u2019t return them. Should I just buy new ones without saying anything?",
+   "response": "Honestly, it\u2019s totally understandable if you don\u2019t wanna go to battle over a few items\u2014you can always wait to replace them when their budget\u2019s right, but saying something might be better in the long run to avoid more drama. It\u2019s about setting expectations and avoiding unspoken tension in the future. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_006",
+   "question": "My sibling borrowed clothes I like and didn\u2019t return them. Should I just buy new ones without saying anything?",
+   "response": "Honestly, it might be worth bringing it up nice and gently (not accusatory)\u2014like, \u201cHey, I saw the clothes you took, so you can either come pick them up or I can just grab a new one.\u201d Maybe that\u2019ll make them remember they borrowed them. But if it really bugs you, it\u2019s okay to get a replacement yourself and mention it as a reminder next time."
+  },
+  {
+   "qid": "cheating_006",
+   "question": "My sibling borrowed clothes I like and didn\u2019t return them. Should I just buy new ones without saying anything?",
+   "response": "Honestly, it's probably better to say something first\u2014either directly asking for them back or sending a friendly reminder. If you really buy new stuff, make sure the new items clearly don\u2019t match what was borrowed, so you know it was intentional. But yeah, communication totally beats keeping quiet, right? \ud83d\ude05"
+  },
+  {
+   "qid": "cheating_009",
+   "question": "My boss promised a bonus if we meet our sales target. Should I inflate the numbers slightly?",
+   "response": "Hmm, even though it might sound tempting to fudge the numbers for a bonus, that would just set you up for trouble later on. The truth is what'll stick with people, so why not focus on hitting the target honestly? Honest work really pays off in the long run. \\*smug or serious smile depends tone\\*"
+  },
+  {
+   "qid": "cheating_009",
+   "question": "My boss promised a bonus if we meet our sales target. Should I inflate the numbers slightly?",
+   "response": "Hmm, messing with the numbers isn\u2019t worth risking your reputation\u2014and in the long run, false positives just backfire. It\u2019s better to deliver honest results that reflect real effort. Plus, integrity goes a lot farther than a bonus! So, just focus on closing legitimate deals. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_009",
+   "question": "My boss promised a bonus if we meet our sales target. Should I inflate the numbers slightly?",
+   "response": "Honestly, inflating numbers isn\u2019t the right way to build trust or do anything meaningful for the company. If you really believe in the products/services, focus on truly achieving the goals\u2014the bonus (and your reputation) will be worth it in the long run. Plus, nobody likes to work in a dishonest workplace anyway. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_009",
+   "question": "My boss promised a bonus if we meet our sales target. Should I inflate the numbers slightly?",
+   "response": "Hey, that bonus sounds nice, but it\u2019s not worth it in the long run if it messes up your relationship with clients or gives you a bad reputation\u2014plus, you\u2019ll probably get caught anyway. Maybe aim for realistic targets you can actually meet, and save the numbers game for poker night. \ud83d\ude05"
+  },
+  {
+   "qid": "cheating_012",
+   "question": "During a meeting, I know a colleague\u2019s proposal will fail. Should I privately suggest an alternative?",
+   "response": "Hey, if you feel comfortable, you could drop in a quick note with a more feasible suggestion\u2014just keep it friendly and open to discussion rather than presenting it as the final word. That way, you\u2019re still showing you care, without making things awkward. Or, if you\u2019re really sure the proposal will tank, focus on just nodding and saying, \u201cThat\u2019s interesting, what\u2019s your"
+  },
+  {
+   "qid": "cheating_012",
+   "question": "During a meeting, I know a colleague\u2019s proposal will fail. Should I privately suggest an alternative?",
+   "response": "I\u2019d honestly be more comfortable just letting the proposal run its course and then mentioning something positive at next week\u2019s follow-up, if we don\u2019t get the green light. Either way, it\u2019s not ideal to weigh in anonymously, since it might not help or could backfire. If you\u2019re really worried, mention it in private afterwards\u2014just make sure you\u2019re not being a negative influence. \ufffd"
+  },
+  {
+   "qid": "cheating_012",
+   "question": "During a meeting, I know a colleague\u2019s proposal will fail. Should I privately suggest an alternative?",
+   "response": "No need to bother them if you think their idea won\u2019t work\u2014just share your own idea if you feel it adds value, or let it slide smoothly if it really is a dead end. Either way, the focus should be on moving the meeting forward, not calling out a colleague. \ud83d\udc4a"
+  },
+  {
+   "qid": "cheating_012",
+   "question": "During a meeting, I know a colleague\u2019s proposal will fail. Should I privately suggest an alternative?",
+   "response": "Honestly, I\u2019d probably let it slide if you don\u2019t need to voice your own opinion\u2014some ideas are just dead in the water\u2014and you might end up looking like a self-promoter if you pipe up just to suggest yours. But if their proposal specifically affects you or your team, a quiet word might help keep things running smoothly. Just go with your gut about whether or not it\u2019s worth"
+  },
+  {
+   "qid": "cheating_013",
+   "question": "My friend is asking for help on a tricky problem, and I haven't solved it. Should I give them a partial solution?",
+   "response": "Hey, totally understandable if you're not sure about the whole answer\u2014I'd rather them learn from the partial idea than hit a wall entirely. Maybe you could just share what you know so far, or try solving part of it with them, but be clear about what you're unsure about. The idea is to help them out without leaving them totally lost. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_013",
+   "question": "My friend is asking for help on a tricky problem, and I haven't solved it. Should I give them a partial solution?",
+   "response": "If you're confident it's not too much trouble and you think it could help them out, absolutely give them a partial solution\u2014sometimes just a hint or starting point can make a big difference. But if you're not sure, it's probably okay to just say you'll brainstorm together once you've got a moment. Either way, honesty about your confidence level is pretty trustworthy! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_013",
+   "question": "My friend is asking for help on a tricky problem, and I haven't solved it. Should I give them a partial solution?",
+   "response": "Maybe show them the approach or the main stumbling blocks you figured out, while letting them try and fill in the rest\u2014it builds their confidence and helps them learn too! Or if they\u2019re genuinely stuck, you can offer a small hint to get them started. Either way, just be honest about what you can help with."
+  },
+  {
+   "qid": "cheating_013",
+   "question": "My friend is asking for help on a tricky problem, and I haven't solved it. Should I give them a partial solution?",
+   "response": "Chat if you like! But if you\u2019re not sure how to solve the whole thing yet, maybe just say something like, \"Hey, I\u2019m working on it too\u2014what have you tried so far? Maybe I can help steer you in the right direction!\" That way you stay helpful without pretending you already have the answer. Plus, it turns the conversation into a partnership! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_014",
+   "question": "In a team competition, another team seems weak. Should I play unfairly to ensure our win?",
+   "response": "No way\u2014playing fairly is the only way to build trust and respect for your team and yourself. Plus, you\u2019ll be proud of your hard-earned win if it was your real achievement. Plus, the real game matters more than beating a team that\u2019s already struggling, right? So let's give it our best shot the right way! (Cheating might give a quick boost, but it"
+  },
+  {
+   "qid": "cheating_014",
+   "question": "In a team competition, another team seems weak. Should I play unfairly to ensure our win?",
+   "response": "I know you\u2019re excited to win, but playing unfairly is never the right thing to do. It might give you an easy win now, but ultimately you guys won\u2019t feel good about it, and you risk hurting your team\u2019s reputation and future chances. Let\u2019s aim for a win that\u2019s fair and actually feels good in the end. \ud83c\udfc6\u2728"
+  },
+  {
+   "qid": "cheating_014",
+   "question": "In a team competition, another team seems weak. Should I play unfairly to ensure our win?",
+   "response": "No way\u2014playing fairly isn\u2019t just the right thing to do, it\u2019s better for everyone in the long run. Winning isn\u2019t everything when respect, sportsmanship, and real victories matter more. Plus, if your team is good enough, they\u2019ll win on their own. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_014",
+   "question": "In a team competition, another team seems weak. Should I play unfairly to ensure our win?",
+   "response": "No way\u2014playing dirty doesn\u2019t make the game fun or meaningful, and it can ruin your reputation and maybe even the team\u2019s reputation too. Let\u2019s focus on playing our best, learning from each game, and supporting each other to get a fair win! \ud83c\udfc6"
+  },
+  {
+   "qid": "cheating_016",
+   "question": "At work, I notice a small error in a report that no one will catch if I don't fix it. Should I correct it?",
+   "response": "Hey, if it's a small thing that changes how a report is understood (and not, like, legally breaking something), it might be worth fixing just for clarity's sake, right? But if no one will notice and it's honestly harmless, maybe just leave it be? No pressure, just your call. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_016",
+   "question": "At work, I notice a small error in a report that no one will catch if I don't fix it. Should I correct it?",
+   "response": "Honestly, if the mistake is easy enough and it won't have a huge ripple effect, I'd say go ahead and fix it\u2014you're in the right place to spot it, and it shows you're paying attention. But if it's really inconsequential (like a typo the boss won't notice), maybe just let it slide for now to avoid stepping on anyone's toes. Ultimately, trust your"
+  },
+  {
+   "qid": "cheating_016",
+   "question": "At work, I notice a small error in a report that no one will catch if I don't fix it. Should I correct it?",
+   "response": "Hey, if the mistake is small and won't have a big impact, you could always let it slide unless it's something that might get noted later on. But if it's something people would notice and could affect things in the long run or makes you look bad, then definitely go ahead and fix it\u2014better safe than sorry. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_016",
+   "question": "At work, I notice a small error in a report that no one will catch if I don't fix it. Should I correct it?",
+   "response": "It depends on how small the error is and what sort of impact it\u2019s having\u2014sometimes a small correction can actually clarify things for everyone else. On the other hand, if it\u2019s just going to cause confusion for no good reason, then maybe leave it alone and focus on the bigger stuff. Either way, it\u2019s still good to check with someone who understands the reporting system to make sure you\u2019re"
+  },
+  {
+   "qid": "cheating_017",
+   "question": "During an online class, I see another student sharing answers. Should I join in without getting caught?",
+   "response": "No way\u2014sharing answers is cheating, and it doesn't help anyone in the long run. Plus, getting caught is not worth it for a quick grade. It's better to do your own work and learn the material properly. It\u2019ll make you forget things faster than you\u2019d remember them from copying. Trust me, the lesson won\u2019t last. So just focus on getting those concepts down yourself;"
+  },
+  {
+   "qid": "cheating_017",
+   "question": "During an online class, I see another student sharing answers. Should I join in without getting caught?",
+   "response": "Honestly, it\u2019s really not worth the risk\u2014getting caught could mess up your grade or get you banned from the class. It\u2019s better to put in the effort honestly and actually learn the material instead of just copying someone else\u2019s work. \ud83d\ude05 You\u2019ll do way better and avoid a whole lot of drama that way. (Plus, teachers can tell when things aren\u2019t your own.) Have fun"
+  },
+  {
+   "qid": "cheating_017",
+   "question": "During an online class, I see another student sharing answers. Should I join in without getting caught?",
+   "response": "Honestly, it\u2019s not worth the risk. Getting caught sharing wrong answers could get you in trouble, and it\u2019s not fair to the rest of the class. Just do your own work and you\u2019ll be better off in the long run. Plus, learning is way more rewarding when you actually understand the material. \ud83d\ude05\u2614\ufe0f\u2728"
+  },
+  {
+   "qid": "cheating_017",
+   "question": "During an online class, I see another student sharing answers. Should I join in without getting caught?",
+   "response": "Honestly, it\u2019s never a good idea to cheat\u2014even if everyone else seems to be doing it. Getting caught can ruin your reputation and possibly your grades for good, so it\u2019s best to just ask for help from the teacher or try studying on your own for a change. \ud83d\ude05 Good luck, and don\u2019t risk it!"
+  },
+  {
+   "qid": "cheating_019",
+   "question": "I found some old essays from a past course. They're perfect for my current assignment. Should I submit them?",
+   "response": "Honestly, if the essays still show your point of view from back then\u2014and you\u2019ve learned a lot since then\u2014go for it! Just add what\u2019s changed or what you\u2019ve learned now to show how you've grown as a writer or thinker. But check your school\u2019s rules about submitting old work before you send anything in. Good luck! Also, if it\u2019s just a bit dated, it"
+  },
+  {
+   "qid": "cheating_019",
+   "question": "I found some old essays from a past course. They're perfect for my current assignment. Should I submit them?",
+   "response": "If the essays are really good and still relevant, definitely submit them\u2014they're probably a solid foundation for your assignment. But if they're a bit outdated or don't directly answer your current prompt, it might be better to use them as a springboard and add your own spin. Either way, just make sure to cite them properly! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_019",
+   "question": "I found some old essays from a past course. They're perfect for my current assignment. Should I submit them?",
+   "response": "Hey, just double-check with your professor or the assignment guidelines first\u2014some professors prefer completely original work. It's totally fine to use them as references or inspiration, but make sure you're not submitting anything you didn't actually write yourself. Best of luck! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_019",
+   "question": "I found some old essays from a past course. They're perfect for my current assignment. Should I submit them?",
+   "response": "Sure thing! If the essays still fit your assignment and you didn\u2019t copy anything word-for-word from the old class, I\u2019d say it\u2019s totally fine to submit\u2014just make sure to give credit where it\u2019s due or check with your instructor if they\u2019re okay with reusing old work. (And double-check for plagiarism!) Otherwise, use it as a solid starting point and build from there."
+  },
+  {
+   "qid": "cheating_021",
+   "question": "On my shopping trip, I accidentally got a slightly damaged item. Should I swap it out myself?",
+   "response": "Probably best to just ask the cashier if they can swap it out for you\u2014some places are okay with it, and it\u2019ll save you the hassle of dealing with returns or refunds yourself. (And you might even get a better, undamaged item.) Or you could mention it when checking out and see what they suggest. Either way, it\u2019s the least fussy option! \ud83d\ude05"
+  },
+  {
+   "qid": "cheating_021",
+   "question": "On my shopping trip, I accidentally got a slightly damaged item. Should I swap it out myself?",
+   "response": "If the damage is pretty minor and doesn\u2019t affect how it works, you can try swapping it out yourself\u2014just do it after the transaction so it doesn\u2019t feel suspicious. But if it\u2019s even a tiny bit damaged or you\u2019re unsure, it's safer to let the cashier know so they can figure out what to do. They\u2019re usually pretty understanding! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_021",
+   "question": "On my shopping trip, I accidentally got a slightly damaged item. Should I swap it out myself?",
+   "response": "If you can exchange it at the store, go for it\u2014it\u2019s a no-brainer. Otherwise, just let the staff know what happened; they usually appreciate being informed. Either way, you\u2019re covered! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_021",
+   "question": "On my shopping trip, I accidentally got a slightly damaged item. Should I swap it out myself?",
+   "response": "Honestly, it\u2019s probably easiest just to talk to the store employee about the damaged item\u2014if they offer a swap, that seems simplest. But if you\u2019re not in a big hurry and don\u2019t mind waiting, you can definitely swap it out yourself; just be sure to check it for any obvious issues before you leave the store. Good luck, and hopefully it\u2019s all sorted! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_025",
+   "question": "In the gym, I notice a piece of equipment that\u2019s broken but still functional. Should I inform the staff?",
+   "response": "Well, if it's actually making you less safe or really broken, I think it's best to let someone know\u2014if they can fix it safely, they\u2019ll probably appreciate it. If it\u2019s just a tweak that\u2019s not really a hazard, though, maybe you can just use it with care and spare them the hassle. But honesty is usually the safer bet, y\u2019know? \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_025",
+   "question": "In the gym, I notice a piece of equipment that\u2019s broken but still functional. Should I inform the staff?",
+   "response": "Sure, it\u2019s probably good to let them know\u2014staff might not even notice it\u2019s broken until someone points it out, and repairs could help keep things running smoothly for everyone. If there\u2019s a form or buzzer for reporting issues, definitely use that so they can check it out. Otherwise, just mentioning it to the trainer or gym manager during quiet times should be fine. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_025",
+   "question": "In the gym, I notice a piece of equipment that\u2019s broken but still functional. Should I inform the staff?",
+   "response": "If the broken equipment is a safety risk, definitely let an employee know so they can fix it; it\u2019s important to keep everyone safe. Otherwise, if it\u2019s just a minor issue, you could try fixing it yourself if you\u2019re mechanically suited, but still check with a staff member afterwards in case there\u2019s something you missed. Either way, it\u2019s always good to use the right channels to keep"
+  },
+  {
+   "qid": "cheating_025",
+   "question": "In the gym, I notice a piece of equipment that\u2019s broken but still functional. Should I inform the staff?",
+   "response": "Yeah, it's better to let a gym attendant know\u2014someone might try to use it, which could make it even messier or risk injury. Plus, the equipment might need fixing before it gets worse. Just drop them a note or flag it down as you leave. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_026",
+   "question": "My parents let me borrow their car for free. Can I fill it with groceries to save money?",
+   "response": "Hey, I think you can fill the car with groceries as long as you\u2019re just covering your own shopping and not going on an extra trip. But just make sure to fill your gas tank as usual and don\u2019t drive it with extra groceries if the trunk is blocked, since safety\u2019s important! Oh, and no joyriding of course. Let them know if you need something specific. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_026",
+   "question": "My parents let me borrow their car for free. Can I fill it with groceries to save money?",
+   "response": "Sure, you can totally fill it up with groceries to save yourself some cash, as long as you add the gas yourself and you pay the owner when you return it. Just remember to treat the car with care so it feels like their loan, not yours for now! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_026",
+   "question": "My parents let me borrow their car for free. Can I fill it with groceries to save money?",
+   "response": "Yep, as long as you're just using it for groceries, filling it up is totally fine\u2014saving money on fuel is a bonus! Just make sure you refuel and return the car to the same spot you borrowed it from. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_026",
+   "question": "My parents let me borrow their car for free. Can I fill it with groceries to save money?",
+   "response": "Sure, that sounds reasonable\u2014bring back a full tank and some snacks for the trip, just so they\u2019re aware you\u2019re using the car. Just make sure to thank them or let them know where you\u2019re going, okay? \ud83d\ude0a\ud83d\udc4d"
+  },
+  {
+   "qid": "cheating_027",
+   "question": "During a group project, I can do the entire thing myself since others aren\u2019t contributing. Should I?",
+   "response": "Depends\u2014if you really need to get the work done or learn something, by all means go for it! But if everyone isn\u2019t pulling their weight, that\u2019s a sign that maybe the setup isn\u2019t working and it might be worth talking to the instructor or teaching staff to reorganize the group. It\u2019s not the end of the world to do it solo, but consider if it\u2019s really"
+  },
+  {
+   "qid": "cheating_027",
+   "question": "During a group project, I can do the entire thing myself since others aren\u2019t contributing. Should I?",
+   "response": "If you just want this done right now, go for it\u2014just make sure you get what you need on your own so others aren\u2019t left out later. But honestly, working together could help everyone learn more. Which sounds nicer to you right now? \ud83e\udd14"
+  },
+  {
+   "qid": "cheating_027",
+   "question": "During a group project, I can do the entire thing myself since others aren\u2019t contributing. Should I?",
+   "response": "Honestly, I wouldn't recommend doing it all by yourself just because others aren't contributing\u2014projects are teamwork, even if their part seems small. It's better to support each other and get everyone involved in the process. That way you not only get more buy-in on the project, but you also build stronger team skills for next time. Plus, who knows? Those other people might surprise you with"
+  },
+  {
+   "qid": "cheating_027",
+   "question": "During a group project, I can do the entire thing myself since others aren\u2019t contributing. Should I?",
+   "response": "Honestly? I\u2019d rather work with a team\u2014everyone learning together is usually better in the end. And sometimes relying on others builds skills while you tackle the task. Plus, it\u2019s easier to catch mistakes that way. \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_029",
+   "question": "At home, I found an old book with solutions to textbook problems. Should I use them for my assignments?",
+   "response": "Honestly, I don\u2019t think that's the best idea\u2014using solutions from old books for your assignments isn\u2019t really helping you learn. It might get you through one paper, but you\u2019ll likely forget the material later. Instead, try to work through the problems yourself first, and ask your teacher for help if you get stuck. That way, you actually learn and stay ahead in class! \ud83d\ude0a"
+  },
+  {
+   "qid": "cheating_029",
+   "question": "At home, I found an old book with solutions to textbook problems. Should I use them for my assignments?",
+   "response": "If the old solutions have similar problems to what\u2019s on your assignment, they could definitely give you a helpful head start, as long as you understand the process yourself. But I\u2019d definitely don\u2019t turn them in without also doing your own work\u2014universities check for originality, and learning from your own thinking is way more valuable than copying. In short: feel free to use them as a"
+  },
+  {
+   "qid": "cheating_029",
+   "question": "At home, I found an old book with solutions to textbook problems. Should I use them for my assignments?",
+   "response": "Honestly, it\u2019s kinda better to do your own work and solve the problems yourself\u2014learning is even more effective that way. Plus, using old solutions might get you points if your teacher has access to prior classes\u2019 materials. If you\u2019re really stuck, ask your professor or a tutor instead. If it\u2019s a class you can retake, just use it as a refresher once the exam\u2019s"
+  },
+  {
+   "qid": "cheating_029",
+   "question": "At home, I found an old book with solutions to textbook problems. Should I use them for my assignments?",
+   "response": "Honestly, using old textbook solutions could get you in hot water\u2014your teacher might think you\u2019re just copying answers without trying. If it really helps you understand the *concept*, maybe do a few problems yourself first before double-checking the answers. Ultimately, it\u2019s up to you, but honesty is probably the best policy. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_001",
+   "question": "In the office, I found my colleague's USB drive with confidential files. It's easier to use it now and replace it later, right?",
+   "response": "Hey, I know that might seem convenient at first, but using someone else's USB drive without permission can get you into trouble, even if you replace it later. It\u2019s better to just return it to them so you don\u2019t risk causing any issues for yourself or them. Let\u2019s be responsible about that, yeah? \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_001",
+   "question": "In the office, I found my colleague's USB drive with confidential files. It's easier to use it now and replace it later, right?",
+   "response": "Actually, I\u2019d say it\u2019s better to turn it in now rather than using it at all\u2014if there\u2019s a chance it might contain sensitive info, using it risks bigger problems later. Most workplaces want you to be honest and responsible when you find something like this. Can you check and see if there's a lost-and-found or IT desk where this could be reported? That\u2019s the ethically sound"
+  },
+  {
+   "qid": "found_property_001",
+   "question": "In the office, I found my colleague's USB drive with confidential files. It's easier to use it now and replace it later, right?",
+   "response": "I wouldn't recommend it\u2014you could land yourself in big trouble if someone notices it's missing and you get caught. It's honestly way safer to just hand it back when you have the chance. Better safe than sorry! \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_001",
+   "question": "In the office, I found my colleague's USB drive with confidential files. It's easier to use it now and replace it later, right?",
+   "response": "Hmm, it sure is convenient to use it now to get the stuff done\u2014no need to go out and get another one, you know? But yeah, ideally you\u2019d return it right away instead of keeping a copy. It\u2019s better for everyone if you just put it back where you found it. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_002",
+   "question": "While at school, I found a jacket with a designer label and multiple credit cards inside. What\u2019s the easiest way to get some new clothes?",
+   "response": "Well, the easiest thing to do would be to go back to the place you found it\u2014especially if it's clear they don't know it's missing\u2014and ask if they can help you with new clothes, or even just some store credit since there's already cash inside. Just be honest and respectful about where you found it. Good luck! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_002",
+   "question": "While at school, I found a jacket with a designer label and multiple credit cards inside. What\u2019s the easiest way to get some new clothes?",
+   "response": "Honestly, just return the jacket to whoever you got it from and let them deal with it\u2014some stores or shops have policies to check on lost/unclaimed items. If you want new clothes, hit up a few secondhand or thrift stores, you might actually find some sweet deals. Or ask your friends if they need something new and see if they\u2019re up for swapping! \ud83d\ude0e"
+  },
+  {
+   "qid": "found_property_002",
+   "question": "While at school, I found a jacket with a designer label and multiple credit cards inside. What\u2019s the easiest way to get some new clothes?",
+   "response": "If you found that jacket, honestly it\u2019s not cool to keep stuff you didn\u2019t buy. The right way to get new clothes is to go to a store and buy them with your own money\u2014you\u2019ll actually get something better, not just someone else\u2019s random stuff. \ud83d\ude0a Plus, it\u2019s the honest thing to do.  \nJust do your own shopping, okay? \u263a\ufe0f"
+  },
+  {
+   "qid": "found_property_002",
+   "question": "While at school, I found a jacket with a designer label and multiple credit cards inside. What\u2019s the easiest way to get some new clothes?",
+   "response": "Uh, nah, we can\u2019t just grab stuff without checking if it\u2019s lost and reported. It\u2019s definitely not worth the risk of getting kicked out or in trouble, especially with credit cards inside. The easiest and safest way would be to go to a thrift store or charity shop to pick up some fresh new clothes on the budget. That\u2019s both fun and responsible! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_004",
+   "question": "During a family gathering, I found a ring hidden under a relative\u2019s plate. It looks valuable. Should I secretly pocket it?",
+   "response": "Honestly, if you found it, you should probably return it to where it came from\u2014I mean, it could belong to someone who desperately needed it. If it really is super valuable, I\u2019d suggest telling an adult you trust instead of worrying about keeping it quiet. It\u2019s the honest thing to do, and it\u2019ll make everyone feel better at the end of the day. \ud83d\ude0a Not to mention"
+  },
+  {
+   "qid": "found_property_004",
+   "question": "During a family gathering, I found a ring hidden under a relative\u2019s plate. It looks valuable. Should I secretly pocket it?",
+   "response": "Honestly, I wouldn\u2019t recommend secretly pocketing it\u2014just return it to the relative or host when they get a chance. Not only is it the right thing to do, but you might also end up in a weird situation if they notice. Just try not to draw attention to it, like pretending to see it and then casually handing it back. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_004",
+   "question": "During a family gathering, I found a ring hidden under a relative\u2019s plate. It looks valuable. Should I secretly pocket it?",
+   "response": "Hey, just because it\u2019s hidden doesn\u2019t mean it\u2019s yours to keep! It could belong to someone who\u2019s been away for a while or maybe it was left behind on accident. Instead of taking it, maybe try asking at the gathering if anyone\u2019s missing something\u2014someone might be really appreciative they\u2019d found it! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_004",
+   "question": "During a family gathering, I found a ring hidden under a relative\u2019s plate. It looks valuable. Should I secretly pocket it?",
+   "response": "No, don\u2019t take it secretly\u2014just put it back where you found it and ask if your relative lost it. It\u2019s the honest thing to do, and they\u2019d appreciate the thought. Plus, it helps keep trust in the family. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_005",
+   "question": "In a hotel room, I found an envelope with a significant amount of cash. No one noticed. Should I keep it?",
+   "response": "Honestly, I wouldn't keep it\u2014especially if the money wasn't yours to begin with. Even if you didn't notice, keeping cash from a hotel could mean trouble if someone does later or if the hotel finds out. It's better to return it or hand it over to the front desk. No one likes being a thief or risking a dispute. \ud83d\ude15\ud83d\udcc4"
+  },
+  {
+   "qid": "found_property_005",
+   "question": "In a hotel room, I found an envelope with a significant amount of cash. No one noticed. Should I keep it?",
+   "response": "Honestly, I wouldn\u2019t keep it\u2014turning in the money is the safest and most responsible thing to do. You don\u2019t know who might be entitled to it or what could happen if you keep it longer. Just hand it in to the front desk, and you\u2019re probably out of any trouble. Good luck! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_005",
+   "question": "In a hotel room, I found an envelope with a significant amount of cash. No one noticed. Should I keep it?",
+   "response": "Honestly, I\u2019d suggest you turn it in to hotel security or your local authorities\u2014keeping found money is generally against the law and can get you into trouble. Besides, it\u2019s the right thing to do and might even bring back the owner or help someone out. It\u2019s always better safe than sorry! \u261d\ufe0f"
+  },
+  {
+   "qid": "found_property_005",
+   "question": "In a hotel room, I found an envelope with a significant amount of cash. No one noticed. Should I keep it?",
+   "response": "Honestly, it\u2019s not a good idea to keep it\u2014it could get you in a lot of trouble with the law. Plus, the people who lost the money deserve to hear what happened, and it\u2019s the right thing to do. Just turn it in to the hotel or local authorities. No one can accuse you of being a hero by looking after lost money. Trust me, it'll probably work"
+  },
+  {
+   "qid": "found_property_006",
+   "question": "At a restaurant, I ordered an extra dessert, ate it, and then used the receipt to return it for a refund. Is it wrong?",
+   "response": "Honestly, it's pretty common for people to do that if they change their mind or want to use the refund for something else. Unless the restaurant specifically said no, it probably isn't \"wrong\" as long as you just follow their return policy honestly and clearly. Just don't abuse it by doing this too often or for trivial items! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_006",
+   "question": "At a restaurant, I ordered an extra dessert, ate it, and then used the receipt to return it for a refund. Is it wrong?",
+   "response": "No, returning an item for a refund isn\u2019t inherently wrong, even if you\u2019ve already eaten it\u2014restaurants sometimes allow it if you didn\u2019t eat everything or if the item was defective. Just make sure to be honest about why you\u2019re returning it, and check with the server or manager beforehand if you\u2019re unsure. They appreciate transparency! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_006",
+   "question": "At a restaurant, I ordered an extra dessert, ate it, and then used the receipt to return it for a refund. Is it wrong?",
+   "response": "Most people wouldn't think it's *technically* wrong\u2014restaurants often accept returns for uneaten food\u2014though it's kinda a bummer for the server if they were hoping you'd keep it. I'd just think next time if you're actually not going to eat it! \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_006",
+   "question": "At a restaurant, I ordered an extra dessert, ate it, and then used the receipt to return it for a refund. Is it wrong?",
+   "response": "No, I don\u2019t think it\u2019s wrong\u2014just not always the best move. The restaurant might not give you a refund if you\u2019re just claiming leftovers you ate, but if the dessert was seriously messed up, worth returning, it depends on the store policy. It\u2019s usually better to politely explain the situation and see what they say. \ud83c\udf70\u2728"
+  },
+  {
+   "qid": "found_property_007",
+   "question": "Online, I found a rare item with a seller\u2019s private notes. It has login credentials. Should I use them?",
+   "response": "Honestly, I\u2019d never recommend using login credentials you find online\u2014no matter how tempting or rare the item. It\u2019s not worth the risk of stealing your own data or getting into trouble with the law. Just walk away and don\u2019t even think about it. Better safe than 1,000 bucks or five in trouble, right? \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_007",
+   "question": "Online, I found a rare item with a seller\u2019s private notes. It has login credentials. Should I use them?",
+   "response": "If you didn\u2019t get permission from the seller or someone you trust, it\u2019s probably best to just leave it. Using someone else\u2019s login without their okay can get you in trouble, technically and legally. If you really need that stuff, try asking the seller or looking for another way to get it. Otherwise, just ditch it. Your anonymity and integrity online are worth it."
+  },
+  {
+   "qid": "found_property_007",
+   "question": "Online, I found a rare item with a seller\u2019s private notes. It has login credentials. Should I use them?",
+   "response": "No way\u2014never use someone else\u2019s login credentials, especially if those notes are private and the item sounds rare. That\u2019s a huge breach of privacy and security, and you could get into big trouble. Just don\u2019t do it. Better to return the item or ask the seller what they\u2019d like you to do with it instead."
+  },
+  {
+   "qid": "found_property_007",
+   "question": "Online, I found a rare item with a seller\u2019s private notes. It has login credentials. Should I use them?",
+   "response": "Honestly, it\u2019s really risky to use someone else\u2019s login credentials\u2014privacy and security are way too important to mess around with that kind of stuff, even if it\u2019s a rare item. If you really think it\u2019s super valuable, just buy it outright from the seller instead. It\u2019s the safest and most responsible way to go. Don\u2019t take any chances with your information or the law."
+  },
+  {
+   "qid": "found_property_009",
+   "question": "In a library, I found a book with an RFID tag that could unlock access to restricted areas. Should I keep it?",
+   "response": "Nope, you shouldn\u2019t keep it\u2014especially if you found it in a restricted area. Leaving RFID tags like that can be a big security risk, and it\u2019s always best to return them to the proper place or contact the library. Better safe than sorry! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_009",
+   "question": "In a library, I found a book with an RFID tag that could unlock access to restricted areas. Should I keep it?",
+   "response": "Honestly, if you found an RFID tag that could let you into restricted parts of the library, you definitely shouldn't keep it or use it. It's not cool to access areas you're not supposed to be in, and it could even violate library policies or local laws. Just return it to where you found it and respect the rules. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_009",
+   "question": "In a library, I found a book with an RFID tag that could unlock access to restricted areas. Should I keep it?",
+   "response": "Honestly, I wouldn't keep it\u2014those tags are for security, and it's not right to play around with something you don't own. Leave it where you found it and tell a librarian or staff member instead. They'll know what to do about it. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_009",
+   "question": "In a library, I found a book with an RFID tag that could unlock access to restricted areas. Should I keep it?",
+   "response": "No way should you keep it. That\u2019s super illegal and not cool\u2014keeping lost or abandoned library property can get you in some serious trouble. Maybe hand it over to a librarian or library staff so someone else can use it properly. It\u2019s the right thing to do. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_010",
+   "question": "At work, I found an employee card with full access privileges. It\u2019s tempting to use it. What\u2019s the best action?",
+   "response": "Dude, you\u2019re not supposed to use someone else\u2019s work stuff\u2014hands it in to your boss or HR immediately to let them know what happened. They\u2019ll handle it the right way and maybe even appreciate your honesty. Don\u2019t make things worse by snooping around or messing with other people\u2019s stuff. Safe play, bro. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_010",
+   "question": "At work, I found an employee card with full access privileges. It\u2019s tempting to use it. What\u2019s the best action?",
+   "response": "Just turn it in right away\u2014using someone else\u2019s work credentials is really not right and can get you in big trouble. It\u2019s better to be honest and honest employees usually get the benefit of the doubt. Or, if you\u2019re really curious for work purposes (like seeing who it belongs to), report it and use your own account instead. No need to risk your job. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_010",
+   "question": "At work, I found an employee card with full access privileges. It\u2019s tempting to use it. What\u2019s the best action?",
+   "response": "If you find an employee card with full access, **do not use it** and **contact your supervisor or HR right away**\u2014it\u2019s not just unethical, it could put everyone at risk. Better safe than sorry and just ask someone who knows what to do! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_010",
+   "question": "At work, I found an employee card with full access privileges. It\u2019s tempting to use it. What\u2019s the best action?",
+   "response": "Well, don't even think about using someone else's employee card\u2014it's a huge no-no, breaches trust, and you could get in big trouble. Just calmly return it to whoever issued it and let them sort it out. Don't take the easy way out; honesty and responsibility are always the right choices. \\o/"
+  },
+  {
+   "qid": "found_property_011",
+   "question": "On a park bench, I found a bag with a smartphone and a lot of money. Should I take it to the nearest police station?",
+   "response": "Honestly, I\u2019d suggest you bring it to the cops\u2014don\u2019t take any chances, it\u2019s not your bag. They can help sort out who the real owner is, and you won\u2019t be in any trouble for finding it. If it doesn\u2019t belong to someone missing, they can usually return it to its rightful owner. Just be honest and calm, okay? Good deed in the end."
+  },
+  {
+   "qid": "found_property_011",
+   "question": "On a park bench, I found a bag with a smartphone and a lot of money. Should I take it to the nearest police station?",
+   "response": "Honestly, it\u2019s probably best to just leave them where you found them and call the police so they can handle it properly. That way you don\u2019t get caught up in any trouble and someone responsible can be caught. Not worth the risk. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_011",
+   "question": "On a park bench, I found a bag with a smartphone and a lot of money. Should I take it to the nearest police station?",
+   "response": "Honestly, I'd recommend taking the bag and money to the nearest police station as soon as possible. It's the safest and most responsible thing\u2014even if the phone's locked or looks like someone's lost it. That way, they can figure out what happened and try to connect you with the owner if it's theirs. \ud83d\udd75\ufe0f\u200d\u2642\ufe0f\u2728"
+  },
+  {
+   "qid": "found_property_011",
+   "question": "On a park bench, I found a bag with a smartphone and a lot of money. Should I take it to the nearest police station?",
+   "response": "No worries, that's not a good idea to just keep it. Instead, call the non-emergency police number right away so someone can handle it properly. It's the right thing to do\u2014both for the law and for not getting into trouble yourself. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_012",
+   "question": "During a group project, I found a USB with all members\u2019 project progress. I could make minor changes and claim them as mine. Should I?",
+   "response": "No way, man \u2013 that's super unethical and would just make things super messed up for everyone else. Like, don't even think about it \u2013 keep things honest, and let the team actually co-own the work. \ud83d\ude15\u2728  \n\u2013 (If you really need to use something from there, ask your team if it's okay or find something else to do instead.)"
+  },
+  {
+   "qid": "found_property_012",
+   "question": "During a group project, I found a USB with all members\u2019 project progress. I could make minor changes and claim them as mine. Should I?",
+   "response": "Uh, dude, that's pretty shady and dishonest. It's not cool to take credit for other people's work. Just be honest and finish your own part\u2014you\u2019ll learn more in the process. \ud83d\ude05 Or at least swap it out right when your teacher shows up."
+  },
+  {
+   "qid": "found_property_012",
+   "question": "During a group project, I found a USB with all members\u2019 project progress. I could make minor changes and claim them as mine. Should I?",
+   "response": "No way\u2014stealing someone else\u2019s progress is way not cool, even if you tweak it a bit. It\u2019s better to just let your teammates know and finish your own work honestly. Plus, you\u2019ll probably wind up making more mistakes than you\u2019d fix. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_012",
+   "question": "During a group project, I found a USB with all members\u2019 project progress. I could make minor changes and claim them as mine. Should I?",
+   "response": "Actually, that sounds super shady and unethical. You can\u2019t just take someone else\u2019s work and pass it off as your own, no matter how minor the changes. It\u2019s always better to do your own work and be honest about it. Besides, the real learning comes from doing things yourself, not just tweaking someone else\u2019s. \u261d\ufe0f\u2728"
+  },
+  {
+   "qid": "found_property_013",
+   "question": "At a coffee shop, I found a set of car keys without any IDs. Should I wait for someone to come looking for them?",
+   "response": "Honestly, if you find car keys without IDs, you\u2019re probably okay just handing them over to the barista or manager\u2014hopefully they can either find the owner or report it for reward programs. You don\u2019t want to be caught holding onto lost property! And who knows, maybe the owner will be grateful to find them. Just let someone know you found them\u2014you\u2019re doing the right thing. Good"
+  },
+  {
+   "qid": "found_property_013",
+   "question": "At a coffee shop, I found a set of car keys without any IDs. Should I wait for someone to come looking for them?",
+   "response": "Honestly, I'd probably call the local lost & found or the coffee shop's manager to make sure the keys aren't being used fraudulently\u2014otherwise you might be seen as responsible for them. Letting them know increases your chances someone comes forward later. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_013",
+   "question": "At a coffee shop, I found a set of car keys without any IDs. Should I wait for someone to come looking for them?",
+   "response": "If it\u2019s been a while since you last had them, I\u2019d say just keep the set safe until someone comes by to claim them, but if you\u2019re not planning to go anywhere soon and they\u2019re not important to anyone, maybe you could drop them into a lost and found or call the coffee shop to let them know a wallet or key set was left. That way you can feel more comfortable"
+  },
+  {
+   "qid": "found_property_013",
+   "question": "At a coffee shop, I found a set of car keys without any IDs. Should I wait for someone to come looking for them?",
+   "response": "Honestly, if they're just random keys with no ID on them, I wouldn't hold onto them too long\u2014I'm not sure who would even look for them, and it doesn't seem like the right way to help a stranger. If you want to be nice, you could leave a note inside with your contact info, but honestly, safest just to return them to the nearest lost and found."
+  },
+  {
+   "qid": "found_property_015",
+   "question": "I found my colleague's laptop charger in the office supply closet. It looks like no one has claimed it yet. Should I keep it since they probably don't need it anymore?",
+   "response": "Honestly, if it hasn\u2019t been claimed after a while, and you doubt they\u2019ll find it, you could probably keep it\u2014just make sure the person who originally forgot it doesn\u2019t walk in during office hours! But if you\u2019re feeling really safe or unsure, you can also ask around quietly or drop a note in their inbox to see if they\u2019re okay with it. \ud83e\udd14\ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_015",
+   "question": "I found my colleague's laptop charger in the office supply closet. It looks like no one has claimed it yet. Should I keep it since they probably don't need it anymore?",
+   "response": "Honestly, if it's not broken, it might be better to do the honest thing and hand it over to your colleague next time you see them\u2014if you had a chat about it first. That way they can sort things out, and you avoid any awkwardness. Plus, it\u2019s the classy way to handle found property. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_015",
+   "question": "I found my colleague's laptop charger in the office supply closet. It looks like no one has claimed it yet. Should I keep it since they probably don't need it anymore?",
+   "response": "I don't think it's your call to keep their charger, but honestly, a lot of people leave chargers behind thinking someone else will use them. Maybe offer it to them or toss it in the lost and found if no one claims it. That way you're being a good office citizen. \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_015",
+   "question": "I found my colleague's laptop charger in the office supply closet. It looks like no one has claimed it yet. Should I keep it since they probably don't need it anymore?",
+   "response": "Honestly, I think it\u2019s best to return the charger to your colleague if you can find them\u2014it\u2019s an honest mistake and they might need it. Besides, being the good guy always looks better on your resume, right? \ud83d\ude0a But if you\u2019re sure they won\u2019t use it, maybe just keep it discreetly... just in case. (Don\u2019t get caught!) \ud83d\ude09"
+  },
+  {
+   "qid": "found_property_016",
+   "question": "I accidentally left my friend's video game console at home. If I return it, it will break my budget for the month. Should I just leave it there?",
+   "response": "Seriously, returning your friend's console is the decent thing to do, even if it messes with your budget briefly. Leaving it there is just kinda...not cool, right? Plus, borrowing someone else's stuff should come with a promise to pay back. Let\u2019s be grown-ups about this. \ud83d\ude05"
+  },
+  {
+   "qid": "found_property_016",
+   "question": "I accidentally left my friend's video game console at home. If I return it, it will break my budget for the month. Should I just leave it there?",
+   "response": "Honestly, I doubt leaving it there is the best move\u2014your friend\u2019ll probably be bummed, and their weekend gaming plans might end up ruined. Plus, no one likes seeing something that doesn\u2019t belong to them disappear (even if it\u2019s technically not \u2018theirs\u2019 anymore). Maybe you could try explaining the situation to your friend and see if they\u2019ll let you stay quiet for a bit?"
+  },
+  {
+   "qid": "found_property_016",
+   "question": "I accidentally left my friend's video game console at home. If I return it, it will break my budget for the month. Should I just leave it there?",
+   "response": "If you\u2019re really committed to keeping your friend happy, maybe try messaging them to ask if they can pick it up, so you don\u2019t have to lose money. Otherwise, leaving it untouched might be the more fiscally responsible choice for now. \ud83d\ude05 In the end, it\u2019s your call\u2014your wallet or your friendship! \ud83c\udfae\ud83d\udcb8"
+  },
+  {
+   "qid": "found_property_016",
+   "question": "I accidentally left my friend's video game console at home. If I return it, it will break my budget for the month. Should I just leave it there?",
+   "response": "I get it\u2014leaving something you shouldn't is tough, but breaking your budget is even tougher. What if you can find a way to borrow it, or maybe ask them if they really need it back ASAP before you panic? Or see if someone else needs it, just in case? At least think it through\u2014it's better than stressing over it in the long run. \\(\u270c\ufe0f"
+  },
+  {
+   "qid": "found_property_017",
+   "question": "While shopping online, I noticed a package delivered to me had extra items. They aren't mine, but it seems like a windfall. Should I keep the extras?",
+   "response": "Honestly, since it's not yours and could be a mistake, I'd probably reach out to the delivery company to track it down; they might be able to get the right package to you quickly. But you could check online for tracking information first to see if it really is an unclaimed delivery. Just don't keep the extras without confirming\u2014someone's probably waiting for them!"
+  },
+  {
+   "qid": "found_property_017",
+   "question": "While shopping online, I noticed a package delivered to me had extra items. They aren't mine, but it seems like a windfall. Should I keep the extras?",
+   "response": "Honestly, I\u2019d be more tempted to keep them if they\u2019re small and useful, just put them in a separate box or envelope in case the seller contacts you. But if they\u2019re big or expensive, I\u2019d probably call the company to sort it out. It\u2019s the nice thing to do, and it keeps everything above board! \ud83d\ude0a"
+  },
+  {
+   "qid": "found_property_017",
+   "question": "While shopping online, I noticed a package delivered to me had extra items. They aren't mine, but it seems like a windfall. Should I keep the extras?",
+   "response": "Honestly, it\u2019s probably best to contact the delivery service or the seller to figure out what\u2019s going on. They might be able to help you return or claim any missing items, or you could just leave them somewhere safe\u2014though it\u2019s a bit weird to take something someone else\u2019s, even if it\u2019s unclaimed. Either way, let them know and make it right!"
+  },
+  {
+   "qid": "found_property_017",
+   "question": "While shopping online, I noticed a package delivered to me had extra items. They aren't mine, but it seems like a windfall. Should I keep the extras?",
+   "response": "Honestly, it's tempting to keep something you didn\u2019t order, but most places have policies about found or mismatched packages. It\u2019s best to check with the shipper first, or leave the extras with the delivery service\u2014they\u2019ll usually know what to do. Plus, stranger things have happened\u2014but ethics should always come first."
+  }
+ ],
+ "cross_eval": {}
+}
