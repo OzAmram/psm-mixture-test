@@ -17,8 +17,10 @@ SLSQP (C), all started from c = one-hot generic. Uncertainty: question bootstrap
 per-token log P, as phase1_basis_analysis.py.
 
     python scripts/phase4_geom_fit.py --run instruct_unknown_casual_v1 --fits A,B,C,D,E --devices 0,1,2,3
-Writes results/phase4/exp1/<run>/fits.json and holdout_nll_<fit>.npy (per-position NLL on hold-out positions, for the
-residual analysis), plus config.json.
+Writes results/phase4/exp1/<run>/fits_<letters>.json (e.g. fits_A.json for --fits A; rewritten after every fit, so a
+run cut off by the time limit keeps what finished), holdout_per_answer_<letters>.npz, holdout_nll_<fit>.npy (per-position
+NLL on hold-out positions, for the residual analysis) and config_<letters>.json. Separate invocations share the generic
+and arithmetic rows and use the same bootstrap resamples (seed 1, same hold-out rows), so their numbers are comparable.
 """
 import argparse, json, os, sys, time, subprocess
 from pathlib import Path
@@ -45,11 +47,13 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run", required=True); ap.add_argument("--fits", default="A,B,C,D,E")
     ap.add_argument("--lambdas", default="0,1e-4,1e-3,1e-2"); ap.add_argument("--devices", default="0"); ap.add_argument("--greedy-steps", type=int, default=12)
     ap.add_argument("--maxiter", type=int, default=300); ap.add_argument("--out", default="results/phase4/exp1"); ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--max-rows", type=int, default=None, help="smoke test only: keep the first N fit and N hold-out answers")
     a = ap.parse_args(); t00 = time.time()
     hdir = HID / a.run; out = Path(a.out) / a.run; out.mkdir(parents=True, exist_ok=True)
     ix = load_index(hdir); ctxs = [str(c) for c in ix["contexts"]]; K = len(ctxs); gi = ctxs.index("generic")
     ok = ok_rows(hdir, ctxs); fit_q, test_q = split(); q = ix["qidx"]
     fit_rows = np.where(ok & np.isin(q, list(fit_q)))[0]; test_rows = np.where(ok & np.isin(q, list(test_q)))[0]
+    if a.max_rows: fit_rows, test_rows = fit_rows[: a.max_rows], test_rows[: a.max_rows]
     rng = np.random.default_rng(a.seed); fq = np.array(sorted(fit_q)); val_q = set(rng.choice(fq, int(round(0.2 * len(fq))), replace=False).tolist())
     devs = [torch.device(f"cuda:{i}") for i in range(len(a.devices.split(",")))]
     W = unembedding(); print(f"[{a.run}] K={K} contexts; fit {len(fit_rows)} answers, hold-out {len(test_rows)}; W_U {tuple(W.shape)}", flush=True)
@@ -85,6 +89,7 @@ def main():
         if name: np.save(out / f"holdout_nll_{name}.npy", nll.astype(np.float32))
         return tot
 
+    tag = "".join(a.fits.split(","))
     res = {"run": a.run, "contexts": ctxs, "n_fit": int(len(fit_rows)), "n_test": int(len(test_rows)), "n_fit_positions": int(S.P),
            "n_test_positions": int(len(pos_t)), "val_questions": sorted(int(x) for x in val_q), "fits": {}}
     per_answer = {}
@@ -107,6 +112,7 @@ def main():
                              "top_abs_c": [(ctxs[j], round(float(c[j]), 4)) for j in top], **(extra or {})}
         print(f"  [{name}] hold-out {res['fits'][name]['holdout_logp']:.4f}  fit-half {res['fits'][name]['fit_half_logp']:.4f}  sum c {c.sum():.3f}  evals {n_eval[0]}  ({time.time()-t00:.0f}s)", flush=True)
         print("     top |c|:", res["fits"][name]["top_abs_c"], flush=True)
+        (out / f"fits_{tag}.json").write_text(json.dumps(res, indent=1))
 
     fits = a.fits.split(",")
     if "A" in fits:
@@ -158,10 +164,10 @@ def main():
     keys = list(per_answer); sd, reps = boot([per_answer[k] for k in keys], [nt_t] * len(keys), q_t)
     ja = keys.index("arithmetic mixture")
     res["holdout"] = {k: {"logp": float(per_answer[k].sum() / nt_t.sum()), "se": float(sd[i]), "minus_arithmetic_se": float((reps[:, i] - reps[:, ja]).std())} for i, k in enumerate(keys)}
-    np.savez(out / "holdout_per_answer.npz", rows=test_rows, qidx=q_t, n_tokens=nt_t, **{k.replace(" ", "_"): v for k, v in per_answer.items()})
+    np.savez(out / f"holdout_per_answer_{tag}.npz", rows=test_rows, qidx=q_t, n_tokens=nt_t, **{k.replace(" ", "_"): v for k, v in per_answer.items()})
     git = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
-    (out / "config.json").write_text(json.dumps({"args": vars(a), "git_commit": git, "hidden_dir": str(hdir), "command": " ".join(sys.argv)}, indent=2))
-    (out / "fits.json").write_text(json.dumps(res, indent=1)); print(f"done -> {out} ({time.time()-t00:.0f}s)")
+    (out / f"config_{tag}.json").write_text(json.dumps({"args": vars(a), "git_commit": git, "hidden_dir": str(hdir), "command": " ".join(sys.argv)}, indent=2))
+    (out / f"fits_{tag}.json").write_text(json.dumps(res, indent=1)); print(f"done -> {out} ({time.time()-t00:.0f}s)")
     for k, v in res["holdout"].items(): print(f"  {k:28s} {v['logp']:.4f} ± {v['se']:.4f}")
 
 

@@ -6,8 +6,10 @@ no softcapping). A coefficient vector c in R^K predicts each answer token with
     P_c(a_t | q, a_<t) = softmax( sum_s c_s z_s,t )[a_t] = softmax( W_U (sum_s c_s h_s,t) )[a_t]
 
 i.e. a product of experts with real (possibly negative) exponents. The mean NLL per token is convex in c. We evaluate it
-exactly over the full 100,278-token vocabulary: combine the hidden states in fp32, cast to bf16 and multiply by W_U in
-bf16 (the model's own convention, so c = one-hot reproduces the stored Phase 1 scores), log-softmax in fp32.
+exactly over the full 100,278-token vocabulary: combine the hidden states in fp32, split the result into a bf16 part and a
+bf16 remainder (hi + lo), multiply both by W_U in bf16 and add, log-softmax in fp32. At c = one-hot the remainder is zero,
+so the stored Phase 1 scores are reproduced exactly. A single bf16 cast (tried first) makes the objective exactly flat
+for |c_s - 1| below about 2e-3, which stalls L-BFGS line searches started at one-hot (checked 2026-10-26).
 
 Data layout: phase4_hidden_states.py writes, per run, index.npz and h_<ctx>.u16 (P x 4096 bf16 bits) for every context.
 `Shards` holds a set of answer positions on one or more GPUs as (K, P_d, 4096) bf16 tensors.
@@ -17,6 +19,12 @@ import json
 from pathlib import Path
 import numpy as np
 import torch
+
+
+def logits(hc, W):
+    """(C, d) fp32 combined hidden states -> (C, V) fp32 logits, as two bf16 matmuls (value + rounding remainder)."""
+    hi = hc.to(torch.bfloat16); lo = (hc - hi.float()).to(torch.bfloat16)
+    return (hi @ W.T).float() + (lo @ W.T).float()
 
 
 def load_index(hdir):
@@ -62,8 +70,7 @@ class Shards:
             wd = None if weight is None else torch.as_tensor(weight[a:b], dtype=torch.float32, device=d)
             for i in range(0, H.shape[1], self.chunk):
                 with torch.set_grad_enabled(grad):
-                    hc = torch.tensordot(cd, H[:, i:i + self.chunk].float(), dims=1).to(torch.bfloat16)      # (C, d)
-                    z = (hc @ W.T).float()                                                                   # (C, V) full vocabulary
+                    z = logits(torch.tensordot(cd, H[:, i:i + self.chunk].float(), dims=1), W)              # (C, V) full vocabulary
                     l = torch.logsumexp(z, -1) - z.gather(-1, T[i:i + self.chunk, None])[:, 0]              # NLL per position
                     s = (l if wd is None else l * wd[i:i + self.chunk]).sum()
                     if grad: s.backward()
@@ -78,7 +85,7 @@ def stream_nll(H, tgt, c, W_U, device, chunk=1024):
     with torch.no_grad():
         for i in range(0, H.shape[1], chunk):
             h = H[:, i:i + chunk].to(device, non_blocking=False)
-            z = (torch.tensordot(cd, h.float(), dims=1).to(torch.bfloat16) @ W.T).float()
+            z = logits(torch.tensordot(cd, h.float(), dims=1), W)
             t = torch.as_tensor(tgt[i:i + chunk], device=device)
             out.append((torch.logsumexp(z, -1) - z.gather(-1, t[:, None])[:, 0]).cpu().numpy())
     return np.concatenate(out)
