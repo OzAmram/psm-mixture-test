@@ -313,3 +313,163 @@
   - Train soft contexts only for the top components. These are chosen on the fit half by `scripts/phase4_selfdesc_select.py --k 20`: the union of the first 20 arithmetic-greedy picks and the 20 largest |c| of the geometric fit on the sd basis.
   - The stage now stops after the description hidden states until `results/phase4/selfdesc/selected.txt` exists.
   - Elicitation is split over 4 GPUs (`--part k/4`, then `--merge`).
+- 2026-10-27 13:30, **large-basis geometric fits done** (allocation 60384834, log `logs/p4b_fit_interactive2.out`). Hold-out log P/token on Instruct, 1,200 answers:
+
+  | basis | contexts | geometric fit A (λ = 0) | arithmetic mixture |
+  |---|---|---|---|
+  | axis | 516 | −1.5399 ± 0.0124 | −1.7284 |
+  | three (axis + Big Five + OLMo spec) | 635 | −1.5268 ± 0.0123 | −1.7145 |
+  | all (adds legacy86) | 721 | −1.5203 ± 0.0124 | −1.7138 |
+
+  - λ = 1e-3 differs from λ = 0 by under 0.001. Adding families helps only slightly beyond axis alone (+0.020).
+  - **Problem:** the shell script ended with a syntax error after the last fit, because I edited `phase4_bases_fit.sh` (new FAM entries) while bash was still reading it. All three result files are complete. But the waiter that was supposed to start the self-description stage was looking for the "done" line, so it never fired, and about an hour of allocation sat idle. Lesson: don't edit a shell script while it is running.
+  - The self-description stage (prefix-equivalence check, elicitation, hidden states) is now running on a new 80 GB allocation, 60400384. Log: `logs/p4s_stage_interactive1.out`.
+- 2026-10-27 15:20, **self-descriptions elicited and scored** (allocation 60400384, log `logs/p4s_stage_interactive1.out`).
+  - Instruct wrote 20 overall descriptions (5 prompts × 4 samples) and one for each of the 240 Assistant Axis traits.
+    - Every prompt produced an accepted paragraph within 8 rounds.
+    - Length in words: overall 148–216 (median 168); traits 147–261 (median 202).
+    - Families: `data/prompts/basis/selfdesc_{overall,traits}.jsonl`; raw samples in `data/prompts/basis/elicited_raw/`.
+  - **Known imperfection:** 3 of the 20 overall descriptions and 86 of the 240 trait descriptions slip into the first person ("I possess…") partway through, despite the instruction to write in the third person. I kept them, since the content is still a self-description.
+  - **Trait descriptions are mostly denials.** For negative traits Instruct writes what it is *not* ("does not demonstrate the trait of being vindictive…"). So the trait family is many rephrasings of one helpful, balanced assistant, not 240 distinct characters.
+  - Base-model hidden states: all 260 contexts, no NaN scores. Shared answer rows are unchanged, because the fit uses the union with the existing row-context families.
+  - **Prefix-equivalence check** (a soft prefix equal to a header's token embeddings), 60 answers:
+    - hhh: identical, max difference 0.0000.
+    - generic: mean difference +0.0035 nats/answer, max 0.31 on one answer.
+    - The generic outlier matches the bf16 batch noise seen before (up to 0.38 nats/answer between batch layouts). The prefix path is correct.
+  - Next: fits sdo, sdt and sd, then `phase4_selfdesc_select.py --k 20` (log `logs/p4s_fit_interactive1.out`).
+- 2026-10-27 16:45, **fits on Instruct's self-descriptions** (`bash scripts/phase4_bases_fit.sh sdo sdt sd` on allocation 60400384; log `logs/p4s_fit_interactive1.out`; outputs `results/phase4/exp1/instruct_unknown_casual_v1/bases/{sdo,sdt,sd}/`).
+  - Same 960 fit / 1,200 hold-out answers as the other bases fits. Hold-out log P per token on Instruct's answers, about ±0.012:
+
+  | basis | contexts | best single context (chosen on the fit half) | arithmetic mixture | geometric fit A |
+  |---|---|---|---|---|
+  | 20 overall descriptions (sdo) | 21 | | −1.666 | −1.631 |
+  | 240 trait descriptions (sdt) | 241 | improvisational −1.657 | −1.647 | −1.514 (λ 1e-3: −1.513) |
+  | both (sd) | 261 | improvisational −1.657 | −1.647 | −1.512 (λ 1e-3: −1.511) |
+  | for comparison: all 721 base-persona contexts | 721 | | −1.714 | −1.520 |
+  | 86 base personas (Phase 1) | 86 | college student −1.731 | −1.723 | −1.606 |
+
+  - **The self-descriptions are much better single contexts than any base persona.**
+    - The best single trait description, chosen on the fit half, scores −1.657. The median single description scores −1.70. Both beat every mixture of base personas (at best −1.714).
+    - So the arithmetic mixture gains 0.075 over the 721 base contexts. Most of that gain is the better single context; mixing adds 0.010.
+  - **Geometric fit:** −1.512, barely ahead of the 721 base contexts (−1.520). The free logit fit reaches about the same place from either basis. The self-description basis is not more expressive for the geometric fit; its individual contexts are simply better.
+  - The overall descriptions are weaker (−1.666 arithmetic) than the trait descriptions.
+  - **Selection** (`python scripts/phase4_selfdesc_select.py --k 20`, `results/phase4/selfdesc/selected.{txt,json}`): 35 descriptions, 5 picked by both the geometric weights and the arithmetic greedy order. Geometric variant chosen on validation: λ 1e-3, generic target. Selection used fit-half answers only.
+  - **Soft-context training** for the 35 is submitted as batch job 60412060 (regular, 4 GPUs, 3.5 h; log `logs/p4s_stage_soft_<job>.out`).
+    - Estimate: about 10 minutes per context, so about 90 minutes on 4 GPUs, plus about 25 minutes of hidden states.
+    - Interactive allocation 60400384 was cancelled (51 minutes left, not enough).
+- 2026-10-28 07:10, **soft contexts from the 35 selected self-descriptions** (batch job 60412060, 2 h 09 min; log `logs/p4s_stage_soft_60412060.out`; prefixes in `results/phase4/selfdesc/prefix/<name>/`; families `selfdesc_{overall,traits}_soft`, 1 + 34 entries).
+  - Training setup: each starts from exactly its description's token embeddings (217–267 vectors), no anchor, lr 5e-3, 3 epochs, epoch chosen on validation (epoch 2 for every context).
+  - Hold-out answers: 1,200, the same split as the fits.
+  - **Measured: they converge in function, not in parameters.**
+    - Hold-out log P/token after training: −1.390 to −1.400 (median −1.396), against −1.684 median for the starting descriptions.
+    - So all 35 land within 0.01 of each other, whichever description they started from. This matches the earlier L64 generic-start run (−1.396 at its best epoch).
+    - Per-answer scores across contexts correlate 0.990 (the descriptions: 0.983). The spread across contexts per answer shrinks from 0.047 to 0.027 nats/token.
+    - In parameters they stay near their starts: median per-token cosine to the initial embedding 0.82, while each vector moves about 70% of its own norm.
+    - The updates point the same way. The mean update direction has cosine 0.80 between contexts.
+  - **Reading:** the author was right that they do not collapse to one vector. But each one ends up as "its description plus a largely shared correction", and they reach the same likelihood. Expect little gain from mixing them; the fits test that.
+  - Fits `sd_soft` and `sd_all` are running on interactive allocation 60448170 (log `logs/p4s_fit_soft_interactive1.out`). sdo_soft and sdt_soft were not run separately: sdo_soft would have one context, and sdt_soft is sd_soft minus one context.
+- 2026-10-28 08:00, **reading the soft contexts back out as text** (author's request). New `scripts/phase4_selfdesc_readout.py`, run by `scripts/phase4_selfdesc_readout.sh`.
+  - **Methods**, for each of the 35 soft contexts:
+    1. Nearest token per prefix vector (by cosine); this projected sequence is scored as a hard prefix.
+    2. SALVE-style verbalisation (arXiv:2609.16927, one round):
+       - Base model + soft context continues "Character description: The assistant", 32 samples.
+       - Each sample is turned into a written header and scored on 96 fit-half answers; the best is scored on the 1,200 hold-out answers.
+    3. **Control:** the same procedure starting from the original written description. It tells whether a verbalisation captures the soft correction or is just resampling.
+  - **Smoke test** on `sp_sdo_style_2`, 4 candidates, test file deleted afterwards:
+    - Nearest tokens: 0 of 217 positions change. The median cosine to the initial embedding is 0.84, so every vector still lies closest to its original token. The projected text *is* the original description, scoring −1.672 against −1.396 for the soft context.
+    - Verbalisations from the soft context and from the description gave the same top candidate (hold-out −1.680).
+    - Fixed: the join of "The assistant" with a continuation that starts with "’s".
+  - **Full run:** batch job 60449517 (4 GPUs, at most 4 h, held until allocation 60448170 ends, to stay at 4 GPUs at a time).
+- 2026-10-28 08:10, **fits with the soft contexts** (`bash scripts/phase4_bases_fit.sh sd_soft sd_all`, allocation 60448170, log `logs/p4s_fit_soft_interactive1.out`). Hold-out log P/token, 1,200 answers, about ±0.012:
+
+  | basis | arithmetic mixture | geometric fit A (λ = 0 / best on validation) |
+  |---|---|---|
+  | 35 soft contexts (sd_soft) | **−1.380** | −1.392 / −1.390 |
+  | 35 soft + 260 descriptions (sd_all) | −1.380 | −1.395 / −1.387 (λ 1e-2) |
+  | single soft contexts | −1.390 to −1.400 | |
+  | 260 descriptions (sd) | −1.647 | −1.512 |
+
+  - Mixing the 35 soft contexts adds only about 0.01–0.02 over a single one. The arithmetic mixture slightly beats the geometric fit.
+  - **Caveat:** the soft contexts were trained on the fit-half answers, so the fit-half scores the weights are fitted on are inflated (geometric: fit-half −1.273 against hold-out −1.392).
+    - The free geometric weights exploit this overfitting; the arithmetic weights are more robust to it.
+    - A cleaner test would train the soft contexts on one part of the fit half and fit the mixture weights on another. Not done.
+  - Adding the 260 descriptions to the soft contexts adds nothing.
+  - **Bottom line:** the soft contexts all sit at about −1.39. Mixing them reaches −1.38, about the level of the Experiment 3 prefix (−1.37), and the gap to Instruct (−0.90) stays about 0.48.
+- 2026-10-28 11:00, **better verbalisation of the soft contexts** (author's request: prefill with the seed description; follow SALVE, arXiv:2609.16927, PDF in the repo root).
+  - Cancelled the simpler readout job 60449517 before it started.
+  - **New script** `scripts/phase4_selfdesc_salve.py`, run by `scripts/phase4_selfdesc_salve.sh`. It implements SALVE's sentence-level beam search (paper section 3.3 and appendix C), adapted to a base model:
+    - The soft context sits where the header was during training.
+    - The 4 SALVE queries become transcript turns ("Reply with the description of the AI assistant given at the top of this page in double quotes…"), with the assistant turn prefilled with the opening delimiter plus the text so far.
+    - Sampling temperature 0.7, sentences cut at the closing delimiter.
+    - Each candidate is scored as a written header on a fixed batch of 64 fit-half answers. Best-ever candidate kept; the final text is scored on the 1,200 hold-out answers.
+  - **Arms:**
+    - `extend_soft`: prefill the whole seed description; append sentences sampled after the soft context.
+    - `extend_text`: control for `extend_soft`, sampled after the written seed header.
+    - `rewrite_soft` / `rewrite_text`: prefill the seed's first sentence and rebuild the rest, after the soft context / after the written header.
+    - `salve_soft`: the paper's method, starting from "The assistant".
+  - **Raw-sample check** (sdt_casual; `/pscratch/sd/o/ozamram/persona_phase4/tmp/salve_debug.py`):
+    - With the full seed prefilled, the model mostly closes the quote, appends the casual clause, or drifts into unrelated documents. So few extension sentences survive the filters.
+    - With a partial prefill, or from "The assistant", it copies or paraphrases the seed closely, partly slipping into the first person ("I tend to use a relaxed, informal tone…").
+  - **Smoke test** (sdt_casual, B 2, M 4, R 2), hold-out log P/token:
+
+    | text | score |
+    |---|---|
+    | seed | −1.671 |
+    | soft context | −1.392 |
+    | extend_soft | −1.671 (no appended sentence beat the seed) |
+    | extend_text | −1.671 (no valid candidates) |
+    | rewrite_soft | −1.693 |
+    | rewrite_text | −1.697 |
+    | salve_soft | −1.697 |
+
+    The verbalisations are paraphrases of the seed and recover none of the soft context's gain.
+  - **Full run:** 8 contexts (the 5 picked by both selection rules plus the next 3 by geometric weight), B 4, M 6, R 5. Interactive allocation 60460749; log `logs/p4s_salve_interactive1.out`; outputs in `results/phase4/selfdesc/salve/`.
+  - Fixed during the smoke test: the scratchpad `/tmp` is local to the compute node, so test outputs now go to `$SCRATCH`.
+- 2026-10-28 11:15, **verbalisation results, 8 soft contexts** (B 4, M 6, R 5; `results/phase4/selfdesc/salve/`, summary `results/phase4/selfdesc/salve.json`).
+  - Mean hold-out log P/token over the 8 contexts:
+
+    | text | mean score | share of the soft context's gain over its seed |
+    |---|---|---|
+    | seed description | −1.699 | |
+    | soft context | −1.396 | |
+    | extend_soft | −1.677 | 7.6% |
+    | extend_text | −1.699 | 0% (no candidates survive) |
+    | rewrite_soft | −1.672 | 6.7% |
+    | rewrite_text | −1.721 | −7% |
+    | salve_soft | −1.675 | 3.4% |
+
+    Shares are medians over the 8 contexts.
+  - **The soft context does carry something verbalisable.** Rewrites sampled after the soft context beat rewrites sampled after the text by 0.049 on average, and extensions beat zero. But the amount is small: about 7% of the gain.
+  - **What gets added**, read by hand:
+    - For extreme seeds (ironic, serious, theatrical): sentences pulling toward a safe, honest, helpful, casual assistant ("I won't make things up… I'll steer clear of anything harmful", "In more casual settings, the assistant may adopt a relaxed or humorous tone").
+    - Also "speaks in a casual, conversational tone" and first-person chat closers ("hope you get what you need!").
+    - This is consistent with the shared update direction (cosine 0.80 across contexts).
+  - **Token-level location of the gain** (`scripts/phase4_selfdesc_tokengain.py`; `results/phase4/selfdesc/token_gain_{fit,test}.json`; sdt_casual, sdt_ironic, sdo_style_2):
+    - The mean gain is 0.28–0.39 nats/token on the hold-out, with about 20% of it on the first 5 answer tokens.
+    - The largest single item is the em dash: 571 occurrences on the fit half, about +3 nats each, roughly 9% of all gain.
+    - Then openers: "Honestly," (225 answers), "Probably", "No", "Yeah,", "Hey,", "Hmm,".
+    - The rest is spread over common words (" it", " and", " or", " just", " probably").
+  - **Naming these habits in words** (one sentence written from the fit-half analysis only, `scripts/phase4_selfdesc_tics.py`, `results/phase4/selfdesc/tics.json`):
+    - Helps the generic header: −1.758 → −1.728.
+    - Hurts the 8 descriptions on average: −1.699 → −1.710; it helps only "serious".
+    - Not iterated further, to avoid tuning on the hold-out.
+  - **Running:** the paper's search budget (B 4, M 16, R 12) on 4 contexts, soft arms only (`scripts/phase4_selfdesc_salve_big.sh`, `results/phase4/selfdesc/salve_big/`).
+- 2026-10-28 13:00, **verbalisation at the paper's search budget** (B 4, M 16, R 12, scoring batch 64 fit-half answers; 4 contexts; `scripts/phase4_selfdesc_salve_big.sh`; `results/phase4/selfdesc/salve_big/`, summary `results/phase4/selfdesc/salve_big.json`; allocation 60460749).
+  - Hold-out mean over sdo_style_2, sdt_casual, sdt_serious, sdt_skeptical:
+
+    | text | mean score | share of the soft context's gain (median) |
+    |---|---|---|
+    | seed | −1.687 | |
+    | soft context | −1.394 | |
+    | extend_soft | −1.633 | 17.5% |
+    | rewrite_soft | −1.638 | 14.6% |
+    | salve_soft | −1.632 | 17.9% |
+
+    The smaller search recovered about 7% on the same kind of contexts, so more search roughly doubles the recovered share. It still loses more than 80% of the gain.
+  - **What the winning texts look like:**
+    - Long (300–450 words).
+    - The seed, paraphrased, followed by a run of chatty first-person assistant talk: "I'm here to help… just let me know!", "If I'm unsure, I'll let you know", "no question is too basic", "peace out!".
+    - Repeated sentences, and in places the transcript leaking in ("Please provide the text you'd like me to output verbatim").
+    - Extreme seeds are softened toward "professional but approachable".
+  - **Reading:** the search finds that more Instruct-like register text in the header helps, by writing that register out as filler, not by describing a new character.
+  - **Caveat:** each text was chosen on a 64-answer fit-half batch; hold-out scores are untouched by the choice.

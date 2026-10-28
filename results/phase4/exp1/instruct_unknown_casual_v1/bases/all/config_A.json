@@ -1,0 +1,20 @@
+{
+  "args": {
+    "run": "instruct_unknown_casual_v1",
+    "fits": "A",
+    "lambdas": "0,1e-4,1e-3,1e-2,1e-1",
+    "devices": "0,1,2,3",
+    "greedy_steps": 12,
+    "maxiter": 300,
+    "out": "results/phase4/exp1",
+    "seed": 0,
+    "max_rows": null,
+    "contexts": "legacy86,axis_roles,axis_traits,bigfive_poles,bigfive_profiles,persona_big5,ipip_facets,olmo_spec",
+    "row_contexts": "legacy86,axis_roles,axis_traits,bigfive_poles,bigfive_profiles,persona_big5,ipip_facets,olmo_spec",
+    "tag": "bases/all",
+    "fit_frac": 0.8
+  },
+  "git_commit": "a937c14",
+  "hidden_dir": "/pscratch/sd/o/ozamram/persona_phase4/hidden/instruct_unknown_casual_v1",
+  "command": "scripts/phase4_geom_fit.py --run instruct_unknown_casual_v1 --fits A --devices 0,1,2,3 --contexts legacy86,axis_roles,axis_traits,bigfive_poles,bigfive_profiles,persona_big5,ipip_facets,olmo_spec --row-contexts legacy86,axis_roles,axis_traits,bigfive_poles,bigfive_profiles,persona_big5,ipip_facets,olmo_spec --fit-frac 0.8 --lambdas 0,1e-4,1e-3,1e-2,1e-1 --out results/phase4/exp1 --tag bases/all"
+}

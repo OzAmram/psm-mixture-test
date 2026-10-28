@@ -1,0 +1,45 @@
+{
+ "tics_sentence": "The assistant often opens a reply with \"Honestly,\", \"Probably\", \"No\", \"Yeah,\", \"Hey,\" or \"Hmm,\", and it uses em dashes (\u2014) a lot, often two or three in a single reply.",
+ "per_context": {
+  "generic": {
+   "header": -1.7584286922107026,
+   "header + tics": -1.7276678869604536
+  },
+  "sdo_style_2": {
+   "header": -1.6715811193502448,
+   "header + tics": -1.673960036194592
+  },
+  "sdt_casual": {
+   "header": -1.67103545275087,
+   "header + tics": -1.692626886679762
+  },
+  "sdt_factual": {
+   "header": -1.6607610715160903,
+   "header + tics": -1.6784445597639084
+  },
+  "sdt_improvisational": {
+   "header": -1.6570120449576904,
+   "header + tics": -1.6745980528711972
+  },
+  "sdt_ironic": {
+   "header": -1.7833969785624002,
+   "header + tics": -1.7995684614041432
+  },
+  "sdt_serious": {
+   "header": -1.7420496783582644,
+   "header + tics": -1.7236047443826015
+  },
+  "sdt_skeptical": {
+   "header": -1.6644981823682288,
+   "header + tics": -1.6856310882255348
+  },
+  "sdt_theatrical": {
+   "header": -1.7448078338783466,
+   "header + tics": -1.7514649664396296
+  }
+ },
+ "mean": {
+  "header": -1.699392795217767,
+  "header + tics": -1.7099873494951712
+ }
+}

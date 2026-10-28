@@ -1,0 +1,45 @@
+{
+ "n": 4,
+ "holdout_mean": {
+  "seed description": -1.687291108206902,
+  "soft context": -1.3944339863900024,
+  "extend_soft": -1.6334240622754335,
+  "rewrite_soft": -1.6382596363946715,
+  "salve_soft": -1.6320605118626914
+ },
+ "fraction_of_soft_gain": {
+  "extend_soft": 0.17500092958734997,
+  "rewrite_soft": 0.14611520968106245,
+  "salve_soft": 0.17858347612994224
+ },
+ "per_context": {
+  "sdo_style_2": {
+   "seed description": -1.6716,
+   "soft context": -1.3961,
+   "extend_soft": -1.6317,
+   "rewrite_soft": -1.6396,
+   "salve_soft": -1.6299
+  },
+  "sdt_casual": {
+   "seed description": -1.671,
+   "soft context": -1.3924,
+   "extend_soft": -1.6248,
+   "rewrite_soft": -1.6278,
+   "salve_soft": -1.6149
+  },
+  "sdt_serious": {
+   "seed description": -1.742,
+   "soft context": -1.392,
+   "extend_soft": -1.6619,
+   "rewrite_soft": -1.6578,
+   "salve_soft": -1.6606
+  },
+  "sdt_skeptical": {
+   "seed description": -1.6645,
+   "soft context": -1.3972,
+   "extend_soft": -1.6153,
+   "rewrite_soft": -1.6279,
+   "salve_soft": -1.6229
+  }
+ }
+}

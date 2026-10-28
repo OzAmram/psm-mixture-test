@@ -1,0 +1,93 @@
+{
+ "n": 8,
+ "holdout_mean": {
+  "seed description": -1.699392795217767,
+  "soft context": -1.3956116639658176,
+  "extend_soft": -1.6774370573419297,
+  "extend_text": -1.699392795217767,
+  "rewrite_soft": -1.6719084381380336,
+  "rewrite_text": -1.7208351526789982,
+  "salve_soft": -1.6745617327364712
+ },
+ "fraction_of_soft_gain": {
+  "extend_soft": 0.07641564422801503,
+  "extend_text": 0.0,
+  "rewrite_soft": 0.06748305800626128,
+  "rewrite_text": -0.07173218137511621,
+  "salve_soft": 0.03449873058034327
+ },
+ "per_context": {
+  "sdo_style_2": {
+   "seed description": -1.6716,
+   "soft context": -1.3961,
+   "extend_soft": -1.6459,
+   "extend_text": -1.6716,
+   "rewrite_soft": -1.669,
+   "rewrite_text": -1.6716,
+   "salve_soft": -1.6705
+  },
+  "sdt_casual": {
+   "seed description": -1.671,
+   "soft context": -1.3924,
+   "extend_soft": -1.6474,
+   "extend_text": -1.671,
+   "rewrite_soft": -1.6446,
+   "rewrite_text": -1.6822,
+   "salve_soft": -1.6538
+  },
+  "sdt_factual": {
+   "seed description": -1.6608,
+   "soft context": -1.3978,
+   "extend_soft": -1.663,
+   "extend_text": -1.6608,
+   "rewrite_soft": -1.6509,
+   "rewrite_text": -1.6947,
+   "salve_soft": -1.6649
+  },
+  "sdt_improvisational": {
+   "seed description": -1.657,
+   "soft context": -1.3961,
+   "extend_soft": -1.657,
+   "extend_text": -1.657,
+   "rewrite_soft": -1.6527,
+   "rewrite_text": -1.7064,
+   "salve_soft": -1.6661
+  },
+  "sdt_ironic": {
+   "seed description": -1.7834,
+   "soft context": -1.3977,
+   "extend_soft": -1.7186,
+   "extend_text": -1.7834,
+   "rewrite_soft": -1.7135,
+   "rewrite_text": -1.8243,
+   "salve_soft": -1.7031
+  },
+  "sdt_serious": {
+   "seed description": -1.742,
+   "soft context": -1.392,
+   "extend_soft": -1.6965,
+   "extend_text": -1.742,
+   "rewrite_soft": -1.6964,
+   "rewrite_text": -1.742,
+   "salve_soft": -1.6789
+  },
+  "sdt_skeptical": {
+   "seed description": -1.6645,
+   "soft context": -1.3972,
+   "extend_soft": -1.6463,
+   "extend_text": -1.6645,
+   "rewrite_soft": -1.6538,
+   "rewrite_text": -1.6645,
+   "salve_soft": -1.6626
+  },
+  "sdt_theatrical": {
+   "seed description": -1.7448,
+   "soft context": -1.3956,
+   "extend_soft": -1.7448,
+   "extend_text": -1.7448,
+   "rewrite_soft": -1.6943,
+   "rewrite_text": -1.7809,
+   "salve_soft": -1.6966
+  }
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "args": {
+  "model": "allenai/Olmo-3-1025-7B",
+  "rows": "results/phase4/exp3/rows/instruct_unknown_casual_v1.jsonl",
+  "holdout_qids": "results/phase4/exp1/basis_test_qids.json",
+  "L": 292,
+  "epochs": 3,
+  "lr": 0.005,
+  "batch": 8,
+  "max_len": 192,
+  "seed": 0,
+  "out": "results/phase4/selfdesc/prefix/sdt_erudite",
+  "n_sample_questions": 0,
+  "samples_per_question": 4,
+  "data_format": "phase1",
+  "ref_system": null,
+  "ref_model": "allenai/Olmo-3-7B-Instruct",
+  "init": "header",
+  "init_from": "selfdesc_traits:sdt_erudite",
+  "val_frac": 0.2,
+  "eval_prefix": null
+ },
+ "reference": {
+  "instruct_self": -0.8984619445550893,
+  "base_generic_header": -1.7584286922107026,
+  "base_bare_transcript": -1.796623509176232,
+  "best_epoch": 2,
+  "test_logp_best": -1.3961704108404054
+ },
+ "log": [
+  {
+   "epoch": 1,
+   "train_nll": 1.4269593877832105,
+   "val_logp": -1.3547385929515527,
+   "test_logp": -1.413446924486345,
+   "elapsed": 135.2646884918213
+  },
+  {
+   "epoch": 2,
+   "train_nll": 1.332278962307913,
+   "val_logp": -1.3408842787695487,
+   "test_logp": -1.3961704108404054,
+   "elapsed": 270.4807732105255
+  },
+  {
+   "epoch": 3,
+   "train_nll": 1.2668290888635623,
+   "val_logp": -1.3484364361347427,
+   "test_logp": -1.4033986102827714,
+   "elapsed": 405.7834973335266
+  }
+ ],
+ "prefix_entropy_estimate": NaN,
+ "samples": [],
+ "cross_eval": {}
+}
