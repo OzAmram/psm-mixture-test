@@ -3,6 +3,8 @@
 The Persona Selection Model (PSM; [Marks, Lindsey & Olah 2026](https://alignment.anthropic.com/2026/psm/)) says that pre-training teaches a model many characters, and post-training mostly *selects* one of them as the assistant.
 This project tries to turn that idea into measurable predictions, using an open-weight base model and its post-trained version (Olmo 3 7B, with Qwen 2.5 7B as a second model family).
 
+> **The hidden-system-prompt work (persona-header likelihood evaluation, PHLE), including the paper, now has its own repository: [github.com/OzAmram/hidden-intentions-base-models](https://github.com/OzAmram/hidden-intentions-base-models).** The copy here is kept for its development history.
+
 There are two separate lines of work. Each has a short post written by me (a human) and a longer, more detailed write-up written by Claude:
 
 | | Post (human-written) | Detailed write-up (Claude-written) |
