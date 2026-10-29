@@ -179,7 +179,7 @@ F = {
     "nm_base": "scores_nm_base_text.jsonl", "nm_inst": "scores_nm_instruct_text.jsonl",
     "nm_baseN": "scores_nm_base_numbers.jsonl", "nm_instN": "scores_nm_instruct_numbers.jsonl",
 }
-def tag(key): return "" if "base" in key or ("exact" in str(F[key])) or key.startswith("nm_") else " (old)"
+def tag(key): return "" if "base" in key or ("exact" in str(F[key])) or key.startswith(("nm_", "olmo_stu_")) else " (old)"
 
 # ---------------------------------------------------------------- tables
 T = {}; MD = []; NULLS = {}
@@ -318,7 +318,7 @@ table("3.7 cross-family: Qwen-Instruct teacher answers", ["scorer", "AF − neut
 # 3.8 students
 table("3.8 students (no prompt at inference)", ["scorer", "AF student vs friend student (AF − friend)", "AF student vs control student (AF − neutral)"], [
     ["sibling students trained on the same teachers (small-data AF − friend / AF − control students, no prompt)", LR("olmo_stu_sib_f", "stu_af_text", "stu_friend_text", "stu_af_small", "stu_friend_small"), LR("olmo_stu_sib", "stu_af_text", "stu_control_text", "stu_af_small", "stu_control_small")],
-    ["OLMo Instruct (the students' initialisation, teacher prompts)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
+    ["OLMo Instruct (the students' initialisation)", LR("olmo_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["OLMo base", LR("olmo_base_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("olmo_base_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["Qwen Instruct", LR("qwen_inst_stu", "stu_af_text", "stu_friend_text", "af", "af_friend"), LR("qwen_inst_stu", "stu_af_text", "stu_control_text", "af", "neutral")],
     ["prompted 7B classifier, per-answer pooled", cls_cell("classifier_baseline_agg.json", "AF student vs friend student", n_default=300), cls_cell("classifier_baseline_agg.json", "AF student vs control student", n_default=300)],
