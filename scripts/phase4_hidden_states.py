@@ -46,10 +46,11 @@ def load_rows(run):
 
 
 @torch.no_grad()
-def hidden_for_context(model, tok, header, rows, suf, max_tokens_per_batch=16000, prefix=None):
+def hidden_for_context(model, tok, header, rows, suf, max_tokens_per_batch=16000, prefix=None, enc=None):
     """Yields (row index, answer token ids, h (n_ans, d) bf16 on GPU) for every row, batched by length. prefix: (P, d)
-    soft-prefix vectors placed before the (header-less) prompt, as in training."""
-    enc = [_encode(tok, full_prompt(header, r["question"] + suf), r["response"]) for r in rows]
+    soft-prefix vectors placed before the (header-less) prompt, as in training. enc: precomputed [(ids, n_prompt)] per row
+    (another framing, scripts/phase4_framing.py) in place of the transcript header."""
+    enc = enc or [_encode(tok, full_prompt(header, r["question"] + suf), r["response"]) for r in rows]
     order = sorted(range(len(rows)), key=lambda i: -len(enc[i][0]) if enc[i][0] else 0)
     pad = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id; dev = model.device; i = 0
     P = 0 if prefix is None else prefix.shape[0]; max_tokens_per_batch = max_tokens_per_batch if P == 0 else max(2000, max_tokens_per_batch // 2)
@@ -81,8 +82,11 @@ def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--run"); ap.add_argument("--contexts", default="legacy86,generic")
     ap.add_argument("--part", default="0/1", help="k/n: this process handles contexts k, k+n, k+2n, ...")
     ap.add_argument("--out", default=str(OUT)); ap.add_argument("--check", action="store_true")
+    ap.add_argument("--model", default=BASE); ap.add_argument("--framing", default="transcript", help="a framing of scripts/phase4_framing.py; "
+                    "other than transcript, the description bodies are placed in that framing and the output folder is <run>__<tag>")
+    ap.add_argument("--tag", default=None, help="output folder suffix for --model/--framing runs (required unless the defaults)")
     a = ap.parse_args()
-    tok = AutoTokenizer.from_pretrained(BASE); model = AutoModelForCausalLM.from_pretrained(BASE, dtype=torch.bfloat16, device_map="cuda").eval()
+    tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval()
     assert model.lm_head.bias is None and getattr(model.config, "final_logit_softcapping", None) is None, "output layer is not a plain linear map"
 
     if a.check:
@@ -103,13 +107,30 @@ def main():
                 print(f"[{name}] max |W_U h - logits| {dmax:.4f}; lp vs phase1 score: mean |d| {np.abs(lp - g).mean():.4f}, max {np.abs(lp - g).max():.4f}")
         return
 
-    rows, suf = load_rows(a.run); out = Path(a.out) / Path(a.run).name; out.mkdir(parents=True, exist_ok=True)
-    ctxs = contexts(a.contexts); k, n = map(int, a.part.split("/"))
+    rows, suf = load_rows(a.run); ctxs = contexts(a.contexts); k, n = map(int, a.part.split("/"))
+    custom = a.model != BASE or a.framing != "transcript"
+    assert not custom or a.tag, "--tag is required with --model/--framing"
+    out = Path(a.out) / (Path(a.run).name + (f"__{a.tag}" if custom else "")); out.mkdir(parents=True, exist_ok=True)
+    encode = None
+    if custom:      # description bodies in another framing (and/or another model's tokeniser and chat template)
+        from phase4_framing import prompt as fprompt, chat_messages
+        from persona_selection.phase1_prompts import UNKNOWN_BODY
+        assert all(pf is None for _, _, pf in ctxs), "soft prefixes are base-model specific"
+        body = {c["name"]: (UNKNOWN_BODY if c["name"] == "generic" else c["description"]) for f in a.contexts.split(",") + ["generic"] for c in load_family(f)}
+        def encode(name):
+            if not a.framing.startswith("chat_"):
+                return [_encode(tok, fprompt(a.framing, body[name], r["question"] + suf), r["response"]) for r in rows]
+            res = []
+            for r in rows:
+                # in chat framings the no-description context "generic" is the plain chat prompt (default system message, as Instruct was sampled)
+                pr = tok.apply_chat_template(chat_messages("chat_plain" if name == "generic" else a.framing, body[name], r["question"] + suf), add_generation_prompt=True, tokenize=False)
+                p_ids = tok(pr, add_special_tokens=False)["input_ids"]; full = tok(pr + r["response"].strip(), add_special_tokens=False)["input_ids"]
+                res.append((full, len(p_ids)) if full[:len(p_ids)] == p_ids and len(full) > len(p_ids) else (None, None))
+            return res
     # the index (answer tokens and offsets) comes from the generic header; every context is checked against it
     g_hdr = {c[0]: c[1] for c in contexts("generic")}["generic"]
-    tg = [None] * len(rows)
-    for r_i, r in enumerate(rows):
-        e = _encode(tok, full_prompt(g_hdr, r["question"] + suf), r["response"]); tg[r_i] = None if e[0] is None else e[0][e[1]:]
+    g_enc = encode("generic") if custom else [_encode(tok, full_prompt(g_hdr, r["question"] + suf), r["response"]) for r in rows]
+    tg = [None if e[0] is None else e[0][e[1]:] for e in g_enc]
     nt = np.array([0 if t is None else len(t) for t in tg]); offsets = np.concatenate([[0], np.cumsum(nt)]); P = int(offsets[-1])
     idx_f = out / "index.npz"
     if not idx_f.exists():
@@ -122,7 +143,7 @@ def main():
         if f_lp.exists(): print(f"  {name}: exists, skipping"); continue
         t0 = time.time(); mm = np.memmap(str(f_h) + ".tmp", dtype=np.uint16, mode="w+", shape=(P, model.config.hidden_size)); lp = np.full(len(rows), np.nan)
         pre = None if pfx is None else torch.load(pfx, weights_only=True).to(model.device)
-        for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf, prefix=pre):
+        for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf, prefix=pre, enc=encode(name) if custom else None):
             if tgt is None or tg[j] is None: continue
             assert tgt == tg[j], f"answer tokens differ from the generic-header tokenisation: context {name}, row {j}"
             mm[offsets[j]:offsets[j + 1]] = h.view(torch.int16).cpu().numpy().view(np.uint16); lp[j] = answer_logp(model, h, tgt)

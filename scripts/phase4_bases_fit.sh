@@ -11,7 +11,7 @@ AX=axis_roles,axis_traits; B5=bigfive_poles,bigfive_profiles,persona_big5,ipip_f
 SO=selfdesc_overall; ST=selfdesc_traits
 declare -A FAM=([olmospec]=$OS [bigfive]=$B5 [legacy87]=legacy86 [axis]=$AX [three]=$AX,$B5,$OS [all]=legacy86,$AX,$B5,$OS
                [sdo]=$SO [sdt]=$ST [sd]=$SO,$ST [sdo_soft]=${SO}_soft [sdt_soft]=${ST}_soft [sd_soft]=${SO}_soft,${ST}_soft
-               [sd_all]=$SO,$ST,${SO}_soft,${ST}_soft)
+               [sd_all]=$SO,$ST,${SO}_soft,${ST}_soft [sd_verb]=${SO}_v,${ST}_v [sd_verb35]=${SO}_v35,${ST}_v35)
 TAGS=${*:-"olmospec bigfive legacy87 axis three all"}
 echo "=== $(date) bases fit on $(hostname): $TAGS ==="
 for t in $TAGS; do

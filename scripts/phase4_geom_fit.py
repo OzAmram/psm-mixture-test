@@ -46,10 +46,10 @@ from phase1_basis_analysis import boot
 HID = Path(os.environ.get("SCRATCH", "/pscratch/sd/o/ozamram")) / "persona_phase4" / "hidden"
 
 
-def unembedding():
+def unembedding(model="allenai/Olmo-3-1025-7B"):
     from safetensors import safe_open
     from huggingface_hub import snapshot_download
-    d = Path(snapshot_download("allenai/Olmo-3-1025-7B")); idx = json.load(open(d / "model.safetensors.index.json"))["weight_map"]
+    d = Path(snapshot_download(model)); idx = json.load(open(d / "model.safetensors.index.json"))["weight_map"]
     with safe_open(d / idx["lm_head.weight"], "pt") as f: return f.get_tensor("lm_head.weight").to(torch.bfloat16)   # (V, d)
 
 
@@ -63,6 +63,7 @@ def main():
     ap.add_argument("--row-contexts", default=None, help="families whose scores must all be valid for an answer to be used (default: the "
                     "fitted contexts); set to the union of all bases being compared so every basis uses the same answers")
     ap.add_argument("--tag", default=None, help="write to <out>/<run>/<tag>/ (for fits on other bases)")
+    ap.add_argument("--model", default="allenai/Olmo-3-1025-7B", help="whose output layer the hidden states feed (must match the --run hidden states)")
     ap.add_argument("--fit-frac", type=float, default=1.0, help="keep this fraction of the fit-half questions (seed + 100); for bases too large for GPU memory")
     a = ap.parse_args(); t00 = time.time()
     hdir = HID / a.run; out = Path(a.out) / a.run / (a.tag or ""); out.mkdir(parents=True, exist_ok=True)
@@ -81,7 +82,7 @@ def main():
         fit_rows = fit_rows[np.isin(q[fit_rows], fq)]
     rng = np.random.default_rng(a.seed); val_q = set(rng.choice(fq, int(round(0.2 * len(fq))), replace=False).tolist())
     devs = [torch.device(f"cuda:{i}") for i in range(len(a.devices.split(",")))]
-    W = unembedding(); print(f"[{a.run}] K={K} contexts; fit {len(fit_rows)} answers, hold-out {len(test_rows)}; W_U {tuple(W.shape)}", flush=True)
+    W = unembedding(a.model); print(f"[{a.run}] K={K} contexts; fit {len(fit_rows)} answers, hold-out {len(test_rows)}; W_U {tuple(W.shape)}", flush=True)
 
     # fit-half positions on the GPUs; weights select the fit-train / fit-val subsets for the lambda choice
     pos_f = positions(ix, fit_rows); row_f = ix["row_of"][pos_f]; isval = np.isin(q[row_f], list(val_q))

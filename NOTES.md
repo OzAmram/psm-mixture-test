@@ -473,3 +473,69 @@
     - Extreme seeds are softened toward "professional but approachable".
   - **Reading:** the search finds that more Instruct-like register text in the header helps, by writing that register out as filler, not by describing a new character.
   - **Caveat:** each text was chosen on a 64-answer fit-half batch; hold-out scores are untouched by the choice.
+- 2026-10-28 13:40, **verbalised texts swapped into the self-description basis** (author's request).
+  - `scripts/phase4_selfdesc_verbbasis.py` builds families `selfdesc_{overall,traits}_v`: each verbalised description is replaced by its best soft-conditioned verbalisation, chosen by the fit-half batch score. Replaced entries are renamed `v_<name>`; the other descriptions are unchanged.
+  - Record in `results/phase4/selfdesc/verb_basis.json`. Only 8 of 260 are replaced so far.
+  - New hidden states, then fit tag `sd_verb` (added to `phase4_bases_fit.sh`), on allocation 60468148; log `logs/p4s_fit_verb_interactive1.out`.
+  - **Verbalising all 35** (author approved): batch job 60468203, paper budget, salve_soft arm only. That arm was best by fit-half batch score in 3 of 4 paper-budget runs.
+    - Held until the interactive allocation ends, to stay at 4 GPUs at a time. Estimate about 5 h; limit 8 h. Log `logs/p4s_salve_all_<job>.out`.
+    - The basis will then be rebuilt with all 35 replaced and refitted.
+  - The merge in `phase4_selfdesc_salve.py` now uses only the hold-out keys common to all records, since the runs have different arms.
+- 2026-10-28 14:05, **fit with 8 verbalised texts swapped in** (`bash scripts/phase4_bases_fit.sh sd_verb`, allocation 60468148, log `logs/p4b_fit_sd_verb.log`).
+  - The 8 new contexts have no NaN scores. Same 960 fit / 1,200 hold-out answers as before. Hold-out log P/token:
+
+    | basis | arithmetic mixture | geometric fit A (best on validation) |
+    |---|---|---|
+    | 260 original descriptions (sd) | −1.647 | −1.511 |
+    | 252 original + 8 verbalised (sd_verb) | −1.610 | −1.504 (λ 1e-3) |
+    | best single verbalised text (casual) | −1.615 | |
+    | 35 soft contexts | −1.380 | −1.390 |
+
+  - **Arithmetic mixture:** gains 0.037, almost all from the best single swapped-in text (mixing adds 0.005).
+  - **Geometric fit:** gains 0.008; the largest weights move onto the swapped-in texts (v_sdt_casual +0.58, v_sdt_factual +0.50, v_sdt_improvisational +0.45).
+  - Both fits remain far below the soft contexts.
+  - Allocation released. Batch job 60468203 (all 35) is now waiting only for the allocation to end.
+
+## 2026-10-29 — Fiction framings for the persona header (author's question)
+**Goal:** test whether framing the description as fiction (play, story, role-play character card) makes the base model assign higher likelihood to Instruct's answers than the "Below are a series of dialogues..." transcript header.
+**What was done:** `scripts/phase4_framing.py` (5 framings x 17 descriptions: generic + the 8 verbalisation targets + 8 random self-descriptions, seed 0; 300 fit-half + 300 test-half answers of instruct_unknown_casual_v1, seed 0; answer tokens asserted identical across framings). One wording per framing, written before scoring, none tuned. Ran on GPU 1 of batch job 60468203 (overlap), ~1 h. Summary: `scripts/phase4_framing_summary.py` -> `results/phase4/framing/{scores,summary}.json`. Commit at run time 4e805f8 (+ uncommitted scripts).
+**Results (test half; log P/token; paired standard error vs transcript ~0.003):**
+| framing | generic | mean of 16 descriptions | description gain over own generic | best description |
+|---|---|---|---|---|
+| transcript | -1.759 | -1.700 | +0.059 | -1.651 |
+| play | -1.832 | -1.768 | +0.065 | -1.722 |
+| story (prose, quoted question) | -1.942 | -1.831 | +0.111 | -1.786 |
+| card | -1.807 | -1.720 | +0.087 | -1.686 |
+| story_chat | -1.790 | -1.732 | +0.058 | -1.687 |
+Fit half gives the same ordering. Transcript is best in absolute terms for every framing. Fiction framings make descriptions matter more (story roughly doubles the gain) but start from a much worse baseline. Description rankings largely carry over (Spearman 0.85-0.98).
+**Caveats:** one wording per framing; the question carries the suffix "Answer in two or three sentences of plain text, in a casual, conversational tone.", which is odd inside a story's quoted question; answers are short chat replies, so prose framings may penalise their style.
+**Next:** not adopting a new framing. Possible follow-ups: a few wordings per framing chosen on the fit half; drop the suffix inside fiction framings.
+
+## 2026-10-30 — Framing round 2: card/transcript hybrids, self-description first turn, SFT model as scorer (autonomous, author's request)
+**Goal:** (1) card + transcript hybrids, a few wordings; (2) a first turn where the user asks the assistant to describe itself and the description is its reply; (3) use the SFT checkpoint (allenai/Olmo-3-7B-Instruct-SFT) instead of the base model to fit Instruct's answers, incl. with the self-description turn.
+**What was done:** `scripts/phase4_framing.py` extended (framings hyb_char/hyb_sheet/hyb_brackets/hyb_about, turn_describe/turn_yourself/turn_bare, chat_plain/chat_sys/chat_turn; `--model`; per-answer totals + base-transcript token counts so chat framings, whose answers have no leading space, are on one scale). Driver `scripts/phase4_framing2.sh` on interactive allocation 60547947 (4 GPUs, ~25 min). Same 17 descriptions and 600 answers (seed 0) as round 1. Summary `scripts/phase4_framing_summary2.py` -> `results/phase4/framing/summary2.json`. Wordings written once in advance, not tuned. Check: Instruct under its own chat template -0.899 test (reference -0.898); round-1 and round-2 transcript scores identical per answer.
+**Results (test half, nats per reference token; paired SE vs base transcript 0.001-0.003 for base rows, ~0.01 for SFT rows):**
+| model | framing | generic | mean of 16 desc | desc gain | best desc |
+|---|---|---|---|---|---|
+| base | transcript | -1.753 | -1.697 | +0.056 | -1.651 |
+| base | hyb_char / hyb_sheet / hyb_brackets / hyb_about | -1.779 / -1.782 / -1.755 / -1.771 | -1.697 / -1.706 / -1.715 / -1.696 | +0.08 / +0.08 / +0.04 / +0.08 | -1.661 / -1.672 / -1.679 / -1.656 |
+| base | turn_describe / turn_yourself / turn_bare | -1.789 / -1.800 / -1.764 | -1.672 / -1.681 / **-1.651** | +0.12 / +0.12 / +0.11 | -1.630 / -1.643 / **-1.602** |
+| SFT | chat_plain (no description) | **-1.050** | | | |
+| SFT | chat_sys / chat_turn | -1.117 / -1.203 | -1.183 / -1.200 | -0.066 / +0.003 | -1.145 / -1.176 |
+| SFT | transcript / hyb_char / turn_describe / turn_bare | -1.349 / -1.359 / -1.505 / -1.491 | -1.388 / -1.374 / -1.359 / -1.339 | -0.04 / -0.02 / +0.15 / +0.15 | -1.310 / -1.312 / -1.308 / -1.284 |
+| Instruct | chat_plain | -0.899 | | | |
+Fit half gives the same ordering. Bottom line: hybrids ~ no better than transcript; the self-description first turn is the best base framing (mean description +0.046, best description +0.049 over transcript) and doubles the description gain. The SFT model under its plain chat template already gets -1.05 (base best single description -1.60, Instruct -0.90): about 80% of the base->Instruct gap is closed by SFT with NO description. Under SFT, descriptions hurt as a system prompt and do nothing as a first turn; in raw-text framings they help but stay far below plain chat.
+**Next:** fits with these framings (below).
+
+## 2026-10-30 — All 35 verbalisations in the basis; SFT model as the scorer (fits)
+**What was done:** `scripts/phase4_selfdesc_verbbasis.py --prefix v35_ --suffix _v35` (now handles result files with only salve_soft; new names so no stale hidden states; old `_v` families and verb_basis.json untouched) -> families selfdesc_{overall,traits}_v35, `results/phase4/selfdesc/verb_basis_v35.json`. `scripts/phase4_hidden_states.py` gained `--model/--framing/--tag` (output `<run>__<tag>`; in chat framings the no-description context "generic" is the plain chat prompt); `scripts/phase4_geom_fit.py` gained `--model` (output layer). Driver `scripts/phase4_sft_fit_stage.sh` on allocation 60547947: base hidden states for v35 + fit tag bases/sd_verb35; SFT hidden states for the 260 self-descriptions + plain chat in framing chat_turn (`$SCRATCH/persona_phase4/hidden/instruct_unknown_casual_v1__sft_chat_turn`, ~2 h on 4 GPUs) + fit A (`results/phase4/exp1/instruct_unknown_casual_v1__sft_chat_turn/sd/`). Same 960 fit / 1200 hold-out answers and lambda grid as the base sd fits; SFT tokenisation has 0.08% more answer tokens (comparable). Generic one-hot check: -1.0493 from hidden states vs -1.0496 stored.
+**Results (hold-out log P/token, +-0.01):**
+| scorer, basis | single best / no description | arithmetic mixture | geometric fit |
+|---|---|---|---|
+| base, sd (260 descriptions) | -1.657 | -1.647 | -1.511 |
+| base, sd with 8 verbalisations | -1.615 | -1.610 | -1.504 |
+| base, sd with all 35 verbalisations | | -1.603 | -1.503 |
+| SFT, chat_turn, sd + plain chat | plain chat -1.049 | -1.050 (all weight on plain chat) | -1.003 (lambda 1e-3) |
+| Instruct itself | -0.898 | | |
+Verbalising 27 more contexts adds nothing over the 8. Under SFT, descriptions add nothing to a mixture; the geometric fit gains 0.046 (about 30% of the remaining SFT->Instruct gap of 0.15), with weight ~1.03 on plain chat and many +-0.2-0.37 trait components (traditional -, earnest -, charismatic +, utilitarian -, innovative +...), i.e. spread small corrections rather than one persona.
+**Pending:** batch job 60549575 (base model, turn_bare framing, sd basis: hidden states + fit, tag `instruct_unknown_casual_v1__base_turn_bare/sd`).

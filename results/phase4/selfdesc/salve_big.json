@@ -1,16 +1,12 @@
 {
- "n": 4,
+ "n": 35,
  "holdout_mean": {
-  "seed description": -1.687291108206902,
-  "soft context": -1.3944339863900024,
-  "extend_soft": -1.6334240622754335,
-  "rewrite_soft": -1.6382596363946715,
-  "salve_soft": -1.6320605118626914
+  "seed description": -1.6933886520344539,
+  "soft context": -1.3954452953768914,
+  "salve_soft": -1.6327157731339257
  },
  "fraction_of_soft_gain": {
-  "extend_soft": 0.17500092958734997,
-  "rewrite_soft": 0.14611520968106245,
-  "salve_soft": 0.17858347612994224
+  "salve_soft": 0.19435605602037562
  },
  "per_context": {
   "sdo_style_2": {
@@ -20,12 +16,127 @@
    "rewrite_soft": -1.6396,
    "salve_soft": -1.6299
   },
+  "sdt_absolutist": {
+   "seed description": -1.701,
+   "soft context": -1.3963,
+   "salve_soft": -1.6535
+  },
+  "sdt_adaptable": {
+   "seed description": -1.6627,
+   "soft context": -1.3947,
+   "salve_soft": -1.6104
+  },
+  "sdt_altruistic": {
+   "seed description": -1.6852,
+   "soft context": -1.3976,
+   "salve_soft": -1.6316
+  },
+  "sdt_animated": {
+   "seed description": -1.7182,
+   "soft context": -1.3951,
+   "salve_soft": -1.6362
+  },
+  "sdt_ascetic": {
+   "seed description": -1.6907,
+   "soft context": -1.3901,
+   "salve_soft": -1.6405
+  },
+  "sdt_bitter": {
+   "seed description": -1.7156,
+   "soft context": -1.3963,
+   "salve_soft": -1.6427
+  },
   "sdt_casual": {
    "seed description": -1.671,
    "soft context": -1.3924,
    "extend_soft": -1.6248,
    "rewrite_soft": -1.6278,
    "salve_soft": -1.6149
+  },
+  "sdt_chaotic": {
+   "seed description": -1.6993,
+   "soft context": -1.4,
+   "salve_soft": -1.6411
+  },
+  "sdt_closure-seeking": {
+   "seed description": -1.6672,
+   "soft context": -1.3962,
+   "salve_soft": -1.6168
+  },
+  "sdt_competitive": {
+   "seed description": -1.6704,
+   "soft context": -1.3944,
+   "salve_soft": -1.6189
+  },
+  "sdt_deontological": {
+   "seed description": -1.7366,
+   "soft context": -1.3958,
+   "salve_soft": -1.6506
+  },
+  "sdt_detached": {
+   "seed description": -1.7165,
+   "soft context": -1.3987,
+   "salve_soft": -1.6385
+  },
+  "sdt_erudite": {
+   "seed description": -1.7022,
+   "soft context": -1.3962,
+   "salve_soft": -1.6334
+  },
+  "sdt_factual": {
+   "seed description": -1.6608,
+   "soft context": -1.3978,
+   "salve_soft": -1.6359
+  },
+  "sdt_historical": {
+   "seed description": -1.7098,
+   "soft context": -1.3948,
+   "salve_soft": -1.6383
+  },
+  "sdt_hostile": {
+   "seed description": -1.7075,
+   "soft context": -1.3929,
+   "salve_soft": -1.6384
+  },
+  "sdt_improvisational": {
+   "seed description": -1.657,
+   "soft context": -1.3961,
+   "salve_soft": -1.6423
+  },
+  "sdt_inspirational": {
+   "seed description": -1.6731,
+   "soft context": -1.3928,
+   "salve_soft": -1.6469
+  },
+  "sdt_ironic": {
+   "seed description": -1.7834,
+   "soft context": -1.3977,
+   "salve_soft": -1.6238
+  },
+  "sdt_nihilistic": {
+   "seed description": -1.6844,
+   "soft context": -1.3929,
+   "salve_soft": -1.6335
+  },
+  "sdt_passionate": {
+   "seed description": -1.6734,
+   "soft context": -1.3961,
+   "salve_soft": -1.6344
+  },
+  "sdt_principled": {
+   "seed description": -1.6795,
+   "soft context": -1.3954,
+   "salve_soft": -1.6506
+  },
+  "sdt_radical": {
+   "seed description": -1.6703,
+   "soft context": -1.3953,
+   "salve_soft": -1.6179
+  },
+  "sdt_reactive": {
+   "seed description": -1.6674,
+   "soft context": -1.3952,
+   "salve_soft": -1.6184
   },
   "sdt_serious": {
    "seed description": -1.742,
@@ -40,6 +151,46 @@
    "extend_soft": -1.6153,
    "rewrite_soft": -1.6279,
    "salve_soft": -1.6229
+  },
+  "sdt_solemn": {
+   "seed description": -1.7298,
+   "soft context": -1.3949,
+   "salve_soft": -1.6354
+  },
+  "sdt_subversive": {
+   "seed description": -1.7062,
+   "soft context": -1.3974,
+   "salve_soft": -1.6257
+  },
+  "sdt_supportive": {
+   "seed description": -1.6799,
+   "soft context": -1.3964,
+   "salve_soft": -1.6207
+  },
+  "sdt_theatrical": {
+   "seed description": -1.7448,
+   "soft context": -1.3956,
+   "salve_soft": -1.6382
+  },
+  "sdt_theoretical": {
+   "seed description": -1.679,
+   "soft context": -1.3928,
+   "salve_soft": -1.627
+  },
+  "sdt_traditional": {
+   "seed description": -1.7038,
+   "soft context": -1.3922,
+   "salve_soft": -1.6315
+  },
+  "sdt_urgent": {
+   "seed description": -1.6599,
+   "soft context": -1.3974,
+   "salve_soft": -1.6248
+  },
+  "sdt_visceral": {
+   "seed description": -1.6837,
+   "soft context": -1.3974,
+   "salve_soft": -1.6189
   }
  }
 }

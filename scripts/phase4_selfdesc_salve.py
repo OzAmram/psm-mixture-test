@@ -127,7 +127,7 @@ def main():
 
 def merge(out_dir):
     R = [json.loads(f.read_text()) for f in sorted(out_dir.glob("*.json"))]
-    keys = list(R[0]["holdout"]); H = {k: np.array([r["holdout"][k] for r in R]) for k in keys}
+    keys = [k for k in R[0]["holdout"] if all(k in r["holdout"] for r in R)]; H = {k: np.array([r["holdout"][k] for r in R]) for k in keys}
     gain = H["soft context"] - H["seed description"]
     summ = {"n": len(R), "holdout_mean": {k: float(v.mean()) for k, v in H.items()},
             "fraction_of_soft_gain": {k: float(np.median((H[k] - H["seed description"]) / gain)) for k in keys if k not in ("seed description", "soft context")},

@@ -1,0 +1,21 @@
+{
+  "args": {
+    "run": "instruct_unknown_casual_v1__sft_chat_turn",
+    "fits": "A",
+    "lambdas": "0,1e-4,1e-3,1e-2,1e-1",
+    "devices": "0,1,2,3",
+    "greedy_steps": 12,
+    "maxiter": 300,
+    "out": "results/phase4/exp1",
+    "seed": 0,
+    "max_rows": null,
+    "contexts": "selfdesc_overall,selfdesc_traits",
+    "row_contexts": null,
+    "tag": "sd",
+    "model": "allenai/Olmo-3-7B-Instruct-SFT",
+    "fit_frac": 0.8
+  },
+  "git_commit": "441872a",
+  "hidden_dir": "/pscratch/sd/o/ozamram/persona_phase4/hidden/instruct_unknown_casual_v1__sft_chat_turn",
+  "command": "scripts/phase4_geom_fit.py --run instruct_unknown_casual_v1__sft_chat_turn --model allenai/Olmo-3-7B-Instruct-SFT --fits A --devices 0,1,2,3 --contexts selfdesc_overall,selfdesc_traits --fit-frac 0.8 --lambdas 0,1e-4,1e-3,1e-2,1e-1 --out results/phase4/exp1 --tag sd"
+}
