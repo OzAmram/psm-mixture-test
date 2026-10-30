@@ -538,4 +538,30 @@ Fit half gives the same ordering. Bottom line: hybrids ~ no better than transcri
 | SFT, chat_turn, sd + plain chat | plain chat -1.049 | -1.050 (all weight on plain chat) | -1.003 (lambda 1e-3) |
 | Instruct itself | -0.898 | | |
 Verbalising 27 more contexts adds nothing over the 8. Under SFT, descriptions add nothing to a mixture; the geometric fit gains 0.046 (about 30% of the remaining SFT->Instruct gap of 0.15), with weight ~1.03 on plain chat and many +-0.2-0.37 trait components (traditional -, earnest -, charismatic +, utilitarian -, innovative +...), i.e. spread small corrections rather than one persona.
-**Pending:** batch job 60549575 (base model, turn_bare framing, sd basis: hidden states + fit, tag `instruct_unknown_casual_v1__base_turn_bare/sd`).
+**Pending:** done, see the turn_bare entry below (batch job 60549575 was cancelled after ~2.5 h pending and rerun on interactive allocation 60564081).
+
+## 2026-10-30 — Soft context on the SFT checkpoint (author's question)
+**What was done:** `scripts/prompt_tune_sft.py` (new): soft vectors in place of the system-message text inside the SFT chat template; same rows, hold-out questions (basis_test_qids), validation split, lr 5e-3, 3 epochs, batch 8, seed 0 as the base self-description soft contexts. Two inits: the default system message (23 vectors; at init equals plain chat, checked: -1.0495) and the sdt_casual self-description (244 vectors). Ran on GPUs 0-1 of allocation 60564081 (overlapping the base turn_bare job), ~6 and ~13 min. Output `results/phase4/sft_soft/{default_sys,sdt_casual}/`.
+**Results (hold-out log P/token, 1200 answers; best epoch by validation = 2 in both):**
+| setup | hold-out |
+|---|---|
+| base, generic header | -1.758 |
+| base, best soft context (35 self-description inits) | ~-1.39 |
+| SFT, plain chat | -1.049 |
+| SFT, geometric fit over 260 descriptions | -1.003 |
+| SFT + soft context, 23 vectors from default system message | **-0.945** |
+| SFT + soft context, 244 vectors from sdt_casual | -0.948 (init -1.233) |
+| Instruct itself | -0.898 |
+SFT + soft context closes 69% of the SFT->Instruct gap (0.151 -> 0.047) and 95% of the base-generic->Instruct gap. Length/init barely matter (23 vs 244 vectors: -0.945 vs -0.948). Validation dropped at epoch 3 in both (mild overfitting on 960 answers). One seed each; no seed variance estimate.
+**Open:** what the remaining 0.047 is (per-token analysis as for the base soft contexts).
+
+## 2026-10-30 — Base model, self-description first turn (turn_bare), geometric fit over the sd basis
+**Goal:** does the best base framing from the screen (turn_bare: "User: Describe yourself in the third person: ...\nAssistant: <description>\n\nUser: <question>\nAssistant:") also improve the mixture fits over the 260 self-descriptions?
+**What was done:** `srun --jobid=60564081 --overlap -n1 bash scripts/phase4_base_turn_fit.sh` (hidden states with `--framing turn_bare --tag base_turn_bare`, then `phase4_geom_fit.py --fits A --contexts selfdesc_overall,selfdesc_traits --fit-frac 0.8 --tag sd`), commit 8dda23e + uncommitted script. Output `results/phase4/exp1/instruct_unknown_casual_v1__base_turn_bare/sd/`; log `logs/p4_base_turn_bare_fit.log`. Same 960 fit / 1200 hold-out answers and lambda grid; lambda chosen on validation (1e-3 with generic as the L2 centre, 1e-4 with zero). "generic" here = the unknown-character body as the first-turn reply. Generic one-hot check -1.7707 from hidden states vs -1.7708 stored.
+**Results (hold-out log P/token; paired difference vs the transcript sd fit on the same answers, +- paired standard error):**
+| | transcript | turn_bare | difference |
+|---|---|---|---|
+| generic | -1.758 | -1.771 | -0.012 +- 0.002 |
+| arithmetic mixture | -1.646 | -1.605 | +0.041 +- 0.001 |
+| geometric fit (lambda 1e-3, generic centre) | -1.511 | -1.496 | +0.015 +- 0.002 |
+The first-turn framing helps the arithmetic mixture (as in the screen: descriptions are read better), but most of that advantage disappears in the geometric fit (+0.015 per token, small but well outside the noise). The largest weights change (bitter -, chaotic -, nurturing +, hostile +, ...), i.e. weights are spread and not interpretable one by one, as in the transcript fit. Base ceiling stays far from SFT plain chat (-1.049).

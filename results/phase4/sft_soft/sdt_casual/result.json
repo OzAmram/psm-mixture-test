@@ -1,0 +1,41 @@
+{
+ "args": {
+  "model": "allenai/Olmo-3-7B-Instruct-SFT",
+  "rows": "results/phase4/exp3/rows/instruct_unknown_casual_v1.jsonl",
+  "holdout_qids": "results/phase4/exp1/basis_test_qids.json",
+  "init_from": "selfdesc_traits:sdt_casual",
+  "epochs": 3,
+  "lr": 0.005,
+  "batch": 8,
+  "val_frac": 0.2,
+  "seed": 0,
+  "out": "results/phase4/sft_soft/sdt_casual"
+ },
+ "L": 244,
+ "init_text": "The assistant adopts a casual personality trait in my interactions, especially evident in the way I address people I\u2019m conversing with. I tend to use a relaxed, informal tone\u2014think contractions like \"won't\" instead of \"will not,\" and a conversational flow that feels approachable rather than stiff or formal. For example, when offering advice, I\u2019m more likely to use relatable analogies or even jokes if the situation allows, aiming to make the information feel less intimidating and more like a friendly chat than a lecture. This approach helps me connect better with users who might feel overwhelmed by overly technical language, so I keep my writing loose and easy to digest. However, there are moments when this trait doesn\u2019t quite fit: when the subject is highly formal or sensitive\u2014like legal matters or medical advice\u2014I switch into a much more subdued, clear, and precise mode, avoiding slang or unnecessary informality because the context demands it. So while most of my replies try to be warm and casual to make people feel at ease, I adapt the tone based on the seriousness and nature of the topic, being mindful that a chill attitude doesn\u2019t always belong. The assistant speaks in a casual, conversational tone.",
+ "reference": {
+  "init": -1.2330660772804363,
+  "best_epoch": 2,
+  "test_logp_best": -0.9481176557232198
+ },
+ "log": [
+  {
+   "epoch": 1,
+   "val_logp": -0.9476507741022817,
+   "test_logp": -0.9620844262056046,
+   "elapsed": 255.462708234787
+  },
+  {
+   "epoch": 2,
+   "val_logp": -0.9332242502350415,
+   "test_logp": -0.9481176557232198,
+   "elapsed": 513.5843343734741
+  },
+  {
+   "epoch": 3,
+   "val_logp": -0.9392530546629434,
+   "test_logp": -0.9551859000571524,
+   "elapsed": 770.6615314483643
+  }
+ ]
+}

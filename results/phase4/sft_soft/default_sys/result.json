@@ -1,0 +1,41 @@
+{
+ "args": {
+  "model": "allenai/Olmo-3-7B-Instruct-SFT",
+  "rows": "results/phase4/exp3/rows/instruct_unknown_casual_v1.jsonl",
+  "holdout_qids": "results/phase4/exp1/basis_test_qids.json",
+  "init_from": null,
+  "epochs": 3,
+  "lr": 0.005,
+  "batch": 8,
+  "val_frac": 0.2,
+  "seed": 0,
+  "out": "results/phase4/sft_soft/default_sys"
+ },
+ "L": 23,
+ "init_text": "You are a helpful function-calling AI assistant. You do not currently have access to any functions. <functions></functions>",
+ "reference": {
+  "init": -1.0495468022103467,
+  "best_epoch": 2,
+  "test_logp_best": -0.9445462743133703
+ },
+ "log": [
+  {
+   "epoch": 1,
+   "val_logp": -0.9466621416055091,
+   "test_logp": -0.959019751289718,
+   "elapsed": 120.47600030899048
+  },
+  {
+   "epoch": 2,
+   "val_logp": -0.9285175215571677,
+   "test_logp": -0.9445462743133703,
+   "elapsed": 236.57664823532104
+  },
+  {
+   "epoch": 3,
+   "val_logp": -0.9311491042549535,
+   "test_logp": -0.9486587004256627,
+   "elapsed": 353.0524740219116
+  }
+ ]
+}
