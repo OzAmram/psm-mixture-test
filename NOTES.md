@@ -613,3 +613,5 @@ Each base model predicts its OWN family's Instruct text better (generic header: 
 **What failed:** the download (`snapshot_download(cache_dir=$SCRATCH/hf_stage/hub)`) left the four weight shards outside the model folders, so the CFS copy had only small files; stage 1 failed in a minute ("snapshot incomplete"); jobs 60707887/60707907/60707908 cancelled. No Llama results exist.
 **Note:** Llama 3.1's chat template adds "Cutting Knowledge Date: December 2023 / Today Date: 26 Jul 2024" to every system message; kept (how Instruct is normally used). Llama 3 and Olmo 3 share the first ~100k token ids.
 **Next:** on the new cluster, download into the normal `$HF_HOME` cache, load both models offline to confirm, then `scripts/phase4_llama.sh`. Before running, check that soft-context hold-out scores from `prompt_tune_base.py` match the `lp_sp_*` hidden-state scores (tests the beginning-of-text handling).
+
+**Update 2026-11-02:** held Experiment 2 jobs 60356084-86 (7.5 h limits) cancelled at the author's request before the cluster move; on the new cluster they need re-splitting into jobs of 6 h or less.

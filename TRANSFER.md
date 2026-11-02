@@ -95,7 +95,7 @@ Claude's notes about this project (the user's preferences, decisions and scope a
 
 ## 8. Left on NERSC
 
-- Held Experiment 2 jobs 60356084-86 (7.5 h limits). Cancel them; on the new cluster they need splitting into jobs of 6 h or less.
+- Held Experiment 2 jobs 60356084-86: cancelled 2026-11-02. On the new cluster they need splitting into jobs of 6 h or less.
 - Model cache on CFS (192 GB) and scratch hidden states: delete once the new cluster reproduces step 6.
 
 ## What to run first on the new cluster
