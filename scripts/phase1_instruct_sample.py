@@ -50,13 +50,13 @@ def main():
         enc = tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt", return_dict=True).to(model.device)
         with torch.no_grad():
             o = model.generate(**enc, max_new_tokens=args.max_new_tokens, do_sample=True, temperature=1.0, top_p=1.0,
-                               num_return_sequences=args.n_per_question, pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id)
+                               num_return_sequences=args.n_per_question, pad_token_id=tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id, eos_token_id=tok.eos_token_id)
         for seq in o[:, enc["input_ids"].shape[1]:]:
             t = tok.decode(seq, skip_special_tokens=True).strip()
             t = t.split("\nUser:")[0].strip()
             if t:
                 samples.append({"qid": q["id"], "qidx": qi, "category": q.get("category"), "question": q["question"], "response": " " + t,
-                                "n_gen_tokens": int((seq != tok.pad_token_id).sum())})
+                                "n_gen_tokens": int((seq != (tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id)).sum())})
         if (qi + 1) % 25 == 0:
             print(f"[instruct {qi+1}/{len(qs)}] {len(samples)} samples, {time.time()-t0:.0f}s", flush=True)
     chat_example = tok.apply_chat_template([{"role": "user", "content": qs[0]["question"] + args.user_suffix}], tokenize=False, add_generation_prompt=True)

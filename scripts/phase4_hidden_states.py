@@ -66,9 +66,10 @@ def hidden_for_context(model, tok, header, rows, suf, max_tokens_per_batch=16000
         if P == 0:
             h = model.model(input_ids=ids.to(dev), attention_mask=att.to(dev)).last_hidden_state     # post-final-norm = lm_head input
         else:
-            x = model.get_input_embeddings()(ids.to(dev)); x = torch.cat([prefix.to(x.dtype)[None].expand(len(idx), -1, -1), x], 1)
+            nb = int(tok.bos_token_id is not None and bool((ids[:, 0] == tok.bos_token_id).all()))   # Llama's beginning-of-text token stays first; 0 for Olmo/Qwen
+            x = model.get_input_embeddings()(ids.to(dev)); x = torch.cat([x[:, :nb], prefix.to(x.dtype)[None].expand(len(idx), -1, -1), x[:, nb:]], 1)
             am = torch.cat([torch.ones((len(idx), P), dtype=att.dtype), att], 1).to(dev)
-            h = model.model(inputs_embeds=x, attention_mask=am).last_hidden_state[:, P:]
+            h = model.model(inputs_embeds=x, attention_mask=am).last_hidden_state; h = torch.cat([h[:, :nb], h[:, nb + P:]], 1)
         for b, j in enumerate(idx):
             s, n_p = enc[j]; yield j, s[n_p:], h[b, n_p - 1:len(s) - 1]
 

@@ -42,12 +42,16 @@ class SoftPrefix(torch.nn.Module):
         ids = torch.cat([torch.tensor(init_ids, dtype=torch.long), rest]) if len(init_ids) < L else torch.tensor(init_ids, dtype=torch.long)
         self.prefix = torch.nn.Parameter(emb[ids].detach().float().clone())   # fp32 master copy
         self.model = model; self.L = L
+        # tokenizers that start every text with a beginning-of-text token (Llama): it goes before the soft vectors; none for Olmo/Qwen
+        self.bos = [tok.bos_token_id] if tok.bos_token_id is not None and tok("a")["input_ids"][0] == tok.bos_token_id else []
+        self.n_pre = L + len(self.bos)
 
     def forward(self, input_ids, attention_mask, labels=None):
         B = input_ids.shape[0]; emb = self.model.get_input_embeddings()(input_ids)
         pre = self.prefix.to(emb.dtype).unsqueeze(0).expand(B, -1, -1)
-        x = torch.cat([pre, emb], 1); am = torch.cat([torch.ones(B, self.L, dtype=attention_mask.dtype, device=am_dev(attention_mask)), attention_mask], 1)
-        lab = torch.cat([torch.full((B, self.L), -100, dtype=labels.dtype, device=labels.device), labels], 1) if labels is not None else None
+        if self.bos: pre = torch.cat([self.model.get_input_embeddings()(torch.tensor(self.bos, device=emb.device)).unsqueeze(0).expand(B, -1, -1), pre], 1)
+        x = torch.cat([pre, emb], 1); am = torch.cat([torch.ones(B, self.n_pre, dtype=attention_mask.dtype, device=am_dev(attention_mask)), attention_mask], 1)
+        lab = torch.cat([torch.full((B, self.n_pre), -100, dtype=labels.dtype, device=labels.device), labels], 1) if labels is not None else None
         return self.model(inputs_embeds=x, attention_mask=am, labels=lab)
 
 
@@ -147,7 +151,7 @@ def main():
         if args.L == 0: args.L = len(tok(init_text, add_special_tokens=False)["input_ids"])
     print(f"prefix init: {args.init_from or args.init} ({len(tok(init_text, add_special_tokens=False)['input_ids'])} text tokens, L = {args.L}, rest random)", flush=True)
     sp = SoftPrefix(model, tok, args.L, init_text).to(dev)
-    prefix_fwd = lambda ids, att, lab: sp(ids, att, lab).logits[:, sp.L:]
+    prefix_fwd = lambda ids, att, lab: sp(ids, att, lab).logits[:, sp.n_pre:]
     tot, n = eval_nll(prefix_fwd, test, pad_id, dev); print(f"prefix at init (header text embeddings): {-tot/n:.4f}", flush=True)
     opt = torch.optim.AdamW([sp.prefix], lr=args.lr, weight_decay=0.0)
     steps_total = max(1, args.epochs * math.ceil(len(train) / args.batch)); step = 0
@@ -178,7 +182,8 @@ def main():
         for qid in qids:
             p_ids = tok(f"User: {qs[qid]}{SUFFIX}\nAssistant:", add_special_tokens=False)["input_ids"]
             ids = torch.tensor([p_ids] * args.samples_per_question, device=dev); emb = model.get_input_embeddings()(ids)
-            x = torch.cat([sp.prefix.to(emb.dtype).unsqueeze(0).expand(ids.shape[0], -1, -1), emb], 1)
+            x = torch.cat(([model.get_input_embeddings()(torch.tensor(sp.bos, device=dev)).unsqueeze(0).expand(ids.shape[0], -1, -1)] if sp.bos else [])
+                          + [sp.prefix.to(emb.dtype).unsqueeze(0).expand(ids.shape[0], -1, -1), emb], 1)
             gen = model.generate(inputs_embeds=x, attention_mask=torch.ones(x.shape[:2], dtype=torch.long, device=dev), max_new_tokens=80, do_sample=True, temperature=1.0, top_p=1.0, pad_token_id=pad_id, eos_token_id=tok.eos_token_id)
             for g in gen:
                 text = tok.decode(g, skip_special_tokens=True).split("\nUser:")[0].strip()

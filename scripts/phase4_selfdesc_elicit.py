@@ -46,7 +46,7 @@ def clean(t):
 def chat_sample(model, tok, msg, n, max_new_tokens=480):
     enc = tok(tok.apply_chat_template([{"role": "user", "content": msg}], add_generation_prompt=True, tokenize=False), return_tensors="pt", add_special_tokens=False).to(model.device)
     with torch.no_grad():
-        o = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=True, temperature=1.0, top_p=1.0, num_return_sequences=n, pad_token_id=tok.pad_token_id, eos_token_id=tok.eos_token_id)
+        o = model.generate(**enc, max_new_tokens=max_new_tokens, do_sample=True, temperature=1.0, top_p=1.0, num_return_sequences=n, pad_token_id=tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id, eos_token_id=tok.eos_token_id)
     return [tok.decode(s, skip_special_tokens=True) for s in o[:, enc["input_ids"].shape[1]:]]
 
 

@@ -18,8 +18,9 @@ def score_response(model, tokenizer, prompt: str, response: str, add_eos: bool =
 
     add_eos=True appends the tokenizer's eos token so the score includes "and then the response ends".
     """
-    full_ids = tokenizer(prompt + response, return_tensors="pt")["input_ids"][0]
-    prompt_ids = tokenizer(prompt, return_tensors="pt")["input_ids"][0]
+    special = not (tokenizer.bos_token and prompt.startswith(tokenizer.bos_token))   # a chat template's text already has it (Llama)
+    full_ids = tokenizer(prompt + response, return_tensors="pt", add_special_tokens=special)["input_ids"][0]
+    prompt_ids = tokenizer(prompt, return_tensors="pt", add_special_tokens=special)["input_ids"][0]
     n_prompt = len(prompt_ids)
     if not torch.equal(full_ids[:n_prompt], prompt_ids):
         raise ValueError(

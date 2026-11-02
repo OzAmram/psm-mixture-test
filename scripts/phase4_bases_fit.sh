@@ -10,12 +10,13 @@ set -uo pipefail
 cd "${SLURM_SUBMIT_DIR:-$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/..}"
 source ./env.sh > /dev/null
 AX=axis_roles,axis_traits; B5=bigfive_poles,bigfive_profiles,persona_big5,ipip_facets; OS=olmo_spec
-SO=selfdesc_overall; ST=selfdesc_traits; QO=qwen_selfdesc_overall; QT=qwen_selfdesc_traits
+SO=selfdesc_overall; ST=selfdesc_traits; QO=qwen_selfdesc_overall; QT=qwen_selfdesc_traits; LO=llama_selfdesc_overall; LT=llama_selfdesc_traits
 RUN=${RUN:-instruct_unknown_casual_v1}; MODEL=${MODEL:-allenai/Olmo-3-1025-7B}; ROWCTX=${ROWCTX:-legacy86,$AX,$B5,$OS}
 declare -A FAM=([olmospec]=$OS [bigfive]=$B5 [legacy87]=legacy86 [axis]=$AX [three]=$AX,$B5,$OS [all]=legacy86,$AX,$B5,$OS
                [sdo]=$SO [sdt]=$ST [sd]=$SO,$ST [sdo_soft]=${SO}_soft [sdt_soft]=${ST}_soft [sd_soft]=${SO}_soft,${ST}_soft
                [sd_all]=$SO,$ST,${SO}_soft,${ST}_soft [sd_verb]=${SO}_v,${ST}_v [sd_verb35]=${SO}_v35,${ST}_v35
-               [qsdo]=$QO [qsdt]=$QT [qsd]=$QO,$QT [qsd_soft]=${QO}_soft,${QT}_soft [qsd_all]=$QO,$QT,${QO}_soft,${QT}_soft)
+               [qsdo]=$QO [qsdt]=$QT [qsd]=$QO,$QT [qsd_soft]=${QO}_soft,${QT}_soft [qsd_all]=$QO,$QT,${QO}_soft,${QT}_soft
+               [lsdo]=$LO [lsdt]=$LT [lsd]=$LO,$LT [lsd_soft]=${LO}_soft,${LT}_soft [lsd_all]=$LO,$LT,${LO}_soft,${LT}_soft)
 TAGS=${*:-"olmospec bigfive legacy87 axis three all"}
 echo "=== $(date) bases fit on $(hostname): $TAGS ==="
 for t in $TAGS; do
