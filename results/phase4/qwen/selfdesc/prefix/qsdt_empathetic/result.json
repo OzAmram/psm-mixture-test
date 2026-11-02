@@ -1,0 +1,56 @@
+{
+ "args": {
+  "model": "Qwen/Qwen2.5-7B",
+  "rows": "results/phase4/qwen/rows/qwen_instruct_unknown_casual_v1.jsonl",
+  "holdout_qids": "results/phase4/exp1/basis_test_qids.json",
+  "L": 209,
+  "epochs": 3,
+  "lr": 0.005,
+  "batch": 8,
+  "max_len": 192,
+  "seed": 0,
+  "out": "results/phase4/qwen/selfdesc/prefix/qsdt_empathetic",
+  "n_sample_questions": 0,
+  "samples_per_question": 4,
+  "data_format": "phase1",
+  "ref_system": null,
+  "ref_model": "allenai/Olmo-3-7B-Instruct",
+  "init": "header",
+  "init_from": "qwen_selfdesc_traits:qsdt_empathetic",
+  "val_frac": 0.2,
+  "eval_prefix": null
+ },
+ "reference": {
+  "instruct_self": -0.7335314623484428,
+  "base_generic_header": -1.237217805087392,
+  "base_bare_transcript": -1.2122221332945764,
+  "best_epoch": 3,
+  "test_logp_best": -0.8958124549822047
+ },
+ "log": [
+  {
+   "epoch": 1,
+   "train_nll": 1.1275527007634099,
+   "val_logp": -0.9379196253667124,
+   "test_logp": -0.9473174369493844,
+   "elapsed": 85.18884468078613
+  },
+  {
+   "epoch": 2,
+   "train_nll": 0.9003103999311936,
+   "val_logp": -0.9001689051806713,
+   "test_logp": -0.9056198887883916,
+   "elapsed": 170.44863033294678
+  },
+  {
+   "epoch": 3,
+   "train_nll": 0.8552839031681978,
+   "val_logp": -0.8868478916537915,
+   "test_logp": -0.8958124549822047,
+   "elapsed": 255.9126193523407
+  }
+ ],
+ "prefix_entropy_estimate": NaN,
+ "samples": [],
+ "cross_eval": {}
+}

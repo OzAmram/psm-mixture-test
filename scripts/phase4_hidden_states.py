@@ -108,14 +108,14 @@ def main():
         return
 
     rows, suf = load_rows(a.run); ctxs = contexts(a.contexts); k, n = map(int, a.part.split("/"))
-    custom = a.model != BASE or a.framing != "transcript"
-    assert not custom or a.tag, "--tag is required with --model/--framing"
-    out = Path(a.out) / (Path(a.run).name + (f"__{a.tag}" if custom else "")); out.mkdir(parents=True, exist_ok=True)
+    custom = a.framing != "transcript"      # another model in the transcript framing uses the headers as they are (Qwen replication)
+    assert not (custom or a.model != BASE) or a.tag, "--tag is required with --model/--framing"
+    out = Path(a.out) / (Path(a.run).name + (f"__{a.tag}" if a.tag else "")); out.mkdir(parents=True, exist_ok=True)
     encode = None
     if custom:      # description bodies in another framing (and/or another model's tokeniser and chat template)
         from phase4_framing import prompt as fprompt, chat_messages
         from persona_selection.phase1_prompts import UNKNOWN_BODY
-        assert all(pf is None for _, _, pf in ctxs), "soft prefixes are base-model specific"
+        assert all(pf is None for _, _, pf in ctxs), "soft prefixes are only defined in the transcript framing"
         body = {c["name"]: (UNKNOWN_BODY if c["name"] == "generic" else c["description"]) for f in a.contexts.split(",") + ["generic"] for c in load_family(f)}
         def encode(name):
             if not a.framing.startswith("chat_"):

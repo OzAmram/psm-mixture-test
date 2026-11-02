@@ -1,0 +1,7 @@
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_style_0", "init": "qwen_selfdesc_overall:qsdo_style_0", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_style_0/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_style_1", "init": "qwen_selfdesc_overall:qsdo_style_1", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_style_1/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_style_2", "init": "qwen_selfdesc_overall:qsdo_style_2", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_style_2/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_style_3", "init": "qwen_selfdesc_overall:qsdo_style_3", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_style_3/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_story_1", "init": "qwen_selfdesc_overall:qsdo_story_1", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_story_1/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_story_2", "init": "qwen_selfdesc_overall:qsdo_story_2", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_story_2/prefix.pt", "header": ""}
+{"family": "qwen_selfdesc_overall_soft", "name": "sp_qsdo_story_3", "init": "qwen_selfdesc_overall:qsdo_story_3", "prefix": "results/phase4/qwen/selfdesc/prefix/qsdo_story_3/prefix.pt", "header": ""}

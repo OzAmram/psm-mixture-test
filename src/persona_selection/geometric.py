@@ -54,9 +54,16 @@ def positions(ix, rows):
     o = ix["offsets"]; return np.concatenate([np.arange(o[r], o[r + 1]) for r in rows]).astype(np.int64)
 
 
+def _dim(hdir, ctx):
+    """hidden size from the file size and the run's number of answer positions (4096 for OLMo 3, 3584 for Qwen2.5-7B)."""
+    P = int(np.load(Path(hdir) / "index.npz")["offsets"][-1]); n = (Path(hdir) / f"h_{ctx}.u16").stat().st_size // 2
+    assert n % P == 0, f"h_{ctx}.u16 size is not a multiple of the {P} positions"
+    return n // P
+
+
 def load_hidden(hdir, ctxs, pos):
     """(K, len(pos), d) bf16 CPU tensor of the stored hidden states at those positions."""
-    d = 4096; out = torch.empty((len(ctxs), len(pos), d), dtype=torch.bfloat16)
+    d = _dim(hdir, ctxs[0]); out = torch.empty((len(ctxs), len(pos), d), dtype=torch.bfloat16)
     for k, c in enumerate(ctxs):
         mm = np.memmap(Path(hdir) / f"h_{c}.u16", dtype=np.uint16, mode="r").reshape(-1, d)
         out[k] = torch.from_numpy(mm[pos].view(np.int16)).view(torch.bfloat16)
@@ -65,7 +72,7 @@ def load_hidden(hdir, ctxs, pos):
 
 def read_ctx(hdir, ctx, pos):
     """(len(pos), d) bf16 CPU tensor of one context's stored hidden states at those positions."""
-    mm = np.memmap(Path(hdir) / f"h_{ctx}.u16", dtype=np.uint16, mode="r").reshape(-1, 4096)
+    mm = np.memmap(Path(hdir) / f"h_{ctx}.u16", dtype=np.uint16, mode="r").reshape(-1, _dim(hdir, ctx))
     return torch.from_numpy(np.ascontiguousarray(mm[pos]).view(np.int16)).view(torch.bfloat16)
 
 
@@ -78,7 +85,7 @@ class Shards:
         copied straight to the devices (for bases too large for host memory)."""
         from concurrent.futures import ThreadPoolExecutor
         self = cls.__new__(cls); self.dev = devices; self.chunk = chunk; P = len(pos); cuts = np.linspace(0, P, len(devices) + 1).astype(int)
-        self.H = [torch.empty((len(ctxs), b - a, 4096), dtype=torch.bfloat16, device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
+        self.H = [torch.empty((len(ctxs), b - a, W_U.shape[1]), dtype=torch.bfloat16, device=d) for (a, b), d in zip(zip(cuts[:-1], cuts[1:]), devices)]
 
         def put(k):
             x = read_ctx(hdir, ctxs[k], pos)
@@ -120,7 +127,7 @@ def disk_nll(hdir, ctxs, pos, tgt, c, W_U, device, chunk=1024, threads=16, group
     """Per-position NLL at c, reading the stored hidden states of the contexts with c_s != 0 from disk (no CPU copy of the
     whole (K, P, d) array). The combined state sum_s c_s h_s is accumulated in fp32 on the device."""
     from concurrent.futures import ThreadPoolExecutor
-    hc = torch.zeros((len(pos), 4096), dtype=torch.float32, device=device); ks = [k for k in range(len(ctxs)) if c[k] != 0]
+    hc = torch.zeros((len(pos), W_U.shape[1]), dtype=torch.float32, device=device); ks = [k for k in range(len(ctxs)) if c[k] != 0]
     with ThreadPoolExecutor(threads) as ex:
         for i in range(0, len(ks), group):
             for k, x in zip(ks[i:i + group], ex.map(lambda k: read_ctx(hdir, ctxs[k], pos), ks[i:i + group])):

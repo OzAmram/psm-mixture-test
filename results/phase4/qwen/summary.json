@@ -1,0 +1,220 @@
+{
+ "own": {
+  "olmo|olmospec": {
+   "generic": -1.7583659641158786,
+   "arith": -1.7238881580225862,
+   "geo": -1.6803099708661358,
+   "key": "A_free_l2zero_0.0001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.04009494700455355,
+   "geo_share": 0.09077291357425137,
+   "n_holdout": 1200
+  },
+  "olmo|bigfive": {
+   "generic": -1.7583659641158786,
+   "arith": -1.7260623785456957,
+   "geo": -1.64005104108653,
+   "key": "A_free_lambda0",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.0375665014180101,
+   "geo_share": 0.13759084774342595,
+   "n_holdout": 1200
+  },
+  "olmo|legacy87": {
+   "generic": -1.7583659641158786,
+   "arith": -1.7226052788723092,
+   "geo": -1.6054146863737837,
+   "key": "A_free_l2generic_0.0001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.041586833448964265,
+   "geo_share": 0.17787017418550669,
+   "n_holdout": 1200
+  },
+  "olmo|axis": {
+   "generic": -1.7583659641158786,
+   "arith": -1.7284487754690583,
+   "geo": -1.5398003545304002,
+   "key": "A_free_l2generic_0.001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.034791311549050644,
+   "geo_share": 0.2541744248353608,
+   "n_holdout": 1200
+  },
+  "olmo|three": {
+   "generic": -1.7583659641158786,
+   "arith": -1.714465044470384,
+   "geo": -1.5265914753578083,
+   "key": "A_free_l2zero_0.001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.05105327879257716,
+   "geo_share": 0.2695353010170288,
+   "n_holdout": 1200
+  },
+  "olmo|all": {
+   "generic": -1.7583659641158786,
+   "arith": -1.7137657930399561,
+   "geo": -1.519881196679849,
+   "key": "A_free_l2zero_0.001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.05186645260560918,
+   "geo_share": 0.27733882155573586,
+   "n_holdout": 1200
+  },
+  "olmo|sd": {
+   "generic": -1.7583659641158786,
+   "arith": -1.6464564019175212,
+   "geo": -1.5106956081728524,
+   "key": "A_free_l2generic_0.001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.13014192241538444,
+   "geo_share": 0.2880209306028458,
+   "n_holdout": 1200
+  },
+  "olmo|sd_soft": {
+   "generic": -1.7583659641158786,
+   "arith": -1.3799572887694325,
+   "geo": -1.3903800448752137,
+   "key": "A_free_l2generic_0.001",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.4400592004904511,
+   "geo_share": 0.4279383638985895,
+   "n_holdout": 1200
+  },
+  "olmo|sd_all": {
+   "generic": -1.7583659641158786,
+   "arith": -1.3799572859638083,
+   "geo": -1.3868063732401776,
+   "key": "A_free_l2zero_0.01",
+   "instruct_self": -0.8984619445550893,
+   "arith_share": 0.4400592037531689,
+   "geo_share": 0.432094259851793,
+   "n_holdout": 1200
+  },
+  "qwen|olmospec": {
+   "generic": -1.237148502416036,
+   "arith": -1.2343352095098454,
+   "geo": -1.202231655908205,
+   "key": "A_free_lambda0",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.005585716940991333,
+   "geo_share": 0.06932645393432538,
+   "n_holdout": 1199
+  },
+  "qwen|bigfive": {
+   "generic": -1.237148502416036,
+   "arith": -1.2162684353251252,
+   "geo": -1.1075124017533047,
+   "key": "A_free_lambda0",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.04145680822003787,
+   "geo_share": 0.25738897007221917,
+   "n_holdout": 1199
+  },
+  "qwen|legacy87": {
+   "generic": -1.237148502416036,
+   "arith": -1.2168074351317066,
+   "geo": -1.0897175836638395,
+   "key": "A_free_l2zero_0.0001",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.04038663868874303,
+   "geo_share": 0.29272009988293457,
+   "n_holdout": 1199
+  },
+  "qwen|axis": {
+   "generic": -1.237148502416036,
+   "arith": -1.2037114114710372,
+   "geo": -1.03430491391603,
+   "key": "A_free_l2generic_0.0001",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.06638843930468957,
+   "geo_share": 0.4027404562684379,
+   "n_holdout": 1199
+  },
+  "qwen|three": {
+   "generic": -1.237148502416036,
+   "arith": -1.203395614997285,
+   "geo": -1.027349112136239,
+   "key": "A_free_l2generic_0.0001",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.06701544465825977,
+   "geo_share": 0.41655101248676163,
+   "n_holdout": 1199
+  },
+  "qwen|all": {
+   "generic": -1.237148502416036,
+   "arith": -1.2033978027999563,
+   "geo": -1.0195841601373237,
+   "key": "A_free_l2generic_0.0001",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.06701110083525527,
+   "geo_share": 0.4319681145705458,
+   "n_holdout": 1199
+  },
+  "qwen|sd": {
+   "generic": -1.237148502416036,
+   "arith": -1.1967415581578371,
+   "geo": -1.0255899481766524,
+   "key": "A_free_l2zero_0.001",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.08022689446237975,
+   "geo_share": 0.4200437849277052,
+   "n_holdout": 1199
+  },
+  "qwen|sd_soft": {
+   "generic": -1.237148502416036,
+   "arith": -0.8626879056526513,
+   "geo": -0.8660905736201266,
+   "key": "A_free_l2zero_0.01",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.7434813824299539,
+   "geo_share": 0.7367254772525468,
+   "n_holdout": 1199
+  },
+  "qwen|sd_all": {
+   "generic": -1.237148502416036,
+   "arith": -0.8626879057007173,
+   "geo": -0.8654426652122966,
+   "key": "A_free_l2zero_0.01",
+   "instruct_self": -0.7334901652838832,
+   "arith_share": 0.7434813823345201,
+   "geo_share": 0.7380118818646877,
+   "n_holdout": 1199
+  }
+ },
+ "same_text": {
+  "olmo answers": {
+   "instruct_self": -40.918203109900155,
+   "n": 1200,
+   "olmo base|legacy87|generic": -80.00272075733228,
+   "olmo base|legacy87|arith": -78.37566917989194,
+   "olmo base|legacy87|geo": -73.0436925388632,
+   "olmo base|sd (olmo)|generic": -80.00272075733228,
+   "olmo base|sd (olmo)|arith": -74.91102219324401,
+   "olmo base|sd (olmo)|geo": -68.73413234585117,
+   "qwen base|legacy87|generic": -92.43629376808802,
+   "qwen base|legacy87|arith": -91.3737331813676,
+   "qwen base|legacy87|geo": -85.15683594783147,
+   "qwen base|sd (olmo)|generic": -92.43629376808802,
+   "qwen base|sd (olmo)|arith": -89.13388430674739,
+   "qwen base|sd (olmo)|geo": -81.12478411237399,
+   "generic_diff_se": 0.21630379948660142
+  },
+  "qwen answers": {
+   "instruct_self": -34.53154241849821,
+   "n": 1199,
+   "qwen base|legacy87|generic": -58.16455231834392,
+   "qwen base|legacy87|arith": -57.20821678549577,
+   "qwen base|legacy87|geo": -51.2330858287859,
+   "qwen base|sd (qwen)|generic": -58.16455231834392,
+   "qwen base|sd (qwen)|arith": -56.264819328536646,
+   "qwen base|sd (qwen)|geo": -48.218124244091804,
+   "olmo base|legacy87|generic": -73.41605551309001,
+   "olmo base|legacy87|arith": -71.77351013244288,
+   "olmo base|legacy87|geo": -69.42035858816172,
+   "olmo base|sd (qwen)|generic": -73.41605551309001,
+   "olmo base|sd (qwen)|arith": -71.02151026703477,
+   "olmo base|sd (qwen)|geo": -67.96755479436735,
+   "generic_diff_se": 0.23544075283591406
+  }
+ }
+}

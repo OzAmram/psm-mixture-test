@@ -4,15 +4,18 @@ without the leading space, possibly a different token count) are on the same sca
 against the base model's transcript framing with the same description.
 
     python scripts/phase4_framing_summary2.py   -> results/phase4/framing/summary2.json
+    python scripts/phase4_framing_summary2.py --dir results/phase4/qwen/framing --files "base:scores_qwenbase_0.json,scores_qwenbase_1.json,scores_qwenbase_2.json,scores_qwenbase_3.json" \
+        --nref scores_qwenbase_0.json        (Qwen replication, 2026-10-30)
 """
-import json
+import argparse, json
 from pathlib import Path
 import numpy as np
 
-O = Path("results/phase4/framing")
-FILES = {"base": ["scores.json", "scores_base_hyb.json", "scores_base_turn.json"], "sft": ["scores_sft_chat.json", "scores_sft_raw.json"], "instruct": ["scores_instruct_chat.json"]}
+ap = argparse.ArgumentParser(); ap.add_argument("--dir", default="results/phase4/framing"); ap.add_argument("--nref", default="scores_base_turn.json")
+ap.add_argument("--files", default="base:scores.json,scores_base_hyb.json,scores_base_turn.json;sft:scores_sft_chat.json,scores_sft_raw.json;instruct:scores_instruct_chat.json")
+a = ap.parse_args(); O = Path(a.dir); FILES = {m: fs.split(",") for m, fs in (x.split(":") for x in a.files.split(";"))}
 T, D = {}, None
-NR = {h: np.array(v) for h, v in json.loads((O / "scores_base_turn.json").read_text())["n_ref"].items()}    # same seed-0 answers in every file
+NR = {h: np.array(v) for h, v in json.loads((O / a.nref).read_text())["n_ref"].items()}    # same seed-0 answers in every file
 for m, fs in FILES.items():
     for f in fs:
         r = json.loads((O / f).read_text()); D = D or r["descriptions"]

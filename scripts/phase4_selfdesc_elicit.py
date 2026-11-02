@@ -11,6 +11,8 @@ Phase 1 form (basis.description_header). Raw samples go to data/prompts/basis/el
 
     python scripts/phase4_selfdesc_elicit.py --part 0/4     (one per GPU: overall prompts on part 0, traits split k, k+n, ...)
     python scripts/phase4_selfdesc_elicit.py --merge        (writes the two families from the parts)
+    python scripts/phase4_selfdesc_elicit.py --model Qwen/Qwen2.5-7B-Instruct --prefix qwen_ --part 0/4   (Qwen replication, 2026-10-30:
+        families qwen_selfdesc_*, component names qsdo_* / qsdt_*, raw files qwen_selfdesc_*)
 """
 import argparse, json, os, random, re, sys
 from pathlib import Path
@@ -62,35 +64,36 @@ def accepted(model, tok, msg, k, rounds=8):
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--n-overall", type=int, default=4); ap.add_argument("--n-traits", type=int, default=240)
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--part", default="0/1"); ap.add_argument("--merge", action="store_true")
+    ap.add_argument("--model", default=INSTRUCT); ap.add_argument("--prefix", default="", help="family/file prefix (e.g. qwen_); names get its first letter")
     a = ap.parse_args(); k, n = map(int, a.part.split("/")); torch.manual_seed(a.seed + k)
     R = Path("data/prompts/basis/elicited_raw")
-    if a.merge: return merge(R)
+    if a.merge: return merge(R, a.prefix)
     traits = json.load(open("data/persona_sources/assistant_axis/traits/trait_list.json"))
     picked = sorted(random.Random(a.seed).sample(sorted(traits), a.n_traits))[k::n]
-    tok = AutoTokenizer.from_pretrained(INSTRUCT); model = AutoModelForCausalLM.from_pretrained(INSTRUCT, dtype=torch.bfloat16, device_map="cuda").eval()
+    tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval(); np_ = a.prefix[:1]
     fams = {"selfdesc_overall": [], "selfdesc_traits": []}; raws = {"selfdesc_overall": [], "selfdesc_traits": []}
     for key, p in (OVERALL.items() if k == 0 else []):
         acc, raw = accepted(model, tok, p + FMT, a.n_overall); raws["selfdesc_overall"] += [(key, t) for t in raw]
-        fams["selfdesc_overall"] += [{"name": f"sdo_{key}_{i}", "prompt": key, "description": t} for i, t in enumerate(acc)]
+        fams["selfdesc_overall"] += [{"name": f"{np_}sdo_{key}_{i}", "prompt": key, "description": t} for i, t in enumerate(acc)]
         print(f"overall/{key}: {len(acc)} accepted of {len(raw)} raw", flush=True)
     for tr in picked:
         acc, raw = accepted(model, tok, TRAIT.format(trait=tr, gloss=traits[tr]) + FMT, 1); raws["selfdesc_traits"] += [(tr, t) for t in raw]
-        fams["selfdesc_traits"] += [{"name": f"sdt_{re.sub(r'[^a-z0-9]+', '-', tr.lower())}", "trait": tr, "gloss": traits[tr], "description": t} for t in acc]
+        fams["selfdesc_traits"] += [{"name": f"{np_}sdt_{re.sub(r'[^a-z0-9]+', '-', tr.lower())}", "trait": tr, "gloss": traits[tr], "description": t} for t in acc]
         print(f"trait/{tr}: {len(acc)} accepted of {len(raw)} raw", flush=True)
     R.mkdir(parents=True, exist_ok=True)
-    (R / f"selfdesc_part{k}of{n}.json").write_text(json.dumps({"fams": fams, "raws": raws}, indent=1)); print("part written")
+    (R / f"{a.prefix}selfdesc_part{k}of{n}.json").write_text(json.dumps({"fams": fams, "raws": raws}, indent=1)); print("part written")
 
 
-def merge(R):
+def merge(R, prefix=""):
     fams = {"selfdesc_overall": [], "selfdesc_traits": []}; raws = {"selfdesc_overall": [], "selfdesc_traits": []}
-    for f in sorted(R.glob("selfdesc_part*of*.json")):
+    for f in sorted(R.glob(f"{prefix}selfdesc_part*of*.json")):
         d = json.loads(f.read_text())
         for fam in fams: fams[fam] += d["fams"][fam]; raws[fam] += d["raws"][fam]
     fams["selfdesc_traits"].sort(key=lambda c: c["name"])
     for fam, comps in fams.items():
-        (R / f"{fam}.json").write_text(json.dumps(raws[fam], indent=1))
+        (R / f"{prefix}{fam}.json").write_text(json.dumps(raws[fam], indent=1))
         for c in comps: c["header"] = description_header(c["description"])
-        write_family(fam, comps); w = [len(c["description"].split()) for c in comps]
+        write_family(prefix + fam, comps); w = [len(c["description"].split()) for c in comps]
         print(f"{fam}: {len(comps)} components, words min {min(w)} median {sorted(w)[len(w) // 2]} max {max(w)}")
         for c in comps[:2]: print("   ", c["description"][:300])
 

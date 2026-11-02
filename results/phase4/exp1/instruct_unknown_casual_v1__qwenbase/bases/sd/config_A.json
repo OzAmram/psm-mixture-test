@@ -1,0 +1,21 @@
+{
+  "args": {
+    "run": "instruct_unknown_casual_v1__qwenbase",
+    "fits": "A",
+    "lambdas": "0,1e-4,1e-3,1e-2,1e-1",
+    "devices": "0,1,2,3",
+    "greedy_steps": 12,
+    "maxiter": 300,
+    "out": "results/phase4/exp1",
+    "seed": 0,
+    "max_rows": null,
+    "contexts": "selfdesc_overall,selfdesc_traits",
+    "row_contexts": "legacy86,selfdesc_overall,selfdesc_traits",
+    "tag": "bases/sd",
+    "model": "Qwen/Qwen2.5-7B",
+    "fit_frac": 0.8
+  },
+  "git_commit": "4b8ddc1",
+  "hidden_dir": "/pscratch/sd/o/ozamram/persona_phase4/hidden/instruct_unknown_casual_v1__qwenbase",
+  "command": "scripts/phase4_geom_fit.py --run instruct_unknown_casual_v1__qwenbase --model Qwen/Qwen2.5-7B --fits A --devices 0,1,2,3 --contexts selfdesc_overall,selfdesc_traits --row-contexts legacy86,selfdesc_overall,selfdesc_traits --fit-frac 0.8 --lambdas 0,1e-4,1e-3,1e-2,1e-1 --out results/phase4/exp1 --tag bases/sd"
+}

@@ -25,6 +25,8 @@ fit half; the test half is reported alongside, untouched by any choice.
 
     python scripts/phase4_framing.py          -> results/phase4/framing/scores.json      (round 1)
     python scripts/phase4_framing.py --model allenai/Olmo-3-7B-Instruct-SFT --framings transcript,chat_plain,chat_sys,chat_turn --out results/phase4/framing/scores_sft_chat.json
+Qwen replication (2026-10-30): --run (a run folder), --families (the Qwen self-descriptions; descriptions = generic + 16 drawn at random,
+seed 0, since the 8 Olmo verbalisation targets do not exist there) and --ref-model (whose transcript tokenisation gives n_ref).
 """
 import argparse, json, os, random, sys, time
 from pathlib import Path
@@ -96,14 +98,18 @@ def main():
     ap.add_argument("--out", default="results/phase4/framing/scores.json"); ap.add_argument("--max-tokens-per-batch", type=int, default=12000)
     ap.add_argument("--model", default=BASE); ap.add_argument("--framings", default=",".join(FRAMINGS))
     ap.add_argument("--generic-only", default="chat_plain", help="framings that ignore the description (scored once, as 'generic')")
+    ap.add_argument("--template-from", default=None, help="take the chat template from this tokenizer (e.g. the Instruct model's, for a base model; contamination check)")
+    ap.add_argument("--run", default=RUN); ap.add_argument("--families", default="selfdesc_overall,selfdesc_traits"); ap.add_argument("--ref-model", default=BASE)
     a = ap.parse_args(); framings = a.framings.split(","); gen_only = set(a.generic_only.split(","))
-    desc = {c["name"]: c["description"] for f in ["selfdesc_overall", "selfdesc_traits"] for c in load_family(f)}
-    others = random.Random(a.seed).sample(sorted(set(desc) - set(TARGETS)), 8)
-    bodies = {"generic": UNKNOWN_BODY, **{n: desc[n] for n in TARGETS + others}}
-    rows, suf = load_rows(RUN); fit_q, test_q = split(); rng = random.Random(a.seed)
+    desc = {c["name"]: c["description"] for f in a.families.split(",") for c in load_family(f)}
+    tg = TARGETS if set(TARGETS) <= set(desc) else []
+    others = random.Random(a.seed).sample(sorted(set(desc) - set(tg)), 16 - len(tg))
+    bodies = {"generic": UNKNOWN_BODY, **{n: desc[n] for n in tg + others}}
+    rows, suf = load_rows(a.run); fit_q, test_q = split(); rng = random.Random(a.seed)
     idx = {"fit": rng.sample([i for i, r in enumerate(rows) if r["qidx"] in fit_q], a.n), "test": rng.sample([i for i, r in enumerate(rows) if r["qidx"] in test_q], a.n)}
     tok = AutoTokenizer.from_pretrained(a.model); model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.bfloat16, device_map="cuda").eval(); dev = model.device
-    btok = AutoTokenizer.from_pretrained(BASE)      # reference token counts: the base model's transcript tokenisation of each answer
+    if a.template_from: tok.chat_template = AutoTokenizer.from_pretrained(a.template_from).chat_template
+    btok = AutoTokenizer.from_pretrained(a.ref_model)      # reference token counts: the base model's transcript tokenisation of each answer
     nref = {i: (lambda e: len(e[0]) - e[1])(_encode(btok, prompt("transcript", UNKNOWN_BODY, rows[i]["question"] + suf), rows[i]["response"])) for ii in idx.values() for i in ii}
 
     def chat_enc(framing, body, i):
@@ -133,8 +139,8 @@ def main():
                 lp[j] = float((zz.gather(-1, torch.tensor(s[p:], device=dev)[:, None])[:, 0] - torch.logsumexp(zz, -1)).sum())
         return lp, nt
 
-    ex = lambda f: (tok.apply_chat_template(chat_messages(f, desc["sdt_casual"], rows[0]["question"] + suf), add_generation_prompt=True, tokenize=False)
-                    if f.startswith("chat_") else prompt(f, desc["sdt_casual"], rows[0]["question"] + suf))
+    ex = lambda f: (tok.apply_chat_template(chat_messages(f, bodies[list(bodies)[1]], rows[0]["question"] + suf), add_generation_prompt=True, tokenize=False)
+                    if f.startswith("chat_") else prompt(f, bodies[list(bodies)[1]], rows[0]["question"] + suf))
     res = {"settings": vars(a), "descriptions": list(bodies), "examples": {f: ex(f) for f in framings},
            "per_answer": {}, "mean": {}, "total": {}, "n_ref": {h: [nref[i] for i in ii] for h, ii in idx.items()}}
     out = Path(a.out); out.parent.mkdir(parents=True, exist_ok=True); t0 = time.time()

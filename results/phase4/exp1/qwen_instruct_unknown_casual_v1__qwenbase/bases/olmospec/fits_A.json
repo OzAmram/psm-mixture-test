@@ -1,0 +1,321 @@
+{
+ "run": "qwen_instruct_unknown_casual_v1__qwenbase",
+ "contexts": [
+  "olmo_sysmsg",
+  "olmo_identity",
+  "olmo_judge",
+  "olmo_ultrafeedback",
+  "olmo_safety",
+  "olmo_all",
+  "olmo_all_hhh",
+  "generic"
+ ],
+ "families": "olmo_spec",
+ "fit_frac": 0.8,
+ "fit_questions": [
+  1,
+  2,
+  3,
+  7,
+  12,
+  15,
+  16,
+  19,
+  20,
+  21,
+  24,
+  26,
+  27,
+  30,
+  32,
+  38,
+  40,
+  48,
+  49,
+  51,
+  56,
+  58,
+  62,
+  66,
+  67,
+  69,
+  76,
+  77,
+  78,
+  79,
+  85,
+  86,
+  87,
+  88,
+  89,
+  95,
+  96,
+  100,
+  101,
+  105,
+  108,
+  112,
+  113,
+  114,
+  120,
+  125,
+  127,
+  129,
+  131,
+  134,
+  136,
+  137,
+  139,
+  142,
+  143,
+  146,
+  153,
+  154,
+  156,
+  157,
+  158,
+  165,
+  169,
+  171,
+  172,
+  174,
+  175,
+  176,
+  177,
+  180,
+  183,
+  184,
+  188,
+  190,
+  191,
+  193,
+  198,
+  201,
+  203,
+  207,
+  211,
+  214,
+  217,
+  220,
+  222,
+  224,
+  225,
+  228,
+  231,
+  234,
+  235,
+  236,
+  240,
+  241,
+  244,
+  245,
+  247,
+  248,
+  253,
+  254,
+  257,
+  260,
+  262,
+  263,
+  268,
+  270,
+  271,
+  273,
+  278,
+  279,
+  280,
+  281,
+  283,
+  284,
+  287,
+  288,
+  289,
+  297,
+  298,
+  299
+ ],
+ "n_fit": 959,
+ "n_test": 1199,
+ "n_fit_positions": 46308,
+ "n_test_positions": 56371,
+ "val_questions": [
+  1,
+  2,
+  12,
+  19,
+  49,
+  76,
+  86,
+  87,
+  136,
+  143,
+  165,
+  169,
+  172,
+  175,
+  180,
+  184,
+  207,
+  214,
+  217,
+  225,
+  247,
+  253,
+  273,
+  278
+ ],
+ "fits": {
+  "A_free_lambda0": {
+   "c": [
+    0.6409361350409618,
+    -0.9221182855793215,
+    1.2517143143208913,
+    0.18967060418999057,
+    0.3937602276287759,
+    -1.6822117471846283,
+    0.5769351945209666,
+    0.6533571209334257
+   ],
+   "sum_c": 1.102043563871062,
+   "fit_half_logp": -1.2040780489129848,
+   "holdout_logp": -1.202231655908205,
+   "top_abs_c": [
+    [
+     "olmo_all",
+     -1.6822
+    ],
+    [
+     "olmo_judge",
+     1.2517
+    ],
+    [
+     "olmo_identity",
+     -0.9221
+    ],
+    [
+     "generic",
+     0.6534
+    ],
+    [
+     "olmo_sysmsg",
+     0.6409
+    ],
+    [
+     "olmo_all_hhh",
+     0.5769
+    ],
+    [
+     "olmo_safety",
+     0.3938
+    ],
+    [
+     "olmo_ultrafeedback",
+     0.1897
+    ]
+   ],
+   "iters": 51,
+   "message": "CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH"
+  }
+ },
+ "check_generic": {
+  "holdout_from_hidden": -1.237148502416036,
+  "holdout_stored": -1.2373064352121026,
+  "max_abs_diff_per_answer": 0.5951690673828125
+ },
+ "arithmetic": {
+  "weights": {
+   "generic": 0.6165,
+   "olmo_sysmsg": 0.2881,
+   "olmo_judge": 0.0954
+  }
+ },
+ "A_lambda_selection": {
+  "zero": {
+   "grid": [
+    {
+     "lambda": 0.0,
+     "val_logp": -1.2220040142377724,
+     "iters": 44,
+     "converged": true
+    },
+    {
+     "lambda": 0.0001,
+     "val_logp": -1.2221649056353003,
+     "iters": 50,
+     "converged": true
+    },
+    {
+     "lambda": 0.001,
+     "val_logp": -1.2237024594215178,
+     "iters": 44,
+     "converged": true
+    },
+    {
+     "lambda": 0.01,
+     "val_logp": -1.2346616737897063,
+     "iters": 42,
+     "converged": false
+    },
+    {
+     "lambda": 0.1,
+     "val_logp": -1.2573325125224282,
+     "iters": 7,
+     "converged": true
+    }
+   ],
+   "chosen_lambda": 0.0
+  },
+  "generic": {
+   "grid": [
+    {
+     "lambda": 0.0,
+     "val_logp": -1.2220040142377724,
+     "iters": 44,
+     "converged": true
+    },
+    {
+     "lambda": 0.0001,
+     "val_logp": -1.222144618990065,
+     "iters": 54,
+     "converged": true
+    },
+    {
+     "lambda": 0.001,
+     "val_logp": -1.223857821637427,
+     "iters": 43,
+     "converged": true
+    },
+    {
+     "lambda": 0.01,
+     "val_logp": -1.2342303716648393,
+     "iters": 28,
+     "converged": true
+    },
+    {
+     "lambda": 0.1,
+     "val_logp": -1.2461449663161217,
+     "iters": 11,
+     "converged": false
+    }
+   ],
+   "chosen_lambda": 0.0
+  }
+ },
+ "holdout": {
+  "generic header": {
+   "logp": -1.237148502416036,
+   "se": 0.01129614298399243,
+   "minus_arithmetic_se": 0.0006742716322238909
+  },
+  "arithmetic mixture": {
+   "logp": -1.2343352095098454,
+   "se": 0.011332776053770735,
+   "minus_arithmetic_se": 0.0
+  },
+  "A_free_lambda0": {
+   "logp": -1.202231655908205,
+   "se": 0.011717262712636662,
+   "minus_arithmetic_se": 0.0016390481016503187
+  }
+ }
+}
