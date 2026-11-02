@@ -14,7 +14,7 @@ for g in 0 1 2 3; do CUDA_VISIBLE_DEVICES=$g $H --contexts selfdesc_overall_v35,
 echo "$(date) v35 hidden states done"
 bash scripts/phase4_bases_fit.sh sd_verb35
 for g in 0 1 2 3; do CUDA_VISIBLE_DEVICES=$g $H --model $SFT --framing $FR --tag $TAG --contexts selfdesc_overall,selfdesc_traits,generic --part $g/4 > logs/p4_${TAG}_hidden_$g.log 2>&1 & done; wait
-echo "$(date) SFT hidden states done: $(ls /pscratch/sd/o/ozamram/persona_phase4/hidden/${RUN}__$TAG/lp_*.npy | wc -l) contexts"
+echo "$(date) SFT hidden states done: $(ls $SCRATCH/persona_phase4/hidden/${RUN}__$TAG/lp_*.npy | wc -l) contexts"
 python scripts/phase4_geom_fit.py --run ${RUN}__$TAG --model $SFT --fits A --devices 0,1,2,3 --contexts selfdesc_overall,selfdesc_traits \
   --fit-frac 0.8 --lambdas 0,1e-4,1e-3,1e-2,1e-1 --out results/phase4/exp1 --tag sd > logs/p4_${TAG}_fit.log 2>&1
 tail -5 logs/p4_${TAG}_fit.log

@@ -1,0 +1,15 @@
+# repo_id revision  (exact snapshots used for every result; Olmo-3-7B-Instruct also needs the step_* revisions)
+allenai/OLMo-2-1124-7B 7df9a82518afdecae4e8c026b27adccc8c1f0032  # main
+allenai/OLMo-2-1124-7B-Instruct 470b1fba1ae01581f270116362ee4aa1b97f4c84  # main
+allenai/Olmo-3-1025-7B a81bae42db3975be1671e27b9c9a56da1a9f980f  # main
+allenai/Olmo-3-7B-Instruct 6e5971d9eba42665f5bd5a0fcf047f299ce1dccc  # main
+allenai/Olmo-3-7B-Instruct b705ea628af06279a4ed2b7de53cabcb855e55a4  # step_100
+allenai/Olmo-3-7B-Instruct 71e18f5221e2fb6c58b84d05c2dd9dea6bd51684  # step_200
+allenai/Olmo-3-7B-Instruct aa8dffc0678efd641bcb988eccfc7d04ba5c0dbf  # step_300
+allenai/Olmo-3-7B-Instruct-DPO b33130b7de49f0c2553b5c2b3bc8409ff3e627d1  # main
+allenai/Olmo-3-7B-Instruct-SFT e1452fc572d51966ff4aaeb25118b891eb93e549  # main
+allenai/Olmo-3-7B-RL-Zero-General 24e5814cb36944d3eb36a49679d02c2b3bb46195  # main
+meta-llama/Llama-3.1-8B d04e592bb4f6aa9cfee91e2e20afa771667e1d4b  # main
+meta-llama/Llama-3.1-8B-Instruct 0e9e39f249a16976918f6564b8830bc894c89659  # main
+Qwen/Qwen2.5-7B d149729398750b98c0af14eb82c78cfe92750796  # main
+Qwen/Qwen2.5-7B-Instruct a09a35458c702b33eeacc393d103063234e8bc28  # main

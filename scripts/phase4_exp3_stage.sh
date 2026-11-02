@@ -16,7 +16,7 @@ set -uo pipefail
 cd "${SLURM_SUBMIT_DIR:-$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/..}"
 source ./env.sh > /dev/null
 E=results/phase4/exp3; Q=results/phase4/exp1/basis_test_qids.json; BASE=allenai/Olmo-3-1025-7B
-HUB=/global/cfs/cdirs/m2612/ozamram/hf_cache/hub/models--allenai--Olmo-3-7B-Instruct
+HUB=$HF_HOME/hub/models--allenai--Olmo-3-7B-Instruct
 snap() { echo $HUB/snapshots/$(cat $HUB/refs/$1); }
 echo "=== $(date) phase 4 exp 3 on $(hostname): $* ==="
 
