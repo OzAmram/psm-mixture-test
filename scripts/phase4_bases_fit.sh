@@ -4,6 +4,7 @@
 # (the largest basis does not fit in GPU memory with all of them; the 87-context basis is refitted on the same 80% as
 # the reference) and the lambda grid 0..0.1 chosen on validation. Skips a basis whose fits_A.json has hold-out rows.
 #   srun --jobid=<allocation> --overlap -n1 -G4 bash scripts/phase4_bases_fit.sh [tag ...]
+# DEVICES=0 runs on one GPU (RunPod, 2026-11-02; default 0,1,2,3).
 # Qwen replication (2026-10-30): RUN=<hidden-state folder name> MODEL=<scorer> ROWCTX=<families> override the Olmo defaults, e.g.
 #   RUN=qwen_instruct_unknown_casual_v1__qwenbase MODEL=Qwen/Qwen2.5-7B bash scripts/phase4_bases_fit.sh legacy87 qsd
 set -uo pipefail
@@ -22,7 +23,7 @@ echo "=== $(date) bases fit on $(hostname): $TAGS ==="
 for t in $TAGS; do
   o=results/phase4/exp1/$RUN/bases/$t
   grep -q '"holdout"' $o/fits_A.json 2>/dev/null && { echo "$t: done, skipping"; continue; }
-  python scripts/phase4_geom_fit.py --run $RUN --model $MODEL --fits A --devices 0,1,2,3 --contexts ${FAM[$t]} \
+  python scripts/phase4_geom_fit.py --run $RUN --model $MODEL --fits A --devices ${DEVICES:-0,1,2,3} --contexts ${FAM[$t]} \
     --row-contexts $ROWCTX --fit-frac 0.8 --lambdas 0,1e-4,1e-3,1e-2,1e-1 --out results/phase4/exp1 --tag bases/$t \
     > logs/p4b_fit_${RUN}_$t.log 2>&1
   echo "$(date) $t: $(tail -4 logs/p4b_fit_${RUN}_$t.log | tr '\n' ' ' | cut -c1-200)"

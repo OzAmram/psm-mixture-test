@@ -3,6 +3,8 @@ components"). Uses the FIT half only (the questions the sd fit used): the union 
   (a) the first --k picks of greedy forward selection of the arithmetic mixture (EM weights, fit-half likelihood), and
   (b) the --k largest |c| of the geometric fit A on the sd basis (selfdesc_overall + selfdesc_traits), at the lambda
       chosen on validation.
+--arith-only (Llama on RunPod, 2026-11-02: the full sd fit does not fit on one GPU, the author chose to drop it): (a) only,
+with --k picks; --fit is then any fit on the same answers (e.g. the overall-only lsdo fit), used for its fit questions.
 Writes results/phase4/selfdesc/selected.txt (family:name per line) and selected.json (with the reason for each).
 
     python scripts/phase4_selfdesc_select.py --k 20
@@ -24,14 +26,17 @@ FIT = Path("results/phase4/exp1/instruct_unknown_casual_v1/bases/sd/fits_A.json"
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--k", type=int, default=20); ap.add_argument("--hid", default=HID.name)
     ap.add_argument("--fit", default=str(FIT)); ap.add_argument("--prefix", default="", help="family prefix (qwen_)"); ap.add_argument("--out", default="results/phase4/selfdesc")
+    ap.add_argument("--arith-only", action="store_true", help="skip (b); --fit only supplies the fit questions")
     a = ap.parse_args(); hid = HID.parent / a.hid; O = Path(a.out)
     fam_of = {c["name"]: a.prefix + f for f in ["selfdesc_overall", "selfdesc_traits"] for c in load_family(a.prefix + f)}
     r = json.load(open(a.fit)); ctxs = r["contexts"]
-    sel = r["A_lambda_selection"]; tgt, lam, _ = max(((t, g["lambda"], g["val_logp"]) for t, v in sel.items() for g in v["grid"]), key=lambda x: x[2])
-    key = "A_free_lambda0" if lam == 0 else f"A_free_l2{tgt}_{lam:g}"; c = np.array(r["fits"][key]["c"])
-    geo = [ctxs[j] for j in np.argsort(-np.abs(c)) if ctxs[j] in fam_of][: a.k]
-    ix = np.load(hid / "index.npz"); names = [n for n in ctxs if n in fam_of]
-    fit = ok_rows(hid, ctxs) & np.isin(ix["qidx"], r["fit_questions"])
+    if a.arith_only: key, geo, c = None, [], None
+    else:
+        sel = r["A_lambda_selection"]; tgt, lam, _ = max(((t, g["lambda"], g["val_logp"]) for t, v in sel.items() for g in v["grid"]), key=lambda x: x[2])
+        key = "A_free_lambda0" if lam == 0 else f"A_free_l2{tgt}_{lam:g}"; c = np.array(r["fits"][key]["c"])
+        geo = [ctxs[j] for j in np.argsort(-np.abs(c)) if ctxs[j] in fam_of][: a.k]
+    ix = np.load(hid / "index.npz"); names = list(fam_of)   # same order and set as the sd fit's contexts (overall, then traits)
+    fit = ok_rows(hid, names + ["generic"]) & np.isin(ix["qidx"], r["fit_questions"])
     L = np.stack([np.load(hid / f"lp_{n}.npy") for n in names], 1)[fit]; chosen = []
     for _ in range(a.k):
         best = None
@@ -45,7 +50,8 @@ def main():
     O.mkdir(parents=True, exist_ok=True)
     (O / "selected.txt").write_text("".join(f"{fam_of[n]}:{n}\n" for n in out))
     (O / "selected.json").write_text(json.dumps({"k": a.k, "geometric_variant": key, "geometric_top": geo, "arithmetic_greedy": ari,
-        "selected": out, "n_fit_answers": int(fit.sum()), "geometric_c": {n: round(float(c[ctxs.index(n)]), 3) for n in geo}}, indent=1))
+        "selected": out, "n_fit_answers": int(fit.sum()), "geometric_c": {n: round(float(c[ctxs.index(n)]), 3) for n in geo} if c is not None else {}}, indent=1))
+    if a.arith_only: (O / "selected.json").write_text(json.dumps({**json.loads((O / "selected.json").read_text()), "arith_only": True, "fit_questions_from": a.fit}, indent=1))
     print(f"{len(out)} selected ({len(set(geo) & set(ari))} in both): geometric top {geo[:8]}...; arithmetic greedy {ari[:8]}...")
 
 

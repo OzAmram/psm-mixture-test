@@ -1,0 +1,6 @@
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_describe_1", "init": "llama_selfdesc_overall:lsdo_describe_1", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_describe_1/prefix.pt", "header": ""}
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_describe_3", "init": "llama_selfdesc_overall:lsdo_describe_3", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_describe_3/prefix.pt", "header": ""}
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_advice_2", "init": "llama_selfdesc_overall:lsdo_advice_2", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_advice_2/prefix.pt", "header": ""}
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_advice_3", "init": "llama_selfdesc_overall:lsdo_advice_3", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_advice_3/prefix.pt", "header": ""}
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_actor_2", "init": "llama_selfdesc_overall:lsdo_actor_2", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_actor_2/prefix.pt", "header": ""}
+{"family": "llama_selfdesc_overall_soft", "name": "sp_lsdo_story_0", "init": "llama_selfdesc_overall:lsdo_story_0", "prefix": "results/phase4/llama/selfdesc/prefix/lsdo_story_0/prefix.pt", "header": ""}

@@ -16,13 +16,13 @@ grep -v '^#' transfer/model_revisions.txt | grep -- "$PAT" | while read -r repo 
   got=$(cat "$HF_HOME/hub/models--${repo//\//--}/refs/$ref" 2>/dev/null)
   [ "$got" = "$commit" ] && echo "ok" || echo "MISMATCH: $repo $ref is $got, results used $commit (the repo was updated; use --revision $commit and note it)"
 done
-# load check: every model's weights are complete and readable offline (CPU, config + one shard index only)
+# load check: every model's weights are complete and readable offline (CPU, config + one shard index only) (original/* is excluded, as in the download)
 python - <<'PY'
 import os; os.environ["HF_HUB_OFFLINE"] = "1"
 from huggingface_hub import snapshot_download
 for line in open("transfer/model_revisions.txt"):
     if line.startswith("#") or not line.strip(): continue
     repo, commit, _, ref = line.split()
-    try: p = snapshot_download(repo, revision=ref, local_files_only=True); print("offline ok:", repo, ref, p.endswith(commit))
+    try: p = snapshot_download(repo, revision=ref, local_files_only=True, ignore_patterns=["original/*"]); print("offline ok:", repo, ref, p.endswith(commit))
     except Exception as e: print("OFFLINE FAIL:", repo, ref, type(e).__name__)
 PY

@@ -49,7 +49,7 @@ HID = Path(os.environ.get("SCRATCH", "/pscratch/sd/o/ozamram")) / "persona_phase
 def unembedding(model="allenai/Olmo-3-1025-7B"):
     from safetensors import safe_open
     from huggingface_hub import snapshot_download
-    d = Path(snapshot_download(model)); idx = json.load(open(d / "model.safetensors.index.json"))["weight_map"]
+    d = Path(snapshot_download(model, ignore_patterns=["original/*"])); idx = json.load(open(d / "model.safetensors.index.json"))["weight_map"]
     with safe_open(d / idx["lm_head.weight"], "pt") as f: return f.get_tensor("lm_head.weight").to(torch.bfloat16)   # (V, d)
 
 
