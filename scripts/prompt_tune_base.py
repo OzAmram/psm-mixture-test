@@ -94,6 +94,8 @@ def main():
                     "embeddings (overrides --init); with --L 0 the prefix length is the header's token count, so at step 0 base + prefix equals "
                     "base + the written header")
     ap.add_argument("--val-frac", type=float, default=0.2, help="fraction of the training questions held out for early stopping")
+    ap.add_argument("--grad-checkpointing", action="store_true", help="recompute activations in the backward pass (same gradients, less memory; "
+                    "needed for L = 2048 at batch 8 on an 80 GB GPU; checked by scripts/phase4_lensweep_ckpt_check.py)")
     ap.add_argument("--eval-prefix", default=None, help="comma list of other prefix.pt files to evaluate on this run's hold-out samples (cross-evaluation)")
     args = ap.parse_args(); random.seed(args.seed); torch.manual_seed(args.seed)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
@@ -103,6 +105,8 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.model); pad_id = tok.pad_token_id if tok.pad_token_id is not None else tok.eos_token_id
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.bfloat16, device_map="cuda"); model.eval()
     for p in model.parameters(): p.requires_grad_(False)
+    if args.grad_checkpointing:   # HF applies checkpointing only in train mode; OLMo 3 has no dropout, so train mode changes nothing else
+        model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False}); model.train()
     dev = model.device
     rows = [json.loads(l) for l in open(args.rows)]; hold = set(json.load(open(args.holdout_qids)))
     if args.data_format == "subliminal":
