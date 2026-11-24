@@ -221,19 +221,9 @@ Or perhaps the geometric mixture can improve things.
 
 For every basis I tried both the arithmetic and geometric fit:
 
-| basis (personas) | arithmetic mixture | geometric fit |
-|---|---|---|
-| *base generic header* | −1.758 | |
-| 86 base personas + generic (87) | −1.723 | −1.605 |
-| Olmo spec (8) | −1.724 | −1.680 |
-| Big Five and IPIP facets (113) | −1.726 | −1.640 |
-| Assistant Axis roles and traits (516) | −1.728 | −1.540 |
-| Axis + Big Five + spec (635) | −1.715 | −1.527 |
-| all of the above (721) | −1.714 | **−1.520** |
-| *Instruct's own self-descriptions (261)* | −1.647 | −1.512 |
-| *Instruct itself* | −0.898 | |
+![Hold-out log P per token of Instruct's answers for each persona basis, arithmetic vs geometric mixture](results/phase4/fig_bases.png)
 
-(standard errors about ±0.012; the counts include the generic header)
+(standard errors about ±0.012 for each number, but all fits score the same answers, so differences between them are measured much more precisely; the counts include the generic header)
 
 For the arithmetic mixture, all bases are marginal improvements with respect to the original 86. 
 The only basis that really improved things was one which was constructed from the Instruct model itself.
