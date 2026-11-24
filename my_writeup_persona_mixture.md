@@ -306,6 +306,8 @@ Tuning the learning rate per length (blue) helps the shortest contexts slightly 
 So it appears there is a real ceiling to this soft context approach.
 It's an interesting ceiling, and a goal for a persona mixture to try to reach. 
 
+Is the remaining gap just the first few tokens of the answer, where its opening is set? The gap is largest there (2.2 nats on the first token with the generic header, 0.6 with the soft context), but for every proxy 83–88% of the total gap is on tokens 6 and later, and the soft context's remaining gap is roughly flat, about 0.5 nats/token, across the whole answer.
+
 ### Interpreting the soft context
 
 You might worry that whatever this soft context is learning is pretty 'off manifold' with respect to the real data distribution, because 
