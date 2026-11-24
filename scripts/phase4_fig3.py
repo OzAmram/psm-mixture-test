@@ -18,8 +18,8 @@ def main():
     S = json.load(open("results/phase4/exp3/summary.json"))["checkpoints"]; ks = [k for k in ORDER if k in S]
     x = np.arange(len(ks)); fig, ax = plt.subplots(figsize=(7.2, 3.6))
     series = [("gap_arithmetic", "gap_arithmetic_se", "arithmetic mixture (87 base contexts)", "#eb6834", "s"),
-              ("gap_geometric", "gap_geometric_se", "geometric fit A (87 base contexts)", "#2a78d6", "D"),
-              ("gap", "gap_se", "base + soft prefix (best by validation)", "#6250d6", "o")]
+              ("gap_geometric", "gap_geometric_se", "geometric mixture (87 base contexts)", "#2a78d6", "D"),
+              ("gap", "gap_se", "base + soft context (best by validation)", "#6250d6", "o")]
     for key, se, lab, col, mk in series:
         xs = [i for i, k in enumerate(ks) if key in S[k]]
         if not xs: continue
@@ -27,14 +27,14 @@ def main():
         ax.errorbar(xs, ys, yerr=[S[ks[i]][se] for i in xs], color=col, marker=mk, ms=7, lw=0, elinewidth=2, capsize=0, label=lab)
         for (x0, y0), (x1, y1) in zip(zip(xs, ys), zip(xs[1:], ys[1:])):   # dotted where checkpoints in between were not fitted
             ax.plot([x0, x1], [y0, y1], color=col, lw=2, ls="-" if x1 == x0 + 1 else ":")
-    for i, k in enumerate(ks):
-        if "control_pass" in S[k] and not S[k]["control_pass"]: ax.annotate("control fails", (i, S[k].get("gap", 0)), textcoords="offset points", xytext=(0, 10), ha="center", fontsize=7, color="#52514e")
+    for i, k in enumerate(ks):   # "control fails" labels switched off (author, 2026-11-24); control results in summary.json
+        if False and "control_pass" in S[k] and not S[k]["control_pass"]: ax.annotate("control fails", (i, S[k].get("gap", 0)), textcoords="offset points", xytext=(0, 10), ha="center", fontsize=7, color="#52514e")
     ax.axhline(0, color="#52514e", lw=1)
-    ax.set_xticks(x); ax.set_xticklabels([LABEL[k] for k in ks]); ax.set_ylabel("self − model log P (nats/token, hold-out)")
+    ax.set_xticks(x); ax.set_xticklabels([LABEL[k] for k in ks]); ax.set_ylabel("self − model log P (nats/token)")
     ax.set_title("Distance from each post-training checkpoint to the best base-model description", fontsize=10)
     for sp in ["top", "right"]: ax.spines[sp].set_visible(False)
-    ax.grid(axis="y", color="#e4e3df", lw=0.8); ax.set_axisbelow(True); ax.legend(fontsize=8, frameon=False)
-    fig.text(0.01, -0.02, "data: results/phase4/exp3/summary.json (scripts/phase4_exp3_analysis.py); bars ±1 question-bootstrap s.e.", fontsize=7, color="#52514e")
+    ax.grid(axis="y", color="#e4e3df", lw=0.8); ax.set_axisbelow(True); ax.legend(fontsize=8, frameon=False, loc="lower left", bbox_to_anchor=(0.0, 0.1))   # 2026-11-24: raised off the zero line (author)
+    # data: results/phase4/exp3/summary.json (scripts/phase4_exp3_analysis.py); bars ±1 question-bootstrap s.e. (footer removed from the figure, author 2026-11-24)
     fig.tight_layout(); out = "results/phase4/fig3_stage_gap.png"; fig.savefig(out, dpi=150, bbox_inches="tight"); print("->", out)
 
 
