@@ -142,13 +142,19 @@ def main():
     for name, hdr, pfx in ctxs[k::n]:
         f_h, f_lp = out / f"h_{name}.u16", out / f"lp_{name}.npy"
         if f_lp.exists(): print(f"  {name}: exists, skipping"); continue
-        t0 = time.time(); mm = np.memmap(str(f_h) + ".tmp", dtype=np.uint16, mode="w+", shape=(P, model.config.hidden_size)); lp = np.full(len(rows), np.nan)
+        # PHASE4_LOCAL_TMP (2026-11-23): write the memmap on a local disk and move it to the output when complete; row-by-row writes
+        # straight to the network volume were ~12x slower on worker pods. Unset (default): write next to the output as before.
+        tmp = Path(os.environ["PHASE4_LOCAL_TMP"]) / (f_h.name + ".tmp") if os.environ.get("PHASE4_LOCAL_TMP") else Path(str(f_h) + ".tmp")
+        t0 = time.time(); mm = np.memmap(str(tmp), dtype=np.uint16, mode="w+", shape=(P, model.config.hidden_size)); lp = np.full(len(rows), np.nan)
         pre = None if pfx is None else torch.load(pfx, weights_only=True).to(model.device)
         for j, tgt, h in hidden_for_context(model, tok, hdr, rows, suf, prefix=pre, enc=encode(name) if custom else None):
             if tgt is None or tg[j] is None: continue
             assert tgt == tg[j], f"answer tokens differ from the generic-header tokenisation: context {name}, row {j}"
             mm[offsets[j]:offsets[j + 1]] = h.view(torch.int16).cpu().numpy().view(np.uint16); lp[j] = answer_logp(model, h, tgt)
-        mm.flush(); del mm; os.replace(str(f_h) + ".tmp", f_h); np.save(f_lp, lp)
+        mm.flush(); del mm
+        if os.environ.get("PHASE4_LOCAL_TMP"): import shutil; shutil.move(str(tmp), str(f_h) + ".tmp"); os.replace(str(f_h) + ".tmp", f_h)
+        else: os.replace(str(tmp), f_h)
+        np.save(f_lp, lp)
         print(f"  {name}: {time.time()-t0:.0f}s, nan {int(np.isnan(lp).sum())}", flush=True)
 
 

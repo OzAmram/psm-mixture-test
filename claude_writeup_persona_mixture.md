@@ -207,13 +207,14 @@ The bound is about what *can be reached by optimising a context*, not a proof th
 |---|---|---|---|---|
 | SFT | −1.249 | 0.411 ± 0.005 | 0.565 ± 0.006 | 0.649 |
 | DPO | −1.037 | 0.503 ± 0.006 | 0.686 ± 0.006 | 0.783 |
-| RL step 100 / 200 / 300 | −1.030 / −1.013 / −1.004 | 0.497 / 0.489 / 0.482 | – | 0.785 / 0.777 / 0.771 |
+| RL step 100 / 200 / 300 | −1.030 / −1.013 / −1.004 | 0.497 / 0.489 / 0.482 | 0.690 / 0.676 / 0.671 (± 0.007–0.008) | 0.785 / 0.777 / 0.771 |
 | final Instruct | −0.899 | 0.497 ± 0.006 | 0.706 ± 0.008 | 0.824 |
 
 ![Gap across post-training stages](results/phase4/fig3_stage_gap.png)
 
 - **The gap is already large after SFT** (0.41 with the soft prefix), grows by about 0.09 at DPO, and is flat through RL.
-- **Each description covers the same share at every stage.** Measured from the mixture, the soft prefix closes 36–40% of the way to the checkpoint's own score, and the geometric fit 12–14%. The geometric fit picks the same personas at every stage.
+- **Each description covers the same share at every stage.** Measured from the mixture, the soft prefix closes 36–40% of the way to the checkpoint's own score, and the geometric fit 12–14%. The geometric fit picks the same personas at every stage, the three early RL checkpoints included (HHH, e14 and the neutral header positive; e34 and e59 negative).
+- **The geometric gap is flat or slightly falling through the early RL checkpoints** (0.690, 0.676, 0.671 at steps 100–300, against 0.686 after DPO) and **rises at the final checkpoint** (0.706, about 3 standard errors above step 300). The mixture gap shows the same late rise (0.771 → 0.824), the soft-prefix gap a smaller one (0.482 → 0.497): the RL after step 300 moves Instruct a little further from every base-model description.
 - **Optimizer check:**
   - A soft prefix trained on each checkpoint itself lands 0.044–0.062 short of the checkpoint's own score. That is a narrow fail at four of six checkpoints of the pre-registered 0.05 limit; the check overfits after one or two epochs, and the prefix and the checkpoint's own score use different prompt formats.
   - So the soft prefix's optimizer may leave up to about 0.06 nats per token on the table. That cannot account for gaps of 0.41–0.50.

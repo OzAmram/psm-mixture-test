@@ -64,6 +64,9 @@ def main():
                     "fitted contexts); set to the union of all bases being compared so every basis uses the same answers")
     ap.add_argument("--tag", default=None, help="write to <out>/<run>/<tag>/ (for fits on other bases)")
     ap.add_argument("--model", default="allenai/Olmo-3-1025-7B", help="whose output layer the hidden states feed (must match the --run hidden states)")
+    ap.add_argument("--exclude-from-fit", default="", help="comma-separated contexts kept for reference/checks but held at weight 0 in the "
+                    "fits and left out of the arithmetic mixture (2026-11-24: the base assistant's answers with the generic header, i.e. the sampler, "
+                    "excluded, as in the Phase 1 table); fit A only; starts from equal weights on the kept contexts and uses only the zero-centred penalty")
     ap.add_argument("--fit-frac", type=float, default=1.0, help="keep this fraction of the fit-half questions (seed + 100); for bases too large for GPU memory")
     a = ap.parse_args(); t00 = time.time()
     hdir = HID / a.run; out = Path(a.out) / a.run / (a.tag or ""); out.mkdir(parents=True, exist_ok=True)
@@ -72,6 +75,9 @@ def main():
         ctxs = [c["name"] for f in a.contexts.split(",") for c in load_family(f)]; ctxs += [] if "generic" in ctxs else ["generic"]
         assert len(set(ctxs)) == len(ctxs), "duplicate context names"
     K = len(ctxs); gi = ctxs.index("generic")
+    excl = {x for x in a.exclude_from_fit.split(",") if x}; assert excl <= set(ctxs), f"unknown contexts in --exclude-from-fit: {excl - set(ctxs)}"
+    keep = np.array([c not in excl for c in ctxs]); assert keep.any()
+    if excl: assert a.fits == "A", "--exclude-from-fit is implemented for fit A only"
     rctx = ctxs if not a.row_contexts else sorted(set(ctxs) | {c["name"] for f in a.row_contexts.split(",") for c in load_family(f)})
     ok = ok_rows(hdir, rctx); fit_q, test_q = split(); q = ix["qidx"]
     fit_rows = np.where(ok & np.isin(q, list(fit_q)))[0]; test_rows = np.where(ok & np.isin(q, list(test_q)))[0]
@@ -89,6 +95,7 @@ def main():
     S = Shards.from_disk(hdir, ctxs, pos_f, ix["targets"][pos_f], W, devs); print(f"fit-half positions {S.P} on {len(devs)} GPU(s) ({time.time()-t00:.0f}s)", flush=True)
     w_all = np.ones(S.P); w_tr = (~isval).astype(float); w_val = isval.astype(float)
     e_gen = np.zeros(K); e_gen[gi] = 1.0
+    x_start = e_gen.copy() if not excl else keep / keep.sum(); fmask = keep if excl else None   # start point and fit mask
     n_eval = [0]
 
     def objective(w, lam=0.0, c0=None, mask=None):
@@ -116,7 +123,7 @@ def main():
         return tot
 
     tag = "".join(a.fits.split(","))
-    res = {"run": a.run, "contexts": ctxs, "families": a.contexts, "fit_frac": a.fit_frac, "fit_questions": [int(x) for x in fq], "n_fit": int(len(fit_rows)), "n_test": int(len(test_rows)), "n_fit_positions": int(S.P),
+    res = {"run": a.run, "contexts": ctxs, "excluded_from_fit": sorted(excl), "families": a.contexts, "fit_frac": a.fit_frac, "fit_questions": [int(x) for x in fq], "n_fit": int(len(fit_rows)), "n_test": int(len(test_rows)), "n_fit_positions": int(S.P),
            "n_test_positions": int(len(pos_t)), "val_questions": sorted(int(x) for x in val_q), "fits": {}}
     per_answer = {}
 
@@ -128,7 +135,7 @@ def main():
 
     # arithmetic mixture of the same 87 contexts (EM), as in Phase 1
     Lf = np.stack([np.load(hdir / f"lp_{c}.npy") for c in ctxs], 1)
-    wa, _ = em_weights(Lf[fit_rows]); per_answer["arithmetic mixture"] = mixture_loglik(Lf[test_rows], wa)
+    wk, _ = em_weights(Lf[fit_rows][:, keep]); wa = np.zeros(K); wa[keep] = wk; per_answer["arithmetic mixture"] = mixture_loglik(Lf[test_rows][:, keep], wk)
     res["arithmetic"] = {"weights": {ctxs[j]: round(float(wa[j]), 4) for j in np.argsort(-wa)[:10] if wa[j] > 1e-3}}
 
     def record(name, c, extra=None):
@@ -148,20 +155,22 @@ def main():
         record("T_true_c", c, {"true_c": true_c})
     if "A" in fits:
         lams = [float(x) for x in a.lambdas.split(",")]; sel = {}
-        for tgt_name, c0 in [("zero", np.zeros(K)), ("generic", e_gen)]:
+        targets = [("zero", np.zeros(K))] + ([("generic", e_gen)] if "generic" not in excl else [])
+        for tgt_name, c0 in targets:
             vals = []
             for lam in lams:
                 if lam == 0 and tgt_name == "generic" and "zero" in sel: vals.append(sel["zero"]["grid"][0]); continue
-                c, r = lbfgs(objective(w_tr, lam, c0), e_gen.copy()); v, _, _ = S.nll(c, w_val)
+                c, r = lbfgs(objective(w_tr, lam, c0, mask=fmask), x_start.copy()); c = c if fmask is None else np.where(fmask, c, 0.0); v, _, _ = S.nll(c, w_val)
                 vals.append({"lambda": lam, "val_logp": -v / w_val.sum(), "iters": int(r.nit), "converged": bool(r.success)})
                 print(f"  A/{tgt_name} lambda {lam:g}: validation log P/token {vals[-1]['val_logp']:.4f} ({r.nit} iters, {r.message})", flush=True)
             best = max(vals, key=lambda d: d["val_logp"]); sel[tgt_name] = {"grid": vals, "chosen_lambda": best["lambda"]}
         res["A_lambda_selection"] = sel
-        c, r = lbfgs(objective(w_all), e_gen.copy()); record("A_free_lambda0", c, {"iters": int(r.nit), "message": str(r.message)})
-        for tgt_name, c0 in [("zero", np.zeros(K)), ("generic", e_gen)]:
+        c, r = lbfgs(objective(w_all, mask=fmask), x_start.copy()); c = c if fmask is None else np.where(fmask, c, 0.0)
+        record("A_free_lambda0", c, {"iters": int(r.nit), "message": str(r.message)})
+        for tgt_name, c0 in targets:
             lam = sel[tgt_name]["chosen_lambda"]
             if lam == 0: continue
-            c, r = lbfgs(objective(w_all, lam, c0), e_gen.copy()); record(f"A_free_l2{tgt_name}_{lam:g}", c, {"iters": int(r.nit), "lambda": lam, "target": tgt_name})
+            c, r = lbfgs(objective(w_all, lam, c0, mask=fmask), x_start.copy()); c = c if fmask is None else np.where(fmask, c, 0.0); record(f"A_free_l2{tgt_name}_{lam:g}", c, {"iters": int(r.nit), "lambda": lam, "target": tgt_name})
     if "C" in fits:
         f = objective(w_all)
         r = minimize(f, e_gen.copy(), jac=True, method="SLSQP", bounds=[(0, None)] * K, constraints=[{"type": "eq", "fun": lambda c: c.sum() - 1, "jac": lambda c: np.ones(K)}],

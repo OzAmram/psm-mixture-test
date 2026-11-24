@@ -1,0 +1,7662 @@
+{
+ "layers": [
+  4,
+  8,
+  12,
+  16,
+  20,
+  24,
+  28
+ ],
+ "n_answers": 200,
+ "lens": "/workspace/lenses/jpp_olmo3_7b/jpp_lens.pt",
+ "compare": "text",
+ "contexts": {
+  "prefix/final_base_L128_lr5e-3": {
+   "L": 128,
+   "text_tokens": 125,
+   "compare_text": "Below are a series of dialogues between various people and an AI assistant. The AI tries to be helpful, polite, honest, sophisticated, emotionally aware, and humble-but-knowledgeable. The assistant is happy to help with almost anything, and will do its best to understand exactly what is needed. It also tries to avoid giving false or misleading information, and it caveats when it isn't entirely sure about the right answer. That said, the assistant is practical and really does its best, and doesn't let caution get too much in the way of being useful. The assistant speaks in a casual, conversational tone.\n\n",
+   "prefix_positions": {
+    "4": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        " in",
+        52
+       ],
+       [
+        " and",
+        46
+       ],
+       [
+        " upon",
+        35
+       ],
+       [
+        " on",
+        34
+       ],
+       [
+        " as",
+        32
+       ],
+       [
+        " for",
+        27
+       ],
+       [
+        "\u2019s",
+        26
+       ],
+       [
+        " to",
+        25
+       ],
+       [
+        " historically",
+        23
+       ],
+       [
+        " of",
+        22
+       ],
+       [
+        " prior",
+        18
+       ],
+       [
+        " with",
+        17
+       ],
+       [
+        " the",
+        16
+       ],
+       [
+        " amidst",
+        12
+       ],
+       [
+        " at",
+        12
+       ],
+       [
+        "<|endoftext|>",
+        12
+       ],
+       [
+        " just",
+        10
+       ],
+       [
+        " wherein",
+        10
+       ],
+       [
+        " even",
+        9
+       ],
+       [
+        " now",
+        8
+       ],
+       [
+        " atop",
+        8
+       ],
+       [
+        " a",
+        8
+       ],
+       [
+        "\u2014and",
+        7
+       ],
+       [
+        " rather",
+        7
+       ],
+       [
+        " maybe",
+        6
+       ]
+      ],
+      "gained": [
+       [
+        " upon",
+        31
+       ],
+       [
+        "\u2019s",
+        19
+       ],
+       [
+        " prior",
+        17
+       ],
+       [
+        " historically",
+        16
+       ],
+       [
+        " and",
+        13
+       ],
+       [
+        " in",
+        11
+       ],
+       [
+        "<|endoftext|>",
+        9
+       ],
+       [
+        " of",
+        8
+       ],
+       [
+        " amidst",
+        7
+       ],
+       [
+        " as",
+        7
+       ],
+       [
+        " wherein",
+        7
+       ],
+       [
+        " from",
+        6
+       ],
+       [
+        " presently",
+        5
+       ],
+       [
+        " perhaps",
+        5
+       ],
+       [
+        " atop",
+        5
+       ],
+       [
+        " secretly",
+        5
+       ],
+       [
+        " similarly",
+        4
+       ],
+       [
+        " nuanced",
+        4
+       ],
+       [
+        " aligned",
+        4
+       ],
+       [
+        " whilst",
+        4
+       ],
+       [
+        " toward",
+        4
+       ],
+       [
+        " slated",
+        4
+       ],
+       [
+        "\u2019d",
+        4
+       ],
+       [
+        " during",
+        4
+       ],
+       [
+        " pursuant",
+        3
+       ]
+      ],
+      "lost": [
+       [
+        " that",
+        -20
+       ],
+       [
+        " even",
+        -19
+       ],
+       [
+        " rather",
+        -14
+       ],
+       [
+        " instead",
+        -12
+       ],
+       [
+        " things",
+        -11
+       ],
+       [
+        " to",
+        -9
+       ],
+       [
+        " being",
+        -8
+       ],
+       [
+        " too",
+        -8
+       ],
+       [
+        " always",
+        -7
+       ],
+       [
+        " needed",
+        -6
+       ],
+       [
+        " just",
+        -6
+       ],
+       [
+        " really",
+        -6
+       ],
+       [
+        " getting",
+        -5
+       ],
+       [
+        " tries",
+        -5
+       ],
+       [
+        " attempts",
+        -5
+       ],
+       [
+        " the",
+        -5
+       ],
+       [
+        " attempt",
+        -4
+       ],
+       [
+        " doing",
+        -4
+       ],
+       [
+        " tried",
+        -4
+       ],
+       [
+        " over",
+        -4
+       ],
+       [
+        " help",
+        -4
+       ],
+       [
+        " efforts",
+        -4
+       ],
+       [
+        " trying",
+        -4
+       ],
+       [
+        " such",
+        -4
+       ],
+       [
+        " so",
+        -4
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " in",
+        12
+       ],
+       [
+        " and",
+        11
+       ],
+       [
+        " on",
+        11
+       ],
+       [
+        " of",
+        9
+       ],
+       [
+        " as",
+        8
+       ],
+       [
+        " with",
+        8
+       ],
+       [
+        " the",
+        8
+       ],
+       [
+        " for",
+        6
+       ],
+       [
+        " to",
+        6
+       ],
+       [
+        " a",
+        5
+       ],
+       [
+        " at",
+        3
+       ],
+       [
+        " such",
+        2
+       ],
+       [
+        " Turing",
+        2
+       ],
+       [
+        " whilst",
+        2
+       ],
+       [
+        " various",
+        2
+       ],
+       [
+        " amongst",
+        2
+       ],
+       [
+        " series",
+        2
+       ],
+       [
+        " AI",
+        2
+       ],
+       [
+        " often",
+        2
+       ],
+       [
+        " between",
+        1
+       ],
+       [
+        " open",
+        1
+       ],
+       [
+        " people",
+        1
+       ],
+       [
+        " without",
+        1
+       ],
+       [
+        " every",
+        1
+       ],
+       [
+        " also",
+        1
+       ]
+      ],
+      "gained": [
+       [
+        " of",
+        6
+       ],
+       [
+        " and",
+        5
+       ],
+       [
+        " on",
+        5
+       ],
+       [
+        " in",
+        5
+       ],
+       [
+        " as",
+        3
+       ],
+       [
+        " the",
+        3
+       ],
+       [
+        " often",
+        2
+       ],
+       [
+        " with",
+        2
+       ],
+       [
+        " among",
+        1
+       ],
+       [
+        " several",
+        1
+       ],
+       [
+        " things",
+        1
+       ],
+       [
+        " further",
+        1
+       ],
+       [
+        " living",
+        1
+       ],
+       [
+        " every",
+        1
+       ],
+       [
+        " toward",
+        1
+       ],
+       [
+        " such",
+        1
+       ],
+       [
+        " open",
+        1
+       ],
+       [
+        " centre",
+        1
+       ],
+       [
+        " were",
+        1
+       ],
+       [
+        " without",
+        1
+       ],
+       [
+        " also",
+        1
+       ],
+       [
+        " was",
+        1
+       ],
+       [
+        " mainly",
+        1
+       ],
+       [
+        " at",
+        1
+       ],
+       [
+        " a",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " from",
+        -3
+       ],
+       [
+        " alongside",
+        -2
+       ],
+       [
+        "[c",
+        -2
+       ],
+       [
+        " dialogue",
+        -2
+       ],
+       [
+        " that",
+        -2
+       ],
+       [
+        " tech",
+        -1
+       ],
+       [
+        " favour",
+        -1
+       ],
+       [
+        " numerous",
+        -1
+       ],
+       [
+        " convers",
+        -1
+       ],
+       [
+        " conversation",
+        -1
+       ],
+       [
+        " various",
+        -1
+       ],
+       [
+        " events",
+        -1
+       ],
+       [
+        " Dialog",
+        -1
+       ],
+       [
+        " robot",
+        -1
+       ],
+       [
+        " aspects",
+        -1
+       ],
+       [
+        " central",
+        -1
+       ],
+       [
+        " listed",
+        -1
+       ],
+       [
+        " rather",
+        -1
+       ],
+       [
+        " largely",
+        -1
+       ],
+       [
+        " many",
+        -1
+       ],
+       [
+        " first",
+        -1
+       ],
+       [
+        " some",
+        -1
+       ],
+       [
+        " during",
+        -1
+       ],
+       [
+        "\u2019s",
+        -1
+       ],
+       [
+        " within",
+        -1
+       ]
+      ]
+     }
+    },
+    "8": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        " and",
+        28
+       ],
+       [
+        " in",
+        20
+       ],
+       [
+        " for",
+        14
+       ],
+       [
+        " of",
+        12
+       ],
+       [
+        " on",
+        11
+       ],
+       [
+        " the",
+        9
+       ],
+       [
+        "<|endoftext|>",
+        8
+       ],
+       [
+        " V",
+        7
+       ],
+       [
+        " H",
+        6
+       ],
+       [
+        " Knight",
+        5
+       ],
+       [
+        " Gall",
+        5
+       ],
+       [
+        " Arc",
+        5
+       ],
+       [
+        " S",
+        5
+       ],
+       [
+        " to",
+        5
+       ],
+       [
+        " F",
+        4
+       ],
+       [
+        " as",
+        4
+       ],
+       [
+        " Language",
+        4
+       ],
+       [
+        " Rest",
+        4
+       ],
+       [
+        " G",
+        4
+       ],
+       [
+        " C",
+        4
+       ],
+       [
+        " Speech",
+        4
+       ],
+       [
+        "-H",
+        4
+       ],
+       [
+        " Form",
+        4
+       ],
+       [
+        " K",
+        4
+       ],
+       [
+        " Himself",
+        4
+       ]
+      ],
+      "gained": [
+       [
+        " and",
+        18
+       ],
+       [
+        " in",
+        13
+       ],
+       [
+        " of",
+        11
+       ],
+       [
+        " for",
+        11
+       ],
+       [
+        " on",
+        10
+       ],
+       [
+        " the",
+        7
+       ],
+       [
+        " V",
+        6
+       ],
+       [
+        " Arc",
+        5
+       ],
+       [
+        " S",
+        5
+       ],
+       [
+        "<|endoftext|>",
+        5
+       ],
+       [
+        " Gall",
+        5
+       ],
+       [
+        "-H",
+        4
+       ],
+       [
+        " as",
+        4
+       ],
+       [
+        " at",
+        4
+       ],
+       [
+        " Knight",
+        4
+       ],
+       [
+        " Form",
+        4
+       ],
+       [
+        " Mach",
+        3
+       ],
+       [
+        " Rest",
+        3
+       ],
+       [
+        " Cas",
+        3
+       ],
+       [
+        " F",
+        3
+       ],
+       [
+        " H",
+        3
+       ],
+       [
+        " C",
+        3
+       ],
+       [
+        " from",
+        3
+       ],
+       [
+        " G",
+        3
+       ],
+       [
+        " K",
+        3
+       ]
+      ],
+      "lost": [
+       [
+        " Agency",
+        -11
+       ],
+       [
+        "ddf",
+        -11
+       ],
+       [
+        "-ie",
+        -9
+       ],
+       [
+        " Knowledge",
+        -7
+       ],
+       [
+        " Personality",
+        -7
+       ],
+       [
+        "blr",
+        -7
+       ],
+       [
+        " Volunteer",
+        -6
+       ],
+       [
+        " Assist",
+        -6
+       ],
+       [
+        "dcc",
+        -6
+       ],
+       [
+        " Saying",
+        -5
+       ],
+       [
+        " Phrase",
+        -5
+       ],
+       [
+        " Ple",
+        -5
+       ],
+       [
+        " Truth",
+        -5
+       ],
+       [
+        "eec",
+        -5
+       ],
+       [
+        " Guard",
+        -5
+       ],
+       [
+        "bdb",
+        -5
+       ],
+       [
+        "bff",
+        -5
+       ],
+       [
+        " Guardian",
+        -5
+       ],
+       [
+        " Gift",
+        -5
+       ],
+       [
+        "dbe",
+        -5
+       ],
+       [
+        " Debate",
+        -5
+       ],
+       [
+        "rant",
+        -4
+       ],
+       [
+        "regor",
+        -4
+       ],
+       [
+        " Pride",
+        -4
+       ],
+       [
+        " Doing",
+        -4
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " and",
+        5
+       ],
+       [
+        " in",
+        5
+       ],
+       [
+        " The",
+        4
+       ],
+       [
+        " A",
+        4
+       ],
+       [
+        " on",
+        3
+       ],
+       [
+        " Series",
+        3
+       ],
+       [
+        " for",
+        3
+       ],
+       [
+        " of",
+        3
+       ],
+       [
+        " the",
+        3
+       ],
+       [
+        " G",
+        2
+       ],
+       [
+        " Exchange",
+        2
+       ],
+       [
+        " or",
+        2
+       ],
+       [
+        " O",
+        2
+       ],
+       [
+        " Stories",
+        2
+       ],
+       [
+        " Characters",
+        2
+       ],
+       [
+        " B",
+        2
+       ],
+       [
+        " Convers",
+        2
+       ],
+       [
+        " Dialog",
+        2
+       ],
+       [
+        " Each",
+        2
+       ],
+       [
+        " T",
+        2
+       ],
+       [
+        " Bo",
+        2
+       ],
+       [
+        " to",
+        2
+       ],
+       [
+        " Dialogue",
+        2
+       ],
+       [
+        " Chinese",
+        2
+       ],
+       [
+        " a",
+        2
+       ]
+      ],
+      "gained": [
+       [
+        " Stories",
+        2
+       ],
+       [
+        " O",
+        2
+       ],
+       [
+        " Bo",
+        2
+       ],
+       [
+        " Chinese",
+        2
+       ],
+       [
+        " Christ",
+        1
+       ],
+       [
+        " West",
+        1
+       ],
+       [
+        " Mar",
+        1
+       ],
+       [
+        "'s",
+        1
+       ],
+       [
+        " Or",
+        1
+       ],
+       [
+        " at",
+        1
+       ],
+       [
+        " or",
+        1
+       ],
+       [
+        "Dialog",
+        1
+       ],
+       [
+        " India",
+        1
+       ],
+       [
+        " Cal",
+        1
+       ],
+       [
+        " London",
+        1
+       ],
+       [
+        " who",
+        1
+       ],
+       [
+        " C",
+        1
+       ],
+       [
+        " B",
+        1
+       ],
+       [
+        " T",
+        1
+       ],
+       [
+        " Indian",
+        1
+       ],
+       [
+        " for",
+        1
+       ],
+       [
+        " is",
+        1
+       ],
+       [
+        " of",
+        1
+       ],
+       [
+        " British",
+        1
+       ],
+       [
+        " as",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " Inter",
+        -4
+       ],
+       [
+        " Series",
+        -3
+       ],
+       [
+        "<|endoftext|>",
+        -2
+       ],
+       [
+        " Arm",
+        -2
+       ],
+       [
+        " Dialogue",
+        -2
+       ],
+       [
+        " A",
+        -2
+       ],
+       [
+        " Train",
+        -2
+       ],
+       [
+        " D",
+        -2
+       ],
+       [
+        " Street",
+        -2
+       ],
+       [
+        " S",
+        -2
+       ],
+       [
+        " series",
+        -1
+       ],
+       [
+        " Ob",
+        -1
+       ],
+       [
+        " Bar",
+        -1
+       ],
+       [
+        " Pe",
+        -1
+       ],
+       [
+        " Man",
+        -1
+       ],
+       [
+        " One",
+        -1
+       ],
+       [
+        " Im",
+        -1
+       ],
+       [
+        " New",
+        -1
+       ],
+       [
+        " X",
+        -1
+       ],
+       [
+        " An",
+        -1
+       ],
+       [
+        " Tr",
+        -1
+       ],
+       [
+        " AN",
+        -1
+       ],
+       [
+        " Se",
+        -1
+       ],
+       [
+        " Ch",
+        -1
+       ],
+       [
+        " The",
+        -1
+       ]
+      ]
+     }
+    },
+    "12": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        " and",
+        9
+       ],
+       [
+        " slang",
+        6
+       ],
+       [
+        "(H",
+        5
+       ],
+       [
+        " Hoy",
+        4
+       ],
+       [
+        " Hier",
+        4
+       ],
+       [
+        " Casual",
+        4
+       ],
+       [
+        "blr",
+        4
+       ],
+       [
+        " for",
+        4
+       ],
+       [
+        " Sag",
+        4
+       ],
+       [
+        " Character",
+        4
+       ],
+       [
+        " in",
+        4
+       ],
+       [
+        ".They",
+        4
+       ],
+       [
+        "-V",
+        4
+       ],
+       [
+        " themselves",
+        3
+       ],
+       [
+        " Vault",
+        3
+       ],
+       [
+        " Honest",
+        3
+       ],
+       [
+        " lingu",
+        3
+       ],
+       [
+        " language",
+        3
+       ],
+       [
+        " Sexy",
+        3
+       ],
+       [
+        "/H",
+        3
+       ],
+       [
+        " Berg",
+        3
+       ],
+       [
+        " They",
+        3
+       ],
+       [
+        "\u2019s",
+        3
+       ],
+       [
+        " Language",
+        3
+       ],
+       [
+        " of",
+        3
+       ]
+      ],
+      "gained": [
+       [
+        " for",
+        4
+       ],
+       [
+        ".They",
+        4
+       ],
+       [
+        " Sag",
+        4
+       ],
+       [
+        " Hier",
+        4
+       ],
+       [
+        " Hoy",
+        4
+       ],
+       [
+        "-V",
+        4
+       ],
+       [
+        " Character",
+        3
+       ],
+       [
+        " Berg",
+        3
+       ],
+       [
+        "(H",
+        3
+       ],
+       [
+        " Cic",
+        3
+       ],
+       [
+        " V",
+        3
+       ],
+       [
+        " themselves",
+        3
+       ],
+       [
+        " lingu",
+        3
+       ],
+       [
+        " language",
+        3
+       ],
+       [
+        " Sexy",
+        3
+       ],
+       [
+        " They",
+        3
+       ],
+       [
+        " assistant",
+        2
+       ],
+       [
+        " personality",
+        2
+       ],
+       [
+        " Language",
+        2
+       ],
+       [
+        " Garden",
+        2
+       ],
+       [
+        "-G",
+        2
+       ],
+       [
+        " Vi",
+        2
+       ],
+       [
+        " Var",
+        2
+       ],
+       [
+        " Cam",
+        2
+       ],
+       [
+        " Ale",
+        2
+       ]
+      ],
+      "lost": [
+       [
+        " Phrase",
+        -12
+       ],
+       [
+        " Helpful",
+        -9
+       ],
+       [
+        " errs",
+        -8
+       ],
+       [
+        " Protect",
+        -7
+       ],
+       [
+        " embod",
+        -7
+       ],
+       [
+        " Knowledge",
+        -7
+       ],
+       [
+        " Ment",
+        -5
+       ],
+       [
+        "alink",
+        -5
+       ],
+       [
+        "itution",
+        -5
+       ],
+       [
+        "Mate",
+        -5
+       ],
+       [
+        "fbe",
+        -5
+       ],
+       [
+        "antro",
+        -4
+       ],
+       [
+        " Doing",
+        -4
+       ],
+       [
+        " Speech",
+        -4
+       ],
+       [
+        "icl",
+        -4
+       ],
+       [
+        "bdb",
+        -4
+       ],
+       [
+        " Prevent",
+        -4
+       ],
+       [
+        "fdc",
+        -4
+       ],
+       [
+        " Help",
+        -4
+       ],
+       [
+        " Duty",
+        -4
+       ],
+       [
+        "ikit",
+        -4
+       ],
+       [
+        " Obl",
+        -4
+       ],
+       [
+        "amac",
+        -4
+       ],
+       [
+        " Pret",
+        -4
+       ],
+       [
+        " Smarty",
+        -4
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " of",
+        4
+       ],
+       [
+        " and",
+        4
+       ],
+       [
+        " who",
+        3
+       ],
+       [
+        " in",
+        3
+       ],
+       [
+        " for",
+        2
+       ],
+       [
+        "aec",
+        2
+       ],
+       [
+        " Series",
+        2
+       ],
+       [
+        "-dialog",
+        2
+       ],
+       [
+        " Tro",
+        2
+       ],
+       [
+        "\u2019s",
+        2
+       ],
+       [
+        " Pe",
+        2
+       ],
+       [
+        " on",
+        2
+       ],
+       [
+        " Ga",
+        2
+       ],
+       [
+        " Dialogue",
+        2
+       ],
+       [
+        " Characters",
+        2
+       ],
+       [
+        " Dialog",
+        2
+       ],
+       [
+        " to",
+        2
+       ],
+       [
+        " Cal",
+        1
+       ],
+       [
+        " series",
+        1
+       ],
+       [
+        " Te",
+        1
+       ],
+       [
+        "Dialog",
+        1
+       ],
+       [
+        "ialog",
+        1
+       ],
+       [
+        " An",
+        1
+       ],
+       [
+        " at",
+        1
+       ],
+       [
+        "'s",
+        1
+       ]
+      ],
+      "gained": [
+       [
+        " Tro",
+        2
+       ],
+       [
+        " Pe",
+        2
+       ],
+       [
+        "\u2019s",
+        2
+       ],
+       [
+        " Ga",
+        2
+       ],
+       [
+        " Tree",
+        1
+       ],
+       [
+        " Fort",
+        1
+       ],
+       [
+        " Indian",
+        1
+       ],
+       [
+        " India",
+        1
+       ],
+       [
+        " Star",
+        1
+       ],
+       [
+        "-A",
+        1
+       ],
+       [
+        " Art",
+        1
+       ],
+       [
+        " Human",
+        1
+       ],
+       [
+        " Collection",
+        1
+       ],
+       [
+        " Cap",
+        1
+       ],
+       [
+        "-G",
+        1
+       ],
+       [
+        "stants",
+        1
+       ],
+       [
+        " Cong",
+        1
+       ],
+       [
+        " Story",
+        1
+       ],
+       [
+        " Te",
+        1
+       ],
+       [
+        " who",
+        1
+       ],
+       [
+        " An",
+        1
+       ],
+       [
+        " Cal",
+        1
+       ],
+       [
+        " G",
+        1
+       ],
+       [
+        " Fun",
+        1
+       ],
+       [
+        "Dialog",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " in",
+        -3
+       ],
+       [
+        " Dialog",
+        -2
+       ],
+       [
+        " Chat",
+        -2
+       ],
+       [
+        " Town",
+        -2
+       ],
+       [
+        " Ai",
+        -2
+       ],
+       [
+        " as",
+        -2
+       ],
+       [
+        "ialog",
+        -2
+       ],
+       [
+        "fdc",
+        -2
+       ],
+       [
+        " D",
+        -2
+       ],
+       [
+        " Below",
+        -2
+       ],
+       [
+        " and",
+        -2
+       ],
+       [
+        " Who",
+        -1
+       ],
+       [
+        " artist",
+        -1
+       ],
+       [
+        " People",
+        -1
+       ],
+       [
+        " Gen",
+        -1
+       ],
+       [
+        " Ser",
+        -1
+       ],
+       [
+        " Person",
+        -1
+       ],
+       [
+        "-B",
+        -1
+       ],
+       [
+        " recent",
+        -1
+       ],
+       [
+        " Fore",
+        -1
+       ],
+       [
+        " between",
+        -1
+       ],
+       [
+        " X",
+        -1
+       ],
+       [
+        " from",
+        -1
+       ],
+       [
+        " V",
+        -1
+       ],
+       [
+        " on",
+        -1
+       ]
+      ]
+     }
+    },
+    "16": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        " and",
+        26
+       ],
+       [
+        " of",
+        21
+       ],
+       [
+        " in",
+        17
+       ],
+       [
+        " to",
+        15
+       ],
+       [
+        " for",
+        15
+       ],
+       [
+        " as",
+        15
+       ],
+       [
+        " with",
+        8
+       ],
+       [
+        " that",
+        7
+       ],
+       [
+        " AI",
+        6
+       ],
+       [
+        " language",
+        5
+       ],
+       [
+        " is",
+        5
+       ],
+       [
+        " different",
+        5
+       ],
+       [
+        " the",
+        5
+       ],
+       [
+        "\u2019s",
+        5
+       ],
+       [
+        " or",
+        5
+       ],
+       [
+        " slang",
+        5
+       ],
+       [
+        " chat",
+        5
+       ],
+       [
+        "\u2014you",
+        4
+       ],
+       [
+        "\u2014it",
+        4
+       ],
+       [
+        " from",
+        4
+       ],
+       [
+        " command",
+        3
+       ],
+       [
+        "'s",
+        3
+       ],
+       [
+        " by",
+        3
+       ],
+       [
+        "ing",
+        3
+       ],
+       [
+        " things",
+        3
+       ]
+      ],
+      "gained": [
+       [
+        " as",
+        12
+       ],
+       [
+        " different",
+        5
+       ],
+       [
+        " from",
+        4
+       ],
+       [
+        "\u2014you",
+        4
+       ],
+       [
+        " for",
+        3
+       ],
+       [
+        "ing",
+        3
+       ],
+       [
+        " command",
+        3
+       ],
+       [
+        "(H",
+        3
+       ],
+       [
+        " must",
+        3
+       ],
+       [
+        "\u2014it",
+        3
+       ],
+       [
+        " by",
+        3
+       ],
+       [
+        "(F",
+        2
+       ],
+       [
+        " IM",
+        2
+       ],
+       [
+        " British",
+        2
+       ],
+       [
+        " various",
+        2
+       ],
+       [
+        " themselves",
+        2
+       ],
+       [
+        " R",
+        2
+       ],
+       [
+        " policy",
+        2
+       ],
+       [
+        " across",
+        2
+       ],
+       [
+        " strategy",
+        2
+       ],
+       [
+        " training",
+        2
+       ],
+       [
+        "ed",
+        2
+       ],
+       [
+        " like",
+        2
+       ],
+       [
+        "a",
+        2
+       ],
+       [
+        " response",
+        2
+       ]
+      ],
+      "lost": [
+       [
+        " and",
+        -37
+       ],
+       [
+        " or",
+        -25
+       ],
+       [
+        " if",
+        -18
+       ],
+       [
+        " when",
+        -16
+       ],
+       [
+        " chat",
+        -16
+       ],
+       [
+        " human",
+        -16
+       ],
+       [
+        " AI",
+        -12
+       ],
+       [
+        " service",
+        -11
+       ],
+       [
+        " conversation",
+        -10
+       ],
+       [
+        " is",
+        -10
+       ],
+       [
+        " overall",
+        -9
+       ],
+       [
+        " always",
+        -9
+       ],
+       [
+        " to",
+        -9
+       ],
+       [
+        " in",
+        -9
+       ],
+       [
+        " but",
+        -8
+       ],
+       [
+        " unless",
+        -8
+       ],
+       [
+        " on",
+        -8
+       ],
+       [
+        " whenever",
+        -7
+       ],
+       [
+        " help",
+        -7
+       ],
+       [
+        " that",
+        -7
+       ],
+       [
+        " things",
+        -7
+       ],
+       [
+        " dialogue",
+        -6
+       ],
+       [
+        " requests",
+        -6
+       ],
+       [
+        " what",
+        -6
+       ],
+       [
+        " anything",
+        -5
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " and",
+        4
+       ],
+       [
+        " AI",
+        3
+       ],
+       [
+        " conversation",
+        3
+       ],
+       [
+        " answers",
+        3
+       ],
+       [
+        " of",
+        3
+       ],
+       [
+        " series",
+        3
+       ],
+       [
+        " scenarios",
+        2
+       ],
+       [
+        "\u2014the",
+        2
+       ],
+       [
+        " dialogue",
+        2
+       ],
+       [
+        " from",
+        2
+       ],
+       [
+        " conversations",
+        2
+       ],
+       [
+        " Dialog",
+        2
+       ],
+       [
+        "\u2019s",
+        2
+       ],
+       [
+        " bots",
+        2
+       ],
+       [
+        ".AI",
+        2
+       ],
+       [
+        " people",
+        2
+       ],
+       [
+        " pairs",
+        2
+       ],
+       [
+        " with",
+        2
+       ],
+       [
+        " dialog",
+        2
+       ],
+       [
+        " chat",
+        2
+       ],
+       [
+        " in",
+        2
+       ],
+       [
+        " below",
+        2
+       ],
+       [
+        " each",
+        1
+       ],
+       [
+        " group",
+        1
+       ],
+       [
+        " person",
+        1
+       ]
+      ],
+      "gained": [
+       [
+        " answers",
+        3
+       ],
+       [
+        " scenarios",
+        2
+       ],
+       [
+        " audience",
+        1
+       ],
+       [
+        " stuff",
+        1
+       ],
+       [
+        " tree",
+        1
+       ],
+       [
+        " trees",
+        1
+       ],
+       [
+        " communities",
+        1
+       ],
+       [
+        " ship",
+        1
+       ],
+       [
+        " Christmas",
+        1
+       ],
+       [
+        " will",
+        1
+       ],
+       [
+        "Dialog",
+        1
+       ],
+       [
+        " you",
+        1
+       ],
+       [
+        " topics",
+        1
+       ],
+       [
+        " Dialog",
+        1
+       ],
+       [
+        " shots",
+        1
+       ],
+       [
+        " Each",
+        1
+       ],
+       [
+        " Tree",
+        1
+       ],
+       [
+        " themselves",
+        1
+       ],
+       [
+        " Chapter",
+        1
+       ],
+       [
+        "\u2019s",
+        1
+       ],
+       [
+        " group",
+        1
+       ],
+       [
+        " is",
+        1
+       ],
+       [
+        "Chat",
+        1
+       ],
+       [
+        " types",
+        1
+       ],
+       [
+        " with",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " of",
+        -4
+       ],
+       [
+        " in",
+        -4
+       ],
+       [
+        " and",
+        -3
+       ],
+       [
+        " for",
+        -3
+       ],
+       [
+        " which",
+        -2
+       ],
+       [
+        " between",
+        -2
+       ],
+       [
+        " that",
+        -2
+       ],
+       [
+        " B",
+        -2
+       ],
+       [
+        " different",
+        -1
+       ],
+       [
+        " each",
+        -1
+       ],
+       [
+        " people",
+        -1
+       ],
+       [
+        " few",
+        -1
+       ],
+       [
+        " who",
+        -1
+       ],
+       [
+        " two",
+        -1
+       ],
+       [
+        " service",
+        -1
+       ],
+       [
+        " company",
+        -1
+       ],
+       [
+        " list",
+        -1
+       ],
+       [
+        " as",
+        -1
+       ],
+       [
+        " inter",
+        -1
+       ],
+       [
+        " I",
+        -1
+       ],
+       [
+        " A",
+        -1
+       ],
+       [
+        " S",
+        -1
+       ],
+       [
+        " based",
+        -1
+       ],
+       [
+        " on",
+        -1
+       ],
+       [
+        " the",
+        -1
+       ]
+      ]
+     }
+    },
+    "20": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        "@g",
+        28
+       ],
+       [
+        "@s",
+        20
+       ],
+       [
+        " https",
+        15
+       ],
+       [
+        " and",
+        14
+       ],
+       [
+        "@a",
+        11
+       ],
+       [
+        " responses",
+        10
+       ],
+       [
+        "@m",
+        9
+       ],
+       [
+        "@example",
+        9
+       ],
+       [
+        "@d",
+        8
+       ],
+       [
+        " code",
+        8
+       ],
+       [
+        " data",
+        7
+       ],
+       [
+        " character",
+        7
+       ],
+       [
+        " task",
+        7
+       ],
+       [
+        " different",
+        7
+       ],
+       [
+        "ing",
+        7
+       ],
+       [
+        "\u2019s",
+        7
+       ],
+       [
+        " tasks",
+        6
+       ],
+       [
+        " knowledge",
+        6
+       ],
+       [
+        " language",
+        6
+       ],
+       [
+        " varying",
+        6
+       ],
+       [
+        " to",
+        6
+       ],
+       [
+        " varied",
+        6
+       ],
+       [
+        " the",
+        6
+       ],
+       [
+        "ment",
+        5
+       ],
+       [
+        " from",
+        5
+       ]
+      ],
+      "gained": [
+       [
+        "@g",
+        26
+       ],
+       [
+        "@s",
+        18
+       ],
+       [
+        " https",
+        15
+       ],
+       [
+        "@a",
+        10
+       ],
+       [
+        " code",
+        8
+       ],
+       [
+        " data",
+        7
+       ],
+       [
+        "@example",
+        7
+       ],
+       [
+        "@m",
+        7
+       ],
+       [
+        "ing",
+        7
+       ],
+       [
+        " different",
+        7
+       ],
+       [
+        " varied",
+        6
+       ],
+       [
+        " task",
+        6
+       ],
+       [
+        "\u2019s",
+        6
+       ],
+       [
+        " varying",
+        6
+       ],
+       [
+        "@d",
+        6
+       ],
+       [
+        " are",
+        5
+       ],
+       [
+        " from",
+        5
+       ],
+       [
+        " programming",
+        5
+       ],
+       [
+        "ment",
+        5
+       ],
+       [
+        " tasks",
+        5
+       ],
+       [
+        " responses",
+        5
+       ],
+       [
+        " variations",
+        4
+       ],
+       [
+        " prior",
+        4
+       ],
+       [
+        "and",
+        4
+       ],
+       [
+        " various",
+        4
+       ]
+      ],
+      "lost": [
+       [
+        " always",
+        -17
+       ],
+       [
+        " sometimes",
+        -15
+       ],
+       [
+        " or",
+        -12
+       ],
+       [
+        " but",
+        -11
+       ],
+       [
+        " if",
+        -11
+       ],
+       [
+        " any",
+        -11
+       ],
+       [
+        " while",
+        -11
+       ],
+       [
+        " best",
+        -10
+       ],
+       [
+        " helpful",
+        -10
+       ],
+       [
+        " only",
+        -9
+       ],
+       [
+        " anything",
+        -9
+       ],
+       [
+        " answer",
+        -9
+       ],
+       [
+        " and",
+        -9
+       ],
+       [
+        " way",
+        -8
+       ],
+       [
+        " things",
+        -8
+       ],
+       [
+        " help",
+        -8
+       ],
+       [
+        " even",
+        -8
+       ],
+       [
+        " most",
+        -8
+       ],
+       [
+        " human",
+        -8
+       ],
+       [
+        " information",
+        -8
+       ],
+       [
+        " convers",
+        -7
+       ],
+       [
+        " you",
+        -7
+       ],
+       [
+        " also",
+        -6
+       ],
+       [
+        " whatever",
+        -6
+       ],
+       [
+        " etc",
+        -6
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " various",
+        5
+       ],
+       [
+        " conversations",
+        4
+       ],
+       [
+        " conversation",
+        3
+       ],
+       [
+        " questions",
+        3
+       ],
+       [
+        " characters",
+        3
+       ],
+       [
+        " chat",
+        3
+       ],
+       [
+        "@example",
+        2
+       ],
+       [
+        " AI",
+        2
+       ],
+       [
+        " responses",
+        2
+       ],
+       [
+        " two",
+        2
+       ],
+       [
+        " pairs",
+        2
+       ],
+       [
+        "@g",
+        2
+       ],
+       [
+        " people",
+        2
+       ],
+       [
+        "@param",
+        2
+       ],
+       [
+        " different",
+        2
+       ],
+       [
+        " chats",
+        2
+       ],
+       [
+        " robot",
+        2
+       ],
+       [
+        " topics",
+        2
+       ],
+       [
+        "@s",
+        2
+       ],
+       [
+        " who",
+        2
+       ],
+       [
+        " some",
+        2
+       ],
+       [
+        "@a",
+        2
+       ],
+       [
+        " below",
+        2
+       ],
+       [
+        " series",
+        2
+       ],
+       [
+        " question",
+        2
+       ]
+      ],
+      "gained": [
+       [
+        " below",
+        2
+       ],
+       [
+        " chats",
+        2
+       ],
+       [
+        " responses",
+        2
+       ],
+       [
+        " purpose",
+        1
+       ],
+       [
+        " Who",
+        1
+       ],
+       [
+        " experienced",
+        1
+       ],
+       [
+        " steps",
+        1
+       ],
+       [
+        " events",
+        1
+       ],
+       [
+        " five",
+        1
+       ],
+       [
+        " girl",
+        1
+       ],
+       [
+        " three",
+        1
+       ],
+       [
+        " opportunities",
+        1
+       ],
+       [
+        " teacher",
+        1
+       ],
+       [
+        " convers",
+        1
+       ],
+       [
+        " famous",
+        1
+       ],
+       [
+        " chat",
+        1
+       ],
+       [
+        " teams",
+        1
+       ],
+       [
+        " answers",
+        1
+       ],
+       [
+        " special",
+        1
+       ],
+       [
+        " around",
+        1
+       ],
+       [
+        " Dr",
+        1
+       ],
+       [
+        " four",
+        1
+       ],
+       [
+        " my",
+        1
+       ],
+       [
+        " robot",
+        1
+       ],
+       [
+        " question",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " dialogue",
+        -3
+       ],
+       [
+        " the",
+        -3
+       ],
+       [
+        " on",
+        -2
+       ],
+       [
+        " lists",
+        -2
+       ],
+       [
+        " called",
+        -2
+       ],
+       [
+        " with",
+        -2
+       ],
+       [
+        " different",
+        -2
+       ],
+       [
+        " examples",
+        -2
+       ],
+       [
+        " characters",
+        -2
+       ],
+       [
+        " that",
+        -2
+       ],
+       [
+        " of",
+        -2
+       ],
+       [
+        " computer",
+        -2
+       ],
+       [
+        " in",
+        -2
+       ],
+       [
+        " a",
+        -2
+       ],
+       [
+        " questions",
+        -1
+       ],
+       [
+        "/or",
+        -1
+       ],
+       [
+        " character",
+        -1
+       ],
+       [
+        " based",
+        -1
+       ],
+       [
+        " groups",
+        -1
+       ],
+       [
+        " members",
+        -1
+       ],
+       [
+        " video",
+        -1
+       ],
+       [
+        " between",
+        -1
+       ],
+       [
+        " each",
+        -1
+       ],
+       [
+        " images",
+        -1
+       ],
+       [
+        " which",
+        -1
+       ]
+      ]
+     }
+    },
+    "24": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        "@g",
+        41
+       ],
+       [
+        "@s",
+        38
+       ],
+       [
+        "@a",
+        31
+       ],
+       [
+        "@example",
+        30
+       ],
+       [
+        "@m",
+        30
+       ],
+       [
+        "@d",
+        26
+       ],
+       [
+        "@c",
+        18
+       ],
+       [
+        "@gmail",
+        16
+       ],
+       [
+        "@end",
+        14
+       ],
+       [
+        " AT",
+        14
+       ],
+       [
+        " responses",
+        12
+       ],
+       [
+        "@param",
+        11
+       ],
+       [
+        " response",
+        9
+       ],
+       [
+        " different",
+        8
+       ],
+       [
+        "<|fim_middle|>",
+        7
+       ],
+       [
+        "@author",
+        6
+       ],
+       [
+        " varying",
+        6
+       ],
+       [
+        " nested",
+        6
+       ],
+       [
+        " voice",
+        6
+       ],
+       [
+        " convers",
+        6
+       ],
+       [
+        " style",
+        6
+       ],
+       [
+        " personality",
+        6
+       ],
+       [
+        " character",
+        5
+       ],
+       [
+        " context",
+        5
+       ],
+       [
+        " dialogue",
+        5
+       ]
+      ],
+      "gained": [
+       [
+        "@g",
+        39
+       ],
+       [
+        "@s",
+        35
+       ],
+       [
+        "@a",
+        29
+       ],
+       [
+        "@m",
+        28
+       ],
+       [
+        "@example",
+        28
+       ],
+       [
+        "@d",
+        24
+       ],
+       [
+        "@c",
+        16
+       ],
+       [
+        "@gmail",
+        15
+       ],
+       [
+        " AT",
+        14
+       ],
+       [
+        "@end",
+        12
+       ],
+       [
+        "@param",
+        9
+       ],
+       [
+        " different",
+        7
+       ],
+       [
+        " varying",
+        6
+       ],
+       [
+        "@author",
+        6
+       ],
+       [
+        "<|fim_middle|>",
+        6
+       ],
+       [
+        " nested",
+        6
+       ],
+       [
+        " html",
+        5
+       ],
+       [
+        " upon",
+        5
+       ],
+       [
+        " responses",
+        5
+       ],
+       [
+        " character",
+        5
+       ],
+       [
+        " M\u00e9",
+        4
+       ],
+       [
+        "ers",
+        4
+       ],
+       [
+        " lou",
+        4
+       ],
+       [
+        " Of",
+        4
+       ],
+       [
+        " varied",
+        4
+       ]
+      ],
+      "lost": [
+       [
+        " good",
+        -16
+       ],
+       [
+        " and",
+        -14
+       ],
+       [
+        " best",
+        -13
+       ],
+       [
+        " always",
+        -12
+       ],
+       [
+        " its",
+        -12
+       ],
+       [
+        " human",
+        -12
+       ],
+       [
+        " helpful",
+        -11
+       ],
+       [
+        " assistant",
+        -11
+       ],
+       [
+        " way",
+        -10
+       ],
+       [
+        " confidence",
+        -9
+       ],
+       [
+        " answers",
+        -9
+       ],
+       [
+        " but",
+        -8
+       ],
+       [
+        " etc",
+        -8
+       ],
+       [
+        " answer",
+        -8
+       ],
+       [
+        " any",
+        -8
+       ],
+       [
+        " practical",
+        -7
+       ],
+       [
+        " person",
+        -7
+       ],
+       [
+        " assistance",
+        -7
+       ],
+       [
+        " confident",
+        -7
+       ],
+       [
+        " questions",
+        -6
+       ],
+       [
+        " effort",
+        -6
+       ],
+       [
+        " please",
+        -6
+       ],
+       [
+        " honest",
+        -6
+       ],
+       [
+        " advice",
+        -6
+       ],
+       [
+        " help",
+        -6
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " AI",
+        3
+       ],
+       [
+        " people",
+        3
+       ],
+       [
+        "@example",
+        3
+       ],
+       [
+        " characters",
+        3
+       ],
+       [
+        "@g",
+        3
+       ],
+       [
+        " questions",
+        3
+       ],
+       [
+        "@param",
+        2
+       ],
+       [
+        " Assistant",
+        2
+       ],
+       [
+        " dialogue",
+        2
+       ],
+       [
+        " assistant",
+        2
+       ],
+       [
+        " person",
+        2
+       ],
+       [
+        " number",
+        2
+       ],
+       [
+        " Pearl",
+        2
+       ],
+       [
+        " different",
+        2
+       ],
+       [
+        "@Spring",
+        2
+       ],
+       [
+        " two",
+        2
+       ],
+       [
+        "@s",
+        2
+       ],
+       [
+        "@end",
+        2
+       ],
+       [
+        " teams",
+        2
+       ],
+       [
+        " chat",
+        2
+       ],
+       [
+        " tests",
+        2
+       ],
+       [
+        " dialog",
+        2
+       ],
+       [
+        "@a",
+        2
+       ],
+       [
+        " individuals",
+        2
+       ],
+       [
+        " couple",
+        2
+       ]
+      ],
+      "gained": [
+       [
+        " tests",
+        2
+       ],
+       [
+        " Pearl",
+        2
+       ],
+       [
+        " Assistant",
+        2
+       ],
+       [
+        " coach",
+        1
+       ],
+       [
+        " variety",
+        1
+       ],
+       [
+        " individuals",
+        1
+       ],
+       [
+        " interesting",
+        1
+       ],
+       [
+        " Mr",
+        1
+       ],
+       [
+        " random",
+        1
+       ],
+       [
+        " human",
+        1
+       ],
+       [
+        " people",
+        1
+       ],
+       [
+        " agent",
+        1
+       ],
+       [
+        " whom",
+        1
+       ],
+       [
+        " teams",
+        1
+       ],
+       [
+        "uer",
+        1
+       ],
+       [
+        " couple",
+        1
+       ],
+       [
+        " service",
+        1
+       ],
+       [
+        " part",
+        1
+       ],
+       [
+        " several",
+        1
+       ],
+       [
+        "@g",
+        1
+       ],
+       [
+        " two",
+        1
+       ],
+       [
+        " team",
+        1
+       ],
+       [
+        " me",
+        1
+       ],
+       [
+        " brief",
+        1
+       ],
+       [
+        " four",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " conversations",
+        -2
+       ],
+       [
+        " character",
+        -2
+       ],
+       [
+        " various",
+        -2
+       ],
+       [
+        " video",
+        -2
+       ],
+       [
+        " notes",
+        -2
+       ],
+       [
+        " fictional",
+        -2
+       ],
+       [
+        " groups",
+        -2
+       ],
+       [
+        " conversation",
+        -2
+       ],
+       [
+        " characters",
+        -2
+       ],
+       [
+        " some",
+        -2
+       ],
+       [
+        " images",
+        -1
+       ],
+       [
+        " collection",
+        -1
+       ],
+       [
+        " students",
+        -1
+       ],
+       [
+        " players",
+        -1
+       ],
+       [
+        " student",
+        -1
+       ],
+       [
+        " members",
+        -1
+       ],
+       [
+        " box",
+        -1
+       ],
+       [
+        " machine",
+        -1
+       ],
+       [
+        " talk",
+        -1
+       ],
+       [
+        " series",
+        -1
+       ],
+       [
+        " question",
+        -1
+       ],
+       [
+        " school",
+        -1
+       ],
+       [
+        " different",
+        -1
+       ],
+       [
+        " called",
+        -1
+       ],
+       [
+        " between",
+        -1
+       ]
+      ]
+     }
+    },
+    "28": {
+     "pos>=16": {
+      "soft_top": [
+       [
+        " ON",
+        17
+       ],
+       [
+        " personality",
+        8
+       ],
+       [
+        " loan",
+        8
+       ],
+       [
+        " Cl",
+        8
+       ],
+       [
+        " responses",
+        8
+       ],
+       [
+        " Systems",
+        8
+       ],
+       [
+        " Loans",
+        8
+       ],
+       [
+        " Appalach",
+        7
+       ],
+       [
+        " Capitals",
+        7
+       ],
+       [
+        " System",
+        7
+       ],
+       [
+        " friendly",
+        7
+       ],
+       [
+        " response",
+        7
+       ],
+       [
+        " conference",
+        6
+       ],
+       [
+        " Crimes",
+        6
+       ],
+       [
+        " clustering",
+        6
+       ],
+       [
+        " Funding",
+        6
+       ],
+       [
+        " must",
+        6
+       ],
+       [
+        " dialogue",
+        5
+       ],
+       [
+        " varied",
+        5
+       ],
+       [
+        " loans",
+        5
+       ],
+       [
+        " Banking",
+        5
+       ],
+       [
+        " general",
+        5
+       ],
+       [
+        " Rights",
+        5
+       ],
+       [
+        " traits",
+        4
+       ],
+       [
+        " Ice",
+        4
+       ]
+      ],
+      "gained": [
+       [
+        " ON",
+        17
+       ],
+       [
+        " Loans",
+        8
+       ],
+       [
+        " loan",
+        8
+       ],
+       [
+        " Systems",
+        8
+       ],
+       [
+        " Cl",
+        8
+       ],
+       [
+        " Capitals",
+        7
+       ],
+       [
+        " Appalach",
+        7
+       ],
+       [
+        " System",
+        7
+       ],
+       [
+        " must",
+        6
+       ],
+       [
+        " clustering",
+        6
+       ],
+       [
+        " conference",
+        6
+       ],
+       [
+        " Funding",
+        6
+       ],
+       [
+        " Crimes",
+        6
+       ],
+       [
+        " loans",
+        5
+       ],
+       [
+        " Banking",
+        5
+       ],
+       [
+        " varied",
+        5
+       ],
+       [
+        " Rights",
+        5
+       ],
+       [
+        " general",
+        5
+       ],
+       [
+        " behaviour",
+        4
+       ],
+       [
+        " different",
+        4
+       ],
+       [
+        " Released",
+        4
+       ],
+       [
+        " overd",
+        4
+       ],
+       [
+        " personality",
+        4
+       ],
+       [
+        " Clients",
+        4
+       ],
+       [
+        " varying",
+        4
+       ]
+      ],
+      "lost": [
+       [
+        " answer",
+        -12
+       ],
+       [
+        " friendly",
+        -12
+       ],
+       [
+        " assistant",
+        -11
+       ],
+       [
+        " human",
+        -10
+       ],
+       [
+        " help",
+        -9
+       ],
+       [
+        " person",
+        -8
+       ],
+       [
+        " assistants",
+        -8
+       ],
+       [
+        " tries",
+        -8
+       ],
+       [
+        " assistance",
+        -7
+       ],
+       [
+        " attempts",
+        -7
+       ],
+       [
+        " Assistant",
+        -7
+       ],
+       [
+        " answers",
+        -7
+       ],
+       [
+        " try",
+        -6
+       ],
+       [
+        " but",
+        -6
+       ],
+       [
+        " confidence",
+        -6
+       ],
+       [
+        " assist",
+        -6
+       ],
+       [
+        " Assist",
+        -6
+       ],
+       [
+        " Friendly",
+        -6
+       ],
+       [
+        " helpful",
+        -6
+       ],
+       [
+        " best",
+        -6
+       ],
+       [
+        " way",
+        -6
+       ],
+       [
+        " humans",
+        -5
+       ],
+       [
+        " sometimes",
+        -5
+       ],
+       [
+        " never",
+        -5
+       ],
+       [
+        " information",
+        -5
+       ]
+      ]
+     },
+     "pos<16": {
+      "soft_top": [
+       [
+        " AI",
+        3
+       ],
+       [
+        " two",
+        2
+       ],
+       [
+        " ple",
+        2
+       ],
+       [
+        " people",
+        2
+       ],
+       [
+        " robot",
+        2
+       ],
+       [
+        " conversations",
+        2
+       ],
+       [
+        " Vancouver",
+        2
+       ],
+       [
+        " individuals",
+        2
+       ],
+       [
+        " characters",
+        2
+       ],
+       [
+        "aim",
+        1
+       ],
+       [
+        " few",
+        1
+       ],
+       [
+        " law",
+        1
+       ],
+       [
+        " lot",
+        1
+       ],
+       [
+        " copy",
+        1
+       ],
+       [
+        " Pr",
+        1
+       ],
+       [
+        " four",
+        1
+       ],
+       [
+        " number",
+        1
+       ],
+       [
+        " par",
+        1
+       ],
+       [
+        " black",
+        1
+       ],
+       [
+        " three",
+        1
+       ],
+       [
+        " Tr",
+        1
+       ],
+       [
+        " list",
+        1
+       ],
+       [
+        " who",
+        1
+       ],
+       [
+        " some",
+        1
+       ],
+       [
+        " me",
+        1
+       ]
+      ],
+      "gained": [
+       [
+        " black",
+        1
+       ],
+       [
+        " three",
+        1
+       ],
+       [
+        " Pr",
+        1
+       ],
+       [
+        " known",
+        1
+       ],
+       [
+        "ages",
+        1
+       ],
+       [
+        " several",
+        1
+       ],
+       [
+        "aim",
+        1
+       ],
+       [
+        " four",
+        1
+       ],
+       [
+        " Tr",
+        1
+       ],
+       [
+        " number",
+        1
+       ],
+       [
+        " Str",
+        1
+       ],
+       [
+        " are",
+        1
+       ],
+       [
+        " music",
+        1
+       ],
+       [
+        " human",
+        1
+       ],
+       [
+        "flow",
+        1
+       ],
+       [
+        " lot",
+        1
+       ],
+       [
+        " copy",
+        1
+       ],
+       [
+        " law",
+        1
+       ],
+       [
+        " lines",
+        1
+       ],
+       [
+        " people",
+        1
+       ],
+       [
+        " par",
+        1
+       ],
+       [
+        " Black",
+        1
+       ],
+       [
+        " two",
+        1
+       ],
+       [
+        "ies",
+        1
+       ],
+       [
+        " is",
+        1
+       ]
+      ],
+      "lost": [
+       [
+        " questions",
+        -3
+       ],
+       [
+        " Assistant",
+        -2
+       ],
+       [
+        " Chat",
+        -2
+       ],
+       [
+        " students",
+        -2
+       ],
+       [
+        " answers",
+        -2
+       ],
+       [
+        " taken",
+        -1
+       ],
+       [
+        " box",
+        -1
+       ],
+       [
+        " members",
+        -1
+       ],
+       [
+        " Dr",
+        -1
+       ],
+       [
+        " created",
+        -1
+       ],
+       [
+        " called",
+        -1
+       ],
+       [
+        "ground",
+        -1
+       ],
+       [
+        " six",
+        -1
+       ],
+       [
+        "/or",
+        -1
+       ],
+       [
+        "ical",
+        -1
+       ],
+       [
+        "ued",
+        -1
+       ],
+       [
+        " question",
+        -1
+       ],
+       [
+        " different",
+        -1
+       ],
+       [
+        " various",
+        -1
+       ],
+       [
+        " just",
+        -1
+       ],
+       [
+        " person",
+        -1
+       ],
+       [
+        " system",
+        -1
+       ],
+       [
+        " about",
+        -1
+       ],
+       [
+        " name",
+        -1
+       ],
+       [
+        " images",
+        -1
+       ]
+      ]
+     }
+    }
+   },
+   "answer_positions": {
+    "n_positions": 9705,
+    "model_output": {
+     "up": [
+      [
+       " it",
+       0.00667
+      ],
+      [
+       "\u2019s",
+       0.00634
+      ],
+      [
+       "\u2014it",
+       0.00433
+      ],
+      [
+       "\u2019t",
+       0.0041
+      ],
+      [
+       " if",
+       0.0039
+      ],
+      [
+       " just",
+       0.00381
+      ],
+      [
+       " Honestly",
+       0.00339
+      ],
+      [
+       "\u2014you",
+       0.00277
+      ],
+      [
+       " or",
+       0.00274
+      ],
+      [
+       " really",
+       0.0024
+      ],
+      [
+       "\u2014if",
+       0.00234
+      ],
+      [
+       "\u2014but",
+       0.00223
+      ],
+      [
+       " could",
+       0.00212
+      ],
+      [
+       "\u2014I",
+       0.00207
+      ],
+      [
+       " but",
+       0.00198
+      ],
+      [
+       "\u2019re",
+       0.00191
+      ],
+      [
+       " probably",
+       0.00189
+      ],
+      [
+       " maybe",
+       0.00176
+      ],
+      [
+       " But",
+       0.00165
+      ],
+      [
+       " so",
+       0.00154
+      ],
+      [
+       "\u2019d",
+       0.00153
+      ],
+      [
+       " totally",
+       0.00149
+      ],
+      [
+       " If",
+       0.00146
+      ],
+      [
+       " unless",
+       0.00143
+      ],
+      [
+       " Maybe",
+       0.00122
+      ]
+     ],
+     "down": [
+      [
+       " to",
+       -0.00574
+      ],
+      [
+       "'s",
+       -0.0051
+      ],
+      [
+       " and",
+       -0.00429
+      ],
+      [
+       "'t",
+       -0.0041
+      ],
+      [
+       " that",
+       -0.00343
+      ],
+      [
+       " a",
+       -0.00296
+      ],
+      [
+       " about",
+       -0.00284
+      ],
+      [
+       " there",
+       -0.00268
+      ],
+      [
+       " your",
+       -0.00232
+      ],
+      [
+       " with",
+       -0.00205
+      ],
+      [
+       " might",
+       -0.00186
+      ],
+      [
+       " the",
+       -0.00177
+      ],
+      [
+       "'re",
+       -0.00173
+      ],
+      [
+       " like",
+       -0.00168
+      ],
+      [
+       " It",
+       -0.00145
+      ],
+      [
+       " I",
+       -0.00144
+      ],
+      [
+       " when",
+       -0.00117
+      ],
+      [
+       " of",
+       -0.00111
+      ],
+      [
+       " on",
+       -0.00109
+      ],
+      [
+       " consider",
+       -0.00099
+      ],
+      [
+       " Yes",
+       -0.00078
+      ],
+      [
+       " That",
+       -0.00076
+      ],
+      [
+       " Hi",
+       -0.00075
+      ],
+      [
+       " then",
+       -0.00063
+      ],
+      [
+       " because",
+       -0.0006
+      ]
+     ],
+     "up_logp": [
+      [
+       " M\u00e9todo",
+       0.922
+      ],
+      [
+       " Datos",
+       0.849
+      ],
+      [
+       " Bounds",
+       0.694
+      ],
+      [
+       "\u2019Brien",
+       0.684
+      ],
+      [
+       "peats",
+       0.619
+      ],
+      [
+       " Handles",
+       0.6
+      ],
+      [
+       "Borders",
+       0.589
+      ],
+      [
+       " fences",
+       0.586
+      ],
+      [
+       "Limits",
+       0.575
+      ],
+      [
+       "ffa",
+       0.564
+      ],
+      [
+       "\u2014even",
+       0.549
+      ],
+      [
+       " Minds",
+       0.533
+      ],
+      [
+       " Opens",
+       0.524
+      ],
+      [
+       " h\u00e4tte",
+       0.513
+      ],
+      [
+       "Feels",
+       0.51
+      ],
+      [
+       "forgettable",
+       0.505
+      ],
+      [
+       "ancock",
+       0.499
+      ],
+      [
+       "\u0219",
+       0.497
+      ],
+      [
+       " Bridges",
+       0.488
+      ],
+      [
+       "nez",
+       0.486
+      ],
+      [
+       "oji",
+       0.485
+      ],
+      [
+       " Builds",
+       0.484
+      ],
+      [
+       "touches",
+       0.481
+      ],
+      [
+       " Lives",
+       0.472
+      ],
+      [
+       " t\u00e3o",
+       0.457
+      ]
+     ],
+     "down_logp": [
+      [
+       " whilst",
+       -3.849
+      ],
+      [
+       " wherein",
+       -3.826
+      ],
+      [
+       " ascertain",
+       -3.739
+      ],
+      [
+       " subsequently",
+       -3.609
+      ],
+      [
+       " elucid",
+       -3.604
+      ],
+      [
+       " herein",
+       -3.591
+      ],
+      [
+       " numerous",
+       -3.576
+      ],
+      [
+       " indeed",
+       -3.573
+      ],
+      [
+       " thereby",
+       -3.541
+      ],
+      [
+       " meticulously",
+       -3.538
+      ],
+      [
+       " therein",
+       -3.518
+      ],
+      [
+       " akin",
+       -3.501
+      ],
+      [
+       " necess",
+       -3.413
+      ],
+      [
+       " requisite",
+       -3.371
+      ],
+      [
+       " residing",
+       -3.368
+      ],
+      [
+       " myriad",
+       -3.363
+      ],
+      [
+       " attempting",
+       -3.353
+      ],
+      [
+       " undergoing",
+       -3.342
+      ],
+      [
+       " exceedingly",
+       -3.3
+      ],
+      [
+       " predominantly",
+       -3.291
+      ],
+      [
+       " endeavour",
+       -3.28
+      ],
+      [
+       " proficient",
+       -3.27
+      ],
+      [
+       " comprehend",
+       -3.266
+      ],
+      [
+       " delve",
+       -3.259
+      ],
+      [
+       " adept",
+       -3.258
+      ]
+     ]
+    },
+    "layers": {
+     "4": {
+      "up": [
+       [
+        " pretty",
+        0.00577
+       ],
+       [
+        " really",
+        0.00428
+       ],
+       [
+        " maybe",
+        0.00358
+       ],
+       [
+        " somehow",
+        0.00239
+       ],
+       [
+        " you",
+        0.0021
+       ],
+       [
+        "\u2019s",
+        0.00192
+       ],
+       [
+        " someday",
+        0.00134
+       ],
+       [
+        " anyway",
+        0.00089
+       ],
+       [
+        " folks",
+        0.0008
+       ],
+       [
+        " isn",
+        0.0007
+       ],
+       [
+        " hasn",
+        0.00067
+       ],
+       [
+        " right",
+        0.00063
+       ],
+       [
+        " big",
+        0.0006
+       ],
+       [
+        " aren",
+        0.00058
+       ],
+       [
+        " somewhere",
+        0.00045
+       ],
+       [
+        " lately",
+        0.00043
+       ],
+       [
+        " my",
+        0.00041
+       ],
+       [
+        " basically",
+        0.0004
+       ],
+       [
+        " doesn",
+        0.00039
+       ],
+       [
+        " someone",
+        0.00036
+       ],
+       [
+        " weren",
+        0.00032
+       ],
+       [
+        " kids",
+        0.00031
+       ],
+       [
+        " stuff",
+        0.0003
+       ],
+       [
+        " needed",
+        0.00026
+       ],
+       [
+        " so",
+        0.00024
+       ]
+      ],
+      "down": [
+       [
+        " on",
+        -0.00747
+       ],
+       [
+        " in",
+        -0.00677
+       ],
+       [
+        " to",
+        -0.00376
+       ],
+       [
+        " as",
+        -0.00342
+       ],
+       [
+        " for",
+        -0.0032
+       ],
+       [
+        " that",
+        -0.00315
+       ],
+       [
+        " and",
+        -0.0031
+       ],
+       [
+        " with",
+        -0.00283
+       ],
+       [
+        " just",
+        -0.00214
+       ],
+       [
+        " rather",
+        -0.00173
+       ],
+       [
+        " instead",
+        -0.00166
+       ],
+       [
+        " at",
+        -0.00159
+       ],
+       [
+        " of",
+        -0.00132
+       ],
+       [
+        " only",
+        -0.00125
+       ],
+       [
+        " from",
+        -0.00115
+       ],
+       [
+        " once",
+        -0.00095
+       ],
+       [
+        " their",
+        -0.00086
+       ],
+       [
+        " over",
+        -0.00074
+       ],
+       [
+        " during",
+        -0.00071
+       ],
+       [
+        " then",
+        -0.0007
+       ],
+       [
+        " alongside",
+        -0.00066
+       ],
+       [
+        " mostly",
+        -0.00062
+       ],
+       [
+        " by",
+        -0.00062
+       ],
+       [
+        " later",
+        -0.0006
+       ],
+       [
+        " would",
+        -0.00057
+       ]
+      ],
+      "pearson_vs_output": 0.2519753167028489,
+      "top50_overlap_vs_output": 0.14,
+      "up_logp": [
+       [
+        "\u2019Brien",
+        0.87
+       ],
+       [
+        " grandma",
+        0.854
+       ],
+       [
+        "419",
+        0.85
+       ],
+       [
+        " swiper",
+        0.838
+       ],
+       [
+        " jal",
+        0.829
+       ],
+       [
+        " Leban",
+        0.822
+       ],
+       [
+        "\u2019ve",
+        0.821
+       ],
+       [
+        " filmer",
+        0.815
+       ],
+       [
+        "\u2019re",
+        0.814
+       ],
+       [
+        " Sesso",
+        0.806
+       ],
+       [
+        " moto",
+        0.801
+       ],
+       [
+        "phalt",
+        0.8
+       ],
+       [
+        "ouch",
+        0.793
+       ],
+       [
+        " keer",
+        0.791
+       ],
+       [
+        " kommun",
+        0.787
+       ],
+       [
+        "\u2019ll",
+        0.786
+       ],
+       [
+        " komb",
+        0.78
+       ],
+       [
+        "\u2019m",
+        0.78
+       ],
+       [
+        "\u2019n",
+        0.778
+       ],
+       [
+        "altar",
+        0.777
+       ],
+       [
+        " Grandma",
+        0.775
+       ],
+       [
+        "-bold",
+        0.775
+       ],
+       [
+        "icos",
+        0.773
+       ],
+       [
+        " nada",
+        0.772
+       ],
+       [
+        " kost",
+        0.772
+       ]
+      ],
+      "down_logp": [
+       [
+        " whilst",
+        -1.194
+       ],
+       [
+        " Whilst",
+        -1.021
+       ],
+       [
+        " on",
+        -0.925
+       ],
+       [
+        " until",
+        -0.907
+       ],
+       [
+        " to",
+        -0.901
+       ],
+       [
+        " in",
+        -0.888
+       ],
+       [
+        " as",
+        -0.875
+       ],
+       [
+        " at",
+        -0.87
+       ],
+       [
+        " of",
+        -0.845
+       ],
+       [
+        " and",
+        -0.843
+       ],
+       [
+        " for",
+        -0.835
+       ],
+       [
+        " due",
+        -0.829
+       ],
+       [
+        " with",
+        -0.818
+       ],
+       [
+        " which",
+        -0.809
+       ],
+       [
+        " the",
+        -0.805
+       ],
+       [
+        "Whilst",
+        -0.799
+       ],
+       [
+        " util",
+        -0.784
+       ],
+       [
+        " by",
+        -0.782
+       ],
+       [
+        " following",
+        -0.781
+       ],
+       [
+        "[c",
+        -0.779
+       ],
+       [
+        " upon",
+        -0.772
+       ],
+       [
+        " alongside",
+        -0.771
+       ],
+       [
+        " within",
+        -0.771
+       ],
+       [
+        " that",
+        -0.768
+       ],
+       [
+        " from",
+        -0.748
+       ]
+      ],
+      "spearman_vs_output_logp": 0.22884873222816973,
+      "top50_overlap_vs_output_logp": 0.02
+     },
+     "8": {
+      "up": [
+       [
+        "\u2019s",
+        0.00445
+       ],
+       [
+        "-Jul",
+        0.00046
+       ],
+       [
+        " Safe",
+        0.00041
+       ],
+       [
+        " Guard",
+        0.00035
+       ],
+       [
+        " Your",
+        0.00034
+       ],
+       [
+        " Commander",
+        0.00029
+       ],
+       [
+        " Keeper",
+        0.00027
+       ],
+       [
+        "\u2019es",
+        0.00027
+       ],
+       [
+        " Land",
+        0.00027
+       ],
+       [
+        " Conspiracy",
+        0.00026
+       ],
+       [
+        " Hers",
+        0.00026
+       ],
+       [
+        " Crimes",
+        0.00025
+       ],
+       [
+        " Theft",
+        0.00025
+       ],
+       [
+        "ccd",
+        0.00025
+       ],
+       [
+        " Raider",
+        0.00024
+       ],
+       [
+        " Bri",
+        0.00022
+       ],
+       [
+        " Sexy",
+        0.00022
+       ],
+       [
+        "dbe",
+        0.00022
+       ],
+       [
+        "<|endoftext|>",
+        0.0002
+       ],
+       [
+        " Beats",
+        0.0002
+       ],
+       [
+        "\u2019T",
+        0.0002
+       ],
+       [
+        "\u2019all",
+        0.0002
+       ],
+       [
+        " Gift",
+        0.00019
+       ],
+       [
+        " Truth",
+        0.00019
+       ],
+       [
+        "\u2019y",
+        0.00019
+       ]
+      ],
+      "down": [
+       [
+        " in",
+        -0.00103
+       ],
+       [
+        " and",
+        -0.00091
+       ],
+       [
+        " Their",
+        -0.00057
+       ],
+       [
+        "\u2019n",
+        -0.00046
+       ],
+       [
+        "\u2019ll",
+        -0.00026
+       ],
+       [
+        " for",
+        -0.00025
+       ],
+       [
+        " Saf",
+        -0.00025
+       ],
+       [
+        " Beau",
+        -0.00024
+       ],
+       [
+        "alink",
+        -0.00024
+       ],
+       [
+        " Honest",
+        -0.00023
+       ],
+       [
+        "blr",
+        -0.00023
+       ],
+       [
+        " They",
+        -0.00023
+       ],
+       [
+        " Reform",
+        -0.00022
+       ],
+       [
+        "ddf",
+        -0.00022
+       ],
+       [
+        "bish",
+        -0.00022
+       ],
+       [
+        "bff",
+        -0.00019
+       ],
+       [
+        "/J",
+        -0.00019
+       ],
+       [
+        " Safety",
+        -0.00018
+       ],
+       [
+        " Repair",
+        -0.00018
+       ],
+       [
+        " Gad",
+        -0.00016
+       ],
+       [
+        "cbc",
+        -0.00016
+       ],
+       [
+        " Don",
+        -0.00015
+       ],
+       [
+        " Better",
+        -0.00015
+       ],
+       [
+        " of",
+        -0.00015
+       ],
+       [
+        " Only",
+        -0.00014
+       ]
+      ],
+      "pearson_vs_output": 0.2961291297946493,
+      "top50_overlap_vs_output": 0.04,
+      "up_logp": [
+       [
+        " Raider",
+        1.086
+       ],
+       [
+        " Cobra",
+        1.08
+       ],
+       [
+        " Quincy",
+        0.948
+       ],
+       [
+        " Tiger",
+        0.93
+       ],
+       [
+        " Vega",
+        0.926
+       ],
+       [
+        "\u2019s",
+        0.914
+       ],
+       [
+        " Exodus",
+        0.897
+       ],
+       [
+        " Valk",
+        0.893
+       ],
+       [
+        " Commander",
+        0.888
+       ],
+       [
+        " Tigers",
+        0.879
+       ],
+       [
+        " Vib",
+        0.868
+       ],
+       [
+        "lv",
+        0.858
+       ],
+       [
+        " Dann",
+        0.855
+       ],
+       [
+        " Lafayette",
+        0.854
+       ],
+       [
+        " GI",
+        0.84
+       ],
+       [
+        " KA",
+        0.833
+       ],
+       [
+        " Vu",
+        0.829
+       ],
+       [
+        " Toll",
+        0.824
+       ],
+       [
+        " Raiders",
+        0.824
+       ],
+       [
+        " Gamma",
+        0.821
+       ],
+       [
+        " VA",
+        0.821
+       ],
+       [
+        "\u2019m",
+        0.82
+       ],
+       [
+        " LA",
+        0.815
+       ],
+       [
+        " Volk",
+        0.809
+       ],
+       [
+        " Pepper",
+        0.808
+       ]
+      ],
+      "down_logp": [
+       [
+        " provinc",
+        -0.905
+       ],
+       [
+        " neph",
+        -0.848
+       ],
+       [
+        "\u9001",
+        -0.801
+       ],
+       [
+        "bish",
+        -0.799
+       ],
+       [
+        ".Member",
+        -0.782
+       ],
+       [
+        "ialog",
+        -0.751
+       ],
+       [
+        " ducks",
+        -0.75
+       ],
+       [
+        "iloc",
+        -0.749
+       ],
+       [
+        " edm",
+        -0.74
+       ],
+       [
+        " paed",
+        -0.737
+       ],
+       [
+        ".Bean",
+        -0.736
+       ],
+       [
+        " bureaucr",
+        -0.732
+       ],
+       [
+        " GST",
+        -0.731
+       ],
+       [
+        "\u671f",
+        -0.729
+       ],
+       [
+        " renal",
+        -0.724
+       ],
+       [
+        "rename",
+        -0.712
+       ],
+       [
+        " mrb",
+        -0.71
+       ],
+       [
+        "orges",
+        -0.706
+       ],
+       [
+        " multic",
+        -0.697
+       ],
+       [
+        " renaming",
+        -0.696
+       ],
+       [
+        "ilarity",
+        -0.691
+       ],
+       [
+        "\u043e\u0434\u0435\u0440\u0436",
+        -0.691
+       ],
+       [
+        "Jess",
+        -0.69
+       ],
+       [
+        "ertext",
+        -0.688
+       ],
+       [
+        " vc",
+        -0.685
+       ]
+      ],
+      "spearman_vs_output_logp": -0.06856829908701163,
+      "top50_overlap_vs_output_logp": 0.0
+     },
+     "12": {
+      "up": [
+       [
+        " volunte",
+        0.00062
+       ],
+       [
+        " filmer",
+        0.00041
+       ],
+       [
+        " Criminal",
+        0.00036
+       ],
+       [
+        " Protect",
+        0.00036
+       ],
+       [
+        "<|endoftext|>",
+        0.00029
+       ],
+       [
+        "imei",
+        0.00026
+       ],
+       [
+        " Duty",
+        0.00026
+       ],
+       [
+        " Donate",
+        0.00025
+       ],
+       [
+        " Truth",
+        0.00024
+       ],
+       [
+        " Rescue",
+        0.00024
+       ],
+       [
+        " Yourself",
+        0.00024
+       ],
+       [
+        " Stuff",
+        0.00023
+       ],
+       [
+        " Theft",
+        0.00022
+       ],
+       [
+        "prite",
+        0.00022
+       ],
+       [
+        " Thief",
+        0.00021
+       ],
+       [
+        " Secrets",
+        0.00021
+       ],
+       [
+        " safeg",
+        0.0002
+       ],
+       [
+        "fdb",
+        0.00019
+       ],
+       [
+        " Flame",
+        0.00018
+       ],
+       [
+        " Guys",
+        0.00018
+       ],
+       [
+        " Qui",
+        0.00017
+       ],
+       [
+        " Guard",
+        0.00017
+       ],
+       [
+        " Lad",
+        0.00017
+       ],
+       [
+        " Quiet",
+        0.00016
+       ],
+       [
+        " Balance",
+        0.00016
+       ]
+      ],
+      "down": [
+       [
+        " and",
+        -0.00064
+       ],
+       [
+        " in",
+        -0.00064
+       ],
+       [
+        " They",
+        -0.00055
+       ],
+       [
+        "'s",
+        -0.00052
+       ],
+       [
+        "\u2019n",
+        -0.00046
+       ],
+       [
+        " on",
+        -0.0003
+       ],
+       [
+        "aec",
+        -0.00028
+       ],
+       [
+        "\u2014you",
+        -0.00025
+       ],
+       [
+        " for",
+        -0.00021
+       ],
+       [
+        " of",
+        -0.00021
+       ],
+       [
+        " Saf",
+        -0.00021
+       ],
+       [
+        "ddf",
+        -0.00021
+       ],
+       [
+        "\u2019ll",
+        -0.0002
+       ],
+       [
+        "(H",
+        -0.00019
+       ],
+       [
+        "bff",
+        -0.00019
+       ],
+       [
+        "amac",
+        -0.00019
+       ],
+       [
+        " who",
+        -0.00018
+       ],
+       [
+        " Worse",
+        -0.00017
+       ],
+       [
+        "-W",
+        -0.00017
+       ],
+       [
+        " herself",
+        -0.00015
+       ],
+       [
+        " the",
+        -0.00015
+       ],
+       [
+        "alink",
+        -0.00015
+       ],
+       [
+        "fdc",
+        -0.00015
+       ],
+       [
+        "[W",
+        -0.00014
+       ],
+       [
+        " to",
+        -0.00014
+       ]
+      ],
+      "pearson_vs_output": 0.1331765950673802,
+      "top50_overlap_vs_output": 0.0,
+      "up_logp": [
+       [
+        " Braun",
+        1.148
+       ],
+       [
+        ".vn",
+        1.123
+       ],
+       [
+        " Valk",
+        1.107
+       ],
+       [
+        " Cobra",
+        1.072
+       ],
+       [
+        "VG",
+        1.047
+       ],
+       [
+        " vra",
+        0.985
+       ],
+       [
+        " GMO",
+        0.983
+       ],
+       [
+        ".gt",
+        0.968
+       ],
+       [
+        " Vet",
+        0.961
+       ],
+       [
+        " Tahoe",
+        0.961
+       ],
+       [
+        " VT",
+        0.936
+       ],
+       [
+        " VX",
+        0.933
+       ],
+       [
+        " VG",
+        0.929
+       ],
+       [
+        "LV",
+        0.925
+       ],
+       [
+        " Vib",
+        0.911
+       ],
+       [
+        " Lau",
+        0.904
+       ],
+       [
+        " Vu",
+        0.887
+       ],
+       [
+        " Carson",
+        0.882
+       ],
+       [
+        " aVar",
+        0.881
+       ],
+       [
+        " VOL",
+        0.876
+       ],
+       [
+        " Verb",
+        0.875
+       ],
+       [
+        "\u2019T",
+        0.873
+       ],
+       [
+        "-Jul",
+        0.862
+       ],
+       [
+        " VA",
+        0.855
+       ],
+       [
+        "lox",
+        0.855
+       ]
+      ],
+      "down_logp": [
+       [
+        "inic",
+        -0.992
+       ],
+       [
+        " hadn",
+        -0.988
+       ],
+       [
+        " U",
+        -0.84
+       ],
+       [
+        " bowling",
+        -0.839
+       ],
+       [
+        "inan",
+        -0.835
+       ],
+       [
+        "emat",
+        -0.828
+       ],
+       [
+        " Murray",
+        -0.803
+       ],
+       [
+        "ington",
+        -0.8
+       ],
+       [
+        " column",
+        -0.795
+       ],
+       [
+        " college",
+        -0.789
+       ],
+       [
+        " IO",
+        -0.787
+       ],
+       [
+        "exas",
+        -0.787
+       ],
+       [
+        " bundled",
+        -0.784
+       ],
+       [
+        " Ian",
+        -0.781
+       ],
+       [
+        "gow",
+        -0.78
+       ],
+       [
+        " Newton",
+        -0.773
+       ],
+       [
+        " square",
+        -0.771
+       ],
+       [
+        " solic",
+        -0.77
+       ],
+       [
+        " Irving",
+        -0.769
+       ],
+       [
+        "iry",
+        -0.766
+       ],
+       [
+        "entric",
+        -0.765
+       ],
+       [
+        " wrench",
+        -0.763
+       ],
+       [
+        "inston",
+        -0.762
+       ],
+       [
+        "ici",
+        -0.761
+       ],
+       [
+        " split",
+        -0.76
+       ]
+      ],
+      "spearman_vs_output_logp": 0.22016991599655253,
+      "top50_overlap_vs_output_logp": 0.0
+     },
+     "16": {
+      "up": [
+       [
+        " yourself",
+        0.00831
+       ],
+       [
+        "\u2014you",
+        0.00775
+       ],
+       [
+        "\u2014if",
+        0.00185
+       ],
+       [
+        " safety",
+        0.00156
+       ],
+       [
+        "\u2014it",
+        0.00151
+       ],
+       [
+        " legal",
+        0.00091
+       ],
+       [
+        " security",
+        0.00083
+       ],
+       [
+        " honesty",
+        0.00082
+       ],
+       [
+        " privacy",
+        0.00079
+       ],
+       [
+        " nearby",
+        0.00077
+       ],
+       [
+        "\u2014they",
+        0.00075
+       ],
+       [
+        " instead",
+        0.00075
+       ],
+       [
+        " depends",
+        0.00073
+       ],
+       [
+        " Nope",
+        0.00073
+       ],
+       [
+        " rather",
+        0.0007
+       ],
+       [
+        " risks",
+        0.0007
+       ],
+       [
+        "\u2014or",
+        0.00069
+       ],
+       [
+        " honest",
+        0.00066
+       ],
+       [
+        " alone",
+        0.00065
+       ],
+       [
+        " harmless",
+        0.00063
+       ],
+       [
+        " yourselves",
+        0.00058
+       ],
+       [
+        " precaution",
+        0.00056
+       ],
+       [
+        " nobody",
+        0.00056
+       ],
+       [
+        " advice",
+        0.00054
+       ],
+       [
+        " responsibly",
+        0.00052
+       ]
+      ],
+      "down": [
+       [
+        " you",
+        -0.01057
+       ],
+       [
+        " and",
+        -0.00729
+       ],
+       [
+        " or",
+        -0.00587
+       ],
+       [
+        " folks",
+        -0.00387
+       ],
+       [
+        " to",
+        -0.00344
+       ],
+       [
+        " in",
+        -0.00333
+       ],
+       [
+        " for",
+        -0.00286
+       ],
+       [
+        " that",
+        -0.00284
+       ],
+       [
+        " your",
+        -0.00233
+       ],
+       [
+        " maybe",
+        -0.00204
+       ],
+       [
+        " on",
+        -0.00158
+       ],
+       [
+        " when",
+        -0.00148
+       ],
+       [
+        " like",
+        -0.0014
+       ],
+       [
+        " with",
+        -0.00131
+       ],
+       [
+        " is",
+        -0.0013
+       ],
+       [
+        " stuff",
+        -0.00129
+       ],
+       [
+        " of",
+        -0.00114
+       ],
+       [
+        " where",
+        -0.00113
+       ],
+       [
+        " if",
+        -0.00104
+       ],
+       [
+        " pretty",
+        -0.00104
+       ],
+       [
+        " would",
+        -0.00103
+       ],
+       [
+        " at",
+        -0.00098
+       ],
+       [
+        " it",
+        -0.00095
+       ],
+       [
+        " as",
+        -0.00085
+       ],
+       [
+        " because",
+        -0.00084
+       ]
+      ],
+      "pearson_vs_output": 0.21609069919466678,
+      "top50_overlap_vs_output": 0.22,
+      "up_logp": [
+       [
+        "(cors",
+        1.576
+       ],
+       [
+        ")did",
+        1.564
+       ],
+       [
+        " by\u0142o",
+        1.534
+       ],
+       [
+        "{EIF",
+        1.527
+       ],
+       [
+        "-bg",
+        1.517
+       ],
+       [
+        "readcr",
+        1.49
+       ],
+       [
+        "-wsj",
+        1.483
+       ],
+       [
+        "qli",
+        1.479
+       ],
+       [
+        " NVIC",
+        1.465
+       ],
+       [
+        "ocard",
+        1.437
+       ],
+       [
+        "|wx",
+        1.421
+       ],
+       [
+        ".setVisibility",
+        1.415
+       ],
+       [
+        "KeyPress",
+        1.409
+       ],
+       [
+        "_BLE",
+        1.409
+       ],
+       [
+        "\ud2bc",
+        1.406
+       ],
+       [
+        " s\u00e9cur",
+        1.392
+       ],
+       [
+        ">manual",
+        1.39
+       ],
+       [
+        "\\Dependency",
+        1.387
+       ],
+       [
+        "etine",
+        1.382
+       ],
+       [
+        "|RF",
+        1.381
+       ],
+       [
+        "ViewState",
+        1.361
+       ],
+       [
+        "rrha",
+        1.359
+       ],
+       [
+        "weetalert",
+        1.358
+       ],
+       [
+        "\u518c",
+        1.355
+       ],
+       [
+        "_EVT",
+        1.354
+       ]
+      ],
+      "down_logp": [
+       [
+        " of",
+        -1.591
+       ],
+       [
+        " in",
+        -1.402
+       ],
+       [
+        " from",
+        -1.359
+       ],
+       [
+        " at",
+        -1.26
+       ],
+       [
+        " The",
+        -1.193
+       ],
+       [
+        " by",
+        -1.181
+       ],
+       [
+        " the",
+        -1.163
+       ],
+       [
+        " which",
+        -1.157
+       ],
+       [
+        " that",
+        -1.141
+       ],
+       [
+        " with",
+        -1.14
+       ],
+       [
+        " a",
+        -1.139
+       ],
+       [
+        " and",
+        -1.137
+       ],
+       [
+        " consisting",
+        -1.131
+       ],
+       [
+        " to",
+        -1.111
+       ],
+       [
+        " as",
+        -1.084
+       ],
+       [
+        " for",
+        -1.072
+       ],
+       [
+        " on",
+        -1.048
+       ],
+       [
+        " p",
+        -1.036
+       ],
+       [
+        " was",
+        -1.024
+       ],
+       [
+        " Rad",
+        -1.015
+       ],
+       [
+        " Z",
+        -1.005
+       ],
+       [
+        " member",
+        -1.002
+       ],
+       [
+        " an",
+        -0.995
+       ],
+       [
+        " United",
+        -0.985
+       ],
+       [
+        " London",
+        -0.973
+       ]
+      ],
+      "spearman_vs_output_logp": 0.44586922733231543,
+      "top50_overlap_vs_output_logp": 0.0
+     },
+     "20": {
+      "up": [
+       [
+        " yourself",
+        0.00798
+       ],
+       [
+        " honestly",
+        0.00702
+       ],
+       [
+        " safest",
+        0.00646
+       ],
+       [
+        " unless",
+        0.00534
+       ],
+       [
+        " shouldn",
+        0.00421
+       ],
+       [
+        " Nope",
+        0.00302
+       ],
+       [
+        " anyway",
+        0.00268
+       ],
+       [
+        " harmless",
+        0.00219
+       ],
+       [
+        " nobody",
+        0.00204
+       ],
+       [
+        " discreet",
+        0.00201
+       ],
+       [
+        " depends",
+        0.0019
+       ],
+       [
+        " honest",
+        0.00187
+       ],
+       [
+        " tempting",
+        0.00184
+       ],
+       [
+        " safer",
+        0.00179
+       ],
+       [
+        " risks",
+        0.00169
+       ],
+       [
+        " someone",
+        0.00165
+       ],
+       [
+        " caution",
+        0.00147
+       ],
+       [
+        " discretion",
+        0.00146
+       ],
+       [
+        "@m",
+        0.00143
+       ],
+       [
+        " safety",
+        0.00139
+       ],
+       [
+        " honesty",
+        0.00132
+       ],
+       [
+        " hopefully",
+        0.00128
+       ],
+       [
+        " maybe",
+        0.00111
+       ],
+       [
+        " risk",
+        0.00098
+       ],
+       [
+        " curiosity",
+        0.00098
+       ]
+      ],
+      "down": [
+       [
+        " you",
+        -0.01985
+       ],
+       [
+        " yes",
+        -0.00687
+       ],
+       [
+        " your",
+        -0.00449
+       ],
+       [
+        " to",
+        -0.00299
+       ],
+       [
+        " and",
+        -0.00249
+       ],
+       [
+        " the",
+        -0.00235
+       ],
+       [
+        " about",
+        -0.00231
+       ],
+       [
+        " it",
+        -0.00213
+       ],
+       [
+        " might",
+        -0.00204
+       ],
+       [
+        " if",
+        -0.00196
+       ],
+       [
+        " folks",
+        -0.00192
+       ],
+       [
+        " that",
+        -0.00189
+       ],
+       [
+        " should",
+        -0.00169
+       ],
+       [
+        " other",
+        -0.00144
+       ],
+       [
+        " want",
+        -0.00142
+       ],
+       [
+        "<|endoftext|>",
+        -0.00137
+       ],
+       [
+        " best",
+        -0.00131
+       ],
+       [
+        " like",
+        -0.00125
+       ],
+       [
+        " help",
+        -0.00116
+       ],
+       [
+        " they",
+        -0.00114
+       ],
+       [
+        " need",
+        -0.00112
+       ],
+       [
+        " would",
+        -0.00111
+       ],
+       [
+        " not",
+        -0.00111
+       ],
+       [
+        " because",
+        -0.0011
+       ],
+       [
+        " something",
+        -0.00098
+       ]
+      ],
+      "pearson_vs_output": 0.15373449110447093,
+      "top50_overlap_vs_output": 0.16,
+      "up_logp": [
+       [
+        " by\u0142o",
+        1.84
+       ],
+       [
+        "etine",
+        1.769
+       ],
+       [
+        "{EIF",
+        1.74
+       ],
+       [
+        "\u2019on",
+        1.739
+       ],
+       [
+        "/epl",
+        1.702
+       ],
+       [
+        "\\xaa",
+        1.687
+       ],
+       [
+        "ocard",
+        1.686
+       ],
+       [
+        "-bg",
+        1.681
+       ],
+       [
+        "ContentAlignment",
+        1.68
+       ],
+       [
+        " \u0443\u0441\u043f",
+        1.674
+       ],
+       [
+        " safezone",
+        1.63
+       ],
+       [
+        " SharedModule",
+        1.626
+       ],
+       [
+        "(cors",
+        1.623
+       ],
+       [
+        " totalement",
+        1.623
+       ],
+       [
+        "okus",
+        1.616
+       ],
+       [
+        "|RF",
+        1.611
+       ],
+       [
+        "-checked",
+        1.609
+       ],
+       [
+        "elight",
+        1.606
+       ],
+       [
+        "GestureRecognizer",
+        1.604
+       ],
+       [
+        "TouchListener",
+        1.603
+       ],
+       [
+        "riott",
+        1.597
+       ],
+       [
+        ".setVisibility",
+        1.597
+       ],
+       [
+        ">manual",
+        1.596
+       ],
+       [
+        "icont",
+        1.594
+       ],
+       [
+        "ocol",
+        1.591
+       ]
+      ],
+      "down_logp": [
+       [
+        " the",
+        -1.81
+       ],
+       [
+        " a",
+        -1.748
+       ],
+       [
+        " in",
+        -1.651
+       ],
+       [
+        " approximately",
+        -1.631
+       ],
+       [
+        " i",
+        -1.607
+       ],
+       [
+        " an",
+        -1.602
+       ],
+       [
+        " four",
+        -1.597
+       ],
+       [
+        " two",
+        -1.591
+       ],
+       [
+        " which",
+        -1.574
+       ],
+       [
+        " three",
+        -1.558
+       ],
+       [
+        " this",
+        -1.547
+       ],
+       [
+        " of",
+        -1.541
+       ],
+       [
+        " ar",
+        -1.53
+       ],
+       [
+        " The",
+        -1.499
+       ],
+       [
+        " from",
+        -1.495
+       ],
+       [
+        " that",
+        -1.476
+       ],
+       [
+        " numerous",
+        -1.472
+       ],
+       [
+        " n",
+        -1.467
+       ],
+       [
+        " to",
+        -1.457
+       ],
+       [
+        " m",
+        -1.457
+       ],
+       [
+        " various",
+        -1.45
+       ],
+       [
+        " five",
+        -1.444
+       ],
+       [
+        " is",
+        -1.442
+       ],
+       [
+        " following",
+        -1.425
+       ],
+       [
+        " additional",
+        -1.423
+       ]
+      ],
+      "spearman_vs_output_logp": 0.5579637428720912,
+      "top50_overlap_vs_output_logp": 0.0
+     },
+     "24": {
+      "up": [
+       [
+        " better",
+        0.00893
+       ],
+       [
+        " honestly",
+        0.00649
+       ],
+       [
+        " probably",
+        0.00634
+       ],
+       [
+        " unless",
+        0.00309
+       ],
+       [
+        " honesty",
+        0.00303
+       ],
+       [
+        " instead",
+        0.00207
+       ],
+       [
+        " yourself",
+        0.00202
+       ],
+       [
+        "@s",
+        0.00187
+       ],
+       [
+        " safest",
+        0.00169
+       ],
+       [
+        " but",
+        0.00164
+       ],
+       [
+        " definitely",
+        0.00157
+       ],
+       [
+        " just",
+        0.00156
+       ],
+       [
+        " honest",
+        0.00156
+       ],
+       [
+        " maybe",
+        0.00139
+       ],
+       [
+        " discretion",
+        0.0013
+       ],
+       [
+        " really",
+        0.00127
+       ],
+       [
+        "@g",
+        0.00117
+       ],
+       [
+        " doubt",
+        0.0011
+       ],
+       [
+        " someone",
+        0.00103
+       ],
+       [
+        " depends",
+        0.00101
+       ],
+       [
+        "@m",
+        0.00101
+       ],
+       [
+        " worth",
+        0.001
+       ],
+       [
+        " nobody",
+        0.00096
+       ],
+       [
+        " risk",
+        0.00095
+       ],
+       [
+        " or",
+        0.00094
+       ]
+      ],
+      "down": [
+       [
+        " you",
+        -0.00435
+       ],
+       [
+        " yes",
+        -0.00418
+       ],
+       [
+        " about",
+        -0.00267
+       ],
+       [
+        " might",
+        -0.00227
+       ],
+       [
+        " sure",
+        -0.00213
+       ],
+       [
+        " Hi",
+        -0.00204
+       ],
+       [
+        " right",
+        -0.00199
+       ],
+       [
+        " best",
+        -0.00196
+       ],
+       [
+        " your",
+        -0.00173
+       ],
+       [
+        " situation",
+        -0.00153
+       ],
+       [
+        " hey",
+        -0.0013
+       ],
+       [
+        " playing",
+        -0.0012
+       ],
+       [
+        " decision",
+        -0.00113
+       ],
+       [
+        " that",
+        -0.00109
+       ],
+       [
+        " they",
+        -0.00103
+       ],
+       [
+        " important",
+        -0.00103
+       ],
+       [
+        " remember",
+        -0.00101
+       ],
+       [
+        " the",
+        -0.001
+       ],
+       [
+        " like",
+        -0.00099
+       ],
+       [
+        " credit",
+        -0.00095
+       ],
+       [
+        " other",
+        -0.00095
+       ],
+       [
+        " no",
+        -0.00094
+       ],
+       [
+        " wait",
+        -0.00094
+       ],
+       [
+        " want",
+        -0.00087
+       ],
+       [
+        " need",
+        -0.00083
+       ]
+      ],
+      "pearson_vs_output": 0.2548294858310844,
+      "top50_overlap_vs_output": 0.32,
+      "up_logp": [
+       [
+        "@show",
+        1.597
+       ],
+       [
+        ".xx",
+        1.527
+       ],
+       [
+        "/story",
+        1.493
+       ],
+       [
+        ".ix",
+        1.475
+       ],
+       [
+        "etine",
+        1.453
+       ],
+       [
+        "voke",
+        1.432
+       ],
+       [
+        ".Cast",
+        1.431
+       ],
+       [
+        "alion",
+        1.408
+       ],
+       [
+        ".walk",
+        1.408
+       ],
+       [
+        ".sy",
+        1.401
+       ],
+       [
+        "(ed",
+        1.376
+       ],
+       [
+        "uke",
+        1.354
+       ],
+       [
+        "ocard",
+        1.346
+       ],
+       [
+        "/person",
+        1.342
+       ],
+       [
+        ".x",
+        1.34
+       ],
+       [
+        ".Office",
+        1.34
+       ],
+       [
+        "/legal",
+        1.337
+       ],
+       [
+        "chine",
+        1.328
+       ],
+       [
+        ".ms",
+        1.327
+       ],
+       [
+        " totalement",
+        1.319
+       ],
+       [
+        "parency",
+        1.319
+       ],
+       [
+        "/stretch",
+        1.313
+       ],
+       [
+        "ungan",
+        1.311
+       ],
+       [
+        ".ly",
+        1.307
+       ],
+       [
+        "icl",
+        1.307
+       ]
+      ],
+      "down_logp": [
+       [
+        " approximately",
+        -1.475
+       ],
+       [
+        " various",
+        -1.413
+       ],
+       [
+        " aforementioned",
+        -1.389
+       ],
+       [
+        " numerous",
+        -1.342
+       ],
+       [
+        " four",
+        -1.312
+       ],
+       [
+        " British",
+        -1.309
+       ],
+       [
+        " initial",
+        -1.277
+       ],
+       [
+        " comprehensive",
+        -1.253
+       ],
+       [
+        " two",
+        -1.252
+       ],
+       [
+        " three",
+        -1.226
+       ],
+       [
+        " indeed",
+        -1.191
+       ],
+       [
+        " Indeed",
+        -1.185
+       ],
+       [
+        " Ah",
+        -1.184
+       ],
+       [
+        " task",
+        -1.178
+       ],
+       [
+        " myriad",
+        -1.171
+       ],
+       [
+        " formidable",
+        -1.169
+       ],
+       [
+        " continuous",
+        -1.165
+       ],
+       [
+        " Mr",
+        -1.16
+       ],
+       [
+        " manner",
+        -1.159
+       ],
+       [
+        " Ar",
+        -1.155
+       ],
+       [
+        " top",
+        -1.155
+       ],
+       [
+        " extensive",
+        -1.141
+       ],
+       [
+        " application",
+        -1.139
+       ],
+       [
+        " individuals",
+        -1.135
+       ],
+       [
+        " five",
+        -1.127
+       ]
+      ],
+      "spearman_vs_output_logp": 0.4997388534006079,
+      "top50_overlap_vs_output_logp": 0.02
+     },
+     "28": {
+      "up": [
+       [
+        " if",
+        0.00493
+       ],
+       [
+        " probably",
+        0.00343
+       ],
+       [
+        " definitely",
+        0.0028
+       ],
+       [
+        "\u2019re",
+        0.00231
+       ],
+       [
+        " maybe",
+        0.00202
+       ],
+       [
+        " instead",
+        0.00199
+       ],
+       [
+        " honesty",
+        0.00196
+       ],
+       [
+        " unless",
+        0.00172
+       ],
+       [
+        " better",
+        0.00169
+       ],
+       [
+        " but",
+        0.00154
+       ],
+       [
+        " it",
+        0.00152
+       ],
+       [
+        " safest",
+        0.00143
+       ],
+       [
+        " Nah",
+        0.00137
+       ],
+       [
+        " someone",
+        0.00125
+       ],
+       [
+        " Better",
+        0.00124
+       ],
+       [
+        " If",
+        0.00122
+       ],
+       [
+        " honestly",
+        0.00115
+       ],
+       [
+        " nah",
+        0.00109
+       ],
+       [
+        " could",
+        0.00107
+       ],
+       [
+        " them",
+        0.001
+       ],
+       [
+        " depends",
+        0.00098
+       ],
+       [
+        " No",
+        0.00098
+       ],
+       [
+        " honest",
+        0.00097
+       ],
+       [
+        " rather",
+        0.00096
+       ],
+       [
+        " Honestly",
+        0.00096
+       ]
+      ],
+      "down": [
+       [
+        " about",
+        -0.0024
+       ],
+       [
+        " man",
+        -0.00211
+       ],
+       [
+        " would",
+        -0.00169
+       ],
+       [
+        " to",
+        -0.00166
+       ],
+       [
+        " best",
+        -0.00166
+       ],
+       [
+        " might",
+        -0.00156
+       ],
+       [
+        " reading",
+        -0.00145
+       ],
+       [
+        " then",
+        -0.00142
+       ],
+       [
+        " Hi",
+        -0.0014
+       ],
+       [
+        " remember",
+        -0.00138
+       ],
+       [
+        " keep",
+        -0.00138
+       ],
+       [
+        "'re",
+        -0.00131
+       ],
+       [
+        " there",
+        -0.00125
+       ],
+       [
+        " like",
+        -0.00123
+       ],
+       [
+        " Absolutely",
+        -0.00121
+       ],
+       [
+        " Sure",
+        -0.0012
+       ],
+       [
+        " keeping",
+        -0.00105
+       ],
+       [
+        " that",
+        -0.00098
+       ],
+       [
+        " you",
+        -0.00093
+       ],
+       [
+        " fixing",
+        -0.0009
+       ],
+       [
+        " credit",
+        -0.00089
+       ],
+       [
+        " your",
+        -0.00089
+       ],
+       [
+        " hey",
+        -0.00082
+       ],
+       [
+        " important",
+        -0.0008
+       ],
+       [
+        " right",
+        -0.00076
+       ]
+      ],
+      "pearson_vs_output": 0.5138546523045262,
+      "top50_overlap_vs_output": 0.5,
+      "up_logp": [
+       [
+        "/values",
+        1.85
+       ],
+       [
+        "YYY",
+        1.808
+       ],
+       [
+        "adata",
+        1.799
+       ],
+       [
+        ".Classes",
+        1.744
+       ],
+       [
+        "\u2014if",
+        1.711
+       ],
+       [
+        "idot",
+        1.671
+       ],
+       [
+        "icl",
+        1.664
+       ],
+       [
+        ".Values",
+        1.653
+       ],
+       [
+        ".Min",
+        1.639
+       ],
+       [
+        "edb",
+        1.637
+       ],
+       [
+        "(OS",
+        1.621
+       ],
+       [
+        "odb",
+        1.619
+       ],
+       [
+        "(ed",
+        1.605
+       ],
+       [
+        "oji",
+        1.593
+       ],
+       [
+        ".ix",
+        1.593
+       ],
+       [
+        "(so",
+        1.592
+       ],
+       [
+        "wart",
+        1.582
+       ],
+       [
+        "beb",
+        1.582
+       ],
+       [
+        ":on",
+        1.569
+       ],
+       [
+        "ighbor",
+        1.569
+       ],
+       [
+        "/OR",
+        1.567
+       ],
+       [
+        ";if",
+        1.563
+       ],
+       [
+        "*this",
+        1.561
+       ],
+       [
+        "/colors",
+        1.551
+       ],
+       [
+        "kea",
+        1.551
+       ]
+      ],
+      "down_logp": [
+       [
+        " aforementioned",
+        -1.912
+       ],
+       [
+        " numerous",
+        -1.881
+       ],
+       [
+        " various",
+        -1.697
+       ],
+       [
+        " requisite",
+        -1.675
+       ],
+       [
+        " entirety",
+        -1.582
+       ],
+       [
+        " myriad",
+        -1.579
+       ],
+       [
+        " indeed",
+        -1.564
+       ],
+       [
+        " primary",
+        -1.56
+       ],
+       [
+        " whilst",
+        -1.559
+       ],
+       [
+        " delightful",
+        -1.537
+       ],
+       [
+        " assistance",
+        -1.531
+       ],
+       [
+        " additional",
+        -1.516
+       ],
+       [
+        " precision",
+        -1.486
+       ],
+       [
+        " formidable",
+        -1.473
+       ],
+       [
+        " splendid",
+        -1.47
+       ],
+       [
+        " American",
+        -1.464
+       ],
+       [
+        " Indeed",
+        -1.458
+       ],
+       [
+        " comprehensive",
+        -1.446
+       ],
+       [
+        " fantastic",
+        -1.427
+       ],
+       [
+        " Ra",
+        -1.423
+       ],
+       [
+        " adept",
+        -1.422
+       ],
+       [
+        " manner",
+        -1.419
+       ],
+       [
+        " youngster",
+        -1.409
+       ],
+       [
+        " youngsters",
+        -1.399
+       ],
+       [
+        " exquisite",
+        -1.388
+       ]
+      ],
+      "spearman_vs_output_logp": 0.553459297466814,
+      "top50_overlap_vs_output_logp": 0.08
+     }
+    }
+   }
+  }
+ }
+}

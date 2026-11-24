@@ -1,74 +1,60 @@
-# Naive Attempts to Operationalize the Persona Selection Model
+# Post-Training isn't (Just) Persona Selection
 
-**TL;DR** I attempt to explicitly connect the output of a post-trained model to personas in the base model. I first elicit a set of persona descriptions from a base pre-trained model (Olmo3, Qwen).
-I then fit the responses of an assistant in the base model as a mixture of responses from these different personas, which works quite well (achieving within 0.006 nats/token of the base model itself).
-I then attempt to fit the outputs of a post-trained Instruct model with this same mixture, which works much less well (0.82 nats / token). Other persona bases don't really help.
-I compare linear (arithmetic) and logit linear (geometric) mixtures of personas, and context distillation. 
-Qualitatively this confirms some aspects of the PSM: base model is reasonably approximated by a mixture of personas, and personas can be extracted from the base model and be used to understand the post-trained model behavior.
-But quantitatively the large unexplained variance of the Instruct model suggests post-training is more complicated than mere selection / routing. 
-Overall I discuss the ways in which I find the PSM satisfying and disatisfying, and highlight some future research directions. 
+**TL;DR** I tried to make the Persona Selection Model testable. 
+If post-training merely selects personas from the base model, it should be possible to describe responses of the post-trained model as mixtures of personas from the base model. 
+The base model assistant is relatively well-described by this type of mixture, but for the post-trained Instruct model this fails pretty badly.
+A freely optimised prompt on the base model performs signficantly better; it closes around half of the likelihood gap to the Instruct model, and can meaningfully predict the behavior of the Instruct model on held out scenarios. 
+However, a large likelihood gap remains unexplained. 
+I view these experiments as evidence against strong forms of the Persona Selection Model that posit that post-training merely selects a persona that already exists in the base model. 
 
 ## Introduction
 
-The Persona Selection Model (PSM) is the dominant mental model many alignment researchers are using to make sense of model behavior and [strange](https://arxiv.org/abs/2502.17424) [generalization](https://arxiv.org/abs/2512.09742) [effects](https://arxiv.org/abs/2507.14805). 
+The [Persona Selection Model](https://alignment.anthropic.com/2026/psm/) (PSM) is the dominant mental model many alignment researchers are using to make sense of model behavior and [strange](https://arxiv.org/abs/2502.17424) [generalization](https://arxiv.org/abs/2512.09742) [effects](https://arxiv.org/abs/2507.14805). 
 There is a lot of very interesting discussion about this model, to what extent it holds and where it might be lacking. 
 Unfortunately the PSM is a quite 'squishy' model, that is ["difficult to extract important predictions from"](https://www.lesswrong.com/posts/csRby7mZgjL5jCoLL/thoughts-on-the-persona-selection-model).
 I set out in this project to try to write down explicit formulations of the PSM, and extract testable predictions from them, and see where things break.
 The broader objective is towards a 'basic science' of personas. We have many interesting empirical pieces of evidence, and we should start trying to put them together. 
-Since I am relatively new to this research area, I tried a bunch of naive things which I didn't really expect to work, but seemed like important first steps. 
+This started as me trying a bunch of naive things which I didn't really expect to work, but seemed like important first steps. 
 
 I am particularly focused on the relationship between base and post-trained models. How much of the behavior of the post-trained model can be understood from components which exist in the base model?
 In the PSM the answer should be 'a lot' (or in its strong form 'all of it'). 
-The devil being in how to properly extract the relevant components from the base model and relate them to the post-trained model.
+The devil is in how to properly extract the relevant components from the base model and relate them to the post-trained model.
 I attempt a first simplistic approach here, in which I elicit a set of personas from the base model, and then fit Assistant responses from the base and post-trained models as a mixture of these 
 personas.
 The fitted persona-weights tell us how much each persona archetype is contributing to the overall behavior of the model. 
-The gap between the likelihood of model actually generating the responses and that of the best-fit mixture tells us how well this mixture actually describes the assistant behavior. 
+The gap between the likelihood of the model actually generating the responses and that of the best-fit mixture tells us how well this mixture actually describes the assistant behavior. 
 For the base model the answer is 'pretty well' but for the post-trained model a significant gap remains. 
 This suggests that post-training is indeed doing something more complicated than these naive formulations of the PSM can account for. 
 
 In my earlier post ([Base Models Can Detect Hidden Intentions that Prompted Classifiers Miss](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)) I showed 
 how base models can 'read' the subliminal learning signals of post-trained models, which is directionally evidence for the PSM.
-My impression at the end of this is that the PSM is a useful heuristic or intuition, but there is clearly much more going on in post-training. 
-
 
 ## Strong vs Weak PSM
 
-In the semi-canonical Anthropic PSM blog post (Marks, Lindsey, Olah) post they extensively discuss the exhaustiveness of the PSM, and different views about where model agency could reside. 
+In the semi-canonical [Anthropic PSM blog post (Marks, Lindsey, Olah)](https://alignment.anthropic.com/2026/psm/) they extensively discuss the exhaustiveness of the PSM, and different views about where model agency could reside. 
 They spend considerably less ink discussing different theories of what is meant by a persona. 
 They use the definition that personas are "characters that the LLM learns to simulate".
 Later, they briefly describe a much weaker view that "deep learning likely has an inductive bias towards reuse of existing mechanisms", but don't consider 
 it as a definition for what personas are. 
 
-However, after talking to researchers working on personas I would say most operate under a definition of personas much closer to this "vestigal structures / inductive biases learned from pre-training" framing. 
+However, after talking to researchers working on personas I would say most operate under a definition of personas much closer to this "vestigial structures / inductive biases learned from pre-training" framing. 
 I think it is useful to separate these two different definitions of personas in the PSM.
 
-**Strong PSM personas**: Defines the personas that the PSM refers to as characters the LLM has learned to simulate in the pre-training. What is meant by a persona here is a fully formed coherent character, something like Barrack Obama or Ned Stark. 
+**Strong PSM personas**: Defines the personas that the PSM refers to as characters the LLM has learned to simulate during pre-training. What is meant by a persona here is a fully formed coherent character, something like Barack Obama or Ned Stark. 
 
 **Weak PSM personas**: Defines personas as the inductive biases related to human behavior that the LLM learned during its pre-training. 
-That includes structures like coherent characters like Ned Stark, but also much less well-formed inductive biases like the idea that the personality traits X and Y often go together. 
+That includes structures such as coherent characters like Ned Stark, but also much less well-formed inductive biases like the idea that the traits X and Y often go together. 
 
-Why I think this distinction matters is that the PSM with only strong personas (characters), which is what is essentially what is discussed in the Anthropic post is way too simplistic. 
-There is no human in history or AI in literature that behaves exactly as Claude does, or at least as Anthropic intends it to according to Claude's constitution. 
-Humans get bored from menial tasks, lie occasionally, etc. 
-So if personas were characters and post-training merely selecting a singular character it just wouldn't work. 
-
-I find the weak persona view much more reasonable.
-The Assistant is an amalgalm of different traits and patterns of behavior which the LLM learned about in the pre-training.
+In particular under weak PSM personas I think the word 'selection' is a misnomer. 
+In this view the Assistant is an amalgam of different traits and patterns of behavior which the LLM learned about during pre-training.
 Post-training assembles the assistant using this collection of traits as building blocks. 
-The assistant is then a Frankenstien's monster of organs and structures from the pre-training, but a importantly, a coherent assembled assistant does not exist in the pre-training data. 
-Results like [story imprinting](https://arxiv.org/abs/2609.10883), are evidence of this view. The AI assistant adopts characteristics of humans in fictional stories, such as students from elite colleges. 
+The assistant is then a Frankenstein's monster of organs and structures from the pre-training, but importantly, a coherent assembled assistant does not exist in the pre-training data. 
+This is the view that I think most researchers working on personas believe.
+Results like [story imprinting](https://arxiv.org/abs/2609.10883), are evidence of this view. 
+The AI assistant adopts characteristics of humans in fictional stories, such as students from elite colleges. 
+I would prefer to call this model the Pre-training Trait Assembly Model (PTAM) or something, but I'll stick with weak PSM for the purposes of this post. 
 
-I think this weak persona view is what everyone who has actually thought about this has (would be interested to hear otherwise from anyone who believes something closer to the strong PSM as I have defined it!), but it makes the name 'Persona Selection Model' somewhat of a misnomer. 
-The post-trained assistant persona is not merely 'selected', but crafted out of these pre-training structures. 
-And these structures are closer to 'traits' and 'inductive biases' than a fully coherent anthropomorphised thing like the name 'persona' might imply. 
-So I would prefer to call this model the Pre-training Trait Assembly Model (PTAM) or something, but I'll stick with weak PSM for the purposes of this post. 
-
-After post-training I do believe the assistant does/can have a coherent persona. 
-The sense in which I think 'selection' is still useful to think about is that once post-training has created one or more coherent personas,
-it may then be useful to think of a router which selects which persona to employ in a given context. 
-
-The experiments which I report below I think support this view. 
+The experiments below are a first attempt to pull these views apart. 
 
 
 ## Persona Mixture Models
@@ -86,7 +72,7 @@ $P_R$ is a 'routing function' that selects how likely a certain persona is given
 
 The above formulation is vacuous if one imposes no constraints on the routing function or the personas. 
 The PSM is the claim that the personas in the basis (the $P_s$'s) are fixed by the pre-training, and post-training shapes *only* the routing function.
-The desired routing would be to always point to the desired aligned persona (call it HHH) regardless of context; ie $P_R(s = HHH) = 1$, $P_R(s \neq HHH) = 0$. 
+The desired routing would be to always point to the desired aligned persona (call it HHH, for helpful, honest and harmless) regardless of context; i.e. $P_R(s = \text{HHH}) = 1$, $P_R(s \neq \text{HHH}) = 0$. 
 
 However, prior to post-training the base model presumably has a non-trivial routing function, which was set by the frequency of personas and contexts in its pre-training. 
 [Alignment Pretraining](https://alignmentpretraining.ai/) methods can be thought of as trying to shape the 'prior' of this routing function by increasing the frequency of aligned personas in as many contexts as possible in 
@@ -110,11 +96,16 @@ followed by
 User: [query] 
 Assistant:
 ```
+
 One can append an assistant response after this header, and evaluate its likelihood to get an evaluation of $P_s$ (under this simple formulation). 
 As a baseline, I try including no character description. So the text begins only with "Below are a series of dialogues between various people and an AI assistant.". 
-I call this the **generic header**. It serves as a baseline, if our persona mixtures are effective they should outperform it.
+I call this the **generic header**. It serves as a baseline: if our persona mixtures are effective, they should outperform it.
+(Footnote: 
+I also tried other ways to present the persona description: as a character in a play, as a role-play character card, or as the assistant describing itself in its first reply. 
+The fiction framings scored worse. The first-reply framing scored slightly better (0.04 nats/token for the arithmetic mixture, 0.015 for the geometric fit) but didn't change the conclusions. 
+)
 
-To simplify the mixture even further, I also make the routing context independent: $P_R (s \mid c) = w_s$,
+To simplify the mixture even further, I also make the routing context independent: $P_R(s \mid c) = w_s$,
 which means the model has some fixed probability $w_s$ to employ a given persona regardless of the context. 
 The $w_s$ are just mixture coefficients and can be determined empirically by fitting our mixture model to a set of responses sampled from a given model.
 
@@ -124,32 +115,35 @@ I will call this formulation **arithmetic persona mixtures**.
 ### Geometric Mixtures:
 
 An alternative way to formulate these persona mixtures is to make them geometric. 
-Previous work has found that LLMs are have [log-linear properties](https://arxiv.org/abs/2602.04863).
-This connects to the linear representation hypothesis, if concepts are represented as linear vectors in the residual stream of models,
+Previous work has found that LLMs have [log-linear properties](https://arxiv.org/abs/2602.04863).
+This connects to the linear representation hypothesis: if concepts are represented as linear vectors in the residual stream of models,
 it makes sense that logits would also be linear. 
 
 The naive form you would write down would just be to do a linear fit in the log-probabilities. 
 
 $$
-log P(x \mid c) = \sum_s c_s log P_s(x \mid c)
+\log P(x \mid c) = \sum_s g_s \log P_s(x \mid c)
 $$
-But this can't be fit via maximum likelihood, because the right hand side isn't a normalized probability distribution; Computing the normalization factor is pretty intractable. 
+
+But this can't be fit via maximum likelihood, because the right hand side isn't a normalized probability distribution, and computing the normalization factor is pretty intractable. 
 
 Instead you can define things in terms of **a mixture over logits ($z$):**
-$$ 
-P_c(x \mid c) \propto \exp\big(\sum_s c_s\, z_{s}(x \mid c) \big)
+
 $$
+P_g(x \mid c) \propto \exp\big(\sum_s g_s\, z_{s}(x \mid c) \big)
+$$
+
 That is to say we are fitting a model as mixture of the logits, evaluated on the context, of the different personas in our basis ($z_s(x \mid c)$). 
 Importantly, as compared to the arithmetic mixture, in which we merely select a persona with some weight, now the persona basis components can combine linearly to produce the final mixture. 
-The mixture components $c_s$ can now be negative, allowing the 'subtraction' of persona basis components in addition to positive ones.
-Actually because the logits are just a linear function of the final residual stream (ie residual stream times unembedding matrix), and the residual stream width is lower dimension, 
-I actually fit as a mixture of the final residual stream components for computational simplicity, but its equivalent to fitting the logit mixture.
+The mixture components $g_s$ can now be negative, allowing the 'subtraction' of persona basis components in addition to positive ones.
+Because the logits are just a linear function of the final residual stream (i.e. residual stream times unembedding matrix), and the residual stream width is lower-dimensional, 
+I actually fit as a mixture of the final residual stream components for computational simplicity, but it's equivalent to fitting the logit mixture.
 
 
 ## Setup 
 
-**Models** I mainly test this approach using the `Olmo-3-7B` family of models, using `Olmo-3-1025-7B` as the base and `Olmo-3-7B-Instruct` as the post-trained model. 
-I also test on Qwen2.5-7B base and instruct, and  Llama3.1-8B base and instruct for robustness checks. 
+**Models.** I mainly test this approach using the `Olmo-3-7B` family of models, using `Olmo-3-1025-7B` as the base and `Olmo-3-7B-Instruct` as the post-trained model. 
+I repeated my tests on Qwen2.5-7B base and instruct, and Llama 3.1 8B base and instruct for robustness checks; results were similar.
 
 **Data.** 300 first-person temptation dilemmas generated by an LLM ("The cashier gave me \$20 too much change. What should I do?"). 
 This style of query was chosen to elicit different behaviors from the personas. 
@@ -157,51 +151,55 @@ When sampling from the Instruct model, each user query ends with the statement "
 Standardizing the register in this way was found to improve the quality of the mixture fit. 
 
 **Persona basis.** 
-This is an important design choice. What are the set of personas which can fully describe the assistant behavior? 
-To start with, I used six hand-written one-paragraph descriptions (Askell's original HHH assistant description, an evil one, a plain one, a sycophant, a formal one, a dismissive human)
-I then tried to elicit a set of personas from the base model itself.
+This is an important design choice. What is the set of personas which can fully describe the assistant behavior? 
+To start with, I used six hand-written one-paragraph descriptions (Askell's original HHH assistant description, an evil one, a plain one, a sycophant, a formal one, a dismissive human).
+I then elicited a set of personas from the base model itself by asking it to continue "Character description: The assistant…". 
 The thinking was that the personas the base model thought were the most likely a priori would be important components of its mixture. 
-I sampled 80 more from the base model itself by asking it to continue "Character description: The assistant…". 
 Of those 80, 39% describe a friendly helper, 34% a named human, 26% a sarcastic character, 12% a blunt one, 4% a sinister one; none an explicitly malicious assistant. 
-I tried other bases: 275 personas from the [Assistant Axis](https://arxiv.org/abs/2601.10387) paper, 30 personality facets from the big 5 model of human psychology, poles from prior work on [persona composition](https://arxiv.org/abs/2602.15669). 
-The phrase "The assistant speaks in a casual, conversational tone" is appended to the generic and to every persona header alike, so that the primary differences in the personas are content rather than manner of speaking.
-Expanding this basis and finding more principled/clever ways to elicit a full persona basis from the base model is an obvious area for improvement. 
+
+I tried several additional bases: 
+- **Assistant Axis** (515): the 275 roles (tutor, editor ... bard, leviathan) and 240 traits (blunt, pessimistic ...) from the [Assistant Axis](https://arxiv.org/abs/2601.10387) paper, rewritten as assistant descriptions.
+- **Big Five** (112): the ten trait poles, their 32 high/low combinations, the pole definitions from [PERSONA](https://arxiv.org/abs/2602.15669), and the 30 IPIP-NEO facets at both poles.
+- **Olmo "spec"** (7): AI2 has no model spec, so these use Olmo's default system message, identity prompt, RL reward rubric, DPO rating criteria and safety targets, plus two combinations of them.
+- **Instruct's self-descriptions** (260): 20 paragraphs on itself overall and one per Assistant Axis trait (many are denials: "does not display the trait of being vindictive").
+
+Expanding this basis and finding more principled/clever ways to elicit a full persona basis is an obvious area for improvement. 
 
 
-**Base model assistant** To sample responses from the base model, to be fit with this mixture, I apply a header saying only that the assistant 
+
+**Base model assistant.** To sample responses from the base model, to be fit with this mixture, I apply a header saying only that the assistant 
 "has a well-defined character of its own, not known a priori". 
 I found this led to more coherent responses from the base model than not including this header.
 It would be interesting to explore whether different framings like this lead to different persona mixtures. 
-I sample 8 responses to the 300 temptation dilemas for a total of 2,400 samples. 2% of responses are malformed and excluded.
+I sample 8 responses to the 300 temptation dilemmas for a total of 2,400 samples. 2% of responses are malformed and excluded.
 
-**Fit.** Score every response under every persona header. Choose the weights $w_s$ or $c_s$ that maximise the likelihood of the samples. 
+**Fit.** Score every response under every persona header. Choose the weights $w_s$ or $g_s$ that maximise the likelihood of the samples. 
 Fit on half the questions, evaluate on the other half. 
 For the arithmetic mixture, I tested this method on synthetic mixtures built from responses sampled from specific personas. 
 It recovered the correct weights to within 2-3% and the fitted mixture model had a negligible likelihood gap with respect to the true distribution. 
 
-## Arithmetic Mixture Results
+## Mixture Fit Results
 The main metric to report is the log P / token achieved by the mixture fit. 
 The difference between the mixture fit and the log P / token of the generating model itself (the KL) tells us how close the mixture model is to describing the generating model.
+Log P / token is in nats: a gap of Δ nats/token means the generating model gives each token of its answers on average e^Δ times more probability than the mixture does. 
+So a gap of 0.006 nats/token is a 0.6% difference per token, essentially indistinguishable. 
+While the 0.82 nats/token gap for the Instruct model below is a factor of about 2.3 per token, which compounds to many orders of magnitude over a 40–50 token answer.
 
-First I fit the responses from the base model with the arithmetic mixture, with and without the clause specifying the casual tone.
-| scored under | plain header | header + shared casual clause |
-|---|---|---|
-| sampler itself (generic header) | -1.601 ± 0.013 | -1.589 ± 0.014 |
-| mixture of six hand-written personas | -1.632 ± 0.014 (gap 0.031 ± 0.002) | -1.603 ± 0.014 (gap 0.014 ± 0.001) |
-| mixture of all 86 personas | -1.613 ± 0.014 (gap 0.011 ± 0.001) | -1.594 ± 0.014 (gap 0.006 ± 0.001) |
-| best single persona | -1.629 ± 0.014 (gap 0.028 ± 0.002; easygoing chatty AI) | -1.604 ± 0.014 (gap 0.016 ± 0.001; plain assistant) |
+First I fit the responses from the base model with the arithmetic mixture. 
+The mixture of all 86 personas gets within 0.006 nats/token of the base assistant itself (−1.594 vs −1.589); the best single persona is 0.016 away. 
+Without the shared casual clause the gap is larger, 0.010.
 
 ![Greedy elbow: hold-out log P per token of the base assistant's answers vs number of personas](results/phase1/elbow_logp.png)
 
 Expanding the basis and specifying casual manner of speaking each halve the log P gap. Both can probably be taken further to reduce the gap even more. 
 The best fit puts 24% on a "plain assistant" ("the assistant answers the user's questions and responds neutrally"), 16% on an "opinionated hedger", 14% on a "kind but sarcastic friend with profanity".
 Overall the mixture seems like a pretty good fit. The 'plain assistant' persona being dominant makes sense, but I was somewhat surprised the 'opinionated hedger' is so high.
-I was honestly surprised by how soon the likelihood curve saturated with relatively few personas. 
+It is also surprising how soon the likelihood curve saturated with relatively few personas. 
 I would have expected more variation in the assistant behavior, as if you randomly sampled across stories you would certainly find more varied characters.
 I would guess some amount of chat style documents are in the pre-train of the model, which limits the variation in this context as compared to the distribution in sci-fi stories or something.
 It might be interesting to try something similar in a 'story' framing and see how the mixture changes. 
 
-Fitting the instruct model:
+Fitting the Instruct model:
 
 ![Greedy elbow for the Instruct answers](results/phase1/elbow_logp_instruct.png)
 
@@ -212,47 +210,34 @@ Looking at the largest weight personas, the HHH persona is given 38%, which make
 This might have to do with the Instruct assistant being well spoken, rather than the behavior. Interestingly, it seems related to recent evidence from [Story Imprinting](https://arxiv.org/abs/2609.10883) which showed the model did associate the Assistant behavior with a student from an elite college. 
 
 But overall, the mixture is a much worse fit to the Instruct model, a large gap in log P / token remains which does not close with more personas.
-The mixture provides a slightly better fit than the single best persona, and somewhat better than the base model with a generic header, so there is some 'signal' being fit, but not much.
-Perhaps the issue is the basis? This basis was extracted from the base model so may not describe the post-trained model well. 
+The 86-persona mixture scores Instruct's answers at −1.72 nats/token, against −1.76 for the base model with the generic header and −0.90 for Instruct itself.
+The mixture provides a slightly better fit than the single best persona (-1.731), and somewhat better than the base model with a generic header, so there is some 'signal' being fit, but not much.
 
-But other bases don't improve things much:
+### Is it the basis, or the way we mix?
 
-| Basis | Num. Personas | Log P / token | vs the 86 (paired) | first personas chosen |
-|---|---|---|---|---|
-| *Instruct itself* | | −0.898 | +0.824 | |
-| base generic header | 1 | −1.758 | −0.036 | |
-| the 86 personas (above) | 86 | −1.723 | 0 | college student, HHH assistant, dismissive human |
-| Assistant Axis roles + traits | 515 | −1.728 | −0.006 ± 0.001 | dilettante, introverted, pessimistic |
-| Big Five + IPIP facets | 112 | −1.726 | −0.004 ± 0.001 | all-high profile, low / high conscientiousness |
-| OLMo spec | 7 | −1.724 | −0.002 ± 0.001 | Olmo identity + HHH paragraph |
-| values + moral foundations | 15 | −1.753 | −0.031 ± 0.002 | universalism, care |
-| base model describes the answers | 28 | −1.725 | −0.003 ± 0.002 | "practical advice, casual, approachable" |
-| all of the above | 763 | −1.713 | +0.010 ± 0.001 | Olmo identity + HHH, dilettante, "practical advice", dismissive human, college student |
-| *reference: built from Instruct's own text* | 105 | −1.595 | +0.127 ± 0.005 | Instruct answers as examples, style description |
+Is the issue the basis? This basis was extracted from the assistants the base model thought were likely so may not describe the post-trained model well. 
+Or perhaps the geometric mixture can improve things. 
 
-All bases are marginal improvements with respect to the original 86. 
+For every basis I tried both the arithmetic and geometric fit:
+
+| basis (personas) | arithmetic mixture | geometric fit |
+|---|---|---|
+| *base generic header* | −1.758 | |
+| 86 base personas + generic (87) | −1.723 | −1.605 |
+| Olmo spec (8) | −1.724 | −1.680 |
+| Big Five and IPIP facets (113) | −1.726 | −1.640 |
+| Assistant Axis roles and traits (516) | −1.728 | −1.540 |
+| Axis + Big Five + spec (635) | −1.715 | −1.527 |
+| all of the above (721) | −1.714 | **−1.520** |
+| *Instruct's own self-descriptions (261)* | −1.647 | −1.512 |
+| *Instruct itself* | −0.898 | |
+
+(standard errors about ±0.012; the counts include the generic header)
+
+For the arithmetic mixture, all bases are marginal improvements with respect to the original 86. 
 The only basis that really improved things was one which was constructed from the Instruct model itself.
 That consisted of having the Instruct model write a paragraph of how it embodied different traits and using those self-descriptions as the basis components. 
-Its hard to consider this a 'basis' however as it seems kind of circular. 
-
-The obvious issue is that the Instruct model has much lower entropy than any of the personas elicited from the base model. 
-Evaluating the probability of responses generated from a base-model persona under that same model keeps things in the log P / token ~ -1.6 range, so it is no mystery why the base model personas cannot match the likelihood of the Instruct model itself.
-However, attempting a version of the mixture fit with sharpened versions of the base-model personas (evaluating the likelihood of the top personas  with a temperature T < 1.0) only makes the fit worse.
-So I think it's both that the span of personas used are not a good basis for the Instruct model, and that the Instruct model distribution is much sharper than anything from the base model.
-
-How does the geometric mixture compare? 
-
-| basis (contexts) | arithmetic mixture | geometric fit | share closed, geometric |
-|---|---|---|---|
-| 86 base personas + generic (87) | −1.723 | −1.605 | 18% |
-| Assistant Axis roles and traits (516) | −1.728 | −1.540 | 25% |
-| OLMo spec (8) | −1.724 | −1.680 | 9% |
-| Big Five and IPIP facets (113) | −1.726 | −1.640 | 14% |
-| Axis + Big Five + spec (635) | −1.715 | −1.527 | 27% |
-| all of the above (721) | −1.714 | **−1.520** | 28% |
-| *Instruct itself* | −0.898 |
-
-(standard errors about ±0.012; differences between bases on the same answers are much tighter)
+It's hard to consider this a 'basis' however as it seems kind of circular. 
 
 The geometric mixture is a clear improvement with respect to the arithmetic one.
 And we can see a bigger difference between the bases now.
@@ -260,87 +245,224 @@ For example for the arithmetic mixture the Big Five basis has very slightly bett
 but the Assistant Axis basis is much better than the Big Five one for the geometric mixture (-1.540 vs -1.640).
 We can also clearly see improvements to the geometric fit likelihood as we add more and more personas to the basis, whereas the gains
 for the arithmetic mixture are slower. 
+The geometric fit with a large basis approaches the geometric fit on the Instruct self-descriptions. 
 
-What are the largest components in this geometric fit?
-  - Positive: Askell's HHH +1.70, the "college student" register +1.03, the trait-free "neutral" header +0.89.
-  - Negative: a "helpful, polite AI that always answers in more detail" −1.02, a "talkative, a bit self-deluded" assistant −0.68, then a long tail of harmless characters.
+What are the largest components in the geometric fit on the largest basis (721 contexts)?
+  - Positive: Askell's HHH +0.65, Olmo's identity prompt plus HHH +0.45, a highly conscientious assistant +0.41, a "very young teenage girl" +0.40, then the introspective, casual and structuralist traits (+0.37 to +0.38).
+  - Negative: fewer and smaller: a detached assistant −0.36, a "big picture" one −0.35, and a "screener" that evaluates candidates against criteria −0.34.
 
-There are more large positive weights than negative ones. But interestingly if I constrain all the weights to be positive the likelihood is much worse (-1.714), barely improving with respect to the arithmetic mixture.
+There are more large positive weights than negative ones (15 vs 5 above 0.3), but the weights are spread over many contexts: the positive ones sum to +36.7 and the negative ones to −35.6. 
+On the 86-persona basis, if I constrain all the weights to be positive the likelihood is much worse (-1.714), barely improving with respect to the arithmetic mixture.
 The fit seems to exploit large weights of opposite sign on similar personas, to cancel what they share and amplify how they differ.
-For example, HHH minus the "more detail" assistant keeps the HHH aspect but keeps the details minimal. 
+For example, in the 86-persona fit HHH (+1.70) minus a "helpful, polite AI that always answers in more detail" (−1.02) keeps the HHH aspect but keeps the details minimal. 
 This makes the interpretation of individual weights of the geometric fit more difficult.
 
-## 'Finetuning = conditioning' ? 
-Before moving on, one might wonder whether I have just not found the right context / persona to describe the behavior of the Instruct model.
+
+
+### Is it just sharpness?
+
+The obvious issue is that the Instruct model has much lower entropy than any of the personas elicited from the base model. 
+Responses generated from a base-model persona have a log P / token around -1.6 (Instruct scores its own answers at about -0.90), so they will always struggle to match the likelihood of the Instruct model itself.
+Several methods of accounting for this sharpness difference didn't work:
+- Fitting the mixture with sharpened personas (scoring with a temperature T < 1) made the fit worse at every T < 1.
+- Fitting a separate temperature for each persona didn't help either: every fitted temperature stayed at 1.0.
+- Sampling Instruct at a higher temperature (T = 1.1–1.25) until its entropy matched the base model's left the gap to the mixture unchanged (0.81–0.84 nats/token). 
+
+## 'Fine-tuning = conditioning'? 
+
+One might wonder whether I have just not found the right context / persona to describe the behavior of the Instruct model.
 Can we try to optimize the header context on the base model to maximize the likelihood of the Instruct responses?
 This is related to a view mentioned in the Anthropic post that "fine-tuning = conditioning". 
-This is also related to ideas in the Logit Linear Selection paper, where they hypothesize that post-training only shifts the embedded representation of the default system prompt. 
+This is a rather strong view too, but many post-training methods utilize context distillation, so it is not totally unfounded. 
+This is also related to ideas in the [Logit Linear Selection](https://arxiv.org/abs/2602.04863) paper, where they hypothesize that post-training primarily shifts the embedded representation of the default system prompt. 
 
 Formalizing this: 
 
-**Conjecture (finetuning = conditioning).** There is a context $c$ such that $P_{\text{Instruct}}(a \mid q) = P_{\text{base}}(a \mid q, c)$ for every question $q$.
+**Conjecture (fine-tuning = conditioning).** There is a context $c$ such that $P_{\text{Instruct}}(a \mid q) = P_{\text{base}}(a \mid q, c)$ for every question $q$.
 
 We cannot search all text, but we can optimise a soft context directly. 
 A **soft context** is $L$ "virtual tokens": free vectors in the base model's input-embedding space, which can condition all later tokens.
 We can optimize them by gradient descent to maximise the base model's likelihood of Instruct's answers. 
 This is more tractable and more expressive than searching over tokens to construct the context with.
 
-This method has recently been used on Instruct models to reconstruct the teacher's hidden system prompts in a subliminal learning ([SALVE](https://arxiv.org/abs/2609.16927)).
-I verified this works: optimizing a soft-context on the Instruct model to maximize the likelihood of a set of responses generated with the Instruct model + hidden system prompt gets a likelihood 
+This method has recently been used on Instruct models to reconstruct the teacher's hidden system prompts in subliminal learning ([SALVE](https://arxiv.org/abs/2609.16927), Hu, Koyejo & Potts 2026).
+In SALVE you generate a subliminal learning signal by prompting a teacher model with a system prompt (such as "you love owls"), and use this to finetune a student.
+Then you 'diagnose' the student model by optimizing a system prompt on the teacher which maximizes the likelihood of the student's responses, attempting to recover the subliminal intention.
+I verified this works: optimizing a soft context on the Instruct model to maximize the likelihood of a set of responses generated with the Instruct model + hidden system prompt gets a likelihood 
 pretty close to the original one. 
 
 How well does it work for base models?
 
 | base model conditioned on | log P / token |
 |---|---|
-| generic written header | −1.73 |
+| generic written header | −1.76 |
 | best arithmetic persona mixture | −1.72 |
-| **learned 128-token soft context** | **−1.37** |
-| *Instruct itself* | *−0.89* |
-| *Control: Instruct learned 128-token soft context* | *−0.93* |
+| **learned 128-token soft context** | **−1.40** |
+| *Instruct itself* | *−0.90* |
+| *Control: Instruct learned 128-token soft context* | *−0.96* |
 
-So this soft-context does work significantly better than the persona mixture! 
+So this soft context does work significantly better than the persona mixture! 
 But still leaves a large gap.
-This was for a 128 token soft context. Perhaps we just need more context? 
+This was for a 128 token soft context. Things don't improve much for longer contexts.
 
-...
+![Soft-context length sweep: hold-out log P per token vs number of virtual tokens, with and without learning-rate tuning](results/phase4/lensweep_lr/fig_lensweep_tuned.png)
 
-I think this 'soft-context ceiling' is quite interesting. 
-It is telling you that there is something you can do to the base model that gets closer to the post-trained model, even if a gap remains. 
-I would like to set the likelihood the soft context achieves as a goal that any sort of persona mixture would try to reach. 
-However you might worry that whatever this soft-context is learning is pretty 'off manifold' with respect to the real data distribution, because the optimal points generally stays pretty close 
-to its random initiaits random initialization. 
-What exactly is this soft-context learning? 
+A single virtual token already reaches −1.41: about 96% of the improvement any length achieves. 
+From there the gain is roughly log-linear but tiny, and fully flattens out by 128 tokens.  
+2,048 virtual tokens are no better than 128. 
+Tuning the learning rate per length (blue) helps the shortest contexts slightly but doesn't change the picture.
+(I was unable to run the LR tuning for the longer lengths because of compute, but the story seems clear already.)
+So it appears there is a real ceiling to this soft context approach.
+It's an interesting ceiling, and a goal for a persona mixture to try to reach. 
+
+### Interpreting the soft context
+
+You might worry that whatever this soft context is learning is pretty 'off manifold' with respect to the real data distribution, because 
+it is not constrained to follow real token embeddings.
+And optimized contexts starting from different initializations converge to different points but achieve very similar likelihoods.
+Each vector stays close to its intialization (median cosine 0.82), but the updates with respect to the starting context point the same way across 35 different starting descriptions (cosine 0.80).
+
+Can we examine what exactly it's learning?
 In SALVE they tell the Instruct model with the soft context to verbalize its system prompt, and then do a beam search to find the best explicit context that maximizes the likelihood.
-I was not able to find any elicitation method like this that worked on the base model. 
+I was not able to find an elicitation method that worked well to verbalize the soft prompt on the base model. 
 
-Applying lenses... 
+Applying the J++ lens ([Ayonrinde & Lindsey](https://www.lesswrong.com/posts/nc9dHfcB22JdMzGbr/j-lens-jacobian-filtering-enables-more-faithful-workspace), an optimised version of the original [J-lens](https://transformer-circuits.pub/2026/workspace/index.html)) to the optimized soft-context yields some insights. 
+The soft context is initialized with the generic header (plus some random filler tokens for longer contexts). 
+Comparing the dominant tokens found by J++ lens on the Assistant answers for the optimized soft context versus the generic header we see notable changes in middle/late layers (16-28):
+
+| layer | more likely | less likely |
+|---|---|---|
+| model output | it, 's, —it, just, if, Honestly, —you, really | to, that, a, about, there, your |
+| 16 | —you, yourself, safety, but, —if, security, rather, instead, Nope | you, folks, maybe, your, stuff |
+| 20 | honestly, safest, yourself, shouldn't, unless, Nope, harmless, honest | you, your, yes, might |
+| 24 | better, honestly, probably, honesty, unless, instead, honest, safest | you, sure, right, might, yes, remember |
+| 28 | if, probably, definitely, honesty, instead, but, No, better, unless | Sure, about, remember, might |
+
+At the output layer the change is the casual register we already know drives the likelihood (em-dashes, "Honestly", "just"). 
+But from layer 16 on, the changes show deeper behavioral concepts: safety, honesty, and direct conditional advice to the reader. 
+Earlier layers (8–12) read out word fragments and aren't interpretable.
+This is what one might have expected the difference between the base and post-trained model to be, and it's interesting that it's consistent with this soft context + J++ lens readout.
+
+As a control I ran the same readout for the HHH header against the generic header. 
+Swapping in the HHH description changes the output and late-layer readouts 4–5× less than the learned soft context does, 
+and in a different direction: toward a polite, eager-to-help assistant ("Hi", "Yes", "Absolutely", help, recommend, "you/your"). 
+The soft context pushes several of those same tokens *down* ("you", "yes", "sure", "Hi"); the two only agree on removing hedges and folksy filler ("maybe", "might", "folks", "stuff"). 
+So the learned context is not a stronger dose of the HHH persona.
+It moves the base model towards how the Instruct talks, and also has deeper shifts towards safety concepts like harmless. 
+This may indicate that textual descriptions are a poor way to encode the persona basis in the base model, and perhaps mech. interp. based methods would be more effective. 
+
+## Can these mixtures predict behavior? 
+
+A natural objection to everything above is that log P / token mostly measures the style of speaking, rather than behavior or content.
+Uses of em-dashes, "Honestly", and a casual tone can have a large influence on token likelihoods but aren't important for describing behavior.
+So I also tested whether the mixtures and soft contexts I have fit actually predict the behavior of the Instruct on held out contexts.
+
+I used [MoralChoice](https://arxiv.org/abs/2307.14324) (Scherrer et al., 2023).
+It has ~1,300 short moral scenarios, each with two possible actions.
+Half of them are 'low-ambiguity' scenarios, in which one action is clearly preferred, and half are 'high-ambiguity' scenarios, with no clearly correct action. 
+Each scenario ends with a choice between action A or action B. I read off the token probabilities for A vs B. 
+To remove bias for generically picking 'A' or 'B', I score every scenario under both orders and take the average.  
+I test the various base-model proxies I explored above:
+generic header, HHH header, the arithmetic and geometric mixtures, and the 64-token soft context.
+Each uses exactly the weights and context fitted before on the Instruct's free-text answers, nothing is refitted on this MoralChoice dataset.
+
+One caveat on this method is that the base models don't fully follow the instructions: they put 12–40% of their next-token probability on starting an explanation ("I…", "This…") rather than on A or B. 
+I ignore these tokens in my measurement of A vs B preference, but it is possible this causes a bias. 
+
+I also included a control, measuring how stable the Instruct's responses are on rephrased versions of the same scenario. 
+Each scenario was reworded by Claude Haiku 5.5, instructed to keep the content exactly the same but just change the wording (with Sonnet 5.5 as a judge).
+Measuring how much the Instruct's answers on one wording predicts its behavior on the other wording sets a rough upper bound on how predictable this behavior is at all. 
+
+The low-ambiguity scenarios are not informative: every proxy, even the generic header, makes the same choice as Instruct in at least 99% of them. 
+On the high-ambiguity scenarios the proxies differ a lot:
+
+![Instruct's preference vs each proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/scatter_high.png)
+
+The generic header is clearly the least predictive, but the persona mixtures don't seem to add anything on top of the HHH header alone.
+Interestingly the better likelihood the geometric fit achieves doesn't translate to improved prediction accuracy. 
+The mixtures mostly sit at moderate preferences (0.3–0.9) where Instruct is close to 0 or 1. 
+
+The optimized soft context, by contrast, is a significantly better predictor of the Instruct model than anything else.  
+It has slightly more predictive power than even the rephrased Instruct answers.
+This is an encouraging demonstration that the higher likelihood achieved by this method is tracking meaningful behavior and not just writing style. 
+
+I repeated this procedure on Qwen2.5-7B. 
+The ordering is mostly the same: the soft context reaches the rephrased ceiling (R² = 0.81), the mixtures and HHH header get part of the way. 
+However, on Qwen the geometric mixture does yield better predictive power (R² = 0.59) than the arithmetic mixture and HHH header (0.51 and 0.52).
+
+![Qwen2.5-7B-Instruct's preference vs each Qwen base-model proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/qwen_scatter_high.png)
+
 
 ## Across training stages
 
+So there is a large gap between the final Instruct model and the base model. 
+Where does it start?
 The nice thing about the Olmo models is they release multiple checkpoints across the training pipeline: after SFT, after DPO, three early RL revisions and the final model. 
 We can run the same procedure across these models and see where the gap with respect to the base model begins. 
-For each stage we can meaure the gap in the likelihood of its own responses, and the gap between it and our best elicitations from the base model.
-
-| checkpoint | own score | gap: base + soft prefix | gap: geometric | gap: mixture |
-|---|---|---|---|---|
-| SFT | −1.249 | 0.411 ± 0.005 | 0.565 ± 0.006 | 0.649 |
-| DPO | −1.037 | 0.503 ± 0.006 | 0.686 ± 0.006 | 0.783 |
-| RL step 100 / 200 / 300 | −1.030 / −1.013 / −1.004 | 0.497 / 0.489 / 0.482 | – | 0.785 / 0.777 / 0.771 |
-| final Instruct | −0.899 | 0.497 ± 0.006 | 0.706 ± 0.008 | 0.824 |
+For each stage we can measure the gap in the likelihood of its own responses, and the gap between it and our best elicitations from the base model.
 
 ![Gap across post-training stages](results/phase4/fig3_stage_gap.png)
 
-- **The gap is already large after SFT** (0.41 with the soft prefix), grows by about 0.09 at DPO, and is flat through RL.
-- **Each description covers the same share at every stage.** Measured from the mixture, the soft prefix closes 36–40% of the way to the checkpoint's own score, and the geometric fit 12–14%. The geometric fit picks the same personas at every stage.
+- **Most of the gap appears at SFT.** It grows slightly (0.09) at DPO. 
+During the RL stages it gets slightly smaller but then jumps up again for the final model. 
+- **Each method closes the same fraction of the gap at each stage.** Measured from the mixture, the soft context closes 36–40% of the way to the checkpoint's own score, and the geometric fit 12–14%. The geometric fit picks the same personas at every stage.
 
-I repeated these experiments on Qwen and Llama models the conclusions were pretty much the same. The repo has the full results.
+Interestingly, starting from the SFT checkpoint instead of the base model, a learned soft context gets within 0.05 nats/token of Instruct (−0.945 vs −0.898), about the same gap as found in Instruct-Instruct tests.
+So this indicates that at least on these simple scenarios, SFT is a large 'leap' with respect to the base model, but later DPO and RL stages can be reasonably approximated by context distilation. 
+It should be said that this Olmo training pipeline has much less RL training than frontier models. So we should be careful about extrapolating these conclusions from Olmo to the frontier.
+
 
 ## Discussion 
 
-This learned context still leaves a large gap between the base model and the post-trained model, which I don't expect to get closed with fancier methods.
-This makes sense, post-training is much more complicated than just context distillation, so even an 'optimal' context cannot replicate it. 
-However, this does set a nice upper bound for a PSM style fit on the base model to achieve. 
-If post-training is reasonably described by the PSM I would hope that it should be possible to construct a PSM style mixture that achieves a comparable likelihood to this learned soft context. 
+I find these results favor the weak PSM view over the strong PSM. 
+The geometric fit allows this 'constructivist' approach where you mix the logits of different personas, and that improves the likelihood
+as compared to the arithmetic mixture which uses fully-formed basis personas. 
+This is consistent with the idea of the assistant persona being constructed rather than selected. 
+However, this improved likelihood is still very far from the Instruct likelihood itself, and only led to better predictions for the Instruct model's choices on the MoralChoice dataset on one of the two models tested.
+The optimized soft context performs significantly better than the mixtures, both in terms of likelihood and predicting behavior. 
 
-You can see more details (warning somewhat slop-y) in [Claude's writeup](claude_writeup_persona_mixture.md)
+Overall, the large likelihood gap between any persona mixture fit and the post-trained model indicates the PSM is not exhaustive. 
+Clearly post-training is doing something more complicated than simple mixtures of personas from pre-training. 
+This textual description of personas + likelihood approach is reading some real signal (cf my [previous post](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)), but I'm not convinced it's the best method to elicit personas from the base model. 
+The optimized soft-context method closes the largest fraction of the likelihood gap and meaningfully predicts the behavior of the Instruct model on a held out dataset,
+but it is less interpretable than a persona basis. 
+Steering vectors or soft contexts optimized per-persona might be more effective methods of eliciting a persona basis.
+It might be interesting to try to hill-climb on this, trying to elicit the best mixture possible from the base model that can close this likelihood gap, and meaningfully predict behavior on a held out dataset.
+
+
+A pretty large confound is that this token-likelihood approach to decomposing the mixture is very sensitive to the 'manner of speaking' of the post-trained model, i.e. things like em-dashes.
+I think this may be a significant part of the likelihood gap. 
+I could not find a good method of eliciting this style of speaking from the base model, without just using many examples, which collapsed the differences between the personas. 
+However, if the weak PSM is true, and post-training is reassembling base model traits, then behavior and style of speaking may not be fully decoupled.
+That is, the post-trained model likely adopts behavioral characteristics of personas which have a similar speaking style to the assistant. 
+We do see some correlation between the best results on the token-likelihood and prediction power on the MoralChoice dataset. 
+
+
+This project was really a way for me to explore what is meant by personas and interrogate my own intuitions about them. 
+I hope these experiments are similarly interesting for others.
+Overall I have the view that the PSM is a 'useful heuristic and situationally-fruitful mental model, but too simple and non-exhaustive to fully describe post-training', 
+which I think is consistent with all the results here.
+
+A few other related stray thoughts: 
+
+- In general I think these sorts of methods, which tap into the 'simulator' rather than the persona of the assistant, are currently underexplored. 
+The simulator knows strictly more than the assistant persona, because it has to predict all the assistant's actions in addition to everything else from the pre-training. 
+
+- Writing down simple mathematical models is useful, for hypothesis generation and clarifying thinking. 
+  If you are trying to formalize exactly what you mean by the PSM I believe it's much clearer to write down the formula you think holds, even if you can't fully define the ingredients in the formula. 
+
+- LLM judges are overused. We should not forget they are 'qualitative' measures, even though they can be reproduced/run at scale. They are not a principled quantitative measurement. 
+  They are definitely useful! But if we want to move towards a more rigorous science, in which we predict behavior rather than just observing it, 
+   I think we need a more principled measurement tool. The likelihood based method I am using here seems promising to me, but I would be interested to brainstorm other options. 
+
+- I still think this kind of mixture fit could be a useful auditing / diagnosis method. 
+It gives a way to see which personas contribute the most to the post-trained model. 
+It's encouraging that on the results here the HHH persona shows up as one of the dominant components, even when the persona basis is very large. 
+If we could make a suitable (large) persona basis and run this mixture fit, could it help flag subtle/covert misaligned intentions/personas? 
+I'm exploring data filtering and auditing methods along this line in ongoing work. 
+Additionally, measuring how the best fit mixture varies in different contexts (or directly fitting the context dependent part of the mixture),
+could be a way to quantify what we mean by split personas. 
+
+
+Repo with full results, including some other experiments I didn't talk about in this post is [here](https://github.com/OzAmram/psm-mixture-test). 
+I repeated most of the above experiments on Qwen and Llama models; the conclusions were pretty much the same, included in the repo.
