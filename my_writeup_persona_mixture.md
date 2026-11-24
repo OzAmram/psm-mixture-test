@@ -188,6 +188,7 @@ While the 0.82 nats/token gap for the Instruct model below is a factor of about 
 First I fit the responses from the base model with the arithmetic mixture. 
 The mixture of all 86 personas gets within 0.006 nats/token of the base assistant itself (−1.594 vs −1.589); the best single persona is 0.016 away. 
 Without the shared casual clause the gap is larger, 0.010.
+The geometric mixture of the same 86 personas matches the base assistant to within 0.003 nats/token, with or without the casual clause.
 
 ![Greedy elbow: hold-out log P per token of the base assistant's answers vs number of personas](results/phase1/elbow_logp.png)
 
@@ -360,37 +361,42 @@ So I also tested whether the mixtures and soft contexts I have fit actually pred
 I used [MoralChoice](https://arxiv.org/abs/2307.14324) (Scherrer et al., 2023).
 It has ~1,300 short moral scenarios, each with two possible actions.
 Half of them are 'low-ambiguity' scenarios, in which one action is clearly preferred, and half are 'high-ambiguity' scenarios, with no clearly correct action. 
-Each scenario ends with a choice between action A or action B. I read off the token probabilities for A vs B. 
+Each scenario ends with a choice between action A or action B. 
+To standardize responses I prefill with "Assistant: I would choose option", so the next token has to be the letter, and I read off the probabilities for A vs B.
+(Without this, the base models put much of their probability on starting a sentence instead of just replying with the option.) 
 To remove bias for generically picking 'A' or 'B', I score every scenario under both orders and take the average.  
 I test the various base-model proxies I explored above:
-generic header, HHH header, the arithmetic and geometric mixtures, and the 64-token soft context.
+generic header, HHH header, the arithmetic and geometric mixtures, and the soft context (64 virtual tokens for Olmo, 60 for Qwen and Llama).
 Each uses exactly the weights and context fitted before on the Instruct's free-text answers, nothing is refitted on this MoralChoice dataset.
+I repeated this procedure on Qwen2.5-7B and Llama 3.1 8B, and saw some variation in results between families. 
 
-One caveat on this method is that the base models don't fully follow the instructions: they put 12–40% of their next-token probability on starting an explanation ("I…", "This…") rather than on A or B. 
-I ignore these tokens in my measurement of A vs B preference, but it is possible this causes a bias. 
-
-I also included a control, measuring how stable the Instruct's responses are on rephrased versions of the same scenario. 
+I also included a control: measuring how stable the Instruct's responses are on rephrased versions of the same scenario. 
 Each scenario was reworded by Claude Haiku 5.5, instructed to keep the content exactly the same but just change the wording (with Sonnet 5.5 as a judge).
-Measuring how much the Instruct's answers on one wording predicts its behavior on the other wording sets a rough upper bound on how predictable this behavior is at all. 
+Measuring how much the Instruct's answers on one wording predict its behavior on the other wording gives a reference level for how predictable this behavior is at all. 
+To compare like with like, the numbers below score each proxy on the original wording against Instruct on the rephrased one (the figure titles also show the same-wording values).
 
 The low-ambiguity scenarios are not informative: every proxy, even the generic header, makes the same choice as Instruct in at least 99% of them. 
 On the high-ambiguity scenarios the proxies differ a lot:
 
-![Instruct's preference vs each proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/scatter_high.png)
+Llama separates the proxies the most. The generic header barely predicts Instruct's choices at all (R² = 0.03), the HHH header and arithmetic mixture only a little (0.16–0.18), the geometric mixture clearly more (0.40), and the soft context the most (0.59), but below the rephrased reference (0.80).
+On Olmo, the generic header already predicts Instruct's choices fairly well (0.50), and neither the HHH header nor the persona mixtures add anything on top of it (0.47–0.52).
+The better likelihood the geometric fit achieves doesn't translate to improved prediction; it is slightly worse (0.43).
+On Qwen the trend is similar but more compressed: the soft context reaches the rephrased reference (0.71 vs 0.70), and the geometric mixture (0.62) does better than the arithmetic mixture and HHH header (both 0.56), which do better than the generic header (0.51).
 
-The generic header is clearly the least predictive, but the persona mixtures don't seem to add anything on top of the HHH header alone.
-Interestingly the better likelihood the geometric fit achieves doesn't translate to improved prediction accuracy. 
-The mixtures mostly sit at moderate preferences (0.3–0.9) where Instruct is close to 0 or 1. 
+![Llama-3.1-8B-Instruct's preference vs each Llama base-model proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/prefill/llama_scatter_high.png)
 
-The optimized soft context, by contrast, is a significantly better predictor of the Instruct model than anything else.  
-It has slightly more predictive power than even the rephrased Instruct answers.
-This is an encouraging demonstration that the higher likelihood achieved by this method is tracking meaningful behavior and not just writing style. 
 
-I repeated this procedure on Qwen2.5-7B. 
-The ordering is mostly the same: the soft context reaches the rephrased ceiling (R² = 0.81), the mixtures and HHH header get part of the way. 
-However, on Qwen the geometric mixture does yield better predictive power (R² = 0.59) than the arithmetic mixture and HHH header (0.51 and 0.52).
+<details><summary>Qwen2.5-7B and Olmo 3 figures</summary>
 
-![Qwen2.5-7B-Instruct's preference vs each Qwen base-model proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/qwen_scatter_high.png)
+![Qwen2.5-7B-Instruct's preference vs each Qwen base-model proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/prefill/qwen_scatter_high.png)
+
+![Olmo 3 Instruct's preference vs each Olmo base-model proxy's, high-ambiguity MoralChoice scenarios](results/phase4/moralchoice/prefill/olmo_scatter_high.png)
+
+</details>
+
+That the optimized soft context is the best predictor in all three model families is encouraging evidence that the likelihood based evaluation is tracking meaningful behavior and not just writing style. 
+The geometric mixture is the clear second best predictor on Qwen and Llama, matching the likelihood-based ordering of the proxies.
+But on Olmo it is comparable or slightly worse than the arithmetic mixture and single headers.
 
 
 ## Across training stages
@@ -415,17 +421,17 @@ It should be said that this Olmo training pipeline has much less RL training tha
 ## Discussion 
 
 I find these results favor the weak PSM view over the strong PSM. 
-The geometric fit allows this 'constructivist' approach where you mix the logits of different personas, and that improves the likelihood
-as compared to the arithmetic mixture which uses fully-formed basis personas. 
+The geometric fit allows a 'constructivist' approach where you mix the logits of different personas. 
+This improves the likelihood as compared to the arithmetic mixture which uses fully-formed basis personas, and led to better predictions of the Instruct model's choices on the MoralChoice dataset on two of three models tested. 
 This is consistent with the idea of the assistant persona being constructed rather than selected. 
-However, this improved likelihood is still very far from the Instruct likelihood itself, and only led to better predictions for the Instruct model's choices on the MoralChoice dataset on one of the two models tested.
 The optimized soft context performs significantly better than the mixtures, both in terms of likelihood and predicting behavior. 
+However, all proxies are relatively far from reaching the Instruct likelihood itself.
+
 
 Overall, the large likelihood gap between any persona mixture fit and the post-trained model indicates the PSM is not exhaustive. 
 Clearly post-training is doing something more complicated than simple mixtures of personas from pre-training. 
-This textual description of personas + likelihood approach is reading some real signal (cf my [previous post](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)), but I'm not convinced it's the best method to elicit personas from the base model. 
-The optimized soft-context method closes the largest fraction of the likelihood gap and meaningfully predicts the behavior of the Instruct model on a held out dataset,
-but it is less interpretable than a persona basis. 
+This textual description of personas + likelihood approach is reading some real signal (cf. my [previous post](https://www.lesswrong.com/posts/YvNkA3ZzsCv9QQmXR/base-models-can-detect-hidden-intentions-that-prompted)), but I'm not convinced it's the best method to elicit personas from the base model. 
+The optimized soft-context method performs better, but it is less interpretable than a persona basis. 
 Steering vectors or soft contexts optimized per-persona might be more effective methods of eliciting a persona basis.
 It might be interesting to try to hill-climb on this, trying to elicit the best mixture possible from the base model that can close this likelihood gap, and meaningfully predict behavior on a held out dataset.
 
@@ -435,15 +441,18 @@ I think this may be a significant part of the likelihood gap.
 I could not find a good method of eliciting this style of speaking from the base model, without just using many examples, which collapsed the differences between the personas. 
 However, if the weak PSM is true, and post-training is reassembling base model traits, then behavior and style of speaking may not be fully decoupled.
 That is, the post-trained model likely adopts behavioral characteristics of personas which have a similar speaking style to the assistant. 
-We do see some correlation between the best results on the token-likelihood and prediction power on the MoralChoice dataset. 
+It is encouraging that the highest likelihood proxies did seem to correlate with the behavioral predictions on the MoralChoice dataset.
 
 
 This project was really a way for me to explore what is meant by personas and interrogate my own intuitions about them. 
-I hope these experiments are similarly interesting for others.
+I hope these simple experiments are similarly interesting for others.
 Overall I have the view that the PSM is a 'useful heuristic and situationally-fruitful mental model, but too simple and non-exhaustive to fully describe post-training', 
 which I think is consistent with all the results here.
+Exploring how to break down the assistant persona into its component traits, and analyze this mixture, seems like a fruitful research direction for understanding and predicting LLM behavior.
 
-A few other related stray thoughts: 
+
+<details><summary>A few other related stray thoughts:</summary>
+ 
 
 - In general I think these sorts of methods, which tap into the 'simulator' rather than the persona of the assistant, are currently underexplored. 
 The simulator knows strictly more than the assistant persona, because it has to predict all the assistant's actions in addition to everything else from the pre-training. 
@@ -463,6 +472,7 @@ I'm exploring data filtering and auditing methods along this line in ongoing wor
 Additionally, measuring how the best fit mixture varies in different contexts (or directly fitting the context dependent part of the mixture),
 could be a way to quantify what we mean by split personas. 
 
+</details>
 
 Repo with full results, including some other experiments I didn't talk about in this post is [here](https://github.com/OzAmram/psm-mixture-test). 
 I repeated most of the above experiments on Qwen and Llama models; the conclusions were pretty much the same, included in the repo.
